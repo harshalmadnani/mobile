@@ -15,6 +15,15 @@ import BigNumber from 'bignumber.js';
 // import * as particleAuth from 'react-native-particle-auth';
 
 import abi from './remmitex';
+import {
+  getAuthCoreProvider,
+  getEthereumTransaction,
+  getSmartAccountAddress,
+  getUserAddressFromAuthCoreSDK,
+  signAndSendBatchTransactionWithGasless,
+} from '../../../utils/particleCoreSDK';
+import {AAFeeMode, LoginType} from '@particle-network/rn-auth';
+import {evm} from '@particle-network/rn-auth-core';
 
 const Web3 = require('web3');
 let web3;
@@ -399,3 +408,109 @@ export async function transferXUSDV2(
     return {status: false, fees: '0'};
   }
 }
+export const prepareTxForSignature = async (from, txData, amount, to) => {
+  await EvmService.createTransaction(from, txData, amount, to);
+};
+export const transferUSDCWithParticleAAGasless = async (
+  _amount,
+  _recipient,
+  navigation,
+  setStatus,
+  isAuth,
+) => {
+  const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+  const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
+
+  const decimals = 6;
+
+  const amount = ethers.utils.parseUnits(_amount, decimals);
+  const recipient = _recipient;
+  if (isAuth) {
+    setStatus('Calculating Gas In USDC...');
+
+    web3 = getAuthCoreProvider(LoginType.Email);
+
+    const contractGas = Number('90000');
+    const approvalGas = Number('60000');
+    const gasPrice = await web3.eth.getGasPrice();
+    const gas = (contractGas + approvalGas) * gasPrice;
+    const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
+    const totalAmount = Number(amount) + Number(gasUSDC);
+    const eoaAddress = await getUserAddressFromAuthCoreSDK();
+    const smartAccount = await getSmartAccountAddress(eoaAddress);
+    console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
+    console.log(
+      'Total Gas In USDC:',
+      web3.utils.fromWei(String(gasUSDC), 'mwei'),
+    );
+    console.log('Total Amount:', totalAmount);
+
+    const usdcAbi = new ethers.utils.Interface(usdAbi);
+    const contractAbi = new ethers.utils.Interface(abi);
+
+    let txs = [];
+
+    setStatus('Creating Transactions...');
+
+    try {
+      console.log('eoas', eoaAddress, recipient);
+      const approveData = usdcAbi.encodeFunctionData('approve', [
+        v1Address,
+        totalAmount,
+      ]);
+      const approveTx = await getEthereumTransaction(
+        smartAccount,
+        usdcAddress,
+        approveData,
+        '0',
+      );
+
+      txs.push(approveTx);
+
+      const sendData = contractAbi.encodeFunctionData('transfer', [
+        recipient,
+        amount,
+        gasUSDC,
+      ]);
+      const sendTX = await getEthereumTransaction(
+        smartAccount,
+        v1Address,
+        sendData,
+        '0',
+      );
+
+      txs.push(sendTX);
+
+      setStatus('Created Transactions Successfully...');
+
+      setStatus('Waiting For Approval...');
+      console.log('here txs..', txs);
+      const signature = await signAndSendBatchTransactionWithGasless(
+        eoaAddress,
+        smartAccount,
+        txs,
+      );
+      setStatus('Approved!');
+
+      console.log('Signature Signed...........', signature);
+      if (signature) {
+        return {
+          status: true,
+          fees: String(Number(web3.utils.fromWei(gasUSDC, 'mwei')).toFixed(5)),
+        };
+      } else {
+        return {
+          status: false,
+          fees: JSON.stringify('fail'),
+        };
+      }
+    } catch (e) {
+      console.log('Signature Signed...........Error', e);
+      console.error(e);
+      return {
+        status: false,
+        fees: JSON.stringify(e),
+      };
+    }
+  }
+};

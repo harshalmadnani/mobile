@@ -19,6 +19,7 @@ import createConnectProvider from '../../../particle-connect';
 import {
   transferUSDC,
   transferUSDCV2,
+  transferUSDCWithParticleAAGasless,
   transferXUSD,
   transferXUSDV2,
 } from '../../loggedIn/payments/remmitexv1';
@@ -65,15 +66,21 @@ const Component = ({route, navigation}) => {
       if (type !== 'v2') {
         if (mainnet) {
           try {
-            const {status, fees} = await transferUSDC(
-              global.smartAccount,
+            // const {status, fees} = await transferUSDC(
+            // global.smartAccount,
+            //   amount,
+            //   walletAddress,
+            //   navigation,
+            //   setStatus,
+            //   global.withAuth,
+            // );
+            const {status, fees} = await transferUSDCWithParticleAAGasless(
               amount,
               walletAddress,
               navigation,
               setStatus,
               global.withAuth,
             );
-            console.log(fees);
             if (status)
               navigation.push('Successful', {
                 status,

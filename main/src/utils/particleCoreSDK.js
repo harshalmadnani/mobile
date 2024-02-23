@@ -1,5 +1,5 @@
 import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {PolygonMumbai} from '@particle-network/chains';
+import {Polygon} from '@particle-network/chains';
 import * as particleAuth from '@particle-network/rn-auth';
 import {Env, ParticleInfo} from '@particle-network/rn-auth';
 import * as particleAuthCore from '@particle-network/rn-auth-core';
@@ -10,6 +10,7 @@ import {
   SupportAuthType,
 } from '@particle-network/rn-auth';
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
 // Get your project id and client from dashboard,
@@ -18,7 +19,7 @@ const accountName = particleAuth.AccountName.BICONOMY_V1();
 const biconomyApiKeys = {
   1: 'your ethereum mainnet key',
   5: 'your ethereum goerli key',
-  137: 'your polygon mainnet key',
+  137: 'Tooya3Rgo.1b5a0b68-a83c-4fe3-9ae9-9a5cb57fa809',
   80001: 'hYZIwIsf2.e18c790b-cafb-4c4e-a438-0289fc25dba1',
 };
 
@@ -30,7 +31,7 @@ export const initializedAuthCore = () => {
       'You need set project info, get your project id and client from dashboard, https://dashboard.particle.network',
     );
   }
-  const chainInfo = PolygonMumbai;
+  const chainInfo = Polygon;
   const env = Env.Dev;
   particleAuth.init(chainInfo, env);
   particleAuth.setModalPresentStyle(
@@ -134,5 +135,54 @@ export const depolyAAAndGetSCAddress = async () => {
     const error = result.data;
     console.log('isDeploy result', error);
     return 0;
+  }
+};
+export async function getEthereumTransaction(from, to, data, amount) {
+  // mock a evm native transaction,
+  // type is 0x2, should work in Ethereum, Polygon and other blockchains which support EIP1559
+  // send 0.01 native
+  return await particleAuth.EvmService.createTransaction(
+    from,
+    data,
+    amount,
+    to,
+  );
+}
+export const signAndSendBatchTransactionWithGasless = async (
+  eoaAddress,
+  smartAccountAddress,
+  transactions,
+) => {
+  if (smartAccountAddress === undefined) {
+    return;
+  }
+  console.log('startedddd.....', eoaAddress, smartAccountAddress);
+  const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
+    eoaAddress,
+    transactions,
+  );
+  // const feeQuote = wholeFeeQuote.tokenPaymaster.feeQuote;
+  // console.log('startedddd.....', feeQuote);
+  const verifyingPaymasterGasless = wholeFeeQuote.verifyingPaymasterGasless;
+  if (verifyingPaymasterGasless === undefined) {
+    console.log('gasless is not available');
+    return;
+  }
+  console.log('startedddd.....verifying', verifyingPaymasterGasless);
+  // if (verifyingPaymasterGasless === undefined) {
+  //   console.log('gasless is not available');
+  //   return;
+  // }
+  const result = await particleAuthCore.evm.batchSendTransactions(
+    transactions,
+    particleAuth.AAFeeMode.gasless(wholeFeeQuote),
+  );
+  if (result.status) {
+    const signature = result.data;
+    console.log('signAndSendTransactionWithGasless result', signature);
+    return signature;
+  } else {
+    const error = result.data;
+    console.log('signAndSendTransactionWithGasless result error', error);
   }
 };
