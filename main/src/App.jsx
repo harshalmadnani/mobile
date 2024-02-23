@@ -37,6 +37,7 @@ import SendWalletComponent from './screens/loggedIn/send/sendWallet';
 import {Text} from 'react-native-elements';
 import TopBar from './screens/loggedIn/topbar';
 import Pending from './screens/loggedIn/txStatus/pending';
+import {Provider} from 'react-redux';
 import Successful from './screens/loggedIn/txStatus/successful';
 import Unsuccessful from './screens/loggedIn/txStatus/unsuccessful';
 import MarketInfo from './screens/loggedIn/investments/marketInfo';
@@ -64,7 +65,6 @@ const particle = require('./../assets/particle.jpg');
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
-
 import messaging from '@react-native-firebase/messaging';
 import {requestUserPermission, generateTopic} from './utils/push';
 import {getDeviceToken} from 'react-native-device-info';
@@ -73,7 +73,9 @@ import AddBankAccount from './screens/loggedIn/card/bankAccount/addBankAccount';
 import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccount';
 import AddFund from './screens/loggedIn/card/fund/addFund';
 import CardInfo from './screens/loggedIn/card/info/cardInfo';
-import TradePage from "./screens/loggedIn/investments/trade/tradePage";
+import TradePage from './screens/loggedIn/investments/trade/tradePage';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistor, store} from './store/store';
 function PreLaunchLoad({navigation}) {
   return (
     <View>
@@ -125,7 +127,7 @@ function WidgetPage({navigation}) {
 function Settings({navigation}) {
   return (
     <SafeAreaView style={styles.black}>
-            <TopBar navigation={navigation} headers={'Settings'} />
+      <TopBar navigation={navigation} headers={'Settings'} />
       <ScrollView style={{height: windowHeight * 0.8}}>
         <View>
           <SettingsComponent navigation={navigation} />
@@ -282,8 +284,8 @@ function Payments({navigation}) {
     <SafeAreaView style={styles.container}>
       <TopBar navigation={navigation} headers={'Home'} />
       <ScrollView
-       showsVerticalScrollIndicator={false}
-       showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         style={[styles.content, {zIndex: -1}]}
         refreshControl={
           <RefreshControl
@@ -376,7 +378,7 @@ function TradePageScreen({route, navigation}) {
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
       <ScrollView style={{height: '100%'}}>
-        <TradePage navigation={navigation} route={route}/>
+        <TradePage navigation={navigation} route={route} />
       </ScrollView>
       <BottomNavbar navigation={navigation} selected="Investments" />
     </SafeAreaView>
@@ -500,21 +502,17 @@ function ViewTransaction({navigation, route}) {
 
 function TransactionHistory({navigation, route}) {
   return (
-        <View style={styles.black}>
-                  <SafeAreaView>
-                  <TopBar
-  navigation={navigation}
-  headers={'History'}
-/>
-<ScrollView>
+    <View style={styles.black}>
+      <SafeAreaView>
+        <TopBar navigation={navigation} headers={'History'} />
+        <ScrollView>
           <View>
             <TransactionList navigation={navigation} route={route} />
           </View>
-          </ScrollView>
-        </SafeAreaView>
-        <BottomNavbar navigation={navigation} selected="TransactionHistory" />
-      </View>
-
+        </ScrollView>
+      </SafeAreaView>
+      <BottomNavbar navigation={navigation} selected="TransactionHistory" />
+    </View>
   );
 }
 
@@ -552,239 +550,243 @@ export default function App({navigation}) {
 
     preLaunchChecks();
   }, []);
-
+  console.log('Here App');
   return (
-    <NavigationContainer screenOptions={{animationEnabled: false}}>
-      <Stack.Navigator screenOptions={{animation: 'none'}}>
-        <Stack.Screen
-          name="Home"
-          component={PreLaunchLoad}
-          options={{headerShown: false}}
-        />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NavigationContainer screenOptions={{animationEnabled: false}}>
+          <Stack.Navigator screenOptions={{animation: 'none'}}>
+            <Stack.Screen
+              name="Home"
+              component={PreLaunchLoad}
+              options={{headerShown: false}}
+            />
 
-        <Stack.Screen
-          name="LoggedOutHome"
-          component={StaticHomeScreen}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="EnterName"
-          component={EnterName}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-         <Stack.Screen
-          name="MarketInfo"
-          component={MarketInfoScreen}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ChooseConnect"
-          component={ChooseWallet}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="LoggedIn"
-          component={LoggedIn}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Connected"
-          component={Connected}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Error"
-          component={Error}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Loading"
-          component={Loading}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ComingSoon"
-          component={ComingSoon}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="QRScreen"
-          component={QRPage}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Investments"
-          component={Investment}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Savings"
-          component={Savings}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Payments"
-          component={Payments}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="EnterAmount"
-          component={EnterAmount}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="EnterSavingsAmount"
-          component={EnterSavingsAmount}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SendEmail"
-          component={SendEmail}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SendMobile"
-          component={SendMobile}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SendWallet"
-          component={SendWallet}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Pending"
-          component={Pending}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-                <Stack.Screen
-          name="TradePage"
-          component={TradePageScreen}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Successful"
-          component={Successful}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Unsuccessful"
-          component={Unsuccessful}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SavingsPending"
-          component={SavingsPending}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="SavingsSuccessful"
-          component={SavingsSuccessful}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="FiatRamps"
-          component={FiatAggregator}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="WidgetPage"
-          component={WidgetPage}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Referrals"
-          component={Referrals}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ViewTransaction"
-          component={ViewTransaction}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="TransactionHistory"
-          component={TransactionHistory}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Redeem"
-          component={Redeem}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="RedeemForm"
-          component={RedeemForm}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Settings"
-          component={Settings}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Card"
-          component={XadeCard}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ReferralCode"
-          component={ReferCode}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="CreateBankAccount"
-          component={CreateBankAccount}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ListBankAccount"
-          component={ListBankAccount}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="AddFund"
-          component={AddFundToCard}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="CardInfo"
-          component={CardInfoScreen}
-          navigation={navigation}
-          options={{headerShown: false}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+            <Stack.Screen
+              name="LoggedOutHome"
+              component={StaticHomeScreen}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EnterName"
+              component={EnterName}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MarketInfo"
+              component={MarketInfoScreen}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ChooseConnect"
+              component={ChooseWallet}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="LoggedIn"
+              component={LoggedIn}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Connected"
+              component={Connected}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Error"
+              component={Error}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Loading"
+              component={Loading}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ComingSoon"
+              component={ComingSoon}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="QRScreen"
+              component={QRPage}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Investments"
+              component={Investment}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Savings"
+              component={Savings}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Payments"
+              component={Payments}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EnterAmount"
+              component={EnterAmount}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="EnterSavingsAmount"
+              component={EnterSavingsAmount}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SendEmail"
+              component={SendEmail}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SendMobile"
+              component={SendMobile}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SendWallet"
+              component={SendWallet}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Pending"
+              component={Pending}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="TradePage"
+              component={TradePageScreen}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Successful"
+              component={Successful}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Unsuccessful"
+              component={Unsuccessful}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SavingsPending"
+              component={SavingsPending}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SavingsSuccessful"
+              component={SavingsSuccessful}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="FiatRamps"
+              component={FiatAggregator}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="WidgetPage"
+              component={WidgetPage}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Referrals"
+              component={Referrals}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ViewTransaction"
+              component={ViewTransaction}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="TransactionHistory"
+              component={TransactionHistory}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Redeem"
+              component={Redeem}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="RedeemForm"
+              component={RedeemForm}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={Settings}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Card"
+              component={XadeCard}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ReferralCode"
+              component={ReferCode}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="CreateBankAccount"
+              component={CreateBankAccount}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="ListBankAccount"
+              component={ListBankAccount}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="AddFund"
+              component={AddFundToCard}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="CardInfo"
+              component={CardInfoScreen}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
   );
 }
 

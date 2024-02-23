@@ -19,8 +19,8 @@ import {
   Switch,
 } from 'react-native';
 // import {Icon} from 'react-native-elements';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// // import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import {ChainId} from '@biconomy/core-types';
 // import Clipboard from '@react-native-clipboard/clipboard';
 

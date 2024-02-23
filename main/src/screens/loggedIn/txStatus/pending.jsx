@@ -9,9 +9,9 @@ import {
 import {Text} from 'react-native-elements';
 import Video from 'react-native-video';
 
-import {signAndSendTransactionConnect} from '../../../particle-connect';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import {signAndSendTransactionConnect} from '../../../particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';

@@ -2,13 +2,13 @@ import React, {useEffect} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {Text} from 'react-native-elements';
 // import Video from 'react-native-video';
-import {signAndSendTransactionConnect} from '../../../particle-connect';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import {signAndSendTransactionConnect} from '../../../particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import ethProvider from './../integration/ethProvider';
 import {PROJECT_ID, CLIENT_KEY} from 'react-native-dotenv';
-import createProvider from '../../../../particle-auth';
-import createConnectProvider from '../../../../particle-connect';
+// import createProvider from '../../../../particle-auth';
+// import createConnectProvider from '../../../../particle-connect';
 
 const Web3 = require('web3');
 import Video from 'react-native-video';

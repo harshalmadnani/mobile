@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import * as particleAuth from 'react-native-particle-auth';
+// import * as particleAuth from 'react-native-particle-auth';
 
 const buttons = [
   ['1', '2', '3'],
@@ -25,11 +25,11 @@ function renderButtons() {
   });
 }
 export default function EnterAmountComponent({navigation}) {
-//   let params = route.params;
+  //   let params = route.params;
   let [amount, setAmount] = React.useState(0);
   let [address, setAddress] = React.useState(1);
-//   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0};
-//   console.log(json);
+  //   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0};
+  //   console.log(json);
 
   console.log('Address: ', address);
   // console.log('User Info: ', info);
@@ -77,7 +77,6 @@ export default function EnterAmountComponent({navigation}) {
       </View>
       <View
         style={{width: '100%', alignItems: 'center', justifyContent: 'center'}}>
-        
         {buttons.map((row, i) => {
           return (
             <View key={`row-${i}`} style={styles.row}>

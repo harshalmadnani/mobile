@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import contracts from './constants';
 import ClearingHouseABI from '../ABIs/ClearingHouse';
 import UsdcABI from '../ABIs/USDC';
@@ -11,8 +12,8 @@ import {
   signAndSendTransactionConnect,
 } from '../../../../particle-connect';
 import axios from 'axios';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import {PARTICLE_USERNAME, PARTICLE_PASSWORD} from '@env';
 
 import {EvmService} from '../../../../NetService/EvmService';
@@ -228,9 +229,9 @@ const transactions = () => {
       );
       const txString = response.data.result;
       try {
-        const txResult = global.withAuth
-          ? await particleAuth.signAndSendTransaction(txString)
-          : await particleConnect.signAndSendTransaction(txString);
+        const txResult = global.withAuth;
+        // ? await particleAuth.signAndSendTransaction(txString)
+        // await particleConnect.signAndSendTransaction(txString);
         console.log(txResult);
         return txResult;
       } catch (error) {
@@ -243,7 +244,7 @@ const transactions = () => {
   };
 
   /*
-    //Add or remove margin from an open position 
+    //Add or remove margin from an open position
     // NB: would not affect position size. Instead, leverage is adjusted accordingly
     PARAMETERS:
     * amm => String(asset symbol IN CAPS)
@@ -281,9 +282,9 @@ const transactions = () => {
       );
       const txString = response.data.result;
       try {
-        const txResult = global.withAuth
-          ? await particleAuth.signAndSendTransaction(txString)
-          : await particleConnect.signAndSendTransaction(txString);
+        const txResult = global.withAuth;
+        // ? await particleAuth.signAndSendTransaction(txString)
+        // await particleConnect.signAndSendTransaction(txString);
         console.log(txResult);
         return txResult;
       } catch (error) {

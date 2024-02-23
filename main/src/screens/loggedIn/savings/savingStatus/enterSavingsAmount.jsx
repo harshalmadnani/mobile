@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import * as particleAuth from 'react-native-particle-auth';
+// import * as particleAuth from 'react-native-particle-auth';
 
 const buttons = [
   ['1', '2', '3'],

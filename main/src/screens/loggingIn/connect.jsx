@@ -11,16 +11,16 @@ import {
 import {Text} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
 import onClickConnect from '../../particle-connect';
-import {WalletType} from 'react-native-particle-connect';
+// import {WalletType} from 'react-native-particle-connect';
 
 const bg = require('../../../assets/choose.png');
 const windowHeight = Dimensions.get('window').height;
 
-metamask = WalletType.MetaMask;
-alpha = WalletType.Alpha;
-trust = WalletType.Trust;
-rainbow = WalletType.Rainbow;
-walletconnect = WalletType.WalletConnect;
+metamask = 'WalletType.MetaMask';
+alpha = 'WalletType.Alpha';
+trust = 'WalletType.Trust';
+rainbow = 'WalletType.Rainbow';
+walletconnect = 'WalletType.WalletConnect';
 
 const ChooseConnect = ({navigation}) => {
   return (

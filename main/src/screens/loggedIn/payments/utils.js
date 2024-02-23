@@ -1,5 +1,5 @@
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import createProvider from '../../../particle-auth';
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
@@ -74,36 +74,32 @@ async function getTokenBalance(contract, mainnet, eoa) {
   }
 }
 
-export async function paymentsLoad(web3, eoa) {
+export async function paymentsLoad(web3, mainnet, eoa) {
   try {
-    const mainnetJSON = await AsyncStorage.getItem('mainnet');
-    const _mainnet = await JSON.parse(mainnetJSON);
-
-    console.log('Mainnet:', _mainnet);
-
+    // const mainnetJSON = await AsyncStorage.getItem('mainnet');
+    console.log('Mainnet:', mainnet);
     if (global.withAuth) {
-      if (_mainnet) {
-        await particleAuth.setChainInfoAsync(
-          particleAuth.ChainInfo.PolygonMainnet,
-        );
-      } else {
-        await particleAuth.setChainInfoAsync(
-          particleAuth.ChainInfo.PolygonMumbai,
-        );
-      }
+      // if (_mainnet) {
+      //   await particleAuth.setChainInfoAsync(
+      //     particleAuth.ChainInfo.PolygonMainnet,
+      //   );
+      // } else {
+      //   await particleAuth.setChainInfoAsync(
+      //     particleAuth.ChainInfo.PolygonMumbai,
+      //   );
+      // }
     }
-
     const contract = new web3.eth.Contract(USDC_ABI, usdcAddress);
     const XUSDcontract = new web3.eth.Contract(XUSD_ABI, contractAddress);
     const balance = await getTokenBalance(
-      _mainnet ? contract : XUSDcontract,
-      _mainnet,
+      mainnet ? contract : XUSDcontract,
+      mainnet,
       eoa,
     );
 
     return {
       tokenBalance: balance,
-      mainnet: _mainnet,
+      mainnet: mainnet,
     };
   } catch (error) {
     console.error(error);

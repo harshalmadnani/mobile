@@ -19,11 +19,13 @@ import FastImage from 'react-native-fast-image';
 import {LoginCarousel} from './loginCarousel';
 import {onClickLogin} from '../../particle-auth';
 
-import * as particleAuth from 'react-native-particle-auth';
+// import * as particleAuth from 'react-native-particle-auth';
 
 import LinearGradient from 'react-native-linear-gradient';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useDispatch} from 'react-redux';
+import {onAuthCoreLogin} from '../../store/actions/auth';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -64,7 +66,7 @@ const StaticHomeScreen = ({navigation}) => {
   const [selectedButton, setSelectedButton] = React.useState(
     `Introducing a new${'\n'}era of finance`,
   );
-
+  const dispatch = useDispatch();
   useEffect(() => {
     i = 0;
     setInterval(() => {
@@ -120,7 +122,7 @@ const StaticHomeScreen = ({navigation}) => {
               key={images}
             />
             <TouchableOpacity
-              onPress={() => this.onClickLogin(navigation)}
+              onPress={() => dispatch(onAuthCoreLogin(navigation))}
               style={styles.getStarted}>
               <Text style={styles.getStartedText}>Get Started</Text>
             </TouchableOpacity>
