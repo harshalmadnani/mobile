@@ -7,7 +7,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {REMMITEX_MAINNET_CONTRACT, REMMITEX_TESTNET_CONTRACT} from '@env';
-// import * as particleConnect from 'react-native-particle-connect';
+import * as particleConnect from 'react-native-particle-connect';
 import {Buffer} from 'buffer';
 import {EvmService} from '../../../NetService/EvmService';
 import BigNumber from 'bignumber.js';
@@ -183,12 +183,12 @@ export async function transferUSDC(
       const json = JSON.stringify(transferTx);
       const serialized = '0x' + Buffer.from(json).toString('hex');
 
-      // const tx = await particleConnect.signAndSendTransaction(
-      //   global.walletType,
-      //   global.connectAccount.publicAddress,
-      //   serialized,
-      // );
-      const tx = false;
+      const tx = await particleConnect.signAndSendTransaction(
+        global.walletType,
+        global.connectAccount.publicAddress,
+        serialized,
+      );
+
       if (tx.status) {
         return {
           status: true,
@@ -429,15 +429,13 @@ export const transferUSDCWithParticleAAGasless = async (
     setStatus('Calculating Gas In USDC...');
 
     web3 = getAuthCoreProvider(LoginType.Email);
-
     const contractGas = Number('90000');
     const approvalGas = Number('60000');
     const gasPrice = await web3.eth.getGasPrice();
     const gas = (contractGas + approvalGas) * gasPrice;
     const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
     const totalAmount = Number(amount) + Number(gasUSDC);
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
+
     console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
     console.log(
       'Total Gas In USDC:',
@@ -449,32 +447,36 @@ export const transferUSDCWithParticleAAGasless = async (
     const contractAbi = new ethers.utils.Interface(abi);
 
     let txs = [];
+    const eoaAddress = await getUserAddressFromAuthCoreSDK();
+    const smartAccount = await getSmartAccountAddress(eoaAddress);
+
+    // const contractAbi = new ethers.utils.Interface(abi);
+    // const usdcAbi = new ethers.utils.Interface(usdAbi);
+    // let txs = [];
 
     setStatus('Creating Transactions...');
 
     try {
-      console.log('eoas', eoaAddress, recipient);
-      const approveData = usdcAbi.encodeFunctionData('approve', [
-        v1Address,
-        totalAmount,
-      ]);
-      const approveTx = await getEthereumTransaction(
-        smartAccount,
-        usdcAddress,
-        approveData,
-        '0',
-      );
-
-      txs.push(approveTx);
-
-      const sendData = contractAbi.encodeFunctionData('transfer', [
+      console.log('eoas', smartAccount, eoaAddress, recipient);
+      // const approveData = usdcAbi.encodeFunctionData('approve', [
+      //   v1Address,
+      //   totalAmount,
+      // ]);
+      // const approveTX = await getEthereumTransaction(
+      //   smartAccount,
+      //   usdcAddress,
+      //   approveData,
+      //   '0',
+      // );
+      // txs.push(approveTX);
+      const sendData = usdcAbi.encodeFunctionData('transfer', [
         recipient,
         amount,
-        gasUSDC,
       ]);
+
       const sendTX = await getEthereumTransaction(
         smartAccount,
-        v1Address,
+        usdcAddress,
         sendData,
         '0',
       );
@@ -496,7 +498,7 @@ export const transferUSDCWithParticleAAGasless = async (
       if (signature) {
         return {
           status: true,
-          fees: String(Number(web3.utils.fromWei(gasUSDC, 'mwei')).toFixed(5)),
+          fees: null,
         };
       } else {
         return {

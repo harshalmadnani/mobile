@@ -1,12 +1,17 @@
-// import * as particleConnect from 'react-native-particle-connect';
+import * as particleConnect from 'react-native-particle-connect';
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
-// import {Env} from 'react-native-particle-connect';
-// import {ChainInfo} from 'react-native-particle-connect';
+import {
+  Env,
+  LoginType,
+  SupportAuthType,
+  WalletType,
+} from 'react-native-particle-connect';
+import {ChainInfo} from 'react-native-particle-connect';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Web3 from 'web3';
-// import {ParticleConnectProvider} from 'react-native-particle-connect';
+import {ParticleConnectProvider} from 'react-native-particle-connect';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
 
 var DeviceInfo = require('react-native-device-info');
@@ -16,12 +21,11 @@ const clientKey = CLIENT_KEY;
 
 createConnectProvider = () => {
   let walletType = global.walletType;
-  // const provider = new ParticleConnectProvider({
-  //   projectId,
-  //   clientKey,
-  //   walletType,
-  // });
-  const provider = false;
+  const provider = new ParticleConnectProvider({
+    projectId,
+    clientKey,
+    walletType,
+  });
   const web3 = new Web3(provider);
   return web3;
 };

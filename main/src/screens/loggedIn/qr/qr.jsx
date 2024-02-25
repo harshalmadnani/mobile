@@ -16,8 +16,8 @@ import {
 } from 'react-native';
 import {CameraScreen} from 'react-native-camera-kit';
 
-// import * as particleAuth from 'react-native-particle-auth';
-// import * as particleConnect from 'react-native-particle-connect';
+import * as particleAuth from 'react-native-particle-auth';
+import * as particleConnect from 'react-native-particle-connect';
 
 import QR from '../../../qr-generator';
 import {logout} from '../../../particle-auth';

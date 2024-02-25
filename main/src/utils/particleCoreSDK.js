@@ -2,6 +2,7 @@ import {PROJECT_ID, CLIENT_KEY} from '@env';
 import {Polygon} from '@particle-network/chains';
 import * as particleAuth from '@particle-network/rn-auth';
 import {Env, ParticleInfo} from '@particle-network/rn-auth';
+import {AAVersion} from '@particle-network/rn-auth';
 import * as particleAuthCore from '@particle-network/rn-auth-core';
 import * as particleAA from '@particle-network/rn-aa';
 import {
@@ -40,7 +41,7 @@ export const initializedAuthCore = () => {
   particleAuth.setAppearance(particleAuth.Appearance.Dark);
   particleAuthCore.init();
   console.log('init auth core....');
-  particleAA.init(accountName, biconomyApiKeys);
+  particleAA.init(particleAuth.AccountName.BICONOMY_V1(), {});
   console.log('init AA sdk.....');
 };
 export const getAuthCoreProvider = loginType => {
@@ -153,26 +154,37 @@ export const signAndSendBatchTransactionWithGasless = async (
   smartAccountAddress,
   transactions,
 ) => {
+  const resultDeploy = await particleAA.isDeploy(eoaAddress);
+
+  if (resultDeploy.status) {
+    const isDeploy = resultDeploy.data;
+    console.log('isDeploy result', isDeploy);
+  } else {
+    const error = result.data;
+    console.log('isDeploy result', error);
+  }
+  const resultAAEnableMode = await particleAA.isAAModeEnable();
+  console.log('Enable  result', resultAAEnableMode);
+  if (!resultAAEnableMode) {
+    particleAA.enableAAMode();
+  }
   if (smartAccountAddress === undefined) {
     return;
   }
-  console.log('startedddd.....', eoaAddress, smartAccountAddress);
   const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
     eoaAddress,
     transactions,
   );
-  // const feeQuote = wholeFeeQuote.tokenPaymaster.feeQuote;
-  // console.log('startedddd.....', feeQuote);
   const verifyingPaymasterGasless = wholeFeeQuote.verifyingPaymasterGasless;
   if (verifyingPaymasterGasless === undefined) {
     console.log('gasless is not available');
     return;
   }
   console.log('startedddd.....verifying', verifyingPaymasterGasless);
-  // if (verifyingPaymasterGasless === undefined) {
-  //   console.log('gasless is not available');
-  //   return;
-  // }
+  if (verifyingPaymasterGasless === undefined) {
+    console.log('gasless is not available');
+    return;
+  }
   const result = await particleAuthCore.evm.batchSendTransactions(
     transactions,
     particleAuth.AAFeeMode.gasless(wholeFeeQuote),
