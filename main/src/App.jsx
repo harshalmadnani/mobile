@@ -76,6 +76,7 @@ import CardInfo from './screens/loggedIn/card/info/cardInfo';
 import TradePage from './screens/loggedIn/investments/trade/tradePage';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './store/store';
+import WebView from 'react-native-webview';
 function PreLaunchLoad({navigation}) {
   return (
     <View>
@@ -530,7 +531,7 @@ function ReferCode({navigation}) {
   );
 }
 
-export default function App({navigation}) {
+export default function App({navigation, uri}) {
   useEffect(() => {
     console.log('Global', global.withAuth);
     async function preLaunchChecks() {
