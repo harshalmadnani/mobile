@@ -21,8 +21,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './payments-styles';
 import {Icon} from 'react-native-elements';
 import {useEffect} from 'react';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import createProvider from '../../../particle-auth';
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
@@ -63,6 +63,9 @@ import {registerFcmToken} from '../../../utils/push';
 import TransactionReceipt from '../transactions/transactionReceipt';
 import Snackbar from 'react-native-snackbar';
 import ExternalLinkModal from '../externalLink/widget';
+import {useSelector} from 'react-redux';
+import {LoginType} from '@particle-network/rn-auth';
+import {getAuthCoreProvider} from '../../../utils/particleCoreSDK';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -82,40 +85,41 @@ const PaymentsComponent = ({navigation}) => {
     },
   ]);
   const [dates, setDates] = React.useState([]);
-  const [address, setAddress] = useState('0x');
+  // const [address, setAddress] = useState('0x');
   const [balance, setBalance] = useState('0');
   const [transactionVisible, setTransactionVisible] = useState(false);
-  const [mainnet, setMainnet] = useState(false);
   const DEVICE_WIDTH = Dimensions.get('window').width;
+  const address = useSelector(x => x.auth.address);
+  const mainnet = useSelector(x => x.auth.mainnet);
+  const web3 = getAuthCoreProvider(LoginType.Email);
 
-  async function call() {
-    const address = global.withAuth
-      ? global.loginAccount.publicAddress
-      : global.connectAccount.publicAddress;
-    const web3 = global.withAuth
-      ? this.createProvider()
-      : this.createConnectProvider();
+  const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
+  const [transactionData, setTransactionData] = useState();
 
-    const {tokenBalance, mainnet} = await paymentsLoad(web3, address);
+  const handleCloseTransactionReceiptModal = () => {
+    setShowTxnReceiptModal(false);
+  };
+  const call = async () => {
+    // const address = global.withAuth
+    //   ? global.loginAccount.publicAddress
+    //   : global.connectAccount.publicAddress;
+    console.log('Auth Type....', address, global.withAuth);
+    // const web3 = global.withAuth
+    //   ? this.createProvider()
+    //   : this.createConnectProvider();
 
-    // if (Number(tokenBalance) > 1000) {
-    //   setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
-    // } else {
-      setBalance(tokenBalance);
-    // }
+    const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
 
-    setMainnet(mainnet);
+    console.log('token balance.....', tokenBalance);
+    setBalance(tokenBalance || '0.00');
 
     const {txDates, txs} = await txHistoryLoad(address);
-
+    console.log('txdatess balance.....', txs, txDates);
     setDates(txDates);
     setState(txs);
-
     console.log('Request being sent for registration');
     await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
-
     console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
-
     if (global.withAuth) {
       if (!global.smartAccount) {
         let options = {
@@ -138,34 +142,22 @@ const PaymentsComponent = ({navigation}) => {
             },
           ],
         };
+        // const particleProvider = this.getOnlyProvider();
+        // const provider = new ethers.providers.Web3Provider(
+        //   particleProvider,
+        //   'any',
+        // );
 
-        const particleProvider = this.getOnlyProvider();
-        const provider = new ethers.providers.Web3Provider(
-          particleProvider,
-          'any',
-        );
-
-        let smartAccount = new SmartAccount(provider, options);
-        smartAccount = await smartAccount.init();
-        global.smartAccount = smartAccount;
+        // let smartAccount = new SmartAccount(provider, options);
+        // smartAccount = await smartAccount.init();
+        // global.smartAccount = smartAccount;
       }
     }
-  }
-
-  const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
-  const [transactionData, setTransactionData] = useState();
-
-  const handleCloseTransactionReceiptModal = () => {
-    setShowTxnReceiptModal(false);
-  }
-
-  useEffect(() => {
+  };
+  useEffect(async () => {
     console.log('Is Auth:', global.withAuth);
-
-    call();
+    await call();
   }, []);
-
-
 
   const t = true;
   return (
@@ -173,30 +165,32 @@ const PaymentsComponent = ({navigation}) => {
       style={{
         width: '100%',
         height: '100%',
-        alignSelf: 'flex-start'
+        alignSelf: 'flex-start',
       }}>
-    
-      <View style={{
-        marginHorizontal:20,
-        marginTop: 32
-      }}>
+      <View
+        style={{
+          marginHorizontal: 20,
+          marginTop: 32,
+        }}>
         <Text
           style={{
             fontFamily: 'Satoshi-Bold',
             fontSize: 20,
-            color: "#fff",
+            color: '#fff',
             fontWeight: '700',
-          }}
-        >Accounts</Text>
+          }}>
+          Accounts
+        </Text>
       </View>
       <View style={styles.balanceContainer}>
         <View>
-          <Text style={{
-            fontSize:15,
-            fontWeight:400,
-            fontFamily: 'Satoshi-Regular',
-            color: '#a1a1a1',
-          }}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: 400,
+              fontFamily: 'Satoshi-Regular',
+              color: '#a1a1a1',
+            }}>
             Checkings
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
@@ -208,7 +202,7 @@ const PaymentsComponent = ({navigation}) => {
                 fontWeight: '700',
                 marginTop: '1%',
               }}>
-              ${balance.split('.')[0]}
+              ${balance?.split('.')[0]}
               <Text
                 style={{
                   color: '#fff',
@@ -218,7 +212,7 @@ const PaymentsComponent = ({navigation}) => {
                   marginTop: '1%',
                 }}>
                 {'.'}
-                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+                {balance?.split('.')[1] ? balance?.split('.')[1] : '00'}
               </Text>
             </Text>
           </View>
@@ -233,104 +227,114 @@ const PaymentsComponent = ({navigation}) => {
           alignItems: 'center',
           // padding:10
         }}> */}
-          <FastImage
-            source={require('./icon/commodities.png')}
-            // resizeMode="cover"
-            style={{
-              width: 52,
-              height: 52,
-              // borderRadius: 10, 
-              // margin: 5
-            }}
-          />
+        <FastImage
+          source={require('./icon/commodities.png')}
+          // resizeMode="cover"
+          style={{
+            width: 52,
+            height: 52,
+            // borderRadius: 10,
+            // margin: 5
+          }}
+        />
         {/* </View> */}
       </View>
 
       <View
-          style={{
-            flexDirection: 'row',
-            // width: '80%',
-            height: 50,
-            justifyContent: 'space-evenly',
-            flexDirection: 'row',
-            marginTop: '1%',
-            marginHorizontal:10
+        style={{
+          flexDirection: 'row',
+          // width: '80%',
+          height: 50,
+          justifyContent: 'space-evenly',
+          flexDirection: 'row',
+          marginTop: '1%',
+          marginHorizontal: 10,
+        }}>
+        <TouchableOpacity
+          style={styles.depWith}
+          // onPress={() => {
+          //   {
+          //     {
+          //       global.mainnet
+          //         ? navigation.push('FiatRamps')
+          //         : addXUSD(
+          //             navigation,
+          //             global.withAuth
+          //               ? global.loginAccount.scw
+          //               : global.connectAccount.publicAddress,
+          //           );
+          //     }
+          //   }
+          // }}>
+        >
+          <View style={[styles.innerDep, styles.innerDepColored]}>
+            <Icon
+              // style={styles.tup}
+              name={'arrow-down-circle'}
+              color={'#fff'}
+              size={24}
+              // color={t?'green': 'red'}
+              type="feather"
+            />
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 14,
+                paddingLeft: '5%',
+                fontFamily: 'Satoshi-Regular',
+                fontWeight: '700',
+              }}>
+              Add cash
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.depWith}
+          onPress={() => {
+            navigation.push('SendEmail');
           }}>
-
-            
-          <TouchableOpacity
-            style={styles.depWith}
-            onPress={() => {
-              {
-                {
-                  global.mainnet
-                    ? navigation.push('FiatRamps')
-                    : addXUSD(
-                        navigation,
-                        global.withAuth
-                          ? global.loginAccount.scw
-                          : global.connectAccount.publicAddress,
-                      );
-                }
-              }
-            }}>
-            <View
-              style={[styles.innerDep, styles.innerDepColored]}>
-                
-                  <Icon
-                    // style={styles.tup}
-                    name={'arrow-down-circle'}
-                    color={'#fff'}
-                    size={24}
-                    // color={t?'green': 'red'}
-                    type="feather"
-                  />
-              <Text style={{color: '#fff', fontSize: 14, paddingLeft:'5%', fontFamily: 'Satoshi-Regular', fontWeight: '700'}}>
-                Add cash
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.depWith}
-            onPress={() => {
-              navigation.push('SendEmail');
-            }}>
-            <View
-              style={styles.innerDep}>
-              <Icon
-                // style={styles.tup}
-                name={'arrow-right-circle'}
-                size={24}
-                color={'#fff'}
-                type="feather"
-              />
-              <Text style={{color: '#fff', fontSize: 14,paddingLeft:'5%', fontFamily: 'Satoshi-Regular', fontWeight: '700'}}>
-                Transfer
-              </Text>
-            </View>
-          </TouchableOpacity>
-
+          <View style={styles.innerDep}>
+            <Icon
+              // style={styles.tup}
+              name={'arrow-right-circle'}
+              size={24}
+              color={'#fff'}
+              type="feather"
+            />
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 14,
+                paddingLeft: '5%',
+                fontFamily: 'Satoshi-Regular',
+                fontWeight: '700',
+              }}>
+              Transfer
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.exploreContainer}>
-        <EventsCarousel
+        {/* <EventsCarousel
           images={images}
           navigation={navigation}
           address={
-            global.withAuth
-              ? global.loginAccount.scw
-              : global.connectAccount.publicAddress
+            address
+            // global.withAuth
+            //   ? global.loginAccount.scw
+            //   : global.connectAccount.publicAddress
           }
           key={images}
-        />
+        /> */}
       </View>
-      <View style={{ 
-                marginTop: 10,
-                // marginHorizontal:10 
-            }}>
-                <TradeCollection navigation={navigation} />
-            </View>
-
+      <View
+        style={{
+          marginTop: 10,
+          // marginHorizontal:10
+        }}>
+        <TradeCollection navigation={navigation} />
+      </View>
     </SafeAreaView>
   );
 };

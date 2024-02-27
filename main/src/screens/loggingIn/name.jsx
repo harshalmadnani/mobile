@@ -23,8 +23,9 @@ const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 
 const registerDB = async ({navigation, name}) => {
+  console.log('Here set name', name);
+  console.log('Hereee', global.loginAccount);
   if (global.withAuth) {
-    console.log(global.loginAccount);
     global.loginAccount.name = name;
     const address = global.loginAccount.publicAddress;
     const scwAddress = global.loginAccount.scw;
@@ -54,19 +55,21 @@ const registerDB = async ({navigation, name}) => {
         id: uuid,
       };
     }
-
+    console.log('New OBJ', object);
     const json = JSON.stringify(object || {}, null, 2);
     console.log('Request Being Sent:', json);
-
-    fetch('https://mongo.api.xade.finance/polygon', {
-      method: 'POST',
-      body: json,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    navigation.push('Payments');
+    try {
+      await fetch('https://mongo.api.xade.finance/polygon', {
+        method: 'POST',
+        body: json,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      navigation.push('Payments');
+    } catch (error) {
+      console.log(error?.response?.data);
+    }
   } else {
     global.connectAccount.name = name;
     const address = global.connectAccount.publicAddress;
@@ -193,9 +196,9 @@ const Name = ({navigation}) => {
         </Text>
         <TouchableOpacity
           style={styles.continue}
-          onPress={() => {
+          onPress={async () => {
             // navigation.navigate('Payments');
-            registerDB({navigation, name});
+            await registerDB({navigation, name});
           }}>
           <Text style={styles.continueText}>Let's go!</Text>
         </TouchableOpacity>

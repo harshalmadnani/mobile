@@ -1,4 +1,4 @@
-import React, {useState, Component, useEffect} from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import {
   TouchableOpacity,
   TouchableHighlight,
@@ -19,9 +19,9 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import {CRYPTO_LIST} from './data/crypto';
+import { CRYPTO_LIST } from './data/crypto';
 import TradeItemCard from './TradeItemCard';
-import {WebView} from 'react-native-webview';
+import { WebView } from 'react-native-webview';
 import LinearGradient from 'react-native-linear-gradient';
 import TradeSvg from './icon/tradeSvg';
 import DepositSvg from './icon/depositSvg';
@@ -29,7 +29,7 @@ import MarketChart from './marketInfo/MarketChart'
 import { MaterialTabBar, Tabs } from 'react-native-collapsible-tab-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const MarketInfo = ({route, navigation, item}) => {
+const MarketInfo = ({ route, navigation, item }) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -63,7 +63,7 @@ const MarketInfo = ({route, navigation, item}) => {
   useEffect(() => {
 
     async function init() {
-      try{
+      try {
         setIsLoading(true);
         const mainnetJSON = await AsyncStorage.getItem('mainnet');
         const mainnet = JSON.parse(mainnetJSON);
@@ -81,7 +81,7 @@ const MarketInfo = ({route, navigation, item}) => {
 
         // fetch selected coin contract address
 
-      }catch(e){
+      } catch (e) {
         console.log(e);
       }
       setIsLoading(false);
@@ -89,7 +89,7 @@ const MarketInfo = ({route, navigation, item}) => {
     }
 
     init();
-  },[]);
+  }, []);
 
   return (
     <SafeAreaView
@@ -98,38 +98,16 @@ const MarketInfo = ({route, navigation, item}) => {
         height: height,
         alignSelf: 'flex-start',
         // backgroundColor: '#000000',
-        paddingBottom: 80,
+
         // backgroundColor: 'red'
       }}>
 
-      <View
-        style={{
-          // position: 'absolute',
-          top: '5%',
-          left: '3%',
-          width: width * 0.9,
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'flex-start',
-        }} >
-        <Icon
-          name={'keyboard-backspace'}
-          size={30}
-          color={'#f0f0f0'}
-          type="materialicons"
-          onPress={() => navigation.goBack()}
-        />
 
-        <Text style={styles.heading}>
-          Market Info
-        </Text>
-
-      </View>
 
       {
         isLoading &&
-        <View style={{height:'100%'}}>
-          <ActivityIndicator size={30} style={{marginTop:'40%'}} color="#fff" />
+        <View style={{ height: '100%' }}>
+          <ActivityIndicator size={30} style={{ marginTop: '40%' }} color="#fff" />
         </View>
       }
 
@@ -138,7 +116,7 @@ const MarketInfo = ({route, navigation, item}) => {
         scrollEnabled
         style={{
           // paddingTop:'15%',
-          marginTop:'10%',
+          marginTop: '10%',
           // backgroundColor: 'blue',
         }}>
         {/* <WebView
@@ -270,7 +248,6 @@ const MarketInfo = ({route, navigation, item}) => {
                     </View> */}
       </ScrollView>
       }
-
     </SafeAreaView>
   );
 }
@@ -278,7 +255,7 @@ const MarketInfo = ({route, navigation, item}) => {
 
 
 const styles = StyleSheet.create({
-  heading : {
+  heading: {
     fontSize: 20,
     color: '#ffffff',
     fontFamily: `Satoshi-Bold`,

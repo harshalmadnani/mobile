@@ -20,8 +20,8 @@ import {Text} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import {Icon} from 'react-native-elements';
 import {useEffect} from 'react';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {SABEX_LP} from '@env';
@@ -70,7 +70,7 @@ const Transaction = ({navigation, route}) => {
       : `${txDetails.from.slice(0, 20)}...`;
 
   useEffect(() => {
-    async function getData(address) {
+    const getData = async address => {
       fetch(
         `https://user.api.xade.finance/polygon?address=${address.toLowerCase()}`,
         {
@@ -85,7 +85,7 @@ const Transaction = ({navigation, route}) => {
         .then(data => {
           setSender(data);
         });
-    }
+    };
 
     getData(txDetails.from == address ? txDetails.to : txDetails.from);
   }, []);

@@ -9,9 +9,9 @@ import {
 import {Text} from 'react-native-elements';
 import Video from 'react-native-video';
 
-import {signAndSendTransactionConnect} from '../../../particle-connect';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import {signAndSendTransactionConnect} from '../../../particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
@@ -19,6 +19,7 @@ import createConnectProvider from '../../../particle-connect';
 import {
   transferUSDC,
   transferUSDCV2,
+  transferUSDCWithParticleAAGasless,
   transferXUSD,
   transferXUSDV2,
 } from '../../loggedIn/payments/remmitexv1';
@@ -65,15 +66,21 @@ const Component = ({route, navigation}) => {
       if (type !== 'v2') {
         if (mainnet) {
           try {
-            const {status, fees} = await transferUSDC(
-              global.smartAccount,
+            // const {status, fees} = await transferUSDC(
+            // global.smartAccount,
+            //   amount,
+            //   walletAddress,
+            //   navigation,
+            //   setStatus,
+            //   global.withAuth,
+            // );
+            const {status, fees} = await transferUSDCWithParticleAAGasless(
               amount,
               walletAddress,
               navigation,
               setStatus,
               global.withAuth,
             );
-            console.log(fees);
             if (status)
               navigation.push('Successful', {
                 status,

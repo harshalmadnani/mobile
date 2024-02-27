@@ -7,7 +7,8 @@ import {
   TextInput,
   Dimensions,
   StyleSheet,
-  Linking
+  Linking,
+  Animated
 } from 'react-native';
 import { Text, Icon, Image } from '@rneui/themed';
 import { Slider } from 'react-native-elements';
@@ -37,7 +38,7 @@ import ChangeSvg from '../icon/changeSvg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Snackbar from 'react-native-snackbar';
 import LinearGradient from 'react-native-linear-gradient';
-
+import { TradingViewChart } from '../../../../component/charts/TradingViewChart';
 
 function toDateTime(secs) {
   var t = new Date(secs); // Epoch
@@ -45,8 +46,7 @@ function toDateTime(secs) {
   return t;
 }
 
-
-const MarketChart = (props) => {
+const MarketChart = props => {
   const [state, setState] = useState({
     item: props.item,
     scwAddress: props.scwAddress,
@@ -76,7 +76,7 @@ const MarketChart = (props) => {
 
   const navigation = useNavigation();
 
-  const updateChart = async (days) => {
+  const updateChart = async days => {
     setState({
       ...state,
       chartSelected: days,
@@ -87,13 +87,12 @@ const MarketChart = (props) => {
     let btcUrl = `https://api.coingecko.com/api/v3/coins/${state.item.id.toLowerCase()}/market_chart?vs_currency=usd&days=${days}`;
 
     try {
-      const response = await fetch(btcUrl,
-        {
-          method: 'GET',
-          headers: {
-            'x-cg-demo-api-key': 'CG-vwTDdcvqR2QNrytke2e4WKVR',
-            'Content-Type': 'application/json',
-          }
+      const response = await fetch(btcUrl, {
+        method: 'GET',
+        headers: {
+          'x-cg-demo-api-key': 'CG-vwTDdcvqR2QNrytke2e4WKVR',
+          'Content-Type': 'application/json',
+        },
       });
       const prices = await response.json();
 
@@ -111,10 +110,10 @@ const MarketChart = (props) => {
         headers: {
           'x-cg-demo-api-key': 'CG-vwTDdcvqR2QNrytke2e4WKVR',
           'Content-Type': 'application/json',
-        }
+        },
       });
       const info = await response.json();
-      console.log("info here", JSON.stringify(info, null, 2));
+      console.log('info here', JSON.stringify(info, null, 2));
 
       //       console.log("INFO_RESPONSE", info, "INFO_RESPONSE");
 
@@ -122,7 +121,10 @@ const MarketChart = (props) => {
       const linkRegex = /<a\b[^>]*>(.*?)<\/a>/g;
 
       // Use replace function to replace <a> tags with their text content
-      const sanitizedText = info.description.en.replace(linkRegex, (match, group) => group);
+      const sanitizedText = info.description.en.replace(
+        linkRegex,
+        (match, group) => group,
+      );
 
       setState({
         ...state,
@@ -185,7 +187,6 @@ const MarketChart = (props) => {
     }
   };
 
-
   const about = async () => {
     const marketStatsURL = `https://api.coingecko.com/api/v3/coins/${state.item.id.toLowerCase()}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false`;
 
@@ -216,25 +217,25 @@ const MarketChart = (props) => {
   };
 
   const getNews = async () => {
-    const newsURL = "https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439";
+    const newsURL =
+      'https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439';
 
     try {
       const response = await fetch(newsURL);
 
       const info = await response.json();
 
-      console.log(info["results"], 'news');
+      console.log(info['results'], 'news');
 
-      setNews(info["results"]);
+      setNews(info['results']);
 
-      console.log("NEWS", news, "NEWS");
-
+      console.log('NEWS', news, 'NEWS');
     } catch (error) {
       console.error(error);
     }
   };
 
-  const formatDate = (timestamp) => {
+  const formatDate = timestamp => {
     const date = new Date(timestamp);
 
     // Get hours and minutes
@@ -242,7 +243,9 @@ const MarketChart = (props) => {
     const minutes = date.getMinutes();
 
     // Format hours and minutes
-    const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    const formattedTime = `${String(hours).padStart(2, '0')}:${String(
+      minutes,
+    ).padStart(2, '0')}`;
 
     // Get day, month, and year
     const day = date.getDate();
@@ -269,14 +272,14 @@ const MarketChart = (props) => {
     // console.log(BTC.prices.map(price => toDateTime(Number(price[0]))));
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     getNews();
-  }, [state.section])
+  }, [state.section]);
 
   return (
     <View style={styles.black}>
       <ScrollView>
-        <SafeAreaView style={{ flex: 1 }} >
+        <SafeAreaView style={{ flex: 1 }}>
           <View style={styles.investmentsNav}>
             {/* <View
                   style={{
@@ -356,59 +359,46 @@ const MarketChart = (props) => {
                 // :
                 styles.longshortContainer
               }>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginBottom: '3%' }}>
+                <Icon
+                  name={'arrow-back'}
+                  size={30}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                  onPress={() => navigation.goBack()}
+                  style={{ marginLeft: 30 }}
+                />
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={styles.stockHead}>{state.item?.name}</Text>
+                </View>
+              </View>
+
+
               <View style={styles.coinChart}>
                 <View style={styles.marketInfo}>
                   <View style={styles.stockName}>
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={styles.stockHead}>
-                        {state.item?.name}
-                      </Text>
+
                     </View>
                   </View>
                   <View style={styles.stockPriceContainer}>
-                    <Text style={styles.stockPrice}>
-                      ${state.price}
-                    </Text>
+                    <Text style={styles.stockPrice}>${state.price.toLocaleString()}</Text>
 
-                    {/* <View style={{flexDirection:'row', alignItems:'center', marginHorizontal:20,marginTop: 10}}>
-                          {
-                            this.state.priceChangePercentage > 0
-                            ? <GainSvg />
-                            : <LossSvg />
-                          }
 
-                          <Text
-                              style={{
-                                  fontFamily: 'Satoshi-Bold',
-                                  fontSize: 16,
-                                  color: "#ADFF6C",
-                                  fontWeight: "700",
-                                  marginHorizontal:4
-                              }}>
-                              $465.12 (+3.46%)
-                          </Text>
-
-                          <Text
-                              style={{
-                                  fontFamily: 'Satoshi-Regular',
-                                  fontSize: 16,
-                                  color: "#999999",
-                                  fontWeight: "400",
-                                  marginHorizontal:4
-                              }}>
-                              24h
-                          </Text>
-
-                      </View> */}
                     <View
-                      style={{ flexDirection: 'row', alignItems: 'flex-end', marginLeft: '5%' }}>
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center', // Vertically center
+                        justifyContent: 'center',
+                        marginTop: '1%',
+                      }}>
                       <Icon
                         name={
                           state.priceChangePercentage > 0
-                            ? 'caretup'
-                            : 'caretdown'
+                            ? 'arrow-drop-up'
+                            : 'arrow-drop-down'
                         }
-                        type="antdesign"
+                        type="materialicons"
                         color={
                           state.priceChangePercentage > 0
                             ? '#2FBE6A'
@@ -422,10 +412,11 @@ const MarketChart = (props) => {
                             state.priceChangePercentage > 0
                               ? '#2FBE6A'
                               : '#E14C4C',
-                          fontFamily: `Satoshi-Regular`,
-                          fontSize: 16,
-                          marginLeft: '1%',
-                          alignItems: 'center'
+                          fontFamily: 'Unbounded-ExtraBold',
+                          fontSize: 14,
+
+
+                          textAlign: 'center',
                         }}>
                         {state.priceChangePercentage.toFixed(2)}% (24h)
                       </Text>
@@ -433,7 +424,7 @@ const MarketChart = (props) => {
                   </View>
                 </View>
                 <View style={styles.chartContainer}>
-                  <LineChart
+                  {/* <LineChart
                     bezier
                     data={{
                       datasets: [
@@ -469,7 +460,8 @@ const MarketChart = (props) => {
                       paddingRight: 0,
                       backgroundColor: 'transparent',
                     }}
-                  />
+                  /> */}
+                  <TradingViewChart width={screenWidth} height={300} />
                 </View>
                 <View
                   style={{
@@ -477,6 +469,24 @@ const MarketChart = (props) => {
                     flexDirection: 'row',
                     marginTop: '5%',
                   }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      updateChart('1');
+                    }}
+                    style={
+                      state.chartSelected == '1'
+                        ? styles.goldSelected
+                        : styles.chartComponents
+                    }>
+                    <Text
+                      style={
+                        state.chartSelected == '1'
+                          ? styles.navSelectedText
+                          : styles.chartText
+                      }>
+                      1D
+                    </Text>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
                       updateChart('1');
@@ -510,7 +520,7 @@ const MarketChart = (props) => {
                           ? styles.navSelectedText
                           : styles.chartText
                       }>
-                      2W
+                      1M
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -546,7 +556,7 @@ const MarketChart = (props) => {
                           ? styles.navSelectedText
                           : styles.chartText
                       }>
-                      6M
+                      3M
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -653,7 +663,7 @@ const MarketChart = (props) => {
                     </View>
                   </View>
                 </View> */}
-            { /* <View style={styles.btcUsd}>
+            {/* <View style={styles.btcUsd}>
                   <View style={styles.btc}>
                     <View style={styles.subContents}>
                       <Text style={styles.subBtc}>You Sell</Text>
@@ -871,292 +881,397 @@ const MarketChart = (props) => {
               style={{
                 paddingHorizontal: '5%',
                 marginTop: '8%',
-                width: "100%",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between"
-              }}
-            >
+                width: '100%',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
               <View>
                 <Text
                   style={{
-                    color: "#747474",
-                    fontFamily: 'Satoshi-Bold'
-                  }}
-                >
+                    color: '#747474',
+                    fontFamily: 'Satoshi-Black',
+                    fontSize: 16,
+                  }}>
                   Amount owned
                 </Text>
                 <Text
                   style={{
                     color: '#F0F0F0',
-                    fontSize: 28,
-                    fontFamily: `Satoshi-Bold`,
-                    marginTop: '1%'
-                  }}
-                >
+                    fontSize: 24,
+                    fontFamily: `Unbounded-Bold`,
+                    marginTop: '1%',
+                  }}>
                   $0.00
                 </Text>
                 <Text
                   style={{
-                    color: "#8C63BF",
-                    fontWeight: "bold",
-                    fontFamily: 'Satoshi-Bold',
-                    textTransform: 'uppercase'
-                  }}
-                >
-                 0 {state.item.symbol}
+                    color: '#BC88FF',
+                    fontFamily: 'Unbounded-ExtraBold',
+                    textTransform: 'uppercase',
+                    fontSize: 14,
+                  }}>
+                  0 {state.item.symbol}
                 </Text>
               </View>
 
             </TouchableOpacity>
-
             <View
               style={{
                 height: 50,
                 marginHorizontal: '5%',
-                marginTop: '8%',
                 justifyContent: 'space-evenly',
                 flexDirection: 'row',
                 borderRadius: 6,
-              }}
-            >
+                marginTop: '13%',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              }}>
               <TouchableOpacity
                 style={{
                   flexDirection: 'row',
                   height: '100%',
                   width: '100%',
                   borderRadius: 6,
+                  backgroundColor: 'rgba(0, 0, 0, 0.2)'
                 }}
                 onPress={() => {
-                  navigation.navigate('TradePage',{state:state});
-                  //                             <TradePage navigation={props.navigation} />
+                  navigation.navigate('TradePage', { state: state });
+                  <TradePage navigation={props.navigation} />
                 }}>
-                <LinearGradient useAngle={true} angle={150} colors={['#5038E1', '#B961FF']} style={{ width: "100%", borderRadius: 6, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ color: '#fff', fontSize: 14, fontFamily: 'Satoshi-Bold', fontWeight: "bold" }}>
-                    Trade
+                <LinearGradient
+                  useAngle={true}
+                  angle={150}
+                  colors={['#BC88FF', '#BC88FF']}
+                  style={{
+                    width: '100%',
+                    borderRadius: 100,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#000',
+                      fontSize: 14,
+                      fontFamily: 'Unbounded-ExtraBold',
+                    }}>
+                    TRADE {state.item.symbol.toUpperCase()}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
-
-            <View style={{ flexDirection: 'row', height: 50, borderRadius: 10, backgroundColor: '#1C1B20', alignItems: 'center', justifyContent: 'space-between', padding: 4, marginVertical: 24, marginHorizontal: "5%" }}>
-              <TouchableOpacity style={state.section === 'news' ? { padding: 9, paddingHorizontal: 30, fontWeight: 'bold', backgroundColor: '#5B5A60', borderRadius: 10, color: '#FAF9FC', fontSize: 0.85, cursor: 'pointer' } : { color: '#ADADAF', fontWeight: 'bold', fontSize: 0.85, padding: 12, paddingHorizontal: 30, cursor: 'pointer' }} onPress={() => setState({ ...state, section: 'news' })} >
-                <Text style={{ color: "#FFFFFF" }}>News</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                height: 50,
+                borderRadius: 10,
+                backgroundColor: '#1C1B20',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: 4,
+                marginVertical: 24,
+                marginHorizontal: '5%',
+              }}>
+              <TouchableOpacity
+                style={
+                  state.section === 'news'
+                    ? {
+                      padding: 9,
+                      paddingHorizontal: 30,
+                      fontWeight: 'bold',
+                      backgroundColor: '#5B5A60',
+                      borderRadius: 10,
+                      color: '#FAF9FC',
+                      fontSize: 0.85,
+                      cursor: 'pointer',
+                    }
+                    : {
+                      color: '#ADADAF',
+                      fontWeight: 'bold',
+                      fontSize: 0.85,
+                      padding: 12,
+                      paddingHorizontal: 30,
+                      cursor: 'pointer',
+                    }
+                }
+                onPress={() => setState({ ...state, section: 'news' })}>
+                <Text style={{ color: '#FFFFFF' }}>News</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={state.section === 'degenai' ? { padding: 9, paddingHorizontal: 30, fontWeight: 'bold', backgroundColor: '#5B5A60', borderRadius: 10, color: '#FAF9FC', fontSize: 0.85, cursor: 'pointer' } : { color: '#ADADAF', fontWeight: 'bold', fontSize: 0.85, padding: 12, paddingHorizontal: 30, cursor: 'pointer' }} onPress={() => setState({ ...state, section: 'degenai' })}>
-                <Text style={{ color: "#FFFFFF" }}>Degen AI</Text>
+              <TouchableOpacity
+                style={
+                  state.section === 'degenai'
+                    ? {
+                      padding: 9,
+                      paddingHorizontal: 30,
+                      fontWeight: 'bold',
+                      backgroundColor: '#5B5A60',
+                      borderRadius: 10,
+                      color: '#FAF9FC',
+                      fontSize: 0.85,
+                      cursor: 'pointer',
+                    }
+                    : {
+                      color: '#ADADAF',
+                      fontWeight: 'bold',
+                      fontSize: 0.85,
+                      padding: 12,
+                      paddingHorizontal: 30,
+                      cursor: 'pointer',
+                    }
+                }
+                onPress={() => setState({ ...state, section: 'degenai' })}>
+                <Text style={{ color: '#FFFFFF' }}>Degen AI</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={state.section === 'about' ? { padding: 9, paddingHorizontal: 30, fontWeight: 'bold', backgroundColor: '#5B5A60', borderRadius: 10, color: '#FAF9FC', fontSize: 0.85, cursor: 'pointer' } : { color: '#ADADAF', fontWeight: 'bold', fontSize: 0.85, padding: 12, paddingHorizontal: 30, cursor: 'pointer' }} onPress={() => setState({ ...state, section: 'about' })}>
-                <Text style={{ color: "#FFFFFF" }}>About</Text>
+              <TouchableOpacity
+                style={
+                  state.section === 'about'
+                    ? {
+                      padding: 9,
+                      paddingHorizontal: 30,
+                      fontWeight: 'bold',
+                      backgroundColor: '#5B5A60',
+                      borderRadius: 10,
+                      color: '#FAF9FC',
+                      fontSize: 0.85,
+                      cursor: 'pointer',
+                    }
+                    : {
+                      color: '#ADADAF',
+                      fontWeight: 'bold',
+                      fontSize: 0.85,
+                      padding: 12,
+                      paddingHorizontal: 30,
+                      cursor: 'pointer',
+                    }
+                }
+                onPress={() => setState({ ...state, section: 'about' })}>
+                <Text style={{ color: '#FFFFFF' }}>About</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={{ paddingHorizontal: "5%" }}>
-              {
-                state.section === 'news' ?
-                  news.map((data, index) => (
-                    <View key={index} style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
-                      <TouchableOpacity onPress={() => Linking.openURL(data.url)}>
-                        <View style={{ flexDirection: 'row', gap: 5, color: 'gray', alignItems: 'center' }}>
-                          {/* Avatars - Uncomment and replace with your avatar components */}
-                          {/* <View style={{ flexDirection: 'row', gap: 5 }}>
+            <View style={{ paddingHorizontal: '5%' }}>
+              {state.section === 'news' ? (
+                news.map((data, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      marginBottom: 50,
+                      alignItems: 'flex-start',
+                      gap: 10,
+                    }}>
+                    <TouchableOpacity onPress={() => Linking.openURL(data.url)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          gap: 5,
+                          color: 'gray',
+                          alignItems: 'center',
+                        }}>
+                        {/* Avatars - Uncomment and replace with your avatar components */}
+                        {/* <View style={{ flexDirection: 'row', gap: 5 }}>
                               <Image source={{ uri: 'https://randomuser.me/api/portraits/women/65.jpg' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                               <Image source={{ uri: 'https://randomuser.me/api/portraits/men/25.jpg' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                               <Image source={{ uri: 'https://randomuser.me/api/portraits/women/25.jpg' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                               <Image source={{ uri: 'https://randomuser.me/api/portraits/men/55.jpg' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                               <Image source={{ uri: 'https://via.placeholder.com/300/09f/fff.png' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                           </View> */}
-                          <Text style={{ fontSize: 13, color: 'gray' }}>{formatDate(data.published_at).time}</Text>
-                          <Text style={{ marginHorizontal: 5, color: 'gray' }}>·</Text>
-                          <Text style={{ fontSize: 13, color: 'gray' }}>{formatDate(data.published_at).date}</Text>
-                          <Text style={{ marginHorizontal: 5, color: 'gray' }}>·</Text>
-                          <Text style={{ fontSize: 13, color: 'gray' }}>{capitalizeFirstLetter(data.source.title)}</Text>
-                        </View>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify' }}>
-                          {data.title}
+                        <Text style={{ fontSize: 13, color: 'gray' }}>
+                          {formatDate(data.published_at).time}
                         </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))
-                  :
-                  state.section === 'about' ?
+                        <Text style={{ marginHorizontal: 5, color: 'gray' }}>
+                          ·
+                        </Text>
+                        <Text style={{ fontSize: 13, color: 'gray' }}>
+                          {formatDate(data.published_at).date}
+                        </Text>
+                        <Text style={{ marginHorizontal: 5, color: 'gray' }}>
+                          ·
+                        </Text>
+                        <Text style={{ fontSize: 13, color: 'gray' }}>
+                          {capitalizeFirstLetter(data.source.title)}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 24,
+                          color: '#D1D2D9',
+                          fontFamily: 'Satoshi-Bold',
+                          textAlign: 'justify',
+                        }}>
+                        {data.title}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ))
+              ) : state.section === 'about' ? (
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'column',
+                    // paddingHorizontal: 20,
+                    // paddingVertical: 12,
+                  }}>
+                  <Text
+                    style={{
+                      color: '#ffffff',
+                      fontSize: 24,
+                      fontFamily: 'Satoshi-Bold',
+                      letterSpacing: 0.1,
+                    }}>
+                    About
+                  </Text>
+                  {/* ReadMoreLess component with inline styling */}
+                  <ReadMoreLess text={state.about} maxChars={300} />
+                  <View
+                    style={{
+                      width: '100%',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginTop: 15,
+                    }}></View>
+                  <View
+                    style={{
+                      height: 1,
+                      width: '100%',
+                      backgroundColor: '#282A2F',
+                      marginVertical: 12,
+                    }}></View>
+                  <Text
+                    style={{
+                      color: '#ffffff',
+                      fontSize: 24,
+                      fontFamily: 'Satoshi-Bold',
+                      letterSpacing: 0.1,
+                    }}>
+                    Market Stats
+                  </Text>
+                  <View style={{ width: '100%', flexDirection: 'column' }}>
+                    {/* Market Cap */}
                     <View
                       style={{
                         width: '100%',
-                        flexDirection: 'column',
-                        // paddingHorizontal: 20,
-                        // paddingVertical: 12,
-                      }}
-                    >
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginTop: 10,
+                      }}>
                       <Text
                         style={{
-                          color: '#ffffff',
-                          fontSize: 16,
-                          fontWeight: 'bold',
-                          letterSpacing: 0.1,
-                        }}
-                      >
-                        About
+                          color: '#82828f',
+                          textAlign: 'center',
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: '#82828f',
+                          fontSize: 14,
+                        }}>
+                        Market Cap
                       </Text>
-                      {/* ReadMoreLess component with inline styling */}
-                      <ReadMoreLess
-                        text={state.about}
-                        maxChars={300}
-                      />
-                      <View
-                        style={{
-                          width: '100%',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          marginTop: 15,
-                        }}
-                      >
-
-                      </View>
-                      <View
-                        style={{
-                          height: 1,
-                          width: '100%',
-                          backgroundColor: '#282A2F',
-                          marginVertical: 12,
-                        }}
-                      ></View>
                       <Text
                         style={{
-                          color: '#ffffff',
-                          fontSize: 16,
                           fontWeight: 'bold',
-                          letterSpacing: 0.1,
-                        }}
-                      >
-                        Market Stats
+                          textAlign: 'center',
+                          fontSize: 13,
+                          color: 'white',
+                        }}>
+                        $ {state.marketCap.toLocaleString()}
                       </Text>
-                      <View style={{ width: '100%', flexDirection: 'column' }}>
-                        {/* Market Cap */}
-                        <View
-                          style={{
-                            width: '100%',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            marginTop: 10,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: '#82828f',
-                              textAlign: 'center',
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: '#82828f',
-                              fontSize: 14,
-                            }}
-                          >
-                            Market Cap
-                          </Text>
-                          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 13, color: "white" }}>
-                            $ {state.marketCap}
-                          </Text>
-                        </View>
+                    </View>
 
-                        {/* All Time High */}
-                        <View
-                          style={{
-                            width: '100%',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: '#82828f',
-                              textAlign: 'center',
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: '#82828f',
-                              fontSize: 14,
-                            }}
-                          >
-                            All Time High
-                          </Text>
-                          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 13, color: "white" }}>
-                            $ {state.allTimeHigh}
-                          </Text>
-                        </View>
+                    {/* All Time High */}
+                    <View
+                      style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text
+                        style={{
+                          color: '#82828f',
+                          textAlign: 'center',
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: '#82828f',
+                          fontSize: 14,
+                        }}>
+                        All Time High
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: 13,
+                          color: 'white',
+                        }}>
+                        $ {state.allTimeHigh.toLocaleString()}
+                      </Text>
+                    </View>
 
-                        {/* All Time Low */}
-                        <View
-                          style={{
-                            width: '100%',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: '#82828f',
-                              textAlign: 'center',
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: '#82828f',
-                              fontSize: 14,
-                            }}
-                          >
-                            All Time Low
-                          </Text>
-                          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 13, color: "white" }}>
-                            $ {state.allTimeLow}
-                          </Text>
-                        </View>
+                    {/* All Time Low */}
+                    <View
+                      style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text
+                        style={{
+                          color: '#82828f',
+                          textAlign: 'center',
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: '#82828f',
+                          fontSize: 14,
+                        }}>
+                        All Time Low
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: 13,
+                          color: 'white',
+                        }}>
+                        $ {state.allTimeLow}
+                      </Text>
+                    </View>
 
-                        {/* Fully Diluted Value */}
-                        <View
-                          style={{
-                            width: '100%',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: '#82828f',
-                              textAlign: 'center',
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: '#82828f',
-                              fontSize: 14,
-                            }}
-                          >
-                            Fully Diluted Value
-                          </Text>
-                          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 13, color: "white" }}>
-                            $ {state.fully_diluted_valuation}
-                          </Text>
-                        </View>
+                    {/* Fully Diluted Value */}
+                    <View
+                      style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text
+                        style={{
+                          color: '#82828f',
+                          textAlign: 'center',
+                          borderBottomWidth: 0.5,
+                          borderBottomColor: '#82828f',
+                          fontSize: 14,
+                        }}>
+                        Fully Diluted Value
+                      </Text>
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: 13,
+                          color: 'white',
+                        }}>
+                        $ {state.fully_diluted_valuation.toLocaleString()}
+                      </Text>
+                    </View>
 
-                        {/* Total Volume Locked */}
-                        <View
-                          style={{
-                            width: '100%',
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            marginBottom: 5,
-                          }}
-                        >
-                          <Text
-                            style={{
-                              color: '#82828f',
-                              textAlign: 'center',
-                              borderBottomWidth: 0.5,
-                              borderBottomColor: '#82828f',
-                              fontSize: 14,
-                            }}
-                          >
-                            Total Volume Locked
-                          </Text>
-                          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 13, color: "white" }}>
-                            $ {state.totalVolume}
-                          </Text>
-                        </View>
-                      </View>
-                      {/* <View
+                    {/* Total Volume Locked */}
+                    <View
+                      style={{
+                        width: '100%',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        marginBottom: 5,
+                      }}>
+                    </View>
+                  </View>
+                  {/* <View
                         style={{
                           height: 1,
                           width: '100%',
@@ -1197,30 +1312,42 @@ const MarketChart = (props) => {
                       >
                         https://blog.bitcoin.com/
                       </Text> */}
-                    </View>
-
-                    :
-                    <View
+                </View>
+              ) : (
+                <View
+                  style={{
+                    height: 500,
+                    width: '100%',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    // paddingHorizontal: 20,
+                    // paddingVertical: 12,
+                  }}>
+                  <View>
+                    <Image
+                      source={ImageAssets.algoImg}
+                      style={{ height: 200, width: 200 }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      marginBottom: 50,
+                      alignItems: 'flex-start',
+                      gap: 10,
+                    }}>
+                    <Text
                       style={{
-                        height: 500,
-                        width: '100%',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        // paddingHorizontal: 20,
-                        // paddingVertical: 12,
-                      }}
-                    >
-                      <View>
-                        <Image source={ImageAssets.algoImg} style={{height: 200, width: 200}} />
-                      </View>
-                      <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify' }}>
-                          Coming Soon
-                        </Text>
-                      </View>
-                    </View>
-              }
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        color: '#D1D2D9',
+                        textAlign: 'justify',
+                      }}>
+                      Coming Soon
+                    </Text>
+                  </View>
+                </View>
+              )}
             </View>
 
             {/*
@@ -1260,7 +1387,7 @@ const MarketChart = (props) => {
   //       console.log(err);
   //     }
   //   }
-}
+};
 
 const ReadMoreLess = ({ text, maxChars }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -1268,10 +1395,18 @@ const ReadMoreLess = ({ text, maxChars }) => {
 
   return (
     <View>
-      <Text style={{ margin: 0, marginTop: 10, marginBottom: 8, color: "white" }}>{displayText}</Text>
+      <Text style={{ margin: 0, marginTop: 10, marginBottom: 8, color: 'white' }}>
+        {displayText}
+      </Text>
       {text.length > maxChars && (
         <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-          <Text style={{ color: '#4F9CD9', fontWeight: 'bold', fontSize: 12, cursor: 'pointer' }}>
+          <Text
+            style={{
+              color: '#4F9CD9',
+              fontWeight: 'bold',
+              fontSize: 12,
+              cursor: 'pointer',
+            }}>
             {isExpanded ? 'Read Less' : 'Read More'}
           </Text>
         </TouchableOpacity>

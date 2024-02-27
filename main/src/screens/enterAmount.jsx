@@ -9,7 +9,7 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import * as particleAuth from 'react-native-particle-auth';
+// import * as particleAuth from 'react-native-particle-auth';
 import {enableScreens} from 'react-native-screens';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';

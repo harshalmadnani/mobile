@@ -1,15 +1,18 @@
-import {
-  ChainInfo,
-  LoginType,
-  SupportAuthType,
-  Env,
-} from 'react-native-particle-auth';
-import * as particleAuth from 'react-native-particle-auth';
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-undef */
+/* eslint-disable prettier/prettier */
+// import {
+//   ChainInfo,
+//   LoginType,
+//   SupportAuthType,
+//   Env,
+// } from 'react-native-particle-auth';
+// import * as particleAuth from 'react-native-particle-auth';
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Web3 from 'web3';
-import {ParticleProvider} from 'react-native-particle-auth';
+// import {ParticleProvider} from 'react-native-particle-auth';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
 import {BICONOMY_API_KEY} from '@env';
 
@@ -20,18 +23,21 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import Login from './screens/loggingIn/login';
+import {LoginType} from '@particle-network/rn-auth';
 
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
 
 createProvider = () => {
-  const provider = new ParticleProvider({projectId, clientKey});
+  // const provider = new ParticleProvider({projectId, clientKey});
+  const provider = true;
   const web3 = new Web3(provider);
   return web3;
 };
 
 getOnlyProvider = () => {
-  const provider = new ParticleProvider({projectId, clientKey});
+  // const provider = new ParticleProvider({projectId, clientKey});
+  const provider = true;
   return provider;
 };
 
@@ -61,15 +67,15 @@ web3_getAccounts = async () => {
 };
 
 init = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
-  const env = Env.Production;
-  particleAuth.init(chainInfo, env);
+  // const chainInfo = ChainInfo.PolygonMainnet;
+  // const env = Env.Production;
+  // particleAuth.init(chainInfo, env);
 };
 
 setChainInfo = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
-  const result = await particleAuth.setChainInfo(chainInfo);
-  console.log(result);
+  // const chainInfo = ChainInfo.PolygonMainnet;
+  // const result = await particleAuth.setChainInfo(chainInfo);
+  // console.log(result);
 };
 
 login = async () => {
@@ -78,6 +84,7 @@ login = async () => {
   const type = LoginType.Email;
   const supportAuthType = [LoginType.Phone];
   const result = await particleAuth.login(type, '', supportAuthType, false);
+  // const result = true;
   const account = result.data;
 
   if (result.status) {
@@ -161,64 +168,60 @@ login = async () => {
 };
 
 logout = async navigation => {
-  const result = await particleAuth.logout();
+  // const result = await particleAuth.logout();
   console.log('Logged out successfully');
 };
 
 getUserInfo = async () => {
-  var userInfo = await particleAuth.getUserInfo();
-  userInfo = JSON.parse(userInfo);
+  // var userInfo = await particleAuth.getUserInfo();
+  const userInfo = JSON.parse(userInfo);
   console.log(userInfo);
 };
 
 signAndSendTransaction = async (receiver, amount) => {
-  console.log(receiver, amount);
-  const sender = await particleAuth.getAddress();
-  const chainInfo = await particleAuth.getChainInfo();
-  let transaction = '';
-  if (chainInfo.chain_name.toLowerCase() == 'solana') {
-    transaction = await Helper.getSolanaTransaction(sender);
-  } else {
-    transaction = await Helper.getEvmTokenTransaction(sender, receiver, amount);
-  }
-  console.log(transaction);
-  const result = await particleAuth.signAndSendTransaction(transaction);
-  if (result.status) {
-    const signature = result.data;
-    console.log('TX Hash:', signature);
-    return signature;
-  } else {
-    const error = result.data;
-    console.log(error);
-    return false;
-  }
+  // console.log(receiver, amount);
+  // const sender = await particleAuth.getAddress();
+  // const chainInfo = await particleAuth.getChainInfo();
+  // let transaction = '';
+  // if (chainInfo.chain_name.toLowerCase() == 'solana') {
+  //   transaction = await Helper.getSolanaTransaction(sender);
+  // } else {
+  //   transaction = await Helper.getEvmTokenTransaction(sender, receiver, amount);
+  // }
+  // console.log(transaction);
+  // const result = await particleAuth.signAndSendTransaction(transaction);
+  // if (result.status) {
+  //   const signature = result.data;
+  //   console.log('TX Hash:', signature);
+  //   return signature;
+  // } else {
+  //   const error = result.data;
+  //   console.log(error);
+  //   return false;
+  // }
 };
 
 openAccountAndSecurity = async () => {
-  particleAuth.openAccountAndSecurity();
+  // particleAuth.openAccountAndSecurity();
 };
 
 openWebWallet = async () => {
-  particleAuth.openWebWallet();
+  // particleAuth.openWebWallet();
 };
 
 onClickLogin = async navigation => {
   global.mainnet = true;
   await this.init();
-
   navigation.push('Loading');
-
   await this.setChainInfo();
   await this.login();
   const result = await particleAuth.isLogin();
-
   console.log('Logged In:', result);
   if (result) {
     const address = global.loginAccount.publicAddress;
     const email = global.loginAccount.phoneEmail;
     const uuid = global.loginAccount.uiud;
     const scwAddress = global.loginAccount.scw;
-
     await fetch(
       `https://user.api.xade.finance/polygon?address=${scwAddress.toLowerCase()}`,
       {
