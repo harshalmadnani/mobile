@@ -1,4 +1,4 @@
-import {Platform, Dimensions, StyleSheet} from 'react-native';
+import { Platform, Dimensions, StyleSheet } from 'react-native';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -263,8 +263,9 @@ const styles = StyleSheet.create({
 
   stockHead: {
     color: '#F0F0F0',
-    fontFamily: 'Satoshi-Regular',
+    fontFamily: 'Satoshi-Bold',
     fontSize: 16,
+    right: 30,
   },
 
   stockPriceContainer: {
@@ -275,9 +276,9 @@ const styles = StyleSheet.create({
 
   stockPrice: {
     color: '#F0F0F0',
-    fontSize: 32,
-    fontFamily: 'Satoshi-Bold',
-    marginLeft: '5%',
+    fontSize: 28,
+    fontFamily: 'Unbounded-Bold',
+    textAlign: 'center',
   },
 
   coinChart: {
@@ -335,13 +336,14 @@ const styles = StyleSheet.create({
   },
 
   highText: {
-    fontFamily: 'Satoshi-Regular',
+    fontFamily: 'Unbounded-Bold',
     color: '#2FBE6A',
     fontSize: 25,
+
   },
 
   lowText: {
-    fontFamily: 'Satoshi-Regular',
+    fontFamily: 'Unbounded-Bold',
     color: '#E14C4C',
     fontSize: 25,
   },

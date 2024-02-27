@@ -370,7 +370,6 @@ function MarketInfoScreen({route, navigation}) {
       <ScrollView style={{height: '100%'}}>
         <MarketInfo navigation={navigation} item={route.params.item} />
       </ScrollView>
-      <BottomNavbar navigation={navigation} selected="Investments" />
     </SafeAreaView>
   );
 }

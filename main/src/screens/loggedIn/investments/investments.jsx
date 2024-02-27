@@ -52,7 +52,7 @@ const Investments = ({ navigation }) => {
       try {
         const data = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=150&page=1&sparkline=false&locale=en', {
           method: 'GET',
-          
+
           // body: json,
           headers: {
             'Content-Type': 'application/json',
@@ -62,24 +62,24 @@ const Investments = ({ navigation }) => {
         let json = await data.json()
         console.log(json);
         setCryptoData(json.filter(item => {
-          if (["btc","eth","bnb",'sol','xrp','ada','avax','doge','trx','dot','link','ton','matic','shib','ltc','bch','uni','atom','etc','op','near','fil','ldo','imx','arb','mkr','rndr','grt','egld','aave','snx','sand','axs','ftm','beam','mana','xtz','eos','rose','cake','crv','uma','gmt','comp','1inch','gmx'].includes(item.symbol)) 
-          return true;
+          if (["btc", "eth", "bnb", 'sol', 'xrp', 'ada', 'avax', 'doge', 'trx', 'dot', 'link', 'ton', 'matic', 'shib', 'ltc', 'bch', 'uni', 'atom', 'etc', 'op', 'near', 'fil', 'ldo', 'imx', 'arb', 'mkr', 'rndr', 'grt', 'egld', 'aave', 'snx', 'sand', 'axs', 'ftm', 'beam', 'mana', 'xtz', 'eos', 'rose', 'cake', 'crv', 'uma', 'gmt', 'comp', '1inch', 'gmx'].includes(item.symbol))
+            return true;
           else
-          return false;
-                  }).map(item => {
-if(['btc', 'eth', 'matic'].includes(item.symbol))
+            return false;
+        }).map(item => {
+          if (['btc', 'eth', 'matic'].includes(item.symbol))
             return {
-                ...item,
-                tokenAddress: idToChain[item.symbol].tokenAddress,
-                chain: idToChain[item.symbol].chain
+              ...item,
+              tokenAddress: idToChain[item.symbol].tokenAddress,
+              chain: idToChain[item.symbol].chain
             };
-else
-return item
+          else
+            return item
         })
 
         )
 
-      }catch (e) {
+      } catch (e) {
         console.log(e);
       }
       setIsLoading(false);
@@ -125,7 +125,8 @@ return item
           </Text> */}
 
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 4, marginTop: 24, paddingBottom: -8, paddingHorizontal: "4%", borderBottomWidth: 2, borderBottomColor: "#1C1C1C",
+        <View style={{
+          flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 4, marginTop: 15, paddingBottom: -8, paddingHorizontal: "4%", borderBottomWidth: 2, borderBottomColor: "#1C1C1C",
           // paddingHorizontal: -16
         }}>
           <TouchableOpacity
@@ -140,7 +141,7 @@ return item
           >
             <Text style={{
               fontFamily: `Satoshi-Bold`,
-              fontSize: 14,
+              fontSize: 12,
               color: section === 'crypto' ? '#ffffff' : '#717171',
               fontWeight: "500",
             }}>
@@ -158,7 +159,7 @@ return item
           >
             <Text style={{
               fontFamily: 'Satoshi-Bold',
-              fontSize: 14,
+              fontSize: 12,
               color: section === 'stocks' ? '#ffffff' : '#717171',
               fontWeight: "500",
             }}>
@@ -176,7 +177,7 @@ return item
           >
             <Text style={{
               fontFamily: 'Satoshi-Bold',
-              fontSize: 14,
+              fontSize: 12,
               color: section === 'commodities' ? '#ffffff' : '#717171',
               fontWeight: "500",
             }}>
@@ -195,7 +196,7 @@ return item
           >
             <Text style={{
               fontFamily: 'Satoshi-Bold',
-              fontSize: 14,
+              fontSize: 12,
               color: section === 'forex' ? '#ffffff' : '#717171',
               fontWeight: "500",
             }}>
@@ -212,8 +213,8 @@ return item
         </View>
       }
 
-      {!isLoading && 
-      section === 'crypto' ?
+      {!isLoading &&
+        section === 'crypto' ?
         <ScrollView
           scrollEnabled
           style={{
@@ -229,69 +230,69 @@ return item
         </ScrollView>
         :
         section === 'forex' ?
-        <View
-          style={{
-            height: height * 0.8,
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            // paddingHorizontal: 20,
-            // paddingVertical: 12,
-          }}
-        >
-          <View>
-            <Image source={ImageAssets.forexImg} style={{ height: 200, width: 200 }} />
+          <View
+            style={{
+              height: height * 0.8,
+              width: '100%',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              // paddingHorizontal: 20,
+              // paddingVertical: 12,
+            }}
+          >
+            <View>
+              <Image source={ImageAssets.forexImg} style={{ height: 200, width: 200 }} />
+            </View>
+            <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
+              <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify', fontFamily: 'Satoshi-Regular' }}>
+                Coming Soon
+              </Text>
+            </View>
           </View>
-          <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
-            <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify', fontFamily: 'Satoshi-Regular' }}>
-              Coming Soon
-            </Text>
-          </View>
-        </View>
-        :
-        section === 'stocks' ?
-        <View
-        style={{
-          height: height * 0.8,
-          width: '100%',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          // paddingHorizontal: 20,
-          // paddingVertical: 12,
-        }}
-      >
-        <View>
-          <Image source={ImageAssets.stocksImg} style={{ height: 200, width: 200 }} />
-        </View>
-        <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify', fontFamily: 'Satoshi-Regular' }}>
-            Coming Soon
-          </Text>
-        </View>
-      </View>
-      :
-      <View
-      style={{
-        height: height * 0.8,
-        width: '100%',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // paddingHorizontal: 20,
-        // paddingVertical: 12,
-      }}
-    >
-      <View>
-        <Image source={ImageAssets.commodotiesImg} style={{ height: 200, width: 200 }} />
-      </View>
-      <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify', fontFamily: 'Satoshi-Regular' }}>
-          Coming Soon
-        </Text>
-      </View>
-    </View>
+          :
+          section === 'stocks' ?
+            <View
+              style={{
+                height: height * 0.8,
+                width: '100%',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                // paddingHorizontal: 20,
+                // paddingVertical: 12,
+              }}
+            >
+              <View>
+                <Image source={ImageAssets.stocksImg} style={{ height: 200, width: 200 }} />
+              </View>
+              <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify', fontFamily: 'Satoshi-Regular' }}>
+                  Coming Soon
+                </Text>
+              </View>
+            </View>
+            :
+            <View
+              style={{
+                height: height * 0.8,
+                width: '100%',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                // paddingHorizontal: 20,
+                // paddingVertical: 12,
+              }}
+            >
+              <View>
+                <Image source={ImageAssets.commodotiesImg} style={{ height: 200, width: 200 }} />
+              </View>
+              <View style={{ marginBottom: 50, alignItems: 'flex-start', gap: 10 }}>
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify', fontFamily: 'Satoshi-Regular' }}>
+                  Coming Soon
+                </Text>
+              </View>
+            </View>
       }
 
 

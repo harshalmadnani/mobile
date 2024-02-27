@@ -8,6 +8,7 @@ import {
   Dimensions,
   StyleSheet,
   Linking,
+  Animated,
 } from 'react-native';
 import {Text, Icon, Image} from '@rneui/themed';
 import {Slider} from 'react-native-elements';
@@ -358,59 +359,56 @@ const MarketChart = props => {
                 // :
                 styles.longshortContainer
               }>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  width: '100%',
+                  marginBottom: '3%',
+                }}>
+                <Icon
+                  name={'arrow-back'}
+                  size={30}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                  onPress={() => navigation.goBack()}
+                  style={{marginLeft: 30}}
+                />
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text style={styles.stockHead}>{state.item?.name}</Text>
+                </View>
+              </View>
+
               <View style={styles.coinChart}>
                 <View style={styles.marketInfo}>
                   <View style={styles.stockName}>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={styles.stockHead}>{state.item?.name}</Text>
-                    </View>
+                    <View style={{flexDirection: 'row'}}></View>
                   </View>
                   <View style={styles.stockPriceContainer}>
-                    <Text style={styles.stockPrice}>${state.price}</Text>
+                    <Text style={styles.stockPrice}>
+                      ${state.price.toLocaleString()}
+                    </Text>
 
-                    {/* <View style={{flexDirection:'row', alignItems:'center', marginHorizontal:20,marginTop: 10}}>
-                          {
-                            this.state.priceChangePercentage > 0
-                            ? <GainSvg />
-                            : <LossSvg />
-                          }
-
-                          <Text
-                              style={{
-                                  fontFamily: 'Satoshi-Bold',
-                                  fontSize: 16,
-                                  color: "#ADFF6C",
-                                  fontWeight: "700",
-                                  marginHorizontal:4
-                              }}>
-                              $465.12 (+3.46%)
-                          </Text>
-
-                          <Text
-                              style={{
-                                  fontFamily: 'Satoshi-Regular',
-                                  fontSize: 16,
-                                  color: "#999999",
-                                  fontWeight: "400",
-                                  marginHorizontal:4
-                              }}>
-                              24h
-                          </Text>
-
-                      </View> */}
                     <View
                       style={{
                         flexDirection: 'row',
-                        alignItems: 'flex-end',
-                        marginLeft: '5%',
+                        alignItems: 'center', // Vertically center
+                        justifyContent: 'center',
+                        marginTop: '1%',
                       }}>
                       <Icon
                         name={
                           state.priceChangePercentage > 0
-                            ? 'caretup'
-                            : 'caretdown'
+                            ? 'arrow-drop-up'
+                            : 'arrow-drop-down'
                         }
-                        type="antdesign"
+                        type="materialicons"
                         color={
                           state.priceChangePercentage > 0
                             ? '#2FBE6A'
@@ -424,10 +422,10 @@ const MarketChart = props => {
                             state.priceChangePercentage > 0
                               ? '#2FBE6A'
                               : '#E14C4C',
-                          fontFamily: `Satoshi-Regular`,
-                          fontSize: 16,
-                          marginLeft: '1%',
-                          alignItems: 'center',
+                          fontFamily: 'Unbounded-ExtraBold',
+                          fontSize: 14,
+
+                          textAlign: 'center',
                         }}>
                         {state.priceChangePercentage.toFixed(2)}% (24h)
                       </Text>
@@ -472,7 +470,7 @@ const MarketChart = props => {
                       backgroundColor: 'transparent',
                     }}
                   /> */}
-                  <TradingViewChart width={screenWidth} height={200} />
+                  <TradingViewChart width={screenWidth} height={300} />
                 </View>
                 <View
                   style={{
@@ -901,39 +899,40 @@ const MarketChart = props => {
                 <Text
                   style={{
                     color: '#747474',
-                    fontFamily: 'Satoshi-Bold',
+                    fontFamily: 'Satoshi-Black',
+                    fontSize: 16,
                   }}>
                   Amount owned
                 </Text>
                 <Text
                   style={{
                     color: '#F0F0F0',
-                    fontSize: 28,
-                    fontFamily: `Satoshi-Bold`,
+                    fontSize: 24,
+                    fontFamily: `Unbounded-Bold`,
                     marginTop: '1%',
                   }}>
                   $0.00
                 </Text>
                 <Text
                   style={{
-                    color: '#8C63BF',
-                    fontWeight: 'bold',
-                    fontFamily: 'Satoshi-Bold',
+                    color: '#BC88FF',
+                    fontFamily: 'Unbounded-ExtraBold',
                     textTransform: 'uppercase',
+                    fontSize: 14,
                   }}>
                   0 {state.item.symbol}
                 </Text>
               </View>
             </TouchableOpacity>
-
             <View
               style={{
                 height: 50,
                 marginHorizontal: '5%',
-                marginTop: '8%',
                 justifyContent: 'space-evenly',
                 flexDirection: 'row',
                 borderRadius: 6,
+                marginTop: '13%',
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
               }}>
               <TouchableOpacity
                 style={{
@@ -941,35 +940,34 @@ const MarketChart = props => {
                   height: '100%',
                   width: '100%',
                   borderRadius: 6,
+                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
                 }}
                 onPress={() => {
                   navigation.navigate('TradePage', {state: state});
-                  //                             <TradePage navigation={props.navigation} />
+                  <TradePage navigation={props.navigation} />;
                 }}>
                 <LinearGradient
                   useAngle={true}
                   angle={150}
-                  colors={['#5038E1', '#B961FF']}
+                  colors={['#BC88FF', '#BC88FF']}
                   style={{
                     width: '100%',
-                    borderRadius: 6,
+                    borderRadius: 100,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
                   <Text
                     style={{
-                      color: '#fff',
+                      color: '#000',
                       fontSize: 14,
-                      fontFamily: 'Satoshi-Bold',
-                      fontWeight: 'bold',
+                      fontFamily: 'Unbounded-ExtraBold',
                     }}>
-                    Trade
+                    TRADE {state.item.symbol.toUpperCase()}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
-
             <View
               style={{
                 flexDirection: 'row',
@@ -1106,8 +1104,8 @@ const MarketChart = props => {
                       <Text
                         style={{
                           fontSize: 24,
-                          fontWeight: 'bold',
                           color: '#D1D2D9',
+                          fontFamily: 'Satoshi-Bold',
                           textAlign: 'justify',
                         }}>
                         {data.title}
@@ -1126,8 +1124,8 @@ const MarketChart = props => {
                   <Text
                     style={{
                       color: '#ffffff',
-                      fontSize: 16,
-                      fontWeight: 'bold',
+                      fontSize: 24,
+                      fontFamily: 'Satoshi-Bold',
                       letterSpacing: 0.1,
                     }}>
                     About
@@ -1151,8 +1149,8 @@ const MarketChart = props => {
                   <Text
                     style={{
                       color: '#ffffff',
-                      fontSize: 16,
-                      fontWeight: 'bold',
+                      fontSize: 24,
+                      fontFamily: 'Satoshi-Bold',
                       letterSpacing: 0.1,
                     }}>
                     Market Stats
@@ -1183,7 +1181,7 @@ const MarketChart = props => {
                           fontSize: 13,
                           color: 'white',
                         }}>
-                        $ {state.marketCap}
+                        $ {state.marketCap.toLocaleString()}
                       </Text>
                     </View>
 
@@ -1211,7 +1209,7 @@ const MarketChart = props => {
                           fontSize: 13,
                           color: 'white',
                         }}>
-                        $ {state.allTimeHigh}
+                        $ {state.allTimeHigh.toLocaleString()}
                       </Text>
                     </View>
 
@@ -1267,7 +1265,7 @@ const MarketChart = props => {
                           fontSize: 13,
                           color: 'white',
                         }}>
-                        $ {state.fully_diluted_valuation}
+                        $ {state.fully_diluted_valuation.toLocaleString()}
                       </Text>
                     </View>
 
@@ -1278,27 +1276,7 @@ const MarketChart = props => {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         marginBottom: 5,
-                      }}>
-                      <Text
-                        style={{
-                          color: '#82828f',
-                          textAlign: 'center',
-                          borderBottomWidth: 0.5,
-                          borderBottomColor: '#82828f',
-                          fontSize: 14,
-                        }}>
-                        Total Volume Locked
-                      </Text>
-                      <Text
-                        style={{
-                          fontWeight: 'bold',
-                          textAlign: 'center',
-                          fontSize: 13,
-                          color: 'white',
-                        }}>
-                        $ {state.totalVolume}
-                      </Text>
-                    </View>
+                      }}></View>
                   </View>
                   {/* <View
                         style={{
