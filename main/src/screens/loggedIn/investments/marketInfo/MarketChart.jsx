@@ -359,14 +359,14 @@ const MarketChart = props => {
                 // :
                 styles.longshortContainer
               }>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginBottom: '3%' }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginBottom: '10%' }}>
                 <Icon
-                  name={'arrow-back'}
+                  name={'navigate-before'}
                   size={30}
                   color={'#f0f0f0'}
                   type="materialicons"
                   onPress={() => navigation.goBack()}
-                  style={{ marginLeft: 30 }}
+                  style={{ marginLeft: 20 }}
                 />
                 <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                   <Text style={styles.stockHead}>{state.item?.name}</Text>
