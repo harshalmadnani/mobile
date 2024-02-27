@@ -119,4 +119,3 @@ export async function getEvmTokenTransaction(sender, receiver, amount) {
     return '0x' + serialized;
   }
 }
-
