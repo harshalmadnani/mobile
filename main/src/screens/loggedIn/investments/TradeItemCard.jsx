@@ -11,8 +11,6 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 const TradeItemCard = ({navigation, item}) => {
-  console.log('single investment', item);
-
   return (
     <TouchableOpacity
       onPress={e => {

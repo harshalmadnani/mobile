@@ -12,7 +12,6 @@ export const marketSlice = createSlice({
   reducers: {
     // All the reducers go here
     setListOfCrypto: (state, action) => {
-      console.log('here.....market', action.payload);
       state.listOfCrypto = action.payload;
     },
   },
