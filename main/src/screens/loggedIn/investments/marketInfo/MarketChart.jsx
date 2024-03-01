@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -8,20 +8,20 @@ import {
   Dimensions,
   StyleSheet,
   Linking,
-  Animated
+  Animated,
 } from 'react-native';
-import { Text, Icon, Image } from '@rneui/themed';
-import { Slider } from 'react-native-elements';
+import {Text, Icon, Image} from '@rneui/themed';
+import {Slider} from 'react-native-elements';
 import styles from '../investment-styles';
 // import BottomNavbar from '../../navbar';
 // import getSpotPrice from './backend/viewFunctions';
 // import transactions from './backend/txFunctions';
 // import FastImage from 'react-native-fast-image';
 import BTC from '../data_old.json';
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 import TradePage from './BuyForm';
-import { useNavigation } from '@react-navigation/native';
-import { ImageAssets } from '../../../../../assets';
+import {useNavigation} from '@react-navigation/native';
+import {ImageAssets} from '../../../../../assets';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -38,7 +38,7 @@ import ChangeSvg from '../icon/changeSvg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Snackbar from 'react-native-snackbar';
 import LinearGradient from 'react-native-linear-gradient';
-import { TradingViewChart } from '../../../../component/charts/TradingViewChart';
+import {TradingViewChart} from '../../../../component/charts/TradingViewChart';
 
 function toDateTime(secs) {
   var t = new Date(secs); // Epoch
@@ -141,12 +141,12 @@ const MarketChart = props => {
           state.chartSelected === '1'
             ? info.market_data.price_change_percentage_24h
             : state.chartSelected === '14'
-              ? info.market_data.price_change_percentage_14d
-              : state.chartSelected === '60'
-                ? info.market_data.price_change_percentage_60d
-                : state.chartSelected === '180'
-                  ? info.market_data.price_change_percentage_200d
-                  : info.market_data.price_change_percentage_1y,
+            ? info.market_data.price_change_percentage_14d
+            : state.chartSelected === '60'
+            ? info.market_data.price_change_percentage_60d
+            : state.chartSelected === '180'
+            ? info.market_data.price_change_percentage_200d
+            : info.market_data.price_change_percentage_1y,
       });
     } catch (error) {
       console.error(error);
@@ -249,7 +249,7 @@ const MarketChart = props => {
 
     // Get day, month, and year
     const day = date.getDate();
-    const month = date.toLocaleString('default', { month: 'short' });
+    const month = date.toLocaleString('default', {month: 'short'});
 
     // Format the final string
     return {
@@ -279,7 +279,7 @@ const MarketChart = props => {
   return (
     <View style={styles.black}>
       <ScrollView>
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{flex: 1}}>
           <View style={styles.investmentsNav}>
             {/* <View
                   style={{
@@ -359,31 +359,41 @@ const MarketChart = props => {
                 // :
                 styles.longshortContainer
               }>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginBottom: '10%' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  width: '100%',
+                  marginBottom: '10%',
+                }}>
                 <Icon
                   name={'navigate-before'}
                   size={30}
                   color={'#f0f0f0'}
                   type="materialicons"
                   onPress={() => navigation.goBack()}
-                  style={{ marginLeft: 20 }}
+                  style={{marginLeft: 20}}
                 />
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
                   <Text style={styles.stockHead}>{state.item?.name}</Text>
                 </View>
               </View>
 
-
               <View style={styles.coinChart}>
                 <View style={styles.marketInfo}>
                   <View style={styles.stockName}>
-                    <View style={{ flexDirection: 'row' }}>
-
-                    </View>
+                    <View style={{flexDirection: 'row'}}></View>
                   </View>
                   <View style={styles.stockPriceContainer}>
-                    <Text style={styles.stockPrice}>${state.price.toLocaleString()}</Text>
-
+                    <Text style={styles.stockPrice}>
+                      ${state.price.toLocaleString()}
+                    </Text>
 
                     <View
                       style={{
@@ -414,7 +424,6 @@ const MarketChart = props => {
                               : '#E14C4C',
                           fontFamily: 'Unbounded-ExtraBold',
                           fontSize: 14,
-
 
                           textAlign: 'center',
                         }}>
@@ -914,7 +923,6 @@ const MarketChart = props => {
                   0 {state.item.symbol}
                 </Text>
               </View>
-
             </TouchableOpacity>
             <View
               style={{
@@ -932,11 +940,11 @@ const MarketChart = props => {
                   height: '100%',
                   width: '100%',
                   borderRadius: 6,
-                  backgroundColor: 'rgba(0, 0, 0, 0.2)'
+                  backgroundColor: 'rgba(0, 0, 0, 0.2)',
                 }}
                 onPress={() => {
-                  navigation.navigate('TradePage', { state: state });
-                  <TradePage navigation={props.navigation} />
+                  navigation.navigate('TradePage', {state: state});
+                  <TradePage navigation={props.navigation} />;
                 }}>
                 <LinearGradient
                   useAngle={true}
@@ -976,82 +984,82 @@ const MarketChart = props => {
                 style={
                   state.section === 'news'
                     ? {
-                      padding: 9,
-                      paddingHorizontal: 30,
-                      fontWeight: 'bold',
-                      backgroundColor: '#5B5A60',
-                      borderRadius: 10,
-                      color: '#FAF9FC',
-                      fontSize: 0.85,
-                      cursor: 'pointer',
-                    }
+                        padding: 9,
+                        paddingHorizontal: 30,
+                        fontWeight: 'bold',
+                        backgroundColor: '#5B5A60',
+                        borderRadius: 10,
+                        color: '#FAF9FC',
+                        fontSize: 0.85,
+                        cursor: 'pointer',
+                      }
                     : {
-                      color: '#ADADAF',
-                      fontWeight: 'bold',
-                      fontSize: 0.85,
-                      padding: 12,
-                      paddingHorizontal: 30,
-                      cursor: 'pointer',
-                    }
+                        color: '#ADADAF',
+                        fontWeight: 'bold',
+                        fontSize: 0.85,
+                        padding: 12,
+                        paddingHorizontal: 30,
+                        cursor: 'pointer',
+                      }
                 }
-                onPress={() => setState({ ...state, section: 'news' })}>
-                <Text style={{ color: '#FFFFFF' }}>News</Text>
+                onPress={() => setState({...state, section: 'news'})}>
+                <Text style={{color: '#FFFFFF'}}>News</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={
                   state.section === 'degenai'
                     ? {
-                      padding: 9,
-                      paddingHorizontal: 30,
-                      fontWeight: 'bold',
-                      backgroundColor: '#5B5A60',
-                      borderRadius: 10,
-                      color: '#FAF9FC',
-                      fontSize: 0.85,
-                      cursor: 'pointer',
-                    }
+                        padding: 9,
+                        paddingHorizontal: 30,
+                        fontWeight: 'bold',
+                        backgroundColor: '#5B5A60',
+                        borderRadius: 10,
+                        color: '#FAF9FC',
+                        fontSize: 0.85,
+                        cursor: 'pointer',
+                      }
                     : {
-                      color: '#ADADAF',
-                      fontWeight: 'bold',
-                      fontSize: 0.85,
-                      padding: 12,
-                      paddingHorizontal: 30,
-                      cursor: 'pointer',
-                    }
+                        color: '#ADADAF',
+                        fontWeight: 'bold',
+                        fontSize: 0.85,
+                        padding: 12,
+                        paddingHorizontal: 30,
+                        cursor: 'pointer',
+                      }
                 }
-                onPress={() => setState({ ...state, section: 'degenai' })}>
-                <Text style={{ color: '#FFFFFF' }}>Degen AI</Text>
+                onPress={() => setState({...state, section: 'degenai'})}>
+                <Text style={{color: '#FFFFFF'}}>Degen AI</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={
                   state.section === 'about'
                     ? {
-                      padding: 9,
-                      paddingHorizontal: 30,
-                      fontWeight: 'bold',
-                      backgroundColor: '#5B5A60',
-                      borderRadius: 10,
-                      color: '#FAF9FC',
-                      fontSize: 0.85,
-                      cursor: 'pointer',
-                    }
+                        padding: 9,
+                        paddingHorizontal: 30,
+                        fontWeight: 'bold',
+                        backgroundColor: '#5B5A60',
+                        borderRadius: 10,
+                        color: '#FAF9FC',
+                        fontSize: 0.85,
+                        cursor: 'pointer',
+                      }
                     : {
-                      color: '#ADADAF',
-                      fontWeight: 'bold',
-                      fontSize: 0.85,
-                      padding: 12,
-                      paddingHorizontal: 30,
-                      cursor: 'pointer',
-                    }
+                        color: '#ADADAF',
+                        fontWeight: 'bold',
+                        fontSize: 0.85,
+                        padding: 12,
+                        paddingHorizontal: 30,
+                        cursor: 'pointer',
+                      }
                 }
-                onPress={() => setState({ ...state, section: 'about' })}>
-                <Text style={{ color: '#FFFFFF' }}>About</Text>
+                onPress={() => setState({...state, section: 'about'})}>
+                <Text style={{color: '#FFFFFF'}}>About</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={{ paddingHorizontal: '5%' }}>
+            <View style={{paddingHorizontal: '5%'}}>
               {state.section === 'news' ? (
                 news.map((data, index) => (
                   <View
@@ -1077,19 +1085,19 @@ const MarketChart = props => {
                               <Image source={{ uri: 'https://randomuser.me/api/portraits/men/55.jpg' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                               <Image source={{ uri: 'https://via.placeholder.com/300/09f/fff.png' }} style={{ width: 30, height: 30, borderRadius: 15 }} />
                           </View> */}
-                        <Text style={{ fontSize: 13, color: 'gray' }}>
+                        <Text style={{fontSize: 13, color: 'gray'}}>
                           {formatDate(data.published_at).time}
                         </Text>
-                        <Text style={{ marginHorizontal: 5, color: 'gray' }}>
+                        <Text style={{marginHorizontal: 5, color: 'gray'}}>
                           ·
                         </Text>
-                        <Text style={{ fontSize: 13, color: 'gray' }}>
+                        <Text style={{fontSize: 13, color: 'gray'}}>
                           {formatDate(data.published_at).date}
                         </Text>
-                        <Text style={{ marginHorizontal: 5, color: 'gray' }}>
+                        <Text style={{marginHorizontal: 5, color: 'gray'}}>
                           ·
                         </Text>
-                        <Text style={{ fontSize: 13, color: 'gray' }}>
+                        <Text style={{fontSize: 13, color: 'gray'}}>
                           {capitalizeFirstLetter(data.source.title)}
                         </Text>
                       </View>
@@ -1147,7 +1155,7 @@ const MarketChart = props => {
                     }}>
                     Market Stats
                   </Text>
-                  <View style={{ width: '100%', flexDirection: 'column' }}>
+                  <View style={{width: '100%', flexDirection: 'column'}}>
                     {/* Market Cap */}
                     <View
                       style={{
@@ -1268,8 +1276,7 @@ const MarketChart = props => {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         marginBottom: 5,
-                      }}>
-                    </View>
+                      }}></View>
                   </View>
                   {/* <View
                         style={{
@@ -1327,7 +1334,7 @@ const MarketChart = props => {
                   <View>
                     <Image
                       source={ImageAssets.algoImg}
-                      style={{ height: 200, width: 200 }}
+                      style={{height: 200, width: 200}}
                     />
                   </View>
                   <View
@@ -1389,13 +1396,13 @@ const MarketChart = props => {
   //   }
 };
 
-const ReadMoreLess = ({ text, maxChars }) => {
+const ReadMoreLess = ({text, maxChars}) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const displayText = isExpanded ? text : `${text.slice(0, maxChars)}`;
 
   return (
     <View>
-      <Text style={{ margin: 0, marginTop: 10, marginBottom: 8, color: 'white' }}>
+      <Text style={{margin: 0, marginTop: 10, marginBottom: 8, color: 'white'}}>
         {displayText}
       </Text>
       {text.length > maxChars && (

@@ -25,7 +25,7 @@ export const TradingViewChart = ({height, width}) => {
             Platform.OS === 'ios'
               ? `index.html`
               : `file:///android_asset/index.html`
-          }?height=${height}&&width=${width}`,
+          }?height=${height}&width=${width}&timeFrame=1D`,
         }}
         onMessage={event => {
           console.log(JSON.parse(event?.nativeEvent.data));
