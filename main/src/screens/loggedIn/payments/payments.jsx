@@ -28,6 +28,7 @@ import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
 import {EventsCarousel} from './eventsCarousel';
 import TradeCollection from '../investments/tradeCollection';
+import Ramper from './Ramps/ramper';
 import {BreakdownCarousel} from './breakdownCarousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
@@ -257,21 +258,9 @@ const PaymentsComponent = ({navigation}) => {
         }}>
         <TouchableOpacity
           style={styles.depWith}
-          // onPress={() => {
-          //   {
-          //     {
-          //       global.mainnet
-          //         ? navigation.push('FiatRamps')
-          //         : addXUSD(
-          //             navigation,
-          //             global.withAuth
-          //               ? global.loginAccount.scw
-          //               : global.connectAccount.publicAddress,
-          //           );
-          //     }
-          //   }
-          // }}>
-        >
+          onPress={() => {
+            navigation.push('Ramper');
+          }}>
           <View style={[styles.innerDep, styles.innerDepColored]}>
             <Icon
               // style={styles.tup}
