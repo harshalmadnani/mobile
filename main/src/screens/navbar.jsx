@@ -1,10 +1,10 @@
 import React from 'react';
 
-import {View, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 
-import {Text} from 'react-native-elements';
-import {Icon} from 'react-native-elements';
-import {color} from 'react-native-elements/dist/helpers';
+import { Text } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
+import { color } from 'react-native-elements/dist/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 
 import FastImage from 'react-native-fast-image';
@@ -20,12 +20,12 @@ import HomeNavIcon from './navbar-images/home';
 const windowHeight = Dimensions.get('window').height;
 const selectedIcon = '#ffffff';
 const icon = '#696969';
-const BottomNavbar = ({navigation, selected}) => {
+const BottomNavbar = ({ navigation, selected }) => {
   return (
     // <View style = {{height: windowHeight * 0.3}}>
-    <View style={[styles.container, {paddingBottom: 0}]}>
+    <View style={[styles.container, { paddingBottom: 0 }]}>
 
-      <View 
+      <View
         style={{
           flexDirection: 'row',
           width: '100%',
@@ -45,7 +45,7 @@ const BottomNavbar = ({navigation, selected}) => {
             </View>
           </TouchableOpacity>
         </View> */}
-                <View style={styles.navItem}>
+        <View style={styles.navItem}>
           {/* <Icon
             name="home"
             type="octicon"
@@ -66,13 +66,13 @@ const BottomNavbar = ({navigation, selected}) => {
                 style={styles.icon}
               />
             )}
-               <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text>
+            {/* <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text> */}
           </TouchableOpacity>
         </View>
-        <View >
+        {/* <View >
           <TouchableOpacity onPress={() => navigation.push('Savings')}>
-            <View style={styles.navItem}>            
-            <SvgUri
+            <View style={styles.navItem}>
+              <SvgUri
                 width="28"
                 height="28"
                 svgXmlData={SaveSvg}
@@ -81,23 +81,23 @@ const BottomNavbar = ({navigation, selected}) => {
               <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Save</Text>
             </View>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View>
           <TouchableOpacity onPress={() => navigation.push('Investments')}>
-            <View style={styles.navItem}> 
-            <SvgUri
+            <View style={styles.navItem}>
+              <SvgUri
                 width="28"
                 height="28"
                 svgXmlData={TradeSvg}
                 fill={selected == 'Investments' ? selectedIcon : icon}
               />
-              <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text>
+              {/* <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text> */}
             </View>
           </TouchableOpacity>
         </View>
 
-        <View>
-          {/* <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
+        {/* <View> */}
+        {/* <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
             <View style={styles.navItem}>
               <SvgUri
                 width="28"
@@ -109,7 +109,7 @@ const BottomNavbar = ({navigation, selected}) => {
               <Text style={selected == 'TransactionHistory' ? styles.navItemLabelSelected : styles.navItemLabel}>History</Text>
             </View>
           </TouchableOpacity> */}
-                    <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
+        {/* <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
             {selected == 'TransactionHistory' ? (
               <FastImage
                 source={require(`./navbar-images/history-selected.png`)}
@@ -121,9 +121,9 @@ const BottomNavbar = ({navigation, selected}) => {
                 style={styles.icon}
               />
             )}
-               <Text style={selected == 'TransactionHistory' ? styles.navItemLabelSelected : styles.navItemLabel}>History</Text>
+            <Text style={selected == 'TransactionHistory' ? styles.navItemLabelSelected : styles.navItemLabel}>History</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <View>
           <TouchableOpacity onPress={() => navigation.push('Card')}>
@@ -134,12 +134,12 @@ const BottomNavbar = ({navigation, selected}) => {
                 svgXmlData={CardSvg}
                 fill={selected == 'Card' ? selectedIcon : icon}
               />
-
-              <Text style={selected == 'Card' ? styles.navItemLabelSelected : styles.navItemLabel}>Card</Text>
+              {/* 
+              <Text style={selected == 'Card' ? styles.navItemLabelSelected : styles.navItemLabel}>Card</Text> */}
             </View>
           </TouchableOpacity>
         </View>
-{/*         
+        {/*         
         <View style={styles.navItem}>
           <TouchableOpacity onPress={() => navigation.push('Redeem')}>
             <SvgUri
@@ -160,15 +160,14 @@ const BottomNavbar = ({navigation, selected}) => {
 const styles = StyleSheet.create({
   top: {
     height: 1,
-    marginBottom: 20,
   },
   container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0.1,0.7 )',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
     position: 'absolute',
-    height: 70,
+    height: 60,
     bottom: 0,
     left: 0,
     right: 0,
@@ -195,7 +194,7 @@ const styles = StyleSheet.create({
     height: 18,
     marginVertical: 3
   },
-  navIconSelected : {
+  navIconSelected: {
     color: '#fff',
     // color: '#FE2C5E',
     width: 24,
@@ -210,7 +209,7 @@ const styles = StyleSheet.create({
     color: '#696969',
     fontSize: 11,
     fontFamily: 'Satoshi-Bold',
-   fontWeight: "700",
+    fontWeight: "700",
     paddingTop: 4,
   },
   navItemLabelSelected: {
@@ -218,7 +217,7 @@ const styles = StyleSheet.create({
     // color: '#A38CFF',
     fontSize: 11,
     fontFamily: 'Satoshi-Bold',
-   fontWeight: "700",
+    fontWeight: "700",
     paddingTop: 4,
   }
 });
