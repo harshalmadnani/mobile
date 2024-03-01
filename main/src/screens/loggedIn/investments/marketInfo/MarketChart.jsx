@@ -1061,7 +1061,7 @@ const MarketChart = props => {
 
             <View style={{paddingHorizontal: '5%'}}>
               {state.section === 'news' ? (
-                news.map((data, index) => (
+                news?.map((data, index) => (
                   <View
                     key={index}
                     style={{

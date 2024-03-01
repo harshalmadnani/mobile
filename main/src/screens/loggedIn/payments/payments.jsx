@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, {useState, Component} from 'react';
 import {
   TouchableOpacity,
   TouchableHighlight,
@@ -16,42 +16,42 @@ import {
   StyleSheet,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { Text } from '@rneui/themed';
+import {Text} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './payments-styles';
-import { Icon } from 'react-native-elements';
-import { useEffect } from 'react';
+import {Icon} from 'react-native-elements';
+import {useEffect} from 'react';
 // import * as particleAuth from 'react-native-particle-auth';
 // import * as particleConnect from 'react-native-particle-connect';
 import createProvider from '../../../particle-auth';
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
-import { EventsCarousel } from './eventsCarousel';
+import {EventsCarousel} from './eventsCarousel';
 import TradeCollection from '../investments/tradeCollection';
 import Ramper from './Ramps/ramper';
-import { BreakdownCarousel } from './breakdownCarousel';
+import {BreakdownCarousel} from './breakdownCarousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
 import USDC_ABI from './USDC';
-import { SABEX_LP } from '@env';
+import {SABEX_LP} from '@env';
 import {
   BICONOMY_API_KEY,
   BICONOMY_API_KEY_MUMBAI,
   SECRET_KEY_REMMITEX,
 } from '@env';
-import { paymentsLoad, addXUSD, txHistoryLoad } from './utils';
+import {paymentsLoad, addXUSD, txHistoryLoad} from './utils';
 const Web3 = require('web3');
 
-import { IPaymaster, ChainId } from '@biconomy/core-types';
+import {IPaymaster, ChainId} from '@biconomy/core-types';
 import SmartAccount from '@biconomy/smart-account';
 
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';
 
-import { ethers } from 'ethers';
+import {ethers} from 'ethers';
 
-import { transferUSDC } from './remmitexv1';
+import {transferUSDC} from './remmitexv1';
 
 import images from './img/images';
 import breakdowns from './breakdown/breakdown';
@@ -59,20 +59,22 @@ import breakdowns from './breakdown/breakdown';
 let web3;
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 const windowHeight = Dimensions.get('window').height;
-import { POLYGON_API_KEY } from '@env';
-import { registerFcmToken } from '../../../utils/push';
+import {POLYGON_API_KEY} from '@env';
+import {registerFcmToken} from '../../../utils/push';
 import TransactionReceipt from '../transactions/transactionReceipt';
 import Snackbar from 'react-native-snackbar';
 import ExternalLinkModal from '../externalLink/widget';
-import { useSelector } from 'react-redux';
-import { LoginType } from '@particle-network/rn-auth';
-import { getAuthCoreProvider } from '../../../utils/particleCoreSDK';
+import {useSelector} from 'react-redux';
+import {LoginType} from '@particle-network/rn-auth';
+import {getAuthCoreProvider} from '../../../utils/particleCoreSDK';
+import {useFocusEffect} from '@react-navigation/native';
+import {getCryptoHoldingForAddressFromMobula} from '../../../store/actions/portfolio';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
 // import {transferUSDC} from './remmitexv1';
 
-const PaymentsComponent = ({ navigation }) => {
+const PaymentsComponent = ({navigation}) => {
   const [state, setState] = React.useState([
     {
       truth: true,
@@ -92,6 +94,7 @@ const PaymentsComponent = ({ navigation }) => {
   const DEVICE_WIDTH = Dimensions.get('window').width;
   const address = useSelector(x => x.auth.address);
   const mainnet = useSelector(x => x.auth.mainnet);
+  const nfts = useSelector(x => x.portfolio.nfts);
   const web3 = getAuthCoreProvider(LoginType.Email);
 
   const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
@@ -101,26 +104,19 @@ const PaymentsComponent = ({ navigation }) => {
     setShowTxnReceiptModal(false);
   };
   const call = async () => {
-    // const address = global.withAuth
-    //   ? global.loginAccount.publicAddress
-    //   : global.connectAccount.publicAddress;
     console.log('Auth Type....', address, global.withAuth);
-    // const web3 = global.withAuth
-    //   ? this.createProvider()
-    //   : this.createConnectProvider();
-
-    const { tokenBalance } = await paymentsLoad(web3, mainnet, address);
-
+    // dispatch(getCryptoHoldingForAddressFromMobula());
+    const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
     console.log('token balance.....', tokenBalance);
     setBalance(tokenBalance || '0.00');
-
-    const { txDates, txs } = await txHistoryLoad(address);
+    const {txDates, txs} = await txHistoryLoad(address);
     console.log('txdatess balance.....', txs, txDates);
     setDates(txDates);
     setState(txs);
     console.log('Request being sent for registration');
     await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
     console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
+
     if (global.withAuth) {
       if (!global.smartAccount) {
         let options = {
@@ -155,11 +151,20 @@ const PaymentsComponent = ({ navigation }) => {
       }
     }
   };
-  useEffect(async () => {
-    console.log('Is Auth:', global.withAuth);
-    await call();
-  }, []);
-
+  // useFocusEffect(async () => {
+  //   console.log('Is Auth:', global.withAuth);
+  //   await call();
+  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      call();
+      // Cleanup function (optional)
+      return () => {
+        // You can perform cleanup tasks here if needed
+      };
+    }, []),
+  );
+  console.log('NFTS heree....', nfts);
   const t = true;
   return (
     <SafeAreaView
@@ -194,7 +199,7 @@ const PaymentsComponent = ({ navigation }) => {
             }}>
             Checkings
           </Text>
-          <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text
               style={{
                 color: '#fff',
