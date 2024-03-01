@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, SafeAreaView, StyleSheet, Image, FlatList, Modal } from 'react-native';
 import { Icon } from 'react-native-elements';
+import { color } from 'react-native-elements/dist/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Ramper = ({ navigation }) => {
     const UNIRAMP_API_BASE_URL = 'https://api.uniramp.io/v1/onramp';
-    // Directly defining the API key here for demonstration, replace 'YOUR_API_KEY' with your actual Uniramp API key
-    const unirampKey = 'pk_prod_eb0suFktOsnpthQYX5LXoMXIychV7Ofv'; // <-- Direct definition (use your actual key here)
+    const getCurrencySymbol = (currencyCode) => {
+        const format = new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode, minimumFractionDigits: 0 });
+        const parts = format.formatToParts(0);
+        const symbol = parts.find(part => part.type === 'currency').value;
+        return symbol;
+    };
+    const unirampKey = 'pk_prod_eb0suFktOsnpthQYX5LXoMXIychV7Ofv';
     const [value, setValue] = useState("1");
     const [paymentMethods, setPaymentMethods] = useState([]);
-    const [selectedId, setSelectedId] = useState(null);
-    const [isModalVisible, setModalVisible] = useState(false);
+    const [fiat, setFiat] = useState([]);
+    const [selectedId, setSelectedId] = useState('wallet');
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handlePress = () => {
         if (selectedId === "wallet") {
@@ -54,14 +61,14 @@ const Ramper = ({ navigation }) => {
 
             const data = await response.json();
             const fetchedPaymentMethods = data.payment || []; // Default to an empty array if undefined
-
+            const fetchedfiat = data.fiat || [];
             // Optionally, add a custom payment method
             fetchedPaymentMethods.push({
                 "id": "wallet",
                 "name": "Wallet",
-                "image": "https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png" // Ensure you have permission to use this image
+                "image": "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64" // Ensure you have permission to use this image
             });
-
+            setFiat(fetchedfiat);
             setPaymentMethods(fetchedPaymentMethods);
         } catch (error) {
             console.error('There was an error fetching payment methods:', error);
@@ -72,25 +79,16 @@ const Ramper = ({ navigation }) => {
         fetchPublicIPv4Address().then(ipAddress => {
             if (ipAddress) {
                 fetchPaymentMethodsBasedOnIP(ipAddress);
+
             }
         });
     }, []);
+    console.log('Fiat', fiat.image);
 
-    const renderPaymentMethod = ({ item }) => (
-        <TouchableOpacity
-            onPress={() => setSelectedId(item.id)}
-            style={[
-                styles.button,
-                { borderColor: item.id === selectedId ? 'purple' : 'transparent' },
-            ]}
-        >
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <Text>{item.name}</Text>
-        </TouchableOpacity>
-    );
+
     return (
-        <LinearGradient colors={['#9753F5', '#3C0A65', '#000', '#000', '#000', '#000', '#000']} start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }} style={{ flex: 1 }}>
+        <LinearGradient colors={['#3C0A65', '#3C0A65', '#0F0F0F', '#0F0F0F', '#0F0F0F', '#0F0F0F', '#0F0F0F']} start={{ x: 1, y: 0 }}
+            end={{ x: 0, y: 1 }} style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }}>
                 {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}
                 <View style={{ flex: 1 }}>
@@ -113,7 +111,12 @@ const Ramper = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 }}>
-                        <Text style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>$</Text>
+                        {selectedId === 'wallet' ? (
+                            <Text style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>$</Text>)
+                            :
+                            (
+                                <Text style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>{getCurrencySymbol(fiat.id)}</Text>
+                            )}
                         <TextInput
                             style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", fontFamily: "Unbounded-ExtraBold", }}
                             value={value}
@@ -124,25 +127,51 @@ const Ramper = ({ navigation }) => {
 
                         />
                     </View>
-                    <View style={{ marginTop: '2%', flexDirection: "row", justifyContent: "center", gap: 8 }}>
-                        <TouchableOpacity style={styles.button}>
-                            <View style={styles.imagePlaceholder}>
-                                <Image
-                                    source={{ uri: 'https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png' }}
-                                    style={{ width: 24, height: 24, borderRadius: 12 }} // Make image rounded
-                                />
-                            </View>
-                            <Text style={styles.text}>USDC</Text>
-                            <Icon
+                    {selectedId === "wallet" ? (
+                        <View style={{ marginTop: '2%', flexDirection: "row", justifyContent: "center", gap: 8 }}>
+                            <TouchableOpacity style={styles.button}>
+                                <View style={styles.imagePlaceholder}>
+                                    <Image
+                                        source={{ uri: 'https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png' }}
+                                        style={{ width: 24, height: 24, borderRadius: 12 }} // Make image rounded
+                                    />
+                                </View>
+                                <Text style={styles.text}>USDC</Text>
+                                {/* <Icon
                                 name={'expand-more'}
                                 size={16}
                                 color={'#f0f0f0'}
                                 type="materialicons"
                                 onPress={() => navigation.goBack()}
                                 style={{ marginLeft: 120 }}
-                            />
-                        </TouchableOpacity>
-                    </View>
+                            /> */}
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View style={{ marginTop: '2%', flexDirection: "row", justifyContent: "center", gap: 8 }}>
+                            <TouchableOpacity style={styles.button}>
+                                {/* <Image source={{ uri: fiat.image }} style={{
+                                    width: 26,
+                                    height: 26,
+                                    borderRadius: 13, // Make the image round
+                                    marginRight: 10,
+                                }} /> */}
+
+                                <Text style={styles.text1}>{getCurrencySymbol(fiat.id)} </Text>
+                                <Text style={styles.text}>{fiat.id.toUpperCase()}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                    }
+
+
+
+
+
+
+
+
+
                     <View style={{ marginTop: '9%' }}>
                         <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Medium' }}>Choose your preffered deposit method</Text>
                         <Text style={{ fontSize: 16, color: "#fff", textAlign: "center", fontFamily: 'Satoshi-Bold' }}>to enter a new era of finance</Text>
@@ -158,7 +187,13 @@ const Ramper = ({ navigation }) => {
                                     { color: item.id === selectedId ? '#A66CFF' : 'transparent' },
                                 ]}
                             >
-                                <Image source={{ uri: item.image }} style={styles.image} />
+                                <Image source={{ uri: item.image }} style={{
+                                    backgroundColor: '#fff',
+                                    width: 26,
+                                    height: 26,
+                                    borderRadius: 13, // Make the image round
+                                    marginRight: 10,
+                                }} />
                                 <Text style={{ color: item.id === selectedId ? '#FFF' : '#8D8D8D', fontFamily: 'Satoshi-Regular' }}>
                                     {item.name}
                                 </Text>
@@ -168,6 +203,10 @@ const Ramper = ({ navigation }) => {
                 </View>
 
                 {/* Footer: Trade button sticky at the bottom */}
+
+
+
+
                 <View
                     style={{
                         height: 50,
@@ -182,7 +221,9 @@ const Ramper = ({ navigation }) => {
                             height: '100%',
                             width: '100%',
                             borderRadius: 30,
-                        }}>
+                        }}
+                        onPress={() => selectedId === 'wallet' ? setModalVisible(true) : navigation.push('Uniramp', { value: value })} // Open modal on press
+                    >
                         <LinearGradient
                             useAngle={true}
                             angle={150}
@@ -206,6 +247,34 @@ const Ramper = ({ navigation }) => {
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
+
+                {/* Modal Component */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(!modalVisible);
+                    }}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            {/* Button 1 */}
+                            <TouchableOpacity
+                                style={[styles.button1, styles.buttonClose,]}
+                                onPress={() => {
+                                    navigation.push('LiFi', { value: value });
+                                }}>
+                                <Text style={{ color: '#000' }}>I don't have USDC on Polygon</Text>
+                            </TouchableOpacity>
+                            {/* Button 2 */}
+                            <TouchableOpacity
+                                style={[styles.button, styles.buttonOpen, padding = '5%']}
+                                onPress={() => navigation.push('QRScreen')}>
+                                <Text style={{ fontFamily: 'Satoshi-Regular' }}>I have USDC on Polygon</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </SafeAreaView>
         </LinearGradient>
     );
@@ -235,6 +304,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: 'Satoshi-Black', // Make sure you have this font loaded
     },
+    text1: {
+        color: '#fff', // Text color
+        fontSize: 16,
+        fontFamily: 'Satoshi-Black', // Make sure you have this font loaded
+    },
     wrapContainer: {
         flexDirection: 'row', // Align items in a row
         flexWrap: 'wrap', // Allow items to wrap to the next line
@@ -259,6 +333,55 @@ const styles = StyleSheet.create({
         height: 26,
         borderRadius: 13, // Make the image round
         marginRight: 10,
+    },
+    buttonOpen: {
+        backgroundColor: '#000',
+    },
+    buttonClose: {
+        backgroundColor: '#FFF',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalTextStyle: {
+        textAlign: 'center',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'flex-end', // Align modal at the bottom
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        width: '100%', // Make modal take full width at the bottom
+        backgroundColor: '#000',
+        borderTopRightRadius: 20, // Only round the top corners
+        borderTopLeftRadius: 20,
+        padding: 10,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+
+    },
+    button1: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderWidth: 2,
+        borderRadius: 100,
+        padding: "5%",
+        paddingHorizontal: 10,
+        justifyContent: 'center',
+        margin: 1.5, // Space around each button
+        width: '95%',
     },
 });
 
