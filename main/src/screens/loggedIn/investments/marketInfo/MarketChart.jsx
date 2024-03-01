@@ -9,14 +9,12 @@ import {
   StyleSheet,
   Linking,
   Animated,
+  FlatList,
 } from 'react-native';
 import {Text, Icon, Image} from '@rneui/themed';
-import {Slider} from 'react-native-elements';
+
 import styles from '../investment-styles';
-// import BottomNavbar from '../../navbar';
-// import getSpotPrice from './backend/viewFunctions';
-// import transactions from './backend/txFunctions';
-// import FastImage from 'react-native-fast-image';
+
 import BTC from '../data_old.json';
 import {ethers} from 'ethers';
 import TradePage from './BuyForm';
@@ -25,20 +23,9 @@ import {ImageAssets} from '../../../../../assets';
 
 const screenWidth = Dimensions.get('window').width;
 
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from 'react-native-chart-kit';
-import GainSvg from '../icon/gainSvg';
-import ChangeSvg from '../icon/changeSvg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Snackbar from 'react-native-snackbar';
 import LinearGradient from 'react-native-linear-gradient';
 import {TradingViewChart} from '../../../../component/charts/TradingViewChart';
+import moment from 'moment/moment';
 
 function toDateTime(secs) {
   var t = new Date(secs); // Epoch
@@ -71,11 +58,11 @@ const MarketChart = props => {
     fully_diluted_valuation: 'Updating',
     section: 'news',
   });
-
+  const availableTimeFrame = ['1M', '1D', '1W', '3M', '1Y'];
+  const [timeFrameSelected, setTimeFrame] = useState('1D');
   const [news, setNews] = useState([]);
-
   const navigation = useNavigation();
-
+  const currentItem = props.item;
   const updateChart = async days => {
     setState({
       ...state,
@@ -153,40 +140,44 @@ const MarketChart = props => {
     }
   };
 
-  const btcFirst = () => {
-    setState({
-      ...state,
-      status: !state.status,
-    });
-  };
-
-  const fetchUserDetails = async () => {
-    try {
-      const mainnetJSON = await AsyncStorage.getItem('mainnet');
-      const mainnet = JSON.parse(mainnetJSON);
-      console.log('=-=======');
-
-      if (global.withAuth) {
-        authAddress = global.loginAccount.publicAddress;
-        const scwAddress = global.loginAccount.scw;
-        console.log(scwAddress);
-        setState({
-          ...state,
-          address: scwAddress,
-        });
-      } else {
-        authAddress = global.connectAccount.publicAddress;
-        const scwAddress = global.connectAccount.publicAddress;
-        setState({
-          ...state,
-          address: scwAddress,
-        });
-      }
-    } catch (e) {
-      console.log(e);
+  const fetchUserDetails = () => {
+    if (global.withAuth) {
+      authAddress = global.loginAccount.publicAddress;
+      const scwAddress = global.loginAccount.scw;
+      console.log(scwAddress);
+      setState({
+        ...state,
+        address: scwAddress,
+      });
+    } else {
+      authAddress = global.connectAccount.publicAddress;
+      const scwAddress = global.connectAccount.publicAddress;
+      setState({
+        ...state,
+        address: scwAddress,
+      });
     }
   };
-
+  const onTimeFrameChange = index => {
+    console.log(index, availableTimeFrame[index]);
+    setTimeFrame(availableTimeFrame[index]);
+    if (availableTimeFrame[index === '1D']) {
+      const date = moment().subtract(1, 'days').format('YYYY-MM-DD');
+      const unix = Math.floor(date.getTime() / 1000);
+    } else if (availableTimeFrame[index === '1W']) {
+      const date = moment().subtract(7, 'days').format('YYYY-MM-DD');
+      const unix = Math.floor(date.getTime() / 1000);
+    } else if (availableTimeFrame[index === '1M']) {
+      const date = moment().subtract(1, 'months').format('YYYY-MM-DD');
+      const unix = Math.floor(date.getTime() / 1000);
+    } else if (availableTimeFrame[index === '3M']) {
+      const date = moment().subtract(3, 'months').format('YYYY-MM-DD');
+      const unix = Math.floor(date.getTime() / 1000);
+    } else if (availableTimeFrame[index === '1Y']) {
+      const date = moment().subtract(1, 'months').format('YYYY-MM-DD');
+      const unix = Math.floor(date.getTime() / 1000);
+    }
+  };
   const about = async () => {
     const marketStatsURL = `https://api.coingecko.com/api/v3/coins/${state.item.id.toLowerCase()}?localization=false&tickers=false&community_data=false&developer_data=false&sparkline=false`;
 
@@ -281,84 +272,7 @@ const MarketChart = props => {
       <ScrollView>
         <SafeAreaView style={{flex: 1}}>
           <View style={styles.investmentsNav}>
-            {/* <View
-                  style={{
-                    justifyContent: 'space-evenly',
-                    flexDirection: 'row',
-                    marginTop: '2%',
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.setState({
-                        btnSelected: 'chart',
-                      });
-                      console.log(this.state.btnSelected);
-                    }}
-                    style={
-                      this.state.btnSelected == 'chart'
-                        ? styles.navSelected
-                        : styles.navComponents
-                    }>
-                    <Text
-                      style={
-                        this.state.btnSelected == 'chart'
-                          ? styles.navSelectedText
-                          : styles.navText
-                      }>
-                      Overview
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.setState({
-                        btnSelected: 'long',
-                      });
-                      console.log(this.state.btnSelected);
-                    }}
-                    style={
-                      this.state.btnSelected == 'long'
-                        ? styles.greenSelected
-                        : styles.navComponents
-                    }>
-                    <Text
-                      style={
-                        this.state.btnSelected == 'long'
-                          ? styles.navSelectedText
-                          : styles.navText
-                      }>
-                      Long
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.setState({
-                        btnSelected: 'short',
-                      });
-                      console.log(this.state.btnSelected);
-                    }}
-                    style={
-                      this.state.btnSelected == 'short'
-                        ? styles.redSelected
-                        : styles.navComponents
-                    }>
-                    <Text
-                      style={
-                        this.state.btnSelected == 'short'
-                          ? styles.navSelectedText
-                          : styles.navText
-                      }>
-                      Short
-                    </Text>
-                  </TouchableOpacity>
-                </View> */}
-            <View
-              style={
-                // this.state.btnSelected == 'long' ||
-                // this.state.btnSelected == 'short'
-                // ? {display: 'none'}
-                // :
-                styles.longshortContainer
-              }>
+            <View style={styles.longshortContainer}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -433,459 +347,53 @@ const MarketChart = props => {
                   </View>
                 </View>
                 <View style={styles.chartContainer}>
-                  {/* <LineChart
-                    bezier
-                    data={{
-                      datasets: [
-                        {
-                          data: state.data.map(price =>
-                            Number(price[1]),
-                          ),
-                        },
-                      ],
-                    }}
-                    width={screenWidth}
-                    height={200}
-                    withDots={false}
-                    withHorizontalLabels={false}
-                    chartConfig={{
-                      backgroundColor: '#000000',
-                      backgroundGradientToOpacity: 1,
-                      backgroundGradientFrom: '#000',
-                      backgroundGradientTo: '#000',
-                      useShadowColorFromDataset: false, // optional
-                      barPercentage: 1,
-                      barRadius: 360,
-                      fillShadowGradientFromOpacity: 0,
-                      fillShadowGradientToOpacity: 0,
-                      strokeWidth: 2,
-                      propsForBackgroundLines: {
-                        strokeWidth: 0,
-                      },
-
-                      color: (opacity = 0) => '#9853F5',
-                    }}
-                    style={{
-                      paddingRight: 0,
-                      backgroundColor: 'transparent',
-                    }}
-                  /> */}
                   <TradingViewChart width={screenWidth} height={300} />
                 </View>
-                <View
-                  style={{
-                    justifyContent: 'space-evenly',
-                    flexDirection: 'row',
-                    marginTop: '5%',
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      updateChart('1');
-                    }}
-                    style={
-                      state.chartSelected == '1'
-                        ? styles.goldSelected
-                        : styles.chartComponents
-                    }>
-                    <Text
+                <FlatList
+                  horizontal
+                  keyExtractor={(x, i) => i.toString()}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity
+                      onPress={() => {
+                        onTimeFrameChange(index);
+                      }}
                       style={
-                        state.chartSelected == '1'
-                          ? styles.navSelectedText
-                          : styles.chartText
+                        timeFrameSelected === item
+                          ? {
+                              borderRadius: 1000,
+                              background: '#232323',
+                              paddingHorizontal: 16,
+                              paddingVertical: 8,
+                            }
+                          : {
+                              borderRadius: 1000,
+                              background: 'transparent',
+                              paddingHorizontal: 16,
+                              paddingVertical: 8,
+                            }
                       }>
-                      1D
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      updateChart('1');
-                    }}
-                    style={
-                      state.chartSelected == '1'
-                        ? styles.goldSelected
-                        : styles.chartComponents
-                    }>
-                    <Text
-                      style={
-                        state.chartSelected == '1'
-                          ? styles.navSelectedText
-                          : styles.chartText
-                      }>
-                      1D
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      updateChart('14');
-                    }}
-                    style={
-                      state.chartSelected == '14'
-                        ? styles.goldSelected
-                        : styles.chartComponents
-                    }>
-                    <Text
-                      style={
-                        state.chartSelected == '14'
-                          ? styles.navSelectedText
-                          : styles.chartText
-                      }>
-                      1M
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      updateChart('60');
-                    }}
-                    style={
-                      state.chartSelected == '60'
-                        ? styles.goldSelected
-                        : styles.chartComponents
-                    }>
-                    <Text
-                      style={
-                        state.chartSelected == '60'
-                          ? styles.navSelectedText
-                          : styles.chartText
-                      }>
-                      2M
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      updateChart('180');
-                    }}
-                    style={
-                      state.chartSelected == '180'
-                        ? styles.goldSelected
-                        : styles.chartComponents
-                    }>
-                    <Text
-                      style={
-                        state.chartSelected == '180'
-                          ? styles.navSelectedText
-                          : styles.chartText
-                      }>
-                      3M
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={async () => {
-                      await updateChart('365');
-                    }}
-                    style={
-                      state.chartSelected == '365'
-                        ? styles.goldSelected
-                        : styles.chartComponents
-                    }>
-                    <Text
-                      style={
-                        state.chartSelected == '365'
-                          ? styles.navSelectedText
-                          : styles.chartText
-                      }>
-                      1Y
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                {/* <View style={styles.additionalInfo}>
-                      <View style={styles.column1}>
-                        <View style={{marginTop: 15}}>
-                          <Text style={styles.marketCapInfo}>
-                            All Time High
-                          </Text>
-                          <Text style={styles.highText}>
-                            ${state.allTimeHigh}
-                          </Text>
-                        </View>
-                        <View style={{marginTop: 15}}>
-                          <Text style={styles.marketCapInfo}>Market Cap</Text>
-                          <Text style={styles.marketCapData}>
-                            ${state.marketCap.toLocaleString()}
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={styles.column2}>
-                        <View style={{marginTop: 15}}>
-                          <Text style={styles.marketCapInfo}>All Time Low</Text>
-                          <Text style={styles.lowText}>{'<'}$1</Text>
-                        </View>
-                        <View style={{marginTop: 15}}>
-                          <Text style={styles.marketCapInfo}>Total Volume</Text>
-                          <Text style={styles.marketCapData}>
-                            {state.totalVolume.toLocaleString()}
-                          </Text>
-                        </View>
-                      </View>
-                    </View> */}
+                      <Text
+                        style={
+                          timeFrameSelected === item
+                            ? {
+                                color: 'white',
+                                fontSize: 14,
+                              }
+                            : {
+                                color: '#787878',
+                                fontSize: 14,
+                              }
+                        }>
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  data={availableTimeFrame}
+                />
               </View>
-              {/* <View style={styles.portfolio}>
-                    <Text style={styles.portfolioText}>Portfolio</Text>
-                    <View style={styles.marketTrades}>
-                      <View style={styles.subContents}>
-                        <Text style={styles.marketText}>
-                          Market Trades Appear Here
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.positions}>
-                      <View style={styles.subContents}>
-                        <Text style={styles.marketText}>
-                          Your Positions Appear Here
-                        </Text>
-                      </View>
-                    </View>
-                  </View> */}
             </View>
           </View>
-          <View
-            style={
-              // state.btnSelected == 'long' ||
-              // state.btnSelected == 'short'
-              // ?
-              styles.longshortContainer
-              // : {display: 'none'}
-            }>
-            {/* <View style={styles.priceSlippage}>
-                  <View style={styles.price}>
-                    <View style={styles.subContents}>
-                      <Text style={styles.subText}>Price</Text>
-                      <TextInput
-                        //    onPress={updatePrice()}
-                        editable={false}
-                        style={styles.subPrice}
-                        placeholderTextColor={'#C4C4C4'}
-                        value={state.price}
-                        onChangeText={newText =>
-                          setState({price: newText})
-                        }
-                      />
-                    </View>
-                  </View>
-                  <View style={styles.slippage}>
-                    <View style={styles.subContents}>
-                      <Text style={styles.subText}>Slippage</Text>
-                      <TextInput
-                        style={styles.subPrice}
-                        placeholder="0%"
-                        placeholderTextColor={'#C4C4C4'}
-                      />
-                    </View>
-                  </View>
-                </View> */}
-            {/* <View style={styles.btcUsd}>
-                  <View style={styles.btc}>
-                    <View style={styles.subContents}>
-                      <Text style={styles.subBtc}>You Sell</Text>
-                      {state.status ? (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}>
-                          <TextInput
-                            //    onPress={updatePrice()}
-                            keyboardType='numeric'
-                            style={styles.subPriceBtc}
-                            placeholderTextColor={'#C4C4C4'}
-                            value={state.buyPrice}
-                            onChangeText={newText =>
-                              setState({buyPrice: newText})
-                            }
-                          />
-                          <Text
-                            style={{
-                              color: 'white',
-                              fontSize: 24,
-                              fontFamily: `Satoshi-Bold`,
-                              marginTop: '1%',
-                            }}>
-                            USD
-                          </Text>
-                        </View>
-                      ) : (
-                        <View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                            }}>
-                            <TextInput
-                              //    onPress={updatePrice()}
-                              style={styles.subPriceBtc}
-                              placeholderTextColor={'#C4C4C4'}
-                              value={state.nBtc.toString()}
-                              onChangeText={newText =>
-                                setState({
-                                  nBtc: newText,
-                                })
-                              }
-                            />
-                            <Text
-                              style={{
-                                color: '#fff',
-                                fontSize: 25,
-                                fontFamily: `Satoshi-Bold`,
-                                marginTop: '-1%',
-                              }}>
-                              {state.item.symbol.toUpperCase()}
-                            </Text>
-                          </View>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                  <View style={styles.usd}>
-                    <TouchableOpacity
-                      onPress={() => btcFirst()}
-                      style={{
-                        transform: [{rotate: '90deg'}],
-                        position: 'absolute',
-                        marginTop: '-10%',
-                        alignSelf: 'center',
-                      }}>
-                      <Icon
-                        reverse
-                        name="swap"
-                        type="antdesign"
-                        color="#161616"
-                        size={30}
-                      />
-                    </TouchableOpacity>
-                    <View style={styles.subContents}>
-                      <Text style={styles.subBtc}>You Receive</Text>
-                      {state.status ? (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}>
-                          <Text style={styles.subPriceBtc}>
-                            {(
-                              Number(state.buyPrice) /
-                              Number(state.price)
-                            ).toFixed(3)}
-                          </Text>
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontSize: 25,
-                              fontFamily: `Satoshi-Bold`,
-                              marginTop: '-1%',
-                            }}>
-                            {state.item.symbol.toUpperCase()}
-                          </Text>
-                        </View>
-                      ) : (
-                        <View>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                            }}>
-                            <Text style={styles.subPriceBtc}>
-                              {(
-                                Number(state.nBtc) *
-                                Number(state.price)
-                              ).toFixed(3)}
-                            </Text>
-                            <Text
-                              style={{
-                                color: 'white',
-                                fontSize: 25,
-                                fontFamily: `Satoshi-Bold`,
-                                marginTop: '-1%',
-                              }}>
-                              USD
-                            </Text>
-                          </View>
-                        </View>
-                      )}
-                    </View>
-                  </View>
-                            </View> */}
-            {/* <View style={styles.leverage}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Text style={styles.leverageText}>Leverage</Text>
-                    <Text style={styles.leverageIndicator}>
-                      {state.leverageValue}x
-                    </Text>
-                  </View>
-                  <Slider
-                    thumbStyle={{
-                      height: 20,
-                      width: 20,
-                      backgroundColor: '#232323',
-                    }}
-                    trackStyle={{height: 5}}
-                    style={{marginTop: 10}}
-                    value={state.leverageValue}
-                    onValueChange={value =>
-                      setState({leverageValue: value})
-                    }
-                    step={1}
-                    minimumValue={1}
-                    maximumValue={10}
-                  />
-                </View> */}
-            {/* <View>
-                  <Text style={styles.orderSummary}>
-                    Scroll To See Order Summary
-                  </Text>
-                </View> */}
-            {/* <View style={styles.summary}>
-                  <Text style={styles.summaryHeader}>Order Summary</Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 4,
-                    }}>
-                    <Text style={styles.orderDescription}>Entry Price</Text>
-                    <Text style={styles.orderAmount}>${state.price}</Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 4,
-                    }}>
-                    <Text style={styles.orderDescription}>Index Price</Text>
-                    <Text style={styles.orderAmount}>
-                      ${state.buyPrice}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 4,
-                    }}>
-                    <Text style={styles.orderDescription}>Funding Rate</Text>
-                    <Text style={styles.orderAmount}>0%</Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 4,
-                    }}>
-                    <Text style={styles.orderDescription}>Trading Fees</Text>
-                    <Text style={styles.orderAmount}>$0</Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      marginBottom: 4,
-                    }}>
-                    <Text style={styles.orderDescription}>Position Size</Text>
-                    <Text style={styles.orderAmount}>$0</Text>
-                  </View>
-                </View> */}
+          <View style={styles.longshortContainer}>
             <TouchableOpacity
               style={{
                 paddingHorizontal: '5%',
@@ -1390,10 +898,6 @@ const MarketChart = props => {
       </ScrollView>
     </View>
   );
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
 };
 
 const ReadMoreLess = ({text, maxChars}) => {

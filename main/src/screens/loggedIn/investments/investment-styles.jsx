@@ -1,4 +1,4 @@
-import { Platform, Dimensions, StyleSheet } from 'react-native';
+import {Platform, Dimensions, StyleSheet} from 'react-native';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -281,21 +281,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  coinChart: {
-    // marginTop: '10%',
-  },
-
   chartContainer: {
     marginTop: '10%',
   },
 
   goldSelected: {
-    backgroundColor: '#232323',
-    borderRadius: 50,
-    paddingHorizontal: 25,
-    paddingVertical: 7,
+    borderRadius: 1000,
+    background: '#232323',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
-
+  goldSelectedTitle: {
+    color: 'white',
+    fontSize: 14,
+  },
   chartComponents: {
     borderRadius: 50,
     paddingHorizontal: 25,
@@ -339,7 +338,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Unbounded-Bold',
     color: '#2FBE6A',
     fontSize: 25,
-
   },
 
   lowText: {

@@ -1,9 +1,7 @@
-import Datafeed from './datafeed.js';
 let params = new URL(document.location).searchParams;
 let height = params.get('height');
 let width = params.get('width');
-let timeFrame = params.get('timeFrame');
-console.log('height.......', timeFrame, height, width);
+console.log('height.......', height, width);
 function getParameterByName(name) {
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
@@ -27,7 +25,7 @@ function initOnReady() {
     interval: '1D',
     container: 'tv_chart_container',
     //	BEWARE: no trailing slash is expected in feed URL
-    datafeed: Datafeed,
+    // datafeed: Datafeed,
     datafeed: new Datafeeds.UDFCompatibleDatafeed(datafeedUrl, undefined, {
       maxResponseLength: 1000,
       expectedOrder: 'latestFirst',

@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 const coingeckoBaseURL = 'https://api.coingecko.com/api/v3';
-const mobulaBaseURL = 'https://api.mobula.io/api/1/';
-const marketRoutes = {getMarket: '/coins/markets', getAsset: '/metadata'};
+const mobulaBaseURL = 'https://api.mobula.io/api/1';
+const marketRoutes = {
+  getMarket: '/coins/markets',
+  getAsset: '/metadata',
+  getHistorical: '/market/history',
+};
 export const getMarketAssetData = async page => {
   try {
     const response = await axios.get(
@@ -21,6 +25,18 @@ export const getAssetMetadata = async assetName => {
       `${mobulaBaseURL}${marketRoutes.getAsset}?asset=${assetName}`,
     );
     console.log('response from asset api:', response?.data?.length);
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};
+export const getHistoricalData = async (assetName, from) => {
+  try {
+    const response = await axios.get(
+      `${mobulaBaseURL}${marketRoutes.getHistorical}?asset=${assetName}&from=${from}`,
+    );
+    console.log('response from historical api:', response?.data?.length);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);
