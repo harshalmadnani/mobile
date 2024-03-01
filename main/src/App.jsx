@@ -45,6 +45,8 @@ import SavingsPending from './screens/loggedIn/savings/savingStatus/pending';
 import SavingsSuccessful from './screens/loggedIn/savings/savingStatus/successful';
 // import SavingsUnsuccessful from './screens/loggedIn/savings/savingStatus/unsuccessful';
 import Ramper from './screens/loggedIn/payments/Ramps/ramper';
+import LiFi from './screens/loggedIn/payments/Ramps/lifi';
+import Uniramp from './screens/loggedIn/payments/Ramps/uniramp';
 import SettingsComponent from './screens/settings/settings';
 
 import Card from './screens/loggedIn/card';
@@ -653,6 +655,16 @@ export default function App({ navigation, uri }) {
             <Stack.Screen
               name="Ramper"
               component={Ramper}
+              options={{ headerShown: false }}
+            />
+                  <Stack.Screen
+              name="Uniramp"
+              component={Uniramp}
+              options={{ headerShown: false }}
+            />
+           <Stack.Screen
+              name="LiFi"
+              component={LiFi}
               options={{ headerShown: false }}
             />
             <Stack.Screen
