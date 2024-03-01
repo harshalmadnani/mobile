@@ -380,7 +380,7 @@ function TradePageScreen({route, navigation}) {
       <ScrollView style={{height: '100%'}}>
         <TradePage navigation={navigation} route={route} />
       </ScrollView>
-      <BottomNavbar navigation={navigation} selected="Investments" />
+
     </SafeAreaView>
   );
 }

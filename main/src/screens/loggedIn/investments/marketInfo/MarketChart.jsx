@@ -365,15 +365,15 @@ const MarketChart = props => {
                   alignItems: 'center',
                   justifyContent: 'flex-start',
                   width: '100%',
-                  marginBottom: '3%',
+                  marginBottom: '10%',
                 }}>
                 <Icon
-                  name={'arrow-back'}
+                  name={'navigate-before'}
                   size={30}
                   color={'#f0f0f0'}
                   type="materialicons"
                   onPress={() => navigation.goBack()}
-                  style={{marginLeft: 30}}
+                  style={{marginLeft: 20}}
                 />
                 <View
                   style={{

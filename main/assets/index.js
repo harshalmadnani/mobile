@@ -9,4 +9,5 @@ export const ImageAssets = {
     forexImg: require('./forex.png'),
     commodotiesImg: require('./commodoties.png'),
     stocksImg: require('./stocks.png'),
+    timeImg: require('./time.png'),
 };

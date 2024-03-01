@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
 
   stockHead: {
     color: '#F0F0F0',
-    fontFamily: 'Satoshi-Bold',
+    fontFamily: 'Unbounded-Regular',
     fontSize: 16,
     right: 30,
   },

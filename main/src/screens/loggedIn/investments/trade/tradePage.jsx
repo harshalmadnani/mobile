@@ -436,7 +436,7 @@ const TradePage = ({ route, navigation }) => {
           </View>
           {
             tradeType === "buy" ?
-              <View style={{ marginTop: 40, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+              <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
                 {/*Investment Section */}
                 <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Regular' }}>How much would you like to invest?  </Text>
                 <TouchableOpacity onPress={() => console.log('MAX pressed')} >
@@ -451,14 +451,24 @@ const TradePage = ({ route, navigation }) => {
                 </TouchableOpacity>
               </View>
               :
-              <View style={{ marginTop: 40 }}>
+              <View style={{ marginTop: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
                 {/*Investment Section */}
-                <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Regular' }}>How much would you like to sell?</Text>
+                <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Regular' }}>How much would you like to sell?  </Text>
+                <TouchableOpacity onPress={() => console.log('MAX pressed')} >
+                  <Text style={{
+                    color: '#C397FF', // Text color as specified
+                    fontFamily: 'Satoshi-Black', // Ensure this font is linked in your project
+                    fontSize: 12, // Font size as specified
+                    // Any additional text styling here
+                  }}>
+                    MAX
+                  </Text>
+                </TouchableOpacity>
               </View>
           }
           {/*Input Number */}
           {tradeType === "sell" ?
-            <View style={{ marginTop: 25, flexDirection: "row", justifyContent: "center", gap: 8 }}>
+            <View style={{ marginTop: 25, flexDirection: "row", justifyContent: "center", gap: 8, fontFamily: "Unbounded-Bold" }}>
               <TextInput
                 style={{ fontSize: 56, fontWeight: "900", color: "#ffffff", textAlign: "center", fontFamily: "Unbounded-Bold" }}
                 value={value}
@@ -471,7 +481,7 @@ const TradePage = ({ route, navigation }) => {
               <Text style={{ fontSize: 56, fontWeight: "900", color: "#252525", textAlign: "center", textTransform: 'uppercase', marginTop: 10 }}>{state.item.symbol}</Text>
             </View>
             :
-            <View style={{ marginTop: 30, flexDirection: "row", justifyContent: "center", gap: 8 }}>
+            <View style={{ marginTop: 25, flexDirection: "row", justifyContent: "center", gap: 8 }}>
               <Text style={{ fontSize: 56, fontWeight: 900, color: "#252525", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Bold' }}>$</Text>
               <TextInput
                 style={{ fontSize: 56, fontWeight: "900", color: "#ffffff", textAlign: "center", fontFamily: "Unbounded-ExtraBold" }}
@@ -484,21 +494,35 @@ const TradePage = ({ route, navigation }) => {
             </View>
           }
           {tradeType === "buy" ?
-            <View style={{ marginTop: 15, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Regular' }}>You'll get </Text>
+            <View style={{ marginTop: 10, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Unbounded-Regular' }}>You'll get </Text>
               <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Unbounded-Bold' }}>0.006 BTC </Text>
 
               {/* image to allow btc input */}
               {/* <Image source={ImageAssets.arrowImg} /> */}
             </View>
             :
-            <View style={{ marginTop: 40, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Regular' }}>You'll get </Text>
+            <View style={{ marginTop: 1, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Unbounded-Regular' }}>You'll get </Text>
+              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Unbounded-Bold' }}>$55,000 </Text>
               {/* image to allow btc input */}
               {/* <Image source={ImageAssets.arrowImg} /> */}
             </View>}
+          {tradeType === "buy" ?
+            <View style={{ marginTop: 25, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ fontSize: 16, color: "#fff", textAlign: "center", fontFamily: 'Unbounded-ExtraBold' }}>$1,267 </Text>
+              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Unbounded-Regular' }}>available to invest </Text>
 
-
+              {/* image to allow btc input */}
+              {/* <Image source={ImageAssets.arrowImg} /> */}
+            </View>
+            :
+            <View style={{ marginTop: 25, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+              <Text style={{ fontSize: 16, color: "#fff", textAlign: "center", fontFamily: 'Unbounded-Bold' }}>0.006 BTC </Text>
+              <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Unbounded-Regular' }}>available to sell </Text>
+              {/* image to allow btc input */}
+              {/* <Image source={ImageAssets.arrowImg} /> */}
+            </View>}
 
           {/*order summary */}
           <View
@@ -583,7 +607,7 @@ const TradePage = ({ route, navigation }) => {
                         style={{
                           fontSize: 16,
                           fontWeight: "700",
-                          fontFamily: "Unbounded-Bold",
+                          fontFamily: "Unbounded-ExtraBold",
                           color: "#fff",
                         }}
                       >
@@ -607,82 +631,7 @@ const TradePage = ({ route, navigation }) => {
                     marginBottom: 34
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 24
-                    }}
-                  >
-                    <Image
-                      source={ImageAssets.slippageImg}
-                      style={{
-                        width: 40,
-                        height: 40,
-                      }}
-                    />
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontFamily: "Satoshi-Bold",
-                          color: "#7e7e7e",
-                        }}
-                      >
-                        Slippage
-                      </Text>
-                      {
-                        changeSlipage ?
-                          (
-                            <TextInput
-                              style={{
-                                fontSize: 16,
-                                fontWeight: "700",
-                                fontFamily: "Satoshi-Bold",
-                                color: "#fff",
-                              }}
-                              value={`${slipageValue} %`}
-                              onChangeText={(text) => setSlipageValue(text)}
-                              keyboardType='numeric'
-                            />
-                          )
-                          :
-                          (
-                            <Text
-                              style={{
-                                fontSize: 16,
-                                fontWeight: "700",
-                                fontFamily: "Satoshi-Bold",
-                                color: "#fff",
-                              }}
 
-                            >
-                              {slipageValue}%
-                            </Text>
-                          )
-                      }
-                    </View>
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: "700",
-                      fontFamily: "Satoshi",
-                      color: "#c397ff",
-                    }}
-                    onPress={() => setChangeSlipage(!changeSlipage)}
-                  >
-                    Change
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: 34
-                  }}
-                >
                   <View
                     style={{
                       flexDirection: "row",
@@ -701,11 +650,74 @@ const TradePage = ({ route, navigation }) => {
                       <Text
                         style={{
                           fontSize: 14,
-                          fontFamily: "Satoshi",
+                          fontFamily: "Satoshi-Bold",
                           color: "#7e7e7e",
                         }}
                       >
-                        Estimated fee
+                        Estimated Fees
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: "700",
+                          fontFamily: "Unbounded-ExtraBold",
+                          color: "#fff",
+                        }}
+                      >
+                        $0.01
+                      </Text>
+                    </View>
+                  </View>
+                  <Image
+                    source={ImageAssets.infoImg}
+                    style={{
+                      width: 24,
+                      height: 24,
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 34
+                  }}
+                >
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 24
+                    }}
+                  >
+                    <Image
+                      source={ImageAssets.timeImg}
+                      style={{
+                        width: 40,
+                        height: 40,
+                      }}
+                    />
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontFamily: "Satoshi-Bold",
+                          color: "#7e7e7e",
+                        }}
+                      >
+                        Execution Time
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          fontWeight: "700",
+                          fontFamily: "Unbounded-ExtraBold",
+                          color: "#fff",
+                        }}
+                      >
+                        5s
                       </Text>
                     </View>
                   </View>
