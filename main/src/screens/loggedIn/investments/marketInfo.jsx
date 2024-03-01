@@ -1,4 +1,4 @@
-import React, { useState, Component, useEffect } from 'react';
+import React, {useState, Component, useEffect} from 'react';
 import {
   TouchableOpacity,
   TouchableHighlight,
@@ -18,18 +18,18 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
-import { Icon } from 'react-native-elements';
-import { CRYPTO_LIST } from './data/crypto';
+import {Icon} from 'react-native-elements';
+import {CRYPTO_LIST} from './data/crypto';
 import TradeItemCard from './TradeItemCard';
-import { WebView } from 'react-native-webview';
+import {WebView} from 'react-native-webview';
 import LinearGradient from 'react-native-linear-gradient';
 import TradeSvg from './icon/tradeSvg';
 import DepositSvg from './icon/depositSvg';
-import MarketChart from './marketInfo/MarketChart'
-import { MaterialTabBar, Tabs } from 'react-native-collapsible-tab-view';
+import MarketChart from './marketInfo/MarketChart';
+import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const MarketInfo = ({ route, navigation, item }) => {
+const MarketInfo = ({route, navigation, item}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -44,35 +44,31 @@ const MarketInfo = ({ route, navigation, item }) => {
   console.log(item);
   const handleCloseBuyModal = () => {
     setShowBuyModal(false);
-  }
+  };
 
   const handleCloseSellModal = () => {
     setShowSellModal(false);
-  }
+  };
 
   // console.log(route.params);
 
   const uri =
     Platform.OS === 'android'
       ? `file:///android_asset/index.html?theme=dark&symbol=BINANCE:BTCUSDT&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-      // ? `file:///android_asset/index.html?theme=dark&symbol=${item.symbol}&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-      : 'index.html';
+      : // ? `file:///android_asset/index.html?theme=dark&symbol=${item.symbol}&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
+        'index.html';
 
   console.log(uri);
 
   useEffect(() => {
-
     async function init() {
       try {
         setIsLoading(true);
-        const mainnetJSON = await AsyncStorage.getItem('mainnet');
-        const mainnet = JSON.parse(mainnetJSON);
 
         if (global.withAuth) {
           authAddress = global.loginAccount.publicAddress;
           const scwAddress = global.loginAccount.scw;
           setAddress(scwAddress);
-
         } else {
           authAddress = global.connectAccount.publicAddress;
           const scwAddress = global.connectAccount.publicAddress;
@@ -80,12 +76,10 @@ const MarketInfo = ({ route, navigation, item }) => {
         }
 
         // fetch selected coin contract address
-
       } catch (e) {
         console.log(e);
       }
       setIsLoading(false);
-
     }
 
     init();
@@ -101,25 +95,25 @@ const MarketInfo = ({ route, navigation, item }) => {
 
         // backgroundColor: 'red'
       }}>
-
-
-
-      {
-        isLoading &&
-        <View style={{ height: '100%' }}>
-          <ActivityIndicator size={30} style={{ marginTop: '40%' }} color="#fff" />
+      {isLoading && (
+        <View style={{height: '100%'}}>
+          <ActivityIndicator
+            size={30}
+            style={{marginTop: '40%'}}
+            color="#fff"
+          />
         </View>
-      }
+      )}
 
-
-      {!isLoading && <ScrollView
-        scrollEnabled
-        style={{
-          // paddingTop:'15%',
-          marginTop: '10%',
-          // backgroundColor: 'blue',
-        }}>
-        {/* <WebView
+      {!isLoading && (
+        <ScrollView
+          scrollEnabled
+          style={{
+            // paddingTop:'15%',
+            marginTop: '10%',
+            // backgroundColor: 'blue',
+          }}>
+          {/* <WebView
                         style={{flex: 1, height: 300}}
                         source={{uri}}
                         dataUrl={'https://tradingview.com/'}
@@ -131,29 +125,29 @@ const MarketInfo = ({ route, navigation, item }) => {
                         onShouldStartLoadWithRequest={() => true}
                     /> */}
 
-        <View>
-          <View style={{}}>
-            <MarketChart item={item} scwAddress={address} />
+          <View>
+            <View style={{}}>
+              <MarketChart item={item} scwAddress={address} />
+            </View>
           </View>
-        </View>
 
-        <View margin={4} />
+          <View margin={4} />
 
-        {showBuyModal && (
-          <BuyModal
-            marketData={{}}
-            // transactionData={transactionData}
-            onClose={handleCloseBuyModal}
-          />
-        )}
+          {showBuyModal && (
+            <BuyModal
+              marketData={{}}
+              // transactionData={transactionData}
+              onClose={handleCloseBuyModal}
+            />
+          )}
 
-        {showSellModal && (
-          <SellModal
-            // transactionData={transactionData}
-            onClose={handleCloseSellModal}
-          />
-        )}
-        {/*
+          {showSellModal && (
+            <SellModal
+              // transactionData={transactionData}
+              onClose={handleCloseSellModal}
+            />
+          )}
+          {/*
                     <View>
                         <View style={{
                             marginHorizontal:20,
@@ -185,8 +179,7 @@ const MarketInfo = ({ route, navigation, item }) => {
                         </View>
                     </View> */}
 
-
-        {/* <Tabs.Container
+          {/* <Tabs.Container
                         // renderTabBar={renderTabBar}
                         containerStyle={{ minHeight: 400, fontSize: '14px', fontFamily: 'Satoshi-Bold'}}
                         onIndexChange={setIndex}
@@ -207,7 +200,7 @@ const MarketInfo = ({ route, navigation, item }) => {
                         </Tabs.Tab>
                     </Tabs.Container> */}
 
-        {/* <View
+          {/* <View
                         style={{
                             flexDirection: 'row',
                             // width: '80%',
@@ -246,21 +239,19 @@ const MarketInfo = ({ route, navigation, item }) => {
                         </TouchableOpacity>
 
                     </View> */}
-      </ScrollView>
-      }
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
-}
-
-
+};
 
 const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     color: '#ffffff',
     fontFamily: `Satoshi-Bold`,
-    fontWeight: "500",
-    marginLeft: 30
+    fontWeight: '500',
+    marginLeft: 30,
   },
   depWith: {
     flexDirection: 'row',
@@ -282,6 +273,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: '1%',
     // backgroundColor: '#141414',
   },
-})
+});
 
 export default MarketInfo;

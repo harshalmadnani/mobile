@@ -66,6 +66,8 @@ import ExternalLinkModal from '../externalLink/widget';
 import {useSelector} from 'react-redux';
 import {LoginType} from '@particle-network/rn-auth';
 import {getAuthCoreProvider} from '../../../utils/particleCoreSDK';
+import {useFocusEffect} from '@react-navigation/native';
+import { getCryptoHoldingForAddressFromMobula } from '../../../store/actions/portfolio';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -91,6 +93,7 @@ const PaymentsComponent = ({navigation}) => {
   const DEVICE_WIDTH = Dimensions.get('window').width;
   const address = useSelector(x => x.auth.address);
   const mainnet = useSelector(x => x.auth.mainnet);
+  const nfts = useSelector(x => x.portfolio.nfts);
   const web3 = getAuthCoreProvider(LoginType.Email);
 
   const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
@@ -100,19 +103,11 @@ const PaymentsComponent = ({navigation}) => {
     setShowTxnReceiptModal(false);
   };
   const call = async () => {
-    // const address = global.withAuth
-    //   ? global.loginAccount.publicAddress
-    //   : global.connectAccount.publicAddress;
     console.log('Auth Type....', address, global.withAuth);
-    // const web3 = global.withAuth
-    //   ? this.createProvider()
-    //   : this.createConnectProvider();
-
+    dispatch(getCryptoHoldingForAddressFromMobula());
     const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
-
     console.log('token balance.....', tokenBalance);
     setBalance(tokenBalance || '0.00');
-
     const {txDates, txs} = await txHistoryLoad(address);
     console.log('txdatess balance.....', txs, txDates);
     setDates(txDates);
@@ -120,6 +115,7 @@ const PaymentsComponent = ({navigation}) => {
     console.log('Request being sent for registration');
     await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
     console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
+
     if (global.withAuth) {
       if (!global.smartAccount) {
         let options = {
@@ -154,11 +150,20 @@ const PaymentsComponent = ({navigation}) => {
       }
     }
   };
-  useEffect(async () => {
-    console.log('Is Auth:', global.withAuth);
-    await call();
-  }, []);
-
+  // useFocusEffect(async () => {
+  //   console.log('Is Auth:', global.withAuth);
+  //   await call();
+  // }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      call();
+      // Cleanup function (optional)
+      return () => {
+        // You can perform cleanup tasks here if needed
+      };
+    }, []),
+  );
+  console.log('NFTS heree....', nfts);
   const t = true;
   return (
     <SafeAreaView
