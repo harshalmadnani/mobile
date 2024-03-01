@@ -67,7 +67,7 @@ import {useSelector} from 'react-redux';
 import {LoginType} from '@particle-network/rn-auth';
 import {getAuthCoreProvider} from '../../../utils/particleCoreSDK';
 import {useFocusEffect} from '@react-navigation/native';
-import { getCryptoHoldingForAddressFromMobula } from '../../../store/actions/portfolio';
+import {getCryptoHoldingForAddressFromMobula} from '../../../store/actions/portfolio';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -104,7 +104,7 @@ const PaymentsComponent = ({navigation}) => {
   };
   const call = async () => {
     console.log('Auth Type....', address, global.withAuth);
-    dispatch(getCryptoHoldingForAddressFromMobula());
+    // dispatch(getCryptoHoldingForAddressFromMobula());
     const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
     console.log('token balance.....', tokenBalance);
     setBalance(tokenBalance || '0.00');
