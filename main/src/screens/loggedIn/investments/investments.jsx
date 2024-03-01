@@ -13,7 +13,10 @@ import {
 import {ImageAssets} from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
 import {useDispatch, useSelector} from 'react-redux';
-import {getListOfCryptoFromMobulaApi} from '../../../store/actions/market';
+import {
+  getListOfCryptoFromCoinGeckoApi,
+  getListOfCryptoFromMobulaApi,
+} from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
 
 const idToChain = {
@@ -30,6 +33,32 @@ const idToChain = {
     chain: 'polygon',
   },
 };
+const ComingSoonView = () => (
+  <View
+    style={{
+      height: height * 0.8,
+      width: '100%',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
+    <View>
+      <Image source={ImageAssets.forexImg} style={{height: 200, width: 200}} />
+    </View>
+    <View style={{marginBottom: 50, alignItems: 'flex-start', gap: 10}}>
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: 'bold',
+          color: '#D1D2D9',
+          textAlign: 'justify',
+          fontFamily: 'Satoshi-Regular',
+        }}>
+        Coming Soon
+      </Text>
+    </View>
+  </View>
+);
 const Investments = ({navigation}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
@@ -38,21 +67,30 @@ const Investments = ({navigation}) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [section, setSection] = useState('crypto');
+  const [page, setPage] = useState(1);
   const dispatch = useDispatch();
   useFocusEffect(
     useCallback(() => {
       console.log('Here....fired');
       setIsLoading(true);
-      dispatch(getListOfCryptoFromMobulaApi());
+      dispatch(getListOfCryptoFromCoinGeckoApi(page));
+      setPage(2);
       setIsLoading(false);
 
       return () => {
+        console.log('firedd cleanup ======>');
         setIsLoading(false);
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
     }, []),
   );
-
+  const onEndReachedFetch = async () => {
+    console.log('firedd on end ======>');
+    if (page <= 3) {
+      dispatch(getListOfCryptoFromCoinGeckoApi(page));
+      setPage(page + 1);
+    }
+  };
   return (
     <SafeAreaView
       style={{
@@ -62,7 +100,7 @@ const Investments = ({navigation}) => {
         backgroundColor: '#000000',
         paddingBottom: 80,
       }}>
-      <View style={{}}>
+      <View>
         <View
           style={{
             flexDirection: 'row',
@@ -164,7 +202,7 @@ const Investments = ({navigation}) => {
         </View>
       )}
 
-      {!isLoading && section === 'crypto' ? (
+      {!isLoading && section === 'crypto' && (
         <View
           scrollEnabled
           style={{
@@ -173,104 +211,18 @@ const Investments = ({navigation}) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
+              style={{marginBottom: 64}}
               renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
-              keyExtractor={item => item.symbol}
+              onEndReached={async () => await onEndReachedFetch()}
+              keyExtractor={(item, i) => i.toString()}
             />
           )}
         </View>
-      ) : section === 'forex' ? (
-        <View
-          style={{
-            height: height * 0.8,
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            // paddingHorizontal: 20,
-            // paddingVertical: 12,
-          }}>
-          <View>
-            <Image
-              source={ImageAssets.forexImg}
-              style={{height: 200, width: 200}}
-            />
-          </View>
-          <View style={{marginBottom: 50, alignItems: 'flex-start', gap: 10}}>
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: 'bold',
-                color: '#D1D2D9',
-                textAlign: 'justify',
-                fontFamily: 'Satoshi-Regular',
-              }}>
-              Coming Soon
-            </Text>
-          </View>
-        </View>
-      ) : section === 'stocks' ? (
-        <View
-          style={{
-            height: height * 0.8,
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            // paddingHorizontal: 20,
-            // paddingVertical: 12,
-          }}>
-          <View>
-            <Image
-              source={ImageAssets.stocksImg}
-              style={{height: 200, width: 200}}
-            />
-          </View>
-          <View style={{marginBottom: 50, alignItems: 'flex-start', gap: 10}}>
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: 'bold',
-                color: '#D1D2D9',
-                textAlign: 'justify',
-                fontFamily: 'Satoshi-Regular',
-              }}>
-              Coming Soon
-            </Text>
-          </View>
-        </View>
-      ) : (
-        <View
-          style={{
-            height: height * 0.8,
-            width: '100%',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            // paddingHorizontal: 20,
-            // paddingVertical: 12,
-          }}>
-          <View>
-            <Image
-              source={ImageAssets.commodotiesImg}
-              style={{height: 200, width: 200}}
-            />
-          </View>
-          <View style={{marginBottom: 50, alignItems: 'flex-start', gap: 10}}>
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: 'bold',
-                color: '#D1D2D9',
-                textAlign: 'justify',
-                fontFamily: 'Satoshi-Regular',
-              }}>
-              Coming Soon
-            </Text>
-          </View>
-        </View>
       )}
+
+      {section !== 'crypto' && <ComingSoonView />}
     </SafeAreaView>
   );
 };

@@ -1,17 +1,11 @@
-import {getMarketAssetData} from '../../utils/mobulaMarketApi';
+import {getMarketAssetData} from '../../utils/cryptoMarketsApi';
 import {marketsAction} from '../reducers/market';
 
-export const getListOfCryptoFromMobulaApi = () => {
-  return async dispatch => {
-    const data = await getMarketAssetData();
-    dispatch(
-      marketsAction.setListOfCrypto(
-        data?.filter(
-          x =>
-            x.name !== 'f(x) Protocol' &&
-            x.name !== 'Bridged Wrapped Lido Staked Ether (Scroll)',
-        ),
-      ),
-    );
+export const getListOfCryptoFromCoinGeckoApi = page => {
+  return async (dispatch, getState) => {
+    const listOfCrypto = getState().market.listOfCrypto ?? [];
+    const data = await getMarketAssetData(page);
+    console.log('updated:=========>', page, listOfCrypto.concat(data).length);
+    dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
   };
 };

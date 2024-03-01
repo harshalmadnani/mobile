@@ -11,6 +11,7 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 const TradeItemCard = ({navigation, item}) => {
+  console.log('item....', item);
   return (
     <TouchableOpacity
       onPress={e => {
@@ -44,7 +45,7 @@ const TradeItemCard = ({navigation, item}) => {
             <FastImage
               style={{width: 42, height: 42}}
               source={{
-                uri: `${item.logo}`,
+                uri: `${item.image}`,
               }}
             />
           </View>
@@ -69,7 +70,9 @@ const TradeItemCard = ({navigation, item}) => {
             // backgroundColor: 'red'
           }}>
           <View>
-            <Text style={styles.text1}>${item.price?.toLocaleString()}</Text>
+            <Text style={styles.text1}>
+              ${item.current_price?.toLocaleString()}
+            </Text>
           </View>
           <View>
             {item.price_change_24h >= 0 && (
