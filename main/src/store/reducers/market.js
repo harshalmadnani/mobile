@@ -4,6 +4,9 @@ import {createSlice} from '@reduxjs/toolkit';
 // This is the initial state of the slice
 const initialState = {
   listOfCrypto: [],
+  selectedAssetMetaData: null,
+  selectedTimeFramePriceInfo: null,
+  selectedAssetWalletHolding: null,
 };
 
 export const marketSlice = createSlice({
@@ -13,6 +16,15 @@ export const marketSlice = createSlice({
     // All the reducers go here
     setListOfCrypto: (state, action) => {
       state.listOfCrypto = action.payload;
+    },
+    setSelectedAssetData: (state, action) => {
+      state.selectedAssetMetaData = action.payload;
+    },
+    setSelectedTimeFramePriceInfo: (state, action) => {
+      state.selectedTimeFramePriceInfo = action.payload;
+    },
+    setSelectedAssetWalletHolding: (state, action) => {
+      state.selectedAssetWalletHolding = action.payload;
     },
   },
 });

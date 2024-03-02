@@ -12,11 +12,10 @@ export const getNFTHoldingForAddressFromMobula = () => {
     dispatch(portfolioAction.setNftHoldings(data));
   };
 };
-export const getCryptoHoldingForAddressFromMobula = () => {
+export const getCryptoHoldingForAddressFromMobula = asset => {
   return async (dispatch, getState) => {
     const address = getState().auth.address;
-    const data = await getCryptoHoldingForAddress(address);
-    console.log('updated:=========>', data);
+    const data = await getCryptoHoldingForAddress(address, asset);
     dispatch(portfolioAction.setHoldings(data));
   };
 };
