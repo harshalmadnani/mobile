@@ -10,20 +10,22 @@ import {
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
+import {useDispatch} from 'react-redux';
+
+import moment from 'moment';
+import {useNavigation} from '@react-navigation/native';
 const TradeItemCard = ({navigation, item}) => {
-  console.log('item....', item);
+  const dispatch = useDispatch();
+
   return (
     <TouchableOpacity
       onPress={e => {
-        navigation.push('MarketInfo', {
-          item: item,
-        });
+        navigation.navigate('MarketInfo', {item: item});
       }}
       style={{
         width: '100%',
         alignSelf: 'flex-start',
         paddingVertical: '2%',
-        // backgroundColor: 'red'
       }}>
       <View
         style={{
@@ -39,7 +41,6 @@ const TradeItemCard = ({navigation, item}) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            // backgroundColor: 'red',
           }}>
           <View style={{paddingHorizontal: 10}}>
             <FastImage

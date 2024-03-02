@@ -36,7 +36,7 @@ export const getHistoricalData = async (assetName, from) => {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getHistorical}?asset=${assetName}&from=${from}`,
     );
-    console.log('response from historical api:', response?.data?.length);
+    console.log('response from historical api:', response?.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);

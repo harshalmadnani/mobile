@@ -6,6 +6,7 @@ const initialState = {
   listOfCrypto: [],
   selectedAssetMetaData: null,
   selectedTimeFramePriceInfo: null,
+  selectedAssetWalletHolding: null,
 };
 
 export const marketSlice = createSlice({
@@ -21,6 +22,9 @@ export const marketSlice = createSlice({
     },
     setSelectedTimeFramePriceInfo: (state, action) => {
       state.selectedTimeFramePriceInfo = action.payload;
+    },
+    setSelectedAssetWalletHolding: (state, action) => {
+      state.selectedAssetWalletHolding = action.payload;
     },
   },
 });

@@ -5,8 +5,6 @@ const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   black: {
     backgroundColor: '#000000',
-    width: '100%',
-    height: '100%',
   },
 
   logo: {
@@ -256,7 +254,6 @@ const styles = StyleSheet.create({
 
   stockName: {
     flexDirection: 'row',
-    // justifyContent: 'center',
     alignItems: 'center',
     marginLeft: '5%',
   },

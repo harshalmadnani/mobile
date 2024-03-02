@@ -15,12 +15,17 @@ export const getNftsHoldingForAddress = async address => {
     return [];
   }
 };
-export const getCryptoHoldingForAddress = async address => {
+export const getCryptoHoldingForAddress = async (address, asset) => {
   try {
-    const response = await axios.get(
-      `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
+    console.log(
+      'crypto url....',
+      `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`,
     );
-    console.log('response from nft api:', response?.data?.data);
+    const response = await axios.get(
+      asset
+        ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
+        : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
+    );
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);
