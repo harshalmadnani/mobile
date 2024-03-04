@@ -4,6 +4,7 @@ import {
   getMarketAssetData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
+import {getBestCrossSwapRate} from '../../utils/DLNTradeApi';
 import {marketsAction} from '../reducers/market';
 
 export const getListOfCryptoFromCoinGeckoApi = page => {
@@ -44,5 +45,14 @@ export const getCryptoHoldingForMarketFromMobula = asset => {
     const address = getState().auth.address;
     const data = await getCryptoHoldingForAddress(address, asset);
     dispatch(marketsAction.setSelectedAssetWalletHolding(data));
+  };
+};
+export const getBestDLNCrossSwapRate = (
+  blockchains,
+  contractAddress,
+  value,
+) => {
+  return async (dispatch, getState) => {
+    await getBestCrossSwapRate(blockchains, contractAddress, value);
   };
 };

@@ -7,6 +7,12 @@ const initialState = {
   selectedAssetMetaData: null,
   selectedTimeFramePriceInfo: null,
   selectedAssetWalletHolding: null,
+  availableBlockchain: [
+    'BNB Smart Chain (BEP20)',
+    'Polygon',
+    'Avalanche C-Chain',
+    'Arbitrum',
+  ],
 };
 
 export const marketSlice = createSlice({
