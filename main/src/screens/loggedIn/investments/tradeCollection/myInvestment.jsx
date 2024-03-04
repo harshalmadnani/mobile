@@ -62,6 +62,7 @@ const MyInvestment = ({navigation}) => {
         <View style={{
             flex: 1,
             marginTop: 8,
+        width: '95%',
         }}>
             
             {

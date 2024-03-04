@@ -72,6 +72,7 @@ import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccoun
 import AddFund from './screens/loggedIn/card/fund/addFund';
 import CardInfo from './screens/loggedIn/card/info/cardInfo';
 import TradePage from './screens/loggedIn/investments/trade/tradePage';
+import Portfolio from './screens/loggedIn/investments/portfolio/portfolio';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store/store';
 import WebView from 'react-native-webview';
@@ -256,13 +257,24 @@ function Investment({ navigation }) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.container}>
-        <TopBar navigation={navigation} headers={'Investments'} />
         <Investments navigation={navigation} />
         <BottomNavbar navigation={navigation} selected="Investments" />
       </SafeAreaView>
     </View>
   );
 }
+
+function Portfolios({ navigation }) {
+  return (
+    <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <Portfolio navigation={navigation} />
+        <BottomNavbar navigation={navigation} selected="Portfolio" />
+      </SafeAreaView>
+    </View>
+  );
+}
+
 
 function Payments({ navigation }) {
   const [refreshing, setRefreshing] = React.useState(false);
@@ -502,7 +514,6 @@ function TransactionHistory({ navigation, route }) {
   return (
     <View style={styles.black}>
       <SafeAreaView>
-        <TopBar navigation={navigation} headers={'History'} />
         <ScrollView>
           <View>
             <TransactionList navigation={navigation} route={route} />
@@ -513,6 +524,8 @@ function TransactionHistory({ navigation, route }) {
     </View>
   );
 }
+
+
 
 function ReferCode({ navigation }) {
   return (
@@ -626,6 +639,12 @@ export default function App({ navigation, uri }) {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="Portfolio"
+              component={Portfolios}
+              navigation={navigation}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="Savings"
               component={Savings}
               navigation={navigation}
@@ -657,6 +676,7 @@ export default function App({ navigation, uri }) {
               component={Ramper}
               options={{ headerShown: false }}
             />
+
                   <Stack.Screen
               name="Uniramp"
               component={Uniramp}

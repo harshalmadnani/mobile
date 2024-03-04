@@ -36,7 +36,7 @@ const idToChain = {
 const ComingSoonView = () => (
   <View
     style={{
-      height: height * 0.8,
+      height: '80%',
       width: '100%',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -52,7 +52,7 @@ const ComingSoonView = () => (
           fontWeight: 'bold',
           color: '#D1D2D9',
           textAlign: 'justify',
-          fontFamily: 'Satoshi-Regular',
+          fontFamily: 'Montreal-Medium',
         }}>
         Coming Soon
       </Text>
@@ -100,6 +100,20 @@ const Investments = ({navigation}) => {
         backgroundColor: '#000000',
         paddingBottom: 80,
       }}>
+                <View style={{marginTop: '8%', marginLeft: '5%', marginRight:'5%',flexDirection: 'row', justifyContent: 'space-between',}}>
+          <Text style={{fontFamily:'Unbounded-Medium',color:'#fff',fontSize: 20}}>MARKETS</Text>
+           <TouchableOpacity 
+         onPress={() => navigation.push('TransactionHistory')}>
+      <Image
+        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png' }} // Replace with your image URI
+        style={{
+          width: 40,
+          height: 40,
+          bottom: 3,
+        }}
+      />
+    </TouchableOpacity>
+        </View>
       <View>
         <View
           style={{
@@ -125,7 +139,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('crypto')}>
             <Text
               style={{
-                fontFamily: `Satoshi-Bold`,
+                fontFamily: `Montreal-Medium`,
                 fontSize: 12,
                 color: section === 'crypto' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -143,7 +157,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('stocks')}>
             <Text
               style={{
-                fontFamily: 'Satoshi-Bold',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 12,
                 color: section === 'stocks' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -162,7 +176,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('commodities')}>
             <Text
               style={{
-                fontFamily: 'Satoshi-Bold',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 12,
                 color: section === 'commodities' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -181,7 +195,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('forex')}>
             <Text
               style={{
-                fontFamily: 'Satoshi-Bold',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 12,
                 color: section === 'forex' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     color: '#ffffff',
-    fontFamily: `Satoshi-Bold`,
+    fontFamily: `Montreal-Medium`,
     fontWeight: '500',
     marginLeft: 30,
   },

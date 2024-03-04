@@ -69,16 +69,9 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
                             <View style={{paddingRight: 10}}>
-                                <Text style={styles.text2}>${item.current_price}</Text>
+                                <Text style={styles.text5}>{item.balance}</Text>
                             </View>
-                            <View>
-                                {
-                                    item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>+ {item.price_change_percentage_24h.toFixed(2)} %</Text>
-                                }
-                                {
-                                    item.price_change_percentage_24h < 0 && <Text style={styles.text4}> {item.price_change_percentage_24h.toFixed(2)} %</Text>
-                                }
-                            </View>
+
                         </View>
                     </View>
                 </View>
@@ -92,11 +85,16 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     // backgroundColor: 'red'
                 }}>
                     <View>
-                        <Text style={styles.text1}>{item.balance}</Text>
+                    <Text style={styles.text2}>${(item.current_price * item.balance).toFixed(3)}</Text>
                     </View>
                     <View>
-                        <Text style={styles.text2}>${(item.current_price * item.balance).toFixed(3)}</Text>
-                    </View>
+                                {
+                                    item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>+ {item.price_change_percentage_24h.toFixed(2)} %</Text>
+                                }
+                                {
+                                    item.price_change_percentage_24h < 0 && <Text style={styles.text4}> {item.price_change_percentage_24h.toFixed(2)} %</Text>
+                                }
+                            </View>
                 </View>
             </View>
         </TouchableOpacity>
@@ -116,28 +114,34 @@ const styles = StyleSheet.create({
     text1: {
         fontSize: 16,
        fontWeight: "500" ,
-        fontFamily: 'Satoshi-Bold',
+        fontFamily: 'Montreal-Bold',
         color: '#ffffff',
     },
     text2 :{
-        fontSize: 14,
-       fontWeight: "400" ,
-        fontFamily: 'Satoshi-Regular',
-        color: '#999999',
+        fontSize: 16,
+        fontFamily: 'Unbounded-Bold',
+        color: '#fff',
 
     },
     text3: {
         fontSize: 14,
        fontWeight: "500" ,
-        fontFamily: 'Satoshi-Bold',
+        fontFamily: 'Unbounded-Medium',
         color: '#ADFF6C',
 
     },
     text4: {
         fontSize: 14,
        fontWeight: "500" ,
-        fontFamily: 'Satoshi-Bold',
+        fontFamily: 'Unbounded-Medium',
         color: '#ff6c6c',
+
+    },
+    text5: {
+        fontSize: 14,
+       fontWeight: "500" ,
+        fontFamily: 'Montreal-Medium',
+        color: '#787878',
 
     }
 })

@@ -45,6 +45,7 @@ const BottomNavbar = ({ navigation, selected }) => {
             </View>
           </TouchableOpacity>
         </View> */}
+
         <View style={styles.navItem}>
           {/* <Icon
             name="home"
@@ -54,8 +55,8 @@ const BottomNavbar = ({ navigation, selected }) => {
             onPress={() => navigation.push('Payments')}
             color={selected == 'Payments' ? selectedIcon : icon}
           /> */}
-          <TouchableOpacity onPress={() => navigation.push('Payments')}>
-            {selected == 'Payments' ? (
+          <TouchableOpacity onPress={() => navigation.push('Portfolio')}>
+            {selected == 'Portfolio' ? (
               <FastImage
                 source={require(`./navbar-images/home-selected.png`)}
                 style={styles.icon}

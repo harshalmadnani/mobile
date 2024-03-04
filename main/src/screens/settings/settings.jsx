@@ -59,7 +59,7 @@ const Component = ({navigation}) => {
   if (global.withAuth) {
     address = global.loginAccount.scw;
     info = global.loginAccount.name;
-    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=0C0C0C&color=ffbd59`;
+    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=0C0C0C&color=4711DF`;
   } else {
     address = global.connectAccount.publicAddress;
     info = global.connectAccount.name;

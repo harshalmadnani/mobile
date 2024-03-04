@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, Linking, TouchableHighlight, TouchableOpacity, View, Clipboard } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, Linking, TouchableHighlight, TouchableOpacity, View, Clipboard,ScrollView } from "react-native";
 import { Icon, Text } from "react-native-elements";
 import FastImage from "react-native-fast-image";
 
 import {paymentsLoad, addXUSD, txHistoryLoad} from '../payments/utils';
 import TransactionReceipt from "./transactionReceipt";
 import Snackbar from "react-native-snackbar";
+
 
 const width = Dimensions.get('window').width;
 
@@ -120,7 +121,35 @@ const TransactionList = ({navigation, route}) => {
                 justifyContent: 'flex-start',
                 alignItems: 'center',
             }}>
-            
+                        <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              width: '100%',
+              margin:'5%',
+              marginBottom:'0%'
+            }}>
+            <Icon
+              name={'navigate-before'}
+              size={30}
+              color={'#f0f0f0'}
+              type="materialicons"
+              onPress={() => navigation.goBack()}
+            />
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text style={{    color: '#F0F0F0',
+    fontFamily: 'Unbounded-Regular',
+    fontSize: 16,
+    right: 30,}}>Transaction History</Text>
+            </View>
+          </View>
+            <ScrollView>
             {showTxnReceiptModal && (
                 <TransactionReceipt
                     transactionData={transactionData}
@@ -241,6 +270,7 @@ const TransactionList = ({navigation, route}) => {
                     </View>
                     )}
             </View>
+            </ScrollView>
         </SafeAreaView>
     );
 

@@ -288,7 +288,7 @@ const MarketChart = props => {
                     timeFrameSelected === item
                       ? {
                           borderRadius: 1000,
-                          backgroundColor: '#232323',
+                          backgroundColor: '#191024',
                           paddingHorizontal: 16,
                           paddingVertical: 8,
                         }
@@ -303,7 +303,7 @@ const MarketChart = props => {
                     style={
                       timeFrameSelected === item
                         ? {
-                            color: 'white',
+                            color: '#BC88FF',
                             fontSize: 14,
                           }
                         : {
@@ -334,7 +334,7 @@ const MarketChart = props => {
             <Text
               style={{
                 color: '#747474',
-                fontFamily: 'Satoshi-Black',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 16,
               }}>
               Amount owned
