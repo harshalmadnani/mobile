@@ -28,6 +28,7 @@ import DepositSvg from './icon/depositSvg';
 import MarketChart from './marketInfo/MarketChart';
 import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector} from 'react-redux';
 
 const MarketInfo = ({route, navigation, item}) => {
   const width = Dimensions.get('window').width;
