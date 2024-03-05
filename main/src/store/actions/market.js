@@ -53,6 +53,12 @@ export const getBestDLNCrossSwapRate = (
   value,
 ) => {
   return async (dispatch, getState) => {
-    await getBestCrossSwapRate(blockchains, contractAddress, value);
+    const bestRate = await getBestCrossSwapRate(
+      blockchains,
+      contractAddress,
+      value,
+    );
+    console.log('best rates.....', bestRate);
+    dispatch(marketsAction.setBestSwappingRates(bestRate));
   };
 };

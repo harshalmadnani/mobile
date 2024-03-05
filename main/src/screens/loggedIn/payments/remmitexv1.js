@@ -429,22 +429,8 @@ export const transferUSDCWithParticleAAGasless = async (
     setStatus('Calculating Gas In USDC...');
 
     web3 = getAuthCoreProvider(LoginType.Email);
-    const contractGas = Number('90000');
-    const approvalGas = Number('60000');
-    const gasPrice = await web3.eth.getGasPrice();
-    const gas = (contractGas + approvalGas) * gasPrice;
-    const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
-    const totalAmount = Number(amount) + Number(gasUSDC);
-
-    console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
-    console.log(
-      'Total Gas In USDC:',
-      web3.utils.fromWei(String(gasUSDC), 'mwei'),
-    );
-    console.log('Total Amount:', totalAmount);
 
     const usdcAbi = new ethers.utils.Interface(usdAbi);
-    const contractAbi = new ethers.utils.Interface(abi);
 
     let txs = [];
     const eoaAddress = await getUserAddressFromAuthCoreSDK();

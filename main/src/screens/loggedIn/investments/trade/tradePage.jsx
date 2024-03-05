@@ -16,6 +16,12 @@ import '@ethersproject/shims';
 import {useDispatch, useSelector} from 'react-redux';
 import {getBestDLNCrossSwapRate} from '../../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
+import {
+  confirmDLNTransaction,
+  getBestCrossSwapRate,
+  getDLNTradeCreateBuyOrder,
+  getDLNTradeCreateBuyOrderTxn,
+} from '../../../../utils/DLNTradeApi';
 const idToChain = {
   btc: {
     tokenAddress: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
@@ -36,16 +42,19 @@ const TradePage = ({route, navigation}) => {
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [value, setValue] = useState('1');
+  const [value, setValue] = useState('100');
   const [convertedValue, setConvertedValue] = useState('token');
+  const address = useSelector(x => x.auth.address);
   const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height;
   const state = route.params.state;
   const dispatch = useDispatch();
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
+  const tokenBalanceUSD = useSelector(x => x.market.tokenBalanceUSD);
+  const [finalTxQuote, setFinalTxQuote] = useState(null);
+  const bestSwappingTrades = useSelector(x => x.market.bestSwappingTrades);
   useEffect(() => {
     console.log('Selected dropdown value:', selectedDropDownValue);
     console.log('Order type:', orderType);
@@ -63,29 +72,48 @@ const TradePage = ({route, navigation}) => {
       setCommingSoon(false);
     }
   }, [selectedDropDownValue, orderType]);
-
+  // useEffect(() => {
+  const getTradeSigningData = async () => {
+    console.log('best rate ......', bestSwappingTrades);
+    if (bestSwappingTrades) {
+      const res = await getDLNTradeCreateBuyOrderTxn(
+        bestSwappingTrades?.estimation?.srcChainTokenIn?.chainId,
+        bestSwappingTrades?.estimation?.srcChainTokenIn?.address,
+        bestSwappingTrades?.estimation?.srcChainTokenIn?.amount,
+        bestSwappingTrades?.estimation?.dstChainTokenOut?.chainId,
+        bestSwappingTrades?.estimation?.dstChainTokenOut?.address,
+        bestSwappingTrades?.estimation?.dstChainTokenOut?.amount,
+        address,
+      );
+      console.log('Here....tx data');
+      console.log(res?.tx);
+      setFinalTxQuote(res);
+      return res;
+    } else {
+      console.log('Here... no tx data');
+    }
+  };
+  //   getTradeSigningData();
+  // }, [bestSwappingTrades]);
   // Example of logging state changes
-
   useFocusEffect(
     useCallback(() => {
-      console.log('Here....fired');
       dispatch(
         getBestDLNCrossSwapRate(
           selectedAssetMetaData?.blockchains,
           selectedAssetMetaData?.contracts,
-          value * 10000000,
+          value * 1000000,
         ),
       );
 
       return () => {
         console.log('firedd cleanup ======>');
-        setIsLoading(false);
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
     }, []),
   );
   // Log when component mounts
-
+  console.log('state.......', state?.decimals);
   return (
     <SafeAreaView
       style={{
@@ -680,7 +708,11 @@ const TradePage = ({route, navigation}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
-                  0.006 BTC{' '}
+                  {(
+                    bestSwappingTrades?.estimation?.dstChainTokenOut?.amount /
+                    1e18
+                  ).toFixed(5) || '...'}{' '}
+                  {state?.symbol}{' '}
                 </Text>
 
                 {/* image to allow btc input */}
@@ -731,7 +763,7 @@ const TradePage = ({route, navigation}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-ExtraBold',
                   }}>
-                  $1,267{' '}
+                  ${tokenBalanceUSD}{' '}
                 </Text>
                 <Text
                   style={{
@@ -852,7 +884,7 @@ const TradePage = ({route, navigation}) => {
                           fontFamily: 'Unbounded-ExtraBold',
                           color: '#fff',
                         }}>
-                        $35,000
+                        ${state?.current_price}
                       </Text>
                     </View>
                   </View>
@@ -948,7 +980,9 @@ const TradePage = ({route, navigation}) => {
                           fontFamily: 'Unbounded-ExtraBold',
                           color: '#fff',
                         }}>
-                        5s
+                        {bestSwappingTrades?.order
+                          ?.approximateFulfillmentDelay || '...'}
+                        s
                       </Text>
                     </View>
                   </View>
@@ -988,29 +1022,39 @@ const TradePage = ({route, navigation}) => {
               </Text>
             </LinearGradient>
           ) : (
-            <LinearGradient
-              style={{
-                borderRadius: 100,
-                backgroundColor: 'transparent',
-                paddingVertical: 22,
-                paddingHorizontal: 100,
-              }}
-              locations={[0, 1]}
-              colors={['#1b4d30', '#328454']}
-              useAngle={true}
-              angle={95.96}>
-              <Text
+            <TouchableOpacity
+              onPress={async () => {
+                const res = await getTradeSigningData();
+                await confirmDLNTransaction(
+                  res?.estimation?.srcChainTokenIn?.amount,
+                  res?.estimation?.srcChainTokenIn?.address,
+                  res?.tx,
+                );
+              }}>
+              <LinearGradient
                 style={{
-                  fontSize: 16,
-                  letterSpacing: 0.2,
-                  fontWeight: '700',
-                  fontFamily: 'Satoshi-Bold',
-                  color: '#acff8e',
-                  textAlign: 'center',
-                }}>
-                Coming Soon
-              </Text>
-            </LinearGradient>
+                  borderRadius: 100,
+                  backgroundColor: 'transparent',
+                  paddingVertical: 22,
+                  paddingHorizontal: 100,
+                }}
+                locations={[0, 1]}
+                colors={['#1b4d30', '#328454']}
+                useAngle={true}
+                angle={95.96}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    letterSpacing: 0.2,
+                    fontWeight: '700',
+                    fontFamily: 'Satoshi-Bold',
+                    color: '#acff8e',
+                    textAlign: 'center',
+                  }}>
+                  Coming Soon
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           )}
         </>
       )}
