@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, SafeAreaView, StyleSheet, Image, FlatList, Modal,Navigation, ScrollView} from 'react-native';
-import PortfolioChart from './PortfolioChart';
+import LineChart from '../../../../component/charts/LineChart';
 import Svg, { Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import styles from '../investment-styles';
 import MyInvestment from '../tradeCollection/myInvestment';
 import {POINTS_KEY} from '@env';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/portfolio';
+import { getCryptoHoldingForAddress } from '../../../../utils/cryptoWalletApi';
 const Portfolio = ({navigation}) => {
+const dispatch = useDispatch();
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
   const addPoints = async () => {
     try {
       const address = global.withAuth
@@ -45,8 +52,10 @@ const Portfolio = ({navigation}) => {
     }
     logic();
   });
+  dispatch(getCryptoHoldingForAddressFromMobula());
     return (
-      <SafeAreaView style={{backgroundColor: '#000',flex: 1}}>
+      
+  <SafeAreaView style={{backgroundColor: '#000',flex: 1}}>
    <View style={{
     marginTop: '8%',
     marginBottom: '2%',
@@ -108,7 +117,7 @@ const Portfolio = ({navigation}) => {
 
       <View style={{  alignItems: 'center' }}>
 
-        <PortfolioChart/>
+        <LineChart/>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 8  }}>
   <View style={{ flex: 1, height: 1,marginLeft:'5%',marginRight:'5%', backgroundColor: '#292929' }} />
 </View>

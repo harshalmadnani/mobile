@@ -11,7 +11,6 @@ import {
 import {Text, Icon, Image} from '@rneui/themed';
 
 import styles from '../investment-styles';
-
 import TradePage from './BuyForm';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {ImageAssets} from '../../../../../assets';
@@ -20,6 +19,7 @@ const screenWidth = Dimensions.get('window').width;
 
 import LinearGradient from 'react-native-linear-gradient';
 import {TradingViewChart} from '../../../../component/charts/TradingViewChart';
+import LineChart from '../../../../component/charts/LineChart';
 import moment from 'moment/moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -181,7 +181,7 @@ const MarketChart = props => {
       ),
     );
     console.log('asset....calls');
-    // dispatch(getCryptoHoldingForAddressFromMobula(currentItem?.name)); Harshal you have to call this and like address you will get value like const holdings=useSelector(x=>x.portfolio.holdings)
+    dispatch(getCryptoHoldingForAddressFromMobula(currentItem?.name));
     dispatch(getCryptoHoldingForMarketFromMobula(currentItem?.name));
     dispatch(setAssetMetadata(currentItem?.name));
   };
@@ -274,9 +274,10 @@ const MarketChart = props => {
               </View>
             </View>
             <View style={styles.chartContainer}>
-              <TradingViewChart width={screenWidth} height={300} />
+              {/* <TradingViewChart width={screenWidth} height={300} /> */}
+              <LineChart/>
             </View>
-            <FlatList
+            {/* <FlatList
               horizontal
               keyExtractor={(x, i) => i.toString()}
               renderItem={({item, index}) => (
@@ -316,7 +317,7 @@ const MarketChart = props => {
                 </TouchableOpacity>
               )}
               data={availableTimeFrame}
-            />
+            /> */}
           </View>
         </View>
       </View>
@@ -360,7 +361,7 @@ const MarketChart = props => {
               {(
                 selectedAssetWalletHolding?.total_wallet_balance /
                 currentItem?.current_price
-              )?.toFixed(2) === 'Nan'
+              )?.toFixed(2) === '-'
                 ? 0
                 : (
                     selectedAssetWalletHolding?.total_wallet_balance /
@@ -390,7 +391,7 @@ const MarketChart = props => {
             }}
             onPress={() => {
               navigation.navigate('TradePage', {state: currentItem});
-              // <TradePage navigation={props.navigation} />;
+              <TradePage navigation={props.navigation} />;
             }}>
             <LinearGradient
               useAngle={true}
@@ -409,7 +410,7 @@ const MarketChart = props => {
                   fontSize: 14,
                   fontFamily: 'Unbounded-ExtraBold',
                 }}>
-                {/* TRADE {state.item.symbol.toUpperCase()} */}
+                TRADE {currentItem.symbol.toUpperCase()}
               </Text>
             </LinearGradient>
           </TouchableOpacity>

@@ -177,7 +177,7 @@ class QRPage extends Component {
                   size={30}
                   color="white"
                   type="feather"
-                  onPress={() => this.props.navigation.navigate('Payments')}
+                  onPress={() => navigation.goBack()}
                 />
                 <View style={styles.nav}>
                   <TouchableOpacity

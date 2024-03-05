@@ -59,7 +59,7 @@ const Component = ({navigation}) => {
   if (global.withAuth) {
     address = global.loginAccount.scw;
     info = global.loginAccount.name;
-    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=0C0C0C&color=4711DF`;
+    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
   } else {
     address = global.connectAccount.publicAddress;
     info = global.connectAccount.name;
@@ -76,26 +76,52 @@ const Component = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{width: '100%', height: '100%', alignItems: 'center'}}>
+    <SafeAreaView style={{width: '100%', height: '100%', }}>
+         <View style={{
+    marginTop: '8%',
+    marginBottom: '2%',
+    marginLeft: '5%',
+    marginRight: '5%', // Added marginRight to ensure space is maintained from the right edge
+    flexDirection: 'row',
+    justifyContent: 'space-between', // This line positions items on opposite ends
+  }}>
+    <Text style={{fontFamily:'Unbounded-Medium', color:'#fff', fontSize: 20}}>
+PROFILE
+    </Text>
+    <TouchableOpacity 
+         onPress={() => navigation.push('TransactionHistory')}>
+      <Image
+        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png' }} // Replace with your image URI
+        style={{
+          width: 40,
+          height: 40,
+          bottom: 3
+        }}
+      />
+    </TouchableOpacity>
+  </View>
       <ScrollView
         style={{width: width}}
         contentContainerStyle={{alignItems: 'center'}}>
         <View style={styles.nameSettings}>
           <FastImage style={{width: 55, height: 55}} source={{uri: imageUrl}} />
-          <View style={{width: '80%', marginLeft: '5%'}}>
+          <View style={{marginTop:'5%'}}>
             <Text
               style={{
+ 
                 color: 'white',
                 fontSize: 23,
-                fontFamily: `EuclidCircularA-Medium`,
+                fontFamily: `Unbounded-Medium`,
+                textAlign:'center',
               }}>
               {info}
             </Text>
             <Text
               style={{
-                color: 'white',
-                fontFamily: `EuclidCircularA-Medium`,
+                color: 'grey',
+                fontFamily: `Montreal-Medium`,
                 fontSize: 15,
+                textAlign:'center',
               }}>
               {global.withAuth
                 ? global.loginAccount.phoneEmail.includes('@')
@@ -127,7 +153,7 @@ const Component = ({navigation}) => {
               style={{
                 textAlign: 'center',
                 fontSize: 17,
-                fontFamily: `EuclidCircularA-Medium`,
+                fontFamily: `Montreal-Medium`,
                 color: '#f0f0f0',
                 marginTop: '4%',
               }}>
@@ -154,7 +180,7 @@ const Component = ({navigation}) => {
               style={{
                 textAlign: 'center',
                 fontSize: 17,
-                fontFamily: `EuclidCircularA-Medium`,
+                fontFamily: `Montreal-Medium`,
                 color: '#f0f0f0',
                 marginTop: '4%',
               }}>
@@ -176,7 +202,7 @@ const Component = ({navigation}) => {
               style={{
                 textAlign: 'center',
                 fontSize: 17,
-                fontFamily: `EuclidCircularA-Medium`,
+                fontFamily: `Montreal-Medium`,
                 color: '#f0f0f0',
                 marginTop: '4%',
               }}>

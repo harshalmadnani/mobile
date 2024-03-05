@@ -198,7 +198,7 @@ const PreLoad = ({navigation}) => {
                   global.withAuth = true;
 
                   console.log('Logged In:', global.loginAccount);
-                  navigation.push('Payments');
+                  navigation.push('Portfolio');
                   console.log('Navigating To Payments');
                 })
                 .catch(error => {
@@ -297,7 +297,7 @@ const PreLoad = ({navigation}) => {
           global.withAuth = true;
 
           console.log('Logged In:', global.loginAccount);
-          navigation.push('Payments');
+          navigation.push('Portfolio');
           console.log('Navigating To Payments');
         }
       } else {
@@ -404,7 +404,7 @@ const PreLoad = ({navigation}) => {
                                       'Logged In:',
                                       global.connectAccount,
                                     );
-                                    navigation.push('Payments');
+                                    navigation.push('Portfolio');
                                     console.log('Navigating To Payments');
                                   })
                                   .catch(error => {
@@ -431,7 +431,7 @@ const PreLoad = ({navigation}) => {
                             global.withAuth = false;
                             global.walletType = types[i];
                             console.log('Logged In:', global.connectAccount);
-                            navigation.push('Payments');
+                            navigation.push('Portfolio');
                             console.log('Navigating To Payments');
                           }
                         }

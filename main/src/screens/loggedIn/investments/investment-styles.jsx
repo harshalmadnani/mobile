@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
 
   chartContainer: {
     marginTop: '10%',
+    alignItems:'center'
   },
 
   goldSelected: {

@@ -125,9 +125,9 @@ function WidgetPage({ navigation }) {
 }
 
 function Settings({ navigation }) {
+  
   return (
     <SafeAreaView style={styles.black}>
-      <TopBar navigation={navigation} headers={'Settings'} />
       <ScrollView style={{ height: windowHeight * 0.8 }}>
         <View>
           <SettingsComponent navigation={navigation} />

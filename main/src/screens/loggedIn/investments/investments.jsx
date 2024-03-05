@@ -105,7 +105,7 @@ const Investments = ({navigation}) => {
            <TouchableOpacity 
          onPress={() => navigation.push('TransactionHistory')}>
       <Image
-        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png' }} // Replace with your image URI
+        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png' }}
         style={{
           width: 40,
           height: 40,

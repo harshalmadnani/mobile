@@ -21,10 +21,11 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
       'crypto url....',
       `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`,
     );
+    
     const response = await axios.get(
       asset
-        ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
-        : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
+        ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=0x6dD0D673c0C434839A344328B4CdCFf53a53FB9b&asset=${asset}`
+        : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=0x6dD0D673c0C434839A344328B4CdCFf53a53FB9b`,
     );
     return response?.data?.data;
   } catch (error) {

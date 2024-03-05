@@ -20,7 +20,7 @@ import {
     Text as SvgText,
 } from 'react-native-svg';
 import * as shape from 'd3-shape';
-
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 export default InteractiveChart;
 
 function InteractiveChart() {
@@ -28,7 +28,12 @@ function InteractiveChart() {
         let width = Dimensions.get('window').width;
         return (width / 750) * size;
     };
-
+    const initialState = {
+        holdings: 0,
+        balanceHistory: [],
+        loading: false,
+        error: null,
+      };
     const [dateList, setDateList] = useState([
         '08-31 15:09',
         '08-31 15:10',
@@ -43,16 +48,23 @@ function InteractiveChart() {
        567,
    456,
     ]);
+    const now = new Date();
+    const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
+    const oneHourAgo = new Date(now.getTime() - (1 * 60 * 60 * 1000));
+    const oneDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
+    const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+    const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
+    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+    
     const timeframes = [
-        { label: 'LIVE', value: '1M' },
-        { label: '1H', value: '1H' },
-        { label: '1D', value: '1D' },
-        { label: '7D', value: '7D' },
-        { label: '30D', value: '30D' },
-        { label: '1Y', value: '1Y' },
-        { label: '5Y', value: '5Y' },
-        { label: 'All', value: '' },
-      ];
+      { label: 'LIVE', value: '1M', timestamp: now.getTime() },
+      { label: '1H', value: '1H', timestamp: oneHourAgo.getTime() },
+      { label: '1D', value: '1D', timestamp: oneDayAgo.getTime() },
+      { label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime() },
+      { label: '30D', value: '30D', timestamp: thirtyDaysAgo.getTime() },
+      { label: '1Y', value: '1Y', timestamp: oneYearAgo.getTime() },
+      { label: 'All', value: '', timestamp: genesis.getTime() },
+    ];
       const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
       
     const size = useRef(dateList.length);
@@ -141,7 +153,6 @@ function InteractiveChart() {
         }
 
         const date = dateList[positionX];
-
         return (
             <G x={x(positionX)} key="tooltip">
                 {/* <G
@@ -231,7 +242,10 @@ function InteractiveChart() {
         backgroundColor: selectedTimeframe === timeframe.value ? '#191024' : 'transparent',
         borderRadius: apx(20),
       }}
-      onPress={() => setSelectedTimeframe(timeframe.value)}>
+      onPress={() => {        const options = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false,
+      }; ReactNativeHapticFeedback.trigger("impactHeavy", options); setSelectedTimeframe(timeframe.value)}}>
       <Text style={{ color: selectedTimeframe === timeframe.value ? '#BC88FF' : '#787878' }}>
         {timeframe.label}
       </Text>

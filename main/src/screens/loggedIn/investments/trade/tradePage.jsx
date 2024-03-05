@@ -26,7 +26,7 @@ const idToChain = {
   }
 
 };
-const TradePage = ({ route, navigation }) => {
+const TradePage = ({ route, navigation,props }) => {
   const [entryPrice, setEntryPrice] = useState(null);
   const [tradeType, setTradeType] = useState("buy");
   const [orderType, setOrderType] = useState("market");
@@ -41,7 +41,7 @@ const TradePage = ({ route, navigation }) => {
   const height = Dimensions.get('window').height;
   const state = route.params.state;
   const [isLoading, setIsLoading] = useState(true);
-
+  const currentItem = props.item;
 
 
 
@@ -108,7 +108,7 @@ const TradePage = ({ route, navigation }) => {
                 fontWeight: 500,
                 marginLeft: 30
               }}>
-              {state.item.symbol.toUpperCase()}/USD
+              {currentItem?.nametoUpperCase()}/USD
             </Text>
           </View>
           <TouchableOpacity

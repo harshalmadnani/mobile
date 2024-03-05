@@ -66,7 +66,7 @@ const registerDB = async ({navigation, name}) => {
           'Content-Type': 'application/json',
         },
       });
-      navigation.push('Payments');
+      navigation.push('Portfolio');
     } catch (error) {
       console.log(error?.response?.data);
     }
@@ -98,7 +98,7 @@ const registerDB = async ({navigation, name}) => {
         },
       });
 
-      navigation.push('Payments');
+      navigation.push('Portfolio');
     } catch (err) {
       console.log(err);
     }

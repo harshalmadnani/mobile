@@ -1,4 +1,4 @@
-import React, {Component, useEffect} from 'react';
+import React, {Component, useEffect, useRef } from 'react';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -9,13 +9,15 @@ import {
   Dimensions,
   Button,
   Platform,
+  Animated
 } from 'react-native';
 import {Text} from '@rneui/themed';
+
 import {Icon} from 'react-native-elements';
 const Web3 = require('web3');
 import {PNAccount} from '../../Models/PNAccount';
 import FastImage from 'react-native-fast-image';
-
+import { FlingGestureHandler, Directions, State , GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LoginCarousel} from './loginCarousel';
 import {onClickLogin} from '../../particle-auth';
 
@@ -78,8 +80,17 @@ const StaticHomeScreen = ({navigation}) => {
       setSelectedButton(images[Math.abs(Math.ceil(i))].name);
     }, 3000);
   }, []);
+  const handleSwipeUp = ({ nativeEvent }) => {
+    if (nativeEvent.state === State.ACTIVE) {
+      dispatch(onAuthCoreLogin(navigation));
+    }
+  };
   return (
+    <GestureHandlerRootView>
     <SafeAreaView style={styles.bg}>
+            <FlingGestureHandler
+        direction={Directions.UP}
+        onHandlerStateChange={handleSwipeUp}>
       <ScrollView>
         <View style={styles.container}>
           <View style={styles.topbar}>
@@ -121,12 +132,10 @@ const StaticHomeScreen = ({navigation}) => {
               address={'0x'}
               key={images}
             />
-            <TouchableOpacity
-              onPress={() => dispatch(onAuthCoreLogin(navigation))}
-              style={styles.getStarted}>
-              <Text style={styles.getStartedText}>Get Started</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.push('ChooseConnect')}>
+ <Text style={styles.getStartedText}>Swipe Up to Get Started</Text>
+
+
+            {/* <TouchableOpacity onPress={() => navigation.push('ChooseConnect')}>
               <Text style={styles.connectText}>
                 Have an existing wallet?{' '}
                 <Text
@@ -144,11 +153,15 @@ const StaticHomeScreen = ({navigation}) => {
                   Connect Wallet
                 </Text>
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+
           </View>
         </View>
       </ScrollView>
+      </FlingGestureHandler>
     </SafeAreaView>
+    </GestureHandlerRootView>
   );
 };
 
@@ -161,7 +174,7 @@ const styles = StyleSheet.create({
 
   container: {
     width: '100%',
-    height: '80%',
+    height: '100%',
   },
 
   carouselIndicator: {
@@ -255,9 +268,11 @@ const styles = StyleSheet.create({
   },
 
   getStartedText: {
-    color: '#0c0c0c',
-    fontFamily: `EuclidCircularA-Medium`,
+    color: '#fff',
+    fontFamily: `Unbounded-Medium`,
+    textAlign:'center',
     fontSize: 16,
+    marginTop:'5%'
   },
 
   connectText: {
