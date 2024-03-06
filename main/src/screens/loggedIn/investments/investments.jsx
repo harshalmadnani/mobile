@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState,useEffect, useCallback} from 'react';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -18,21 +18,8 @@ import {
   getListOfCryptoFromMobulaApi,
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
+import getMarketData from '../../../utils/cryptoMarketsApi'
 
-const idToChain = {
-  btc: {
-    tokenAddress: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
-    chain: 'polygon',
-  },
-  eth: {
-    tokenAddress: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-    chain: 'polygon',
-  },
-  matic: {
-    tokenAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-    chain: 'polygon',
-  },
-};
 const ComingSoonView = () => (
   <View
     style={{
@@ -60,6 +47,24 @@ const ComingSoonView = () => (
   </View>
 );
 const Investments = ({navigation}) => {
+  const [marketData, setMarketData] = useState(null);
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+       
+        const data = await getMarketData("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"); // Fetch market data for Bitcoin
+        setMarketData(data); // Store the market data
+        setIsLoading(false); // Hide loading indicator
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+       
+      }
+    };
+
+    fetchMarketData();
+  }, []);
+  console.log("market data",marketData);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -235,8 +240,25 @@ const Investments = ({navigation}) => {
           )}
         </View>
       )}
-
-      {section !== 'crypto' && <ComingSoonView />}
+    {!isLoading && section === 'stocks' && (
+        <View
+          scrollEnabled
+          style={{
+            marginTop: '1%',
+          }}>
+          {stocksData && (
+            <FlatList
+              data={stocksData}
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
+                <TradeItemCard navigation={navigation} item={item} />
+              )}
+              onEndReached={async () => await onEndReachedFetch()}
+              keyExtractor={(item, i) => i.toString()}
+            />
+          )}
+        </View>
+      )}
     </SafeAreaView>
   );
 };

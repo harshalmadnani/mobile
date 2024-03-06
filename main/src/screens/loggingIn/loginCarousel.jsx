@@ -63,19 +63,20 @@ class LoginCarousel extends React.Component {
       <ScrollView horizontal pagingEnabled ref={this.scrollRef}>
         {images.map(image => (
           <View style={styles.depWith} key={image.name}>
+             <Text style={styles.xade}>XADE</Text>
+            <Text style={styles.header}>{image.name}</Text>
+            <Text style={styles.subheader}>{image.details}</Text>
             <FastImage
               source={{
                 uri: image.image,
               }}
               resizeMode="cover"
               style={{
-                width: 300,
+                width:'100%',
                 height: 300,
-                borderRadius: 10,
+                borderRadius: 50,
               }}
             />
-            <Text style={styles.header}>{image.name}</Text>
-            <Text style={styles.subheader}>{image.details}</Text>
           </View>
         ))}
       </ScrollView>
@@ -87,24 +88,32 @@ const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'column',
     width: DEVICE_WIDTH,
-    height: 575,
+    height: 620,
     alignItems: 'center',
   },
 
   header: {
     color: '#fff',
-    fontFamily: `EuclidCircularA-Regular`,
+    fontFamily: `Unbounded-Bold`,
     textAlign: 'center',
-    fontSize: 36,
+    fontSize: 32,
+    marginTop:"2%"
+  },
+  xade: {
+    color: '#fff',
+    fontFamily: `LemonMilk-Bold`,
+    textAlign: 'center',
+    fontSize: 28,
     marginTop: '12%',
   },
 
   subheader: {
     color: '#817C89',
-    fontFamily: `EuclidCircularA-Regular`,
+    fontFamily: `Montreal-Medium`,
     textAlign: 'center',
     fontSize: 20,
     marginTop: '4%',
+    marginBottom:'10%'
   },
 });
 

@@ -6,6 +6,7 @@ const marketRoutes = {
   getMarket: '/coins/markets',
   getAsset: '/metadata',
   getHistorical: '/market/history',
+  getMarketData: '/market/multi-data'
 };
 export const getMarketAssetData = async page => {
   try {
@@ -35,6 +36,18 @@ export const getHistoricalData = async (assetName, from) => {
   try {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getHistorical}?asset=${assetName}&from=${from}`,
+    );
+    console.log('response from historical api:', response?.data);
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};
+export const getMarketData = async (assets) => {
+  try {
+    const response = await axios.get(
+      `${mobulaBaseURL}${marketRoutes.getMarketData}?assets=${assets}`,
     );
     console.log('response from historical api:', response?.data);
     return response?.data?.data;

@@ -59,7 +59,7 @@ const BottomNavbar = ({ navigation, selected }) => {
             onPress={() => navigation.push('Payments')}
             color={selected == 'Payments' ? selectedIcon : icon}
           /> */}
-          <TouchableOpacity onPress={() => {ReactNativeHapticFeedback.trigger("impactLight", options); navigation.push('Portfolio')}}>
+          <TouchableOpacity onPress={() => {navigation.push('Portfolio')}}>
             {selected == 'Portfolio' ? (
               <FastImage
                 source={require(`./navbar-images/home-selected.png`)}
@@ -90,7 +90,7 @@ const BottomNavbar = ({ navigation, selected }) => {
         <View>
           <TouchableOpacity
            onPress={() => {
-        ReactNativeHapticFeedback.trigger("impactLight", options);
+        // ReactNativeHapticFeedback.trigger("impactLight", options);
         navigation.push('Investments')
       }}>
           {selected == 'Investments' ? (
@@ -137,7 +137,7 @@ const BottomNavbar = ({ navigation, selected }) => {
         </View> */}
 
         <View>
-          <TouchableOpacity onPress={() =>{ReactNativeHapticFeedback.trigger("impactLight", options); navigation.push('Settings')}}>
+          <TouchableOpacity onPress={() =>{navigation.push('Settings')}}>
           {selected == 'Settings' ? (
               <FastImage
                 source={require(`./navbar-images/profile-selected.png`)}

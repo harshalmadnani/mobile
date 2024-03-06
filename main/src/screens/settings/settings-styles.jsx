@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    fontFamily: 'EuclidCircularA-Bold',
+    fontFamily: 'Montreal-Bold',
     color: '#fff',
     fontSize: 25,
     marginLeft: '8%',
@@ -68,9 +68,9 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
   },
   settingsText: {
-    fontSize: 20,
+    fontSize: 16,
     color: 'white',
-    fontFamily: ``,
+    fontFamily: "Montreal-Bold",
   },
 
   events: {

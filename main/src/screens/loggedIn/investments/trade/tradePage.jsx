@@ -41,8 +41,8 @@ const TradePage = ({ route, navigation,props }) => {
   const height = Dimensions.get('window').height;
   const state = route.params.state;
   const [isLoading, setIsLoading] = useState(true);
-  const currentItem = props.item;
-
+  const currentItem = route.params.state;
+console.log('current item',currentItem);
 
 
 

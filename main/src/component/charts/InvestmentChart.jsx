@@ -23,14 +23,14 @@ import {
 } from 'react-native-svg';
 import * as shape from 'd3-shape';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
-import { getWalletHistoricalData } from '../../utils/cryptoWalletApi';
+import {getHistoricalData } from '../../utils/cryptoMarketsApi';
 export default InteractiveChart;
 
 function InteractiveChart() {
     const dispatch = useDispatch();
 const [history, setHistory] = useState();
-const [divisionResult , setDivisionResult ] = useState('0');
-const [currentPrice, setcurrentPrice] = useState('0');
+const [divisionResult , setDivisionResult ] = useState(0);
+const [currentPrice, setcurrentPrice] = useState(0);
 const address = useSelector(x => x.auth.address);
     const apx = (size = 0) => {
         let width = Dimensions.get('window').width;
@@ -39,7 +39,7 @@ const address = useSelector(x => x.auth.address);
     useEffect(() => {
         async function init() {
           try {
-            const data = await getWalletHistoricalData(address,from);
+            const data = await getHistoricalData(address,from);
             console.log("Data from API",data);
             setHistory(data);
           } catch (e) {
@@ -76,9 +76,9 @@ const address = useSelector(x => x.auth.address);
     const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
     const thirtyDaysAgo = new Date(now.getTime() - (30 * 24 * 60 * 60 * 1000));
     const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
-    const oneMinuteAgo = new Date(now.getTime() - (5 * 60 * 1000));
+    const oneMinuteAgo = new Date(now.getTime() - (1 * 60 * 1000));
     const timeframes = [
-      { label: '1M', value: '1M', timestamp: oneMinuteAgo.getTime()},
+      { label: 'LIVE', value: '1M', timestamp: oneMinuteAgo.getTime()},
       { label: '1H', value: '1H', timestamp: oneHourAgo.getTime() },
       { label: '1D', value: '1D', timestamp: oneDayAgo.getTime() },
       { label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime() },
@@ -108,17 +108,13 @@ const address = useSelector(x => x.auth.address);
       }, [selectedTimeframe]);
     const size = useRef(dateList.length);
     const [positionX, setPositionX] = useState(-1);// The currently selected X coordinate position
-    const [priceChange, setpriceChange] = useState('0');// The currently selected X coordinate position
+    const [priceChange, setpriceChange] = useState(0);// The currently selected X coordinate position
     useEffect(() => {
-        if (priceList.length > 1 || priceList[0]=='0') {
+        if (priceList.length > 1) {
             const result = ((priceList[priceList.length - 1] - priceList[0]) / priceList[priceList.length - 1]) * 100;
             const test = (priceList[priceList.length - 1] - priceList[0]);
             setDivisionResult(result);
             setpriceChange(test); // Use the correct function name for setting state
-        }
-        else{
-          setDivisionResult('0');
-          setpriceChange('0'); // Use the correct function name for setting state
         }
     }, [priceList]);
     console.log('JMD',divisionResult);
@@ -180,7 +176,7 @@ const address = useSelector(x => x.auth.address);
         <Path
             key="line"
             d={line}
-            stroke="#FFF"
+            stroke="#fff"
             strokeWidth={apx(6)}
             fill="none"
         />
@@ -246,7 +242,7 @@ const address = useSelector(x => x.auth.address);
                         r={apx(20 / 2)}
                         stroke="#000"
                         strokeWidth={apx(2)}
-                        fill="#FFF"
+                        fill="#fff"
                     />
                 </G>
             </G>
@@ -261,32 +257,7 @@ const address = useSelector(x => x.auth.address);
                 backgroundColor: '#000',
                 alignItems: 'stretch',
             }}>
-                            <View style={styles.portfoioPriceContainer}>
-                <Text style={styles.stockPrice}>
-                {/* ${Number(holdings?.total_wallet_balance || 'Loading...').toFixed(2).toLocaleString('en-US')} */}
-                  {/* {currentItem.current_price.toLocaleString()} */}
-                  ${Number(currentPrice || '0').toFixed(2).toLocaleString('en-US')}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center', // Vertically center
-                    justifyContent: 'center',
-                    marginTop: '1%',
-                  }}>
-                 <Text
-  style={{
-    color: divisionResult < 0 ? '#FF5050' : '#ADFF6C',
-    fontFamily: 'Unbounded-Medium',
-    fontSize: 14,
-    textAlign: 'center',
-  }}
->
-  ${Number(priceChange || 0).toFixed(2).toLocaleString('en-US')} ({Number(divisionResult || 0).toFixed(2).toLocaleString('en-US')}%)
-</Text>
 
-                </View>
-              </View>
             <View
                 style={{
                     flexDirection: 'row',

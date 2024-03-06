@@ -229,7 +229,7 @@ PROFILE
               />
             </View>
           </TouchableOpacity>
-          <HorizontalRule />
+
 
           <TouchableOpacity
             style={styles.innerSettings}
@@ -237,11 +237,11 @@ PROFILE
               Linking.openURL('https://t.me/xadefi');
             }}>
             <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./support.png')}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Help and Support</Text>
+              <Text style={styles.settingsText}>Support</Text>
               <Icon
                 name={'angle-right'}
                 size={20}

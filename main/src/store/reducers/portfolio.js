@@ -13,6 +13,7 @@ export const portfolioSlice = createSlice({
       state.nft = action.payload;
     },
     setHoldings: (state, action) => {
+      console.log("Inside Reducer Data",action.payload)
       state.holdings = action.payload;
     },
   },

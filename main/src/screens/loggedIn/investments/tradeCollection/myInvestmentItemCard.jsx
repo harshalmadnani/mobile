@@ -11,22 +11,7 @@ import { Icon } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 
 const MyInvestmentItemCard = ({navigation, item}) => {
-
-    useEffect(() => {
-
-        async function getCoinData() {
-            try{
-
-
-
-            }catch(e) {
-                console.log(e);
-            }
-        }
-
-        getCoinData();
-
-    },[]);
+console.log("Image",item.price_change_percentage_24h);
 
     return (
         <TouchableOpacity
@@ -36,7 +21,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             style={{
                 width: '100%',
                 alignSelf: 'flex-start',
-                paddingVertical: '2%'
+                paddingVertical: '5%'
                 // backgroundColor: 'red'
             }}>
         
@@ -45,7 +30,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                 flexDirection: 'row',
                 justifyContent:'space-between',
                 alignItems: 'center',
-                marginHorizontal: 10
             }}>
                 <View style={{
                     display: 'flex', 
@@ -54,7 +38,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     alignItems: 'center',
                     // backgroundColor: 'red',
                 }}>
-                    <View style={{paddingHorizontal: 10}}>
+                    <View style={{paddingHorizontal: 5}}>
                         <FastImage 
                             style={{width: 42, height: 42}}
                             source={{
@@ -89,7 +73,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     </View>
                     <View>
                                 {
-                                    item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>+ {item.price_change_percentage_24h.toFixed(2)} %</Text>
+                                    item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>+ {item.price_change_percentage_24h/(item.current_price-item.price_change_percentage_24h)} %</Text>
                                 }
                                 {
                                     item.price_change_percentage_24h < 0 && <Text style={styles.text4}> {item.price_change_percentage_24h.toFixed(2)} %</Text>

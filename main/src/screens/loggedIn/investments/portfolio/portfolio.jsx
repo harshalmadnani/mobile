@@ -3,13 +3,16 @@ import { View, Text, TextInput, TouchableOpacity, SafeAreaView, StyleSheet, Imag
 import LineChart from '../../../../component/charts/LineChart';
 import Svg, { Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import styles from '../investment-styles';
-import MyInvestment from '../tradeCollection/myInvestment';
 import {POINTS_KEY} from '@env';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/portfolio';
 import { getCryptoHoldingForAddress } from '../../../../utils/cryptoWalletApi';
+import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 const Portfolio = ({navigation}) => {
 const dispatch = useDispatch();
+const [holdings, setHoldings] = useState(null);
+console.log('Holdings', holdings);
+const address = useSelector(x => x.auth.address);
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -52,7 +55,50 @@ const options = {
     }
     logic();
   });
-  dispatch(getCryptoHoldingForAddressFromMobula());
+  useEffect(() => {
+    async function init() {
+      try {
+        const data = await getCryptoHoldingForAddress(address);
+        console.log("Data from API",data);
+        setHoldings(data);
+
+        // fetch selected coin contract address
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    init();
+  }, []);
+
+console.log('Holdings',holdings);
+
+
+const extractUSDCBalanceOnPolygon = (holdings) => {
+  // Check if holdings or holdings.assets is not defined
+  if (!holdings || !holdings.assets) {
+    return '0'; // Return a default value indicating that the balance couldn't be extracted
+  }
+
+  const usdcAsset = holdings.assets.find(asset =>
+    asset.asset.symbol === "USDC" &&
+    asset.cross_chain_balances.Polygon &&
+    asset.cross_chain_balances.Polygon.address.toLowerCase() === "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359".toLowerCase()
+  );
+
+  // Check if the USDC asset on Polygon was found
+  if (!usdcAsset) {
+    return '0'; // Return a default value if the USDC asset isn't found
+  }
+
+  // Assuming the balance is directly available on usdcAsset (or adapt based on actual structure)
+  return usdcAsset.cross_chain_balances.Polygon.balance || 0;
+};
+
+// Extract the USDC balance
+const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
+console.log(usdcBalance);
+
+
     return (
       
   <SafeAreaView style={{backgroundColor: '#000',flex: 1}}>
@@ -89,32 +135,6 @@ const options = {
 
               <Text style={styles.portfolioHead}>Portfolio Value</Text>
             </View>
-            <View style={styles.portfoioPriceContainer}>
-                <Text style={styles.stockPrice}>
-                  $100
-                  {/* {currentItem.current_price.toLocaleString()} */}
-                </Text>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center', // Vertically center
-                    justifyContent: 'center',
-                    marginTop: '1%',
-                  }}>
-                  <Text
-                    style={{
-                      color:
-                      '#C68DFF',
-                      fontFamily: 'Unbounded-Medium',
-                      fontSize: 14,
-                      textAlign: 'center',
-                    }}>
-+$198.8 (+10% today)
-                  </Text>
-                </View>
-              </View>
-
-
       <View style={{  alignItems: 'center' }}>
 
         <LineChart/>
@@ -135,57 +155,9 @@ const options = {
       Cash Balance
     </Text>
     <Text style={{fontFamily:'Unbounded-Medium', color:'#fff', fontSize: 16}}>
-$100
+    ${Number(usdcBalance || 'Loading...').toFixed(2).toLocaleString('en-US')}
     </Text>
   </View>
-  {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '1%', alignItems: 'center', height: 85, marginBottom: '5%',marginTop:'8%' }}>
-
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 27, marginRight: '1%',backgroundColor:'#121212' , borderRadius: 30}}>
-        <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5 ,fontFamily:'Montreal-Bold'}}>Total Invested</Text>
-        <Svg height="28" width="60" style={{justifyContent: 'center', alignItems: 'center'}}>
-    <Defs>
-    <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-  <Stop offset="0" stopColor="#fff" />
-  <Stop offset="1" stopColor="#C0C0C0" />
-</LinearGradient>
-
-    </Defs>
-    <SvgText
-      fill="url(#gradient)"
-      x="0"
-      y="20"
-      fontSize="16"
-      fontFamily='Unbounded-Bold'
-    >
-$800
-    </SvgText>
-  </Svg>
-      </View>
-
-
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 27, marginLeft: '1%' , borderRadius: 30,backgroundColor:'#121212'}}>
-        <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5,fontFamily:'Montreal-Bold' }}>Total Returns</Text>
-        <Svg height="28" width="60" style={{justifyContent: 'center', alignItems: 'center'}}>
-    <Defs>
-    <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-  <Stop offset="0" stopColor="#fff" />
-  <Stop offset="1" stopColor="#C0C0C0" />
-</LinearGradient>
-
-    </Defs>
-    <SvgText
-      fill="url(#gradient)"
-      x="0"
-      y="20"
-      fontSize="16"
-      fontFamily='Unbounded-Bold'
-      justifyContent='center'
-    >
-$800
-    </SvgText>
-  </Svg>
-      </View>
-    </View> */}
           <View style={{
       flexDirection: 'row',
       alignItems: 'center',
@@ -210,27 +182,9 @@ $800
       }}>
  <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#121212' }}>
       <Text style={{ fontSize: 16, color: '#fff' ,fontFamily:'Montreal-Medium'}}>You have </Text>
-  {/* <Svg height="28" width="38" style={{justifyContent: 'center', alignItems: 'center'}}>
-    <Defs>
-    <LinearGradient id="gradient" x1="0" y1="0" x2="0" y2="100%">
-  <Stop offset="0" stopColor="#fff" />
-  <Stop offset="1" stopColor="#C0C0C0" />
-</LinearGradient>
-
-    </Defs>
-    <SvgText
-      fill="url(#gradient)"
-      x="0"
-      y="20"
-      fontSize="16"
-      fontFamily='Montreal-Bold'
-    >
-  {points !== undefined ? points : '0'}
-    </SvgText>
-  </Svg> */}
     <Text style={{ fontSize: 16, color: '#fff' ,fontFamily:'Montreal-Bold' ,textShadowColor: '#C68DFF',
   textShadowOffset: {width: -1, height: 1},
-  textShadowRadius:10}}>200 </Text>
+  textShadowRadius:10}}>{points} </Text>
       <Text style={{ fontSize: 16, color: '#fff' }}>coins</Text>
     </View>
         <Text style={{
@@ -252,7 +206,33 @@ $800
   }}>
     My Investments
   </Text>
-    <MyInvestment navigation={navigation} />
+  
+  {!holdings || !holdings.assets ?(
+    <View style={{  flex: 1,
+        backgroundColor: '#000', 
+        width:'100%',
+        paddingBottom:'50%',justifyContent:'center'}}><Text style={{textAlign:'center',fontFamily:'Unbounded-Medium', justifyContent:'center',marginTop:'10%'}}>No data available...</Text></View>
+  ):(
+    <View style={{  flex: 1,
+        backgroundColor: '#000', 
+        paddingBottom:'30%'}}>
+      <FlatList
+      data={holdings.assets.filter(item => item.token_balance > 0)}
+        keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
+        renderItem={({ item }) => (
+          <MyInvestmentItemCard
+            navigation={navigation}
+            item={{
+              ...item.asset, // Assuming the structure matches what MyInvestmentItemCard expects
+              balance: item.token_balance, // Adapt properties as needed
+              current_price: item.price,
+              unrealized_pnl: item.price_change_percentage_24h, // Example
+              image: item.asset.logo,
+            }}
+          />
+        )}
+      />
+    </View>)}
       </View>
       </ScrollView>
       <TouchableOpacity 
@@ -263,7 +243,7 @@ $800
           width:'95%',
           height: 56, // Button height
           borderRadius: 28, // Circular button
-          backgroundColor: '#C68DFF', // Button color
+          backgroundColor: '#FFF', // Button color
           justifyContent: 'center', // Center the icon or text inside the button
           alignItems: 'center', // Center the icon or text inside the button
           shadowColor: "#C68DFF", // Shadow for the button

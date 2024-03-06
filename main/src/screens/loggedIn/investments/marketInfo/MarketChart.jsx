@@ -19,7 +19,7 @@ const screenWidth = Dimensions.get('window').width;
 
 import LinearGradient from 'react-native-linear-gradient';
 import {TradingViewChart} from '../../../../component/charts/TradingViewChart';
-import LineChart from '../../../../component/charts/LineChart';
+import InvestmentChart from '../../../../component/charts/InvestmentChart';
 import moment from 'moment/moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -275,7 +275,7 @@ const MarketChart = props => {
             </View>
             <View style={styles.chartContainer}>
               {/* <TradingViewChart width={screenWidth} height={300} /> */}
-              <LineChart/>
+              <InvestmentChart/>
             </View>
             {/* <FlatList
               horizontal
@@ -353,7 +353,7 @@ const MarketChart = props => {
             </Text>
             <Text
               style={{
-                color: '#BC88FF',
+                color: '#777',
                 fontFamily: 'Unbounded-ExtraBold',
                 textTransform: 'uppercase',
                 fontSize: 14,
@@ -391,12 +391,11 @@ const MarketChart = props => {
             }}
             onPress={() => {
               navigation.navigate('TradePage', {state: currentItem});
-              <TradePage navigation={props.navigation} />;
             }}>
             <LinearGradient
               useAngle={true}
               angle={150}
-              colors={['#BC88FF', '#BC88FF']}
+              colors={['#FFF', '#FFF']}
               style={{
                 width: '100%',
                 borderRadius: 100,
