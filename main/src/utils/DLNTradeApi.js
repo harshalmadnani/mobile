@@ -21,10 +21,6 @@ export const getDLNTradeCreateBuyOrder = async (
   dstChainTokenOut,
 ) => {
   try {
-    console.log(
-      'URL========',
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
-    );
     const response = await axios.get(
       `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
     );
@@ -109,14 +105,6 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   let txs = [];
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
-  console.log(
-    'address .......... tx daata',
-    eoaAddress,
-    smartAccount,
-    amount,
-    tokenAddress,
-    txData,
-  );
   const usdcAbi = new ethers.utils.Interface(usdAbi);
   const approveData = usdcAbi.encodeFunctionData('approve', [
     txData?.to,
@@ -150,4 +138,20 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   } else {
     return false;
   }
+};
+export const getOrderIdFromDLNTxn = async hash => {
+  try {
+    const response = await axios.get(
+      `https://stats-api.dln.trade/api/Transaction/${hash}/orderIds`,
+    );
+    console.log('response.........', response?.data?.orderIds);
+  } catch (error) {}
+};
+export const getStatusFromDLNOrderId = async id => {
+  try {
+    const response = await axios.get(
+      `https://stats-api.dln.trade/api/Order/${id}`,
+    );
+    console.log('response.........', response?.data?.state);
+  } catch (error) {}
 };

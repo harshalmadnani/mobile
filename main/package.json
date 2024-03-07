@@ -16,6 +16,7 @@
     "@biconomy/smart-account": "^2.0.0",
     "@ethersproject/shims": "^5.0.0",
     "@lifi/widget": "^2.10.1",
+    "@notifee/react-native": "^7.8.2",
     "@particle-network/rn-aa": "^1.3.10",
     "@particle-network/rn-auth": "^1.3.10",
     "@particle-network/rn-auth-core": "^1.3.10",

@@ -22,6 +22,7 @@ import {
   getDLNTradeCreateBuyOrder,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
+import {displayNotification} from '../../../../utils/NotifeeSetup';
 const idToChain = {
   btc: {
     tokenAddress: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
@@ -1034,11 +1035,13 @@ const TradePage = ({route, navigation}) => {
               onPress={async () => {
                 if (bestSwappingTrades) {
                   const res = await getTradeSigningData();
+                  JSON.stringify(res);
                   await confirmDLNTransaction(
                     res?.estimation?.srcChainTokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address,
                     res?.tx,
                   );
+                  await displayNotification();
                 }
               }}>
               <LinearGradient
