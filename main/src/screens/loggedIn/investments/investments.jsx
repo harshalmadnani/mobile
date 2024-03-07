@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState,useEffect, useCallback} from 'react';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -18,25 +18,12 @@ import {
   getListOfCryptoFromMobulaApi,
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
+import getMarketData from '../../../utils/cryptoMarketsApi'
 
-const idToChain = {
-  btc: {
-    tokenAddress: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
-    chain: 'polygon',
-  },
-  eth: {
-    tokenAddress: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-    chain: 'polygon',
-  },
-  matic: {
-    tokenAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-    chain: 'polygon',
-  },
-};
 const ComingSoonView = () => (
   <View
     style={{
-      height: height * 0.8,
+      height: '80%',
       width: '100%',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -52,7 +39,7 @@ const ComingSoonView = () => (
           fontWeight: 'bold',
           color: '#D1D2D9',
           textAlign: 'justify',
-          fontFamily: 'Satoshi-Regular',
+          fontFamily: 'Montreal-Medium',
         }}>
         Coming Soon
       </Text>
@@ -60,6 +47,24 @@ const ComingSoonView = () => (
   </View>
 );
 const Investments = ({navigation}) => {
+  const [marketData, setMarketData] = useState(null);
+
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      try {
+       
+        const data = await getMarketData("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"); // Fetch market data for Bitcoin
+        setMarketData(data); // Store the market data
+        setIsLoading(false); // Hide loading indicator
+      } catch (error) {
+        console.error("Failed to fetch market data:", error);
+       
+      }
+    };
+
+    fetchMarketData();
+  }, []);
+  console.log("market data",marketData);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -100,6 +105,20 @@ const Investments = ({navigation}) => {
         backgroundColor: '#000000',
         paddingBottom: 80,
       }}>
+                <View style={{marginTop: '8%', marginLeft: '5%', marginRight:'5%',flexDirection: 'row', justifyContent: 'space-between',}}>
+          <Text style={{fontFamily:'Unbounded-Medium',color:'#fff',fontSize: 20}}>MARKETS</Text>
+           <TouchableOpacity 
+         onPress={() => navigation.push('TransactionHistory')}>
+      <Image
+        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png' }}
+        style={{
+          width: 40,
+          height: 40,
+          bottom: 3,
+        }}
+      />
+    </TouchableOpacity>
+        </View>
       <View>
         <View
           style={{
@@ -125,7 +144,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('crypto')}>
             <Text
               style={{
-                fontFamily: `Satoshi-Bold`,
+                fontFamily: `Montreal-Medium`,
                 fontSize: 12,
                 color: section === 'crypto' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -143,7 +162,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('stocks')}>
             <Text
               style={{
-                fontFamily: 'Satoshi-Bold',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 12,
                 color: section === 'stocks' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -162,7 +181,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('commodities')}>
             <Text
               style={{
-                fontFamily: 'Satoshi-Bold',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 12,
                 color: section === 'commodities' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -181,7 +200,7 @@ const Investments = ({navigation}) => {
             onPress={() => setSection('forex')}>
             <Text
               style={{
-                fontFamily: 'Satoshi-Bold',
+                fontFamily: 'Montreal-Medium',
                 fontSize: 12,
                 color: section === 'forex' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -221,8 +240,25 @@ const Investments = ({navigation}) => {
           )}
         </View>
       )}
-
-      {section !== 'crypto' && <ComingSoonView />}
+    {!isLoading && section === 'stocks' && (
+        <View
+          scrollEnabled
+          style={{
+            marginTop: '1%',
+          }}>
+          {stocksData && (
+            <FlatList
+              data={stocksData}
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
+                <TradeItemCard navigation={navigation} item={item} />
+              )}
+              onEndReached={async () => await onEndReachedFetch()}
+              keyExtractor={(item, i) => i.toString()}
+            />
+          )}
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -231,7 +267,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     color: '#ffffff',
-    fontFamily: `Satoshi-Bold`,
+    fontFamily: `Montreal-Medium`,
     fontWeight: '500',
     marginLeft: 30,
   },

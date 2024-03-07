@@ -11,22 +11,7 @@ import { Icon } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 
 const MyInvestmentItemCard = ({navigation, item}) => {
-
-    useEffect(() => {
-
-        async function getCoinData() {
-            try{
-
-
-
-            }catch(e) {
-                console.log(e);
-            }
-        }
-
-        getCoinData();
-
-    },[]);
+console.log("Image",item.price_change_percentage_24h);
 
     return (
         <TouchableOpacity
@@ -36,7 +21,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             style={{
                 width: '100%',
                 alignSelf: 'flex-start',
-                paddingVertical: '2%'
+                paddingVertical: '5%'
                 // backgroundColor: 'red'
             }}>
         
@@ -45,7 +30,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                 flexDirection: 'row',
                 justifyContent:'space-between',
                 alignItems: 'center',
-                marginHorizontal: 10
             }}>
                 <View style={{
                     display: 'flex', 
@@ -54,7 +38,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     alignItems: 'center',
                     // backgroundColor: 'red',
                 }}>
-                    <View style={{paddingHorizontal: 10}}>
+                    <View style={{paddingHorizontal: 5}}>
                         <FastImage 
                             style={{width: 42, height: 42}}
                             source={{
@@ -69,16 +53,9 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
                             <View style={{paddingRight: 10}}>
-                                <Text style={styles.text2}>${item.current_price}</Text>
+                                <Text style={styles.text5}>{item.balance}</Text>
                             </View>
-                            <View>
-                                {
-                                    item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>+ {item.price_change_percentage_24h.toFixed(2)} %</Text>
-                                }
-                                {
-                                    item.price_change_percentage_24h < 0 && <Text style={styles.text4}> {item.price_change_percentage_24h.toFixed(2)} %</Text>
-                                }
-                            </View>
+
                         </View>
                     </View>
                 </View>
@@ -92,11 +69,16 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     // backgroundColor: 'red'
                 }}>
                     <View>
-                        <Text style={styles.text1}>{item.balance}</Text>
+                    <Text style={styles.text2}>${(item.current_price * item.balance).toFixed(3)}</Text>
                     </View>
                     <View>
-                        <Text style={styles.text2}>${(item.current_price * item.balance).toFixed(3)}</Text>
-                    </View>
+                                {
+                                    item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>+ {item.price_change_percentage_24h/(item.current_price-item.price_change_percentage_24h)} %</Text>
+                                }
+                                {
+                                    item.price_change_percentage_24h < 0 && <Text style={styles.text4}> {item.price_change_percentage_24h.toFixed(2)} %</Text>
+                                }
+                            </View>
                 </View>
             </View>
         </TouchableOpacity>
@@ -116,28 +98,34 @@ const styles = StyleSheet.create({
     text1: {
         fontSize: 16,
        fontWeight: "500" ,
-        fontFamily: 'Satoshi-Bold',
+        fontFamily: 'Montreal-Bold',
         color: '#ffffff',
     },
     text2 :{
-        fontSize: 14,
-       fontWeight: "400" ,
-        fontFamily: 'Satoshi-Regular',
-        color: '#999999',
+        fontSize: 16,
+        fontFamily: 'Unbounded-Bold',
+        color: '#fff',
 
     },
     text3: {
         fontSize: 14,
        fontWeight: "500" ,
-        fontFamily: 'Satoshi-Bold',
+        fontFamily: 'Unbounded-Medium',
         color: '#ADFF6C',
 
     },
     text4: {
         fontSize: 14,
        fontWeight: "500" ,
-        fontFamily: 'Satoshi-Bold',
+        fontFamily: 'Unbounded-Medium',
         color: '#ff6c6c',
+
+    },
+    text5: {
+        fontSize: 14,
+       fontWeight: "500" ,
+        fontFamily: 'Montreal-Medium',
+        color: '#787878',
 
     }
 })

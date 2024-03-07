@@ -128,10 +128,10 @@ function TopBar({navigation, headers}) {
             }}
             activeOpacity={0.8}
             style={{marginRight: 15}}>
-            <View style={[styles.pointsContainer, {marginBottom: 0}]}>
+            {/* <View style={[styles.pointsContainer, {marginBottom: 0}]}>
               <FastImage source={starIcon} style={styles.pointsIcon} />
               <Text style={styles.pointsText}>{points}</Text>
-            </View>
+            </View> */}
           </TouchableOpacity>
 
           {/* <Icon
@@ -262,15 +262,15 @@ const styles = StyleSheet.create({
     zIndex: 999,
     fontSize: 14,
     color: 'white',
-    fontFamily: 'Satoshi-Regular',
-    // fontFamily: `EuclidCircularA-Regular`,
+    fontFamily: 'Unbounded-Regular',
+
   },
   logo: {
-    // fontFamily: `EuclidCircularA-Bold`,
-    fontFamily: 'Satoshi-Bold',
+
+    fontFamily: "Unbounded-Medium",
     color: '#fff',
     fontWeight: '700',
-    fontSize: 30,
+    fontSize: 20,
     marginLeft: '2%',
     marginBottom: '2%',
     marginTop: '2%',

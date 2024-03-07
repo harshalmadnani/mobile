@@ -38,7 +38,7 @@ export const checkNameOnSCWAddress = async (navigation, scwAddress, email) => {
         navigation.push('EnterName');
       } else {
         global.loginAccount.name = userResponse;
-        navigation.push('Payments');
+        navigation.push('Portfolio');
       }
     } catch (error) {
       console.log('Here....Error', error?.response?.data);
@@ -201,7 +201,7 @@ export const onIsLoginCheckAuthCore = (
                 );
                 global.withAuth = true;
                 console.log('Logged In:', global.loginAccount);
-                navigation.push('Payments');
+                navigation.push('Portfolio');
                 console.log('Navigating To Payments');
               } else {
                 navigation.push('LoggedOutHome');

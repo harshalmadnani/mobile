@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    fontFamily: 'EuclidCircularA-Bold',
+    fontFamily: 'Montreal-Bold',
     color: '#fff',
     fontSize: 25,
     marginLeft: '8%',
@@ -34,7 +34,6 @@ const styles = StyleSheet.create({
   nameSettings: {
     width: '90%',
     marginTop: '5%',
-    flexDirection: 'row',
     backgroundColor: '#101010',
     padding: 20,
     justifyContent: 'space-between',
@@ -69,9 +68,9 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
   },
   settingsText: {
-    fontSize: 20,
+    fontSize: 16,
     color: 'white',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: "Montreal-Bold",
   },
 
   events: {
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
   switchText: {
     textAlign: 'center',
     color: '#fff',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: ``,
     fontSize: 15,
   },
 
@@ -108,7 +107,7 @@ const styles = StyleSheet.create({
   logoutText: {
     textAlign: 'center',
     color: '#E14C4C',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: ``,
     fontSize: 20,
   },
 

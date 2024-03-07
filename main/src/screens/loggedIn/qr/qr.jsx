@@ -23,7 +23,6 @@ import QR from '../../../qr-generator';
 import {logout} from '../../../particle-auth';
 
 import styles from './qr-styles';
-let address;
 let info;
 const bg = require('../../../../assets/qr.jpg');
 
@@ -177,7 +176,7 @@ class QRPage extends Component {
                   size={30}
                   color="white"
                   type="feather"
-                  onPress={() => this.props.navigation.navigate('Payments')}
+                  onPress={() => navigation.goBack()}
                 />
                 <View style={styles.nav}>
                   <TouchableOpacity

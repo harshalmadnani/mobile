@@ -264,6 +264,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     right: 30,
   },
+  portfolioHead: {
+    color: '#989898',
+    fontFamily: 'Montreal-Medium',
+    fontSize: 16,
+  },
+
+  portfoioPriceContainer: {
+    marginTop: '2%',
+    justifyContent: 'center'
+  },
 
   stockPriceContainer: {
     // marginTop: '2%',
@@ -271,15 +281,17 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
 
+
   stockPrice: {
     color: '#F0F0F0',
-    fontSize: 28,
+    fontSize: 30,
     fontFamily: 'Unbounded-Bold',
     textAlign: 'center',
   },
 
   chartContainer: {
     marginTop: '10%',
+    alignItems:'center'
   },
 
   goldSelected: {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity,Vibration } from 'react-native';
 
 import { Text } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
@@ -16,11 +16,15 @@ import YoSvg from './navbar-images/yo.svg';
 import RedeemSvg from './navbar-images/cards.svg';
 import HomeSelectedNavIcon from './navbar-images/home-selected';
 import HomeNavIcon from './navbar-images/home';
-
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 const windowHeight = Dimensions.get('window').height;
 const selectedIcon = '#ffffff';
 const icon = '#696969';
 const BottomNavbar = ({ navigation, selected }) => {
+  const options = {
+    enableVibrateFallback: true,
+    ignoreAndroidSystemSettings: false,
+  };
   return (
     // <View style = {{height: windowHeight * 0.3}}>
     <View style={[styles.container, { paddingBottom: 0 }]}>
@@ -45,6 +49,7 @@ const BottomNavbar = ({ navigation, selected }) => {
             </View>
           </TouchableOpacity>
         </View> */}
+
         <View style={styles.navItem}>
           {/* <Icon
             name="home"
@@ -54,8 +59,8 @@ const BottomNavbar = ({ navigation, selected }) => {
             onPress={() => navigation.push('Payments')}
             color={selected == 'Payments' ? selectedIcon : icon}
           /> */}
-          <TouchableOpacity onPress={() => navigation.push('Payments')}>
-            {selected == 'Payments' ? (
+          <TouchableOpacity onPress={() => {navigation.push('Portfolio')}}>
+            {selected == 'Portfolio' ? (
               <FastImage
                 source={require(`./navbar-images/home-selected.png`)}
                 style={styles.icon}
@@ -83,16 +88,22 @@ const BottomNavbar = ({ navigation, selected }) => {
           </TouchableOpacity>
         </View> */}
         <View>
-          <TouchableOpacity onPress={() => navigation.push('Investments')}>
-            <View style={styles.navItem}>
-              <SvgUri
-                width="28"
-                height="28"
-                svgXmlData={TradeSvg}
-                fill={selected == 'Investments' ? selectedIcon : icon}
+          <TouchableOpacity
+           onPress={() => {
+        // ReactNativeHapticFeedback.trigger("impactLight", options);
+        navigation.push('Investments')
+      }}>
+          {selected == 'Investments' ? (
+              <FastImage
+                source={require(`./navbar-images/markets-selected.png`)}
+                style={styles.icon}
               />
-              {/* <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text> */}
-            </View>
+            ) : (
+              <FastImage
+                source={require(`./navbar-images/markets.png`)}
+                style={styles.icon}
+              />
+            )}
           </TouchableOpacity>
         </View>
 
@@ -126,17 +137,18 @@ const BottomNavbar = ({ navigation, selected }) => {
         </View> */}
 
         <View>
-          <TouchableOpacity onPress={() => navigation.push('Card')}>
-            <View style={styles.navItem}>
-              <SvgUri
-                width="28"
-                height="28"
-                svgXmlData={CardSvg}
-                fill={selected == 'Card' ? selectedIcon : icon}
+          <TouchableOpacity onPress={() =>{navigation.push('Settings')}}>
+          {selected == 'Settings' ? (
+              <FastImage
+                source={require(`./navbar-images/profile-selected.png`)}
+                style={styles.icon}
               />
-              {/* 
-              <Text style={selected == 'Card' ? styles.navItemLabelSelected : styles.navItemLabel}>Card</Text> */}
-            </View>
+            ) : (
+              <FastImage
+                source={require(`./navbar-images/profile.png`)}
+                style={styles.icon}
+              />
+            )}
           </TouchableOpacity>
         </View>
         {/*         

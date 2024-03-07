@@ -18,7 +18,11 @@ const Ramper = ({ navigation }) => {
     const [fiat, setFiat] = useState([]);
     const [selectedId, setSelectedId] = useState('wallet');
     const [modalVisible, setModalVisible] = useState(false);
-
+    const handleTextChange = (text) => {
+        // Optional: Add validation or formatting for numeric input if needed
+        const numericText = text.replace(/[^0-9]/g, ''); // This will strip non-numeric characters
+        setValue(numericText);
+      };
     const handlePress = () => {
         if (selectedId === "wallet") {
             setModalVisible(true);
@@ -87,8 +91,10 @@ const Ramper = ({ navigation }) => {
 
 
     return (
-        <LinearGradient colors={['#3C0A65', '#3C0A65', '#0F0F0F', '#0F0F0F', '#0F0F0F', '#0F0F0F', '#0F0F0F']} start={{ x: 1, y: 0 }}
-            end={{ x: 0, y: 1 }} style={{ flex: 1 }}>
+        <LinearGradient  start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        colors={['#0F0F0F', '#0F0F0F', '#0f0f0f']}
+        locations={[0.17, 0.99, 1.0]} style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }}>
                 {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}
                 <View style={{ flex: 1 }}>
@@ -112,13 +118,13 @@ const Ramper = ({ navigation }) => {
                     </View>
                     <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 }}>
                         {selectedId === 'wallet' ? (
-                            <Text style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>$</Text>)
+                            <Text style={{ fontSize: 80, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>$</Text>)
                             :
                             (
-                                <Text style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>{getCurrencySymbol(fiat.id)}</Text>
+                                <Text style={{ fontSize: 80, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>{getCurrencySymbol(fiat.id)}</Text>
                             )}
                         <TextInput
-                            style={{ fontSize: 80, fontWeight: "900", color: "#AF6AE9", textAlign: "center", fontFamily: "Unbounded-ExtraBold", }}
+                            style={{ fontSize: 80, fontWeight: "900", color: "#fff", textAlign: "center", fontFamily: "Unbounded-ExtraBold", }}
                             value={value}
                             onChangeText={(text) => {
                                 setValue(text)
@@ -183,8 +189,8 @@ const Ramper = ({ navigation }) => {
                                 onPress={() => setSelectedId(item.id)}
                                 style={[
                                     styles.button,
-                                    { borderColor: item.id === selectedId ? '#A66CFF' : 'transparent' },
-                                    { color: item.id === selectedId ? '#A66CFF' : 'transparent' },
+                                    { borderColor: item.id === selectedId ? '#fff' : 'transparent' },
+                                    { color: item.id === selectedId ? '#fff' : 'transparent' },
                                 ]}
                             >
                                 <Image source={{ uri: item.image }} style={{
@@ -227,7 +233,7 @@ const Ramper = ({ navigation }) => {
                         <LinearGradient
                             useAngle={true}
                             angle={150}
-                            colors={['#BC88FF', '#BC88FF']}
+                            colors={['#fff', '#fff']}
                             style={{
                                 width: '100%',
                                 height: '100%',

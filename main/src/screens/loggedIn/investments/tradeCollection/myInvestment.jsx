@@ -1,96 +1,65 @@
-import React, {useState, Component, useEffect} from 'react';
+import {React, useState,useEffect} from 'react';
 import {
-  TouchableOpacity,
-  TouchableHighlight,
   SafeAreaView,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  Clipboard,
-  Alert,
-  Modal,
-  Linking,
-  Dimensions,
-  RefreshControl,
-  Platform,
+  FlatList,
   StyleSheet,
-  ActivityIndicator,
+  Text
 } from 'react-native';
-import { Icon } from 'react-native-elements';
-import styles from '../investment-styles';
-import LinearGradient from 'react-native-linear-gradient';
-import { getUserInvestmentPortfolio } from '../../../../utils/alchemy';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import MyInvestmentItemCard from './myInvestmentItemCard';
-import { Button } from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import MyInvestmentItemCard from './myInvestmentItemCard'; // Assuming this is the path to your component
+import { getCryptoHoldingForAddress } from '../../../../utils/cryptoWalletApi';
+const MyInvestments = ({  navigation }) => {
+  // Assuming 'holdings' is passed as a prop to this component, containing an array of assets
+  const [holdings, setHoldings] = useState();
+  console.log('Holdings', holdings);
+  const address = useSelector(x => x.auth.address);
+  useEffect(() => {
+    async function init() {
+      try {
+        const data = await getCryptoHoldingForAddress(address);
+        console.log("Data from API",data);
+        setHoldings(data);
 
-const MyInvestment = ({navigation}) => {
-    
-    const [investmentPortfolio, setInvestmentPortfolio] = useState([]);
+        // fetch selected coin contract address
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    init();
+  }, []);
+  if (!holdings || !holdings.assets) {
+    // If holdings or holdings.assets don't exist, you can return a loading indicator or null
+    return (    <SafeAreaView style={styles.container}><Text>Loading...</Text></SafeAreaView>)
+  }
+console.log('Holdings',holdings);
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+      data={holdings.assets.filter(item => item.token_balance > 0)}
+        keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
+        renderItem={({ item }) => (
+          <MyInvestmentItemCard
+            navigation={navigation}
+            item={{
+              ...item.asset, // Assuming the structure matches what MyInvestmentItemCard expects
+              balance: item.token_balance, // Adapt properties as needed
+              current_price: item.price,
+              price_change_percentage_24h: item.asset.price_change_percentage_24h, // Example
+              image: item.asset.logo, // Assuming there's an 'image' property
+            }}
+          />
+        )}
+      />
+    </SafeAreaView>
+  );
+};
 
-    const [loading, setLoading] = useState(false);
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000', // Match the background color
+    paddingBottom:'30%'
+  },
+});
 
-    useEffect(() => {
-        async function init() {
-            try{
-                setLoading(true);
-                const mainnetJSON = await AsyncStorage.getItem('mainnet');
-                const mainnet = JSON.parse(mainnetJSON);
-
-                if (global.withAuth) {
-                    authAddress = global.loginAccount.publicAddress;
-                    scwAddress = global.loginAccount.scw;
-                } else {
-                    authAddress = global.connectAccount.publicAddress;
-                    scwAddress = global.connectAccount.publicAddress;
-                }
-
-                const userInvestmentPortfolio = await getUserInvestmentPortfolio(mainnet, scwAddress);
-                setInvestmentPortfolio(userInvestmentPortfolio);
-
-            }catch(e){
-                console.log(e);
-            }
-            setLoading(false);
-
-        }
-        init();
-    },[])
-
-    return ( 
-        <View style={{
-            flex: 1,
-            marginTop: 8,
-        }}>
-            
-            {
-                loading && <ActivityIndicator size={30} style={styles.loader} color="#fff"  />
-            }
-
-            {
-                !loading && investmentPortfolio.length > 0 &&
-                    investmentPortfolio.map((e,i) => {
-                        return <MyInvestmentItemCard key={i} navigation={navigation} item={e} />
-                    })
-                
-            }
-
-            {
-                !loading && investmentPortfolio.length === 0 &&
-                    <View style={{
-                        flex: 1,
-                        justifyContent: 'flex-start',
-                        marginTop: 10,
-                        alignItems: 'center',
-                    }}>
-                        <Text style={{fontSize: 16, fontFamily: 'Satoshi-Regular'}}>No data available</Text>
-                    </View>
-                
-            }
-
-        </View>  
-    );
-}
-
-export default MyInvestment;
+export default MyInvestments;

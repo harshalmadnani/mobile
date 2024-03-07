@@ -55,16 +55,15 @@ export const getAuthCoreProvider = loginType => {
   return web3;
 };
 export const connectWithAuthCore = async () => {
-  const supportAuthType = [SupportAuthType.Phone, SupportAuthType.Email];
+  const supportAuthType = [ SupportAuthType.Email];
   const result = await particleAuthCore.connect(
     LoginType.Email,
     null,
     supportAuthType,
     SocialLoginPrompt.SelectAccount,
     {
-      projectName: 'Xade Finance',
-      description: 'Welcome to login',
-      imagePath: 'https://connect.particle.network/icons/512.png',
+      projectName: 'Enter a new era of finance',
+      imagePath: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709582736/adlu2jdpsgeaao3apqoz.png',
     },
   );
   if (result.status) {

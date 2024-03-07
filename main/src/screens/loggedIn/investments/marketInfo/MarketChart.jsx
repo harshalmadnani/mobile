@@ -11,7 +11,6 @@ import {
 import {Text, Icon, Image} from '@rneui/themed';
 
 import styles from '../investment-styles';
-
 import TradePage from './BuyForm';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {ImageAssets} from '../../../../../assets';
@@ -20,6 +19,7 @@ const screenWidth = Dimensions.get('window').width;
 
 import LinearGradient from 'react-native-linear-gradient';
 import {TradingViewChart} from '../../../../component/charts/TradingViewChart';
+import InvestmentChart from '../../../../component/charts/InvestmentChart';
 import moment from 'moment/moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -186,7 +186,7 @@ const MarketChart = props => {
       ),
     );
     console.log('asset....calls');
-    // dispatch(getCryptoHoldingForAddressFromMobula(currentItem?.name)); Harshal you have to call this and like address you will get value like const holdings=useSelector(x=>x.portfolio.holdings)
+    dispatch(getCryptoHoldingForAddressFromMobula(currentItem?.name));
     dispatch(getCryptoHoldingForMarketFromMobula(currentItem?.name));
     dispatch(setAssetMetadata(currentItem?.name));
   };
@@ -278,10 +278,14 @@ const MarketChart = props => {
             </View>
           </View>
         </View>
-        <View style={styles.chartContainer}>
+        {/* <View style={styles.chartContainer}>
           <TradingViewChart width={screenWidth} height={300} />
+        </View> */}
+        <View style={styles.chartContainer}>
+          {/* <TradingViewChart width={screenWidth} height={300} /> */}
+          <InvestmentChart />
         </View>
-        <FlatList
+        {/* <FlatList
           horizontal
           keyExtractor={(x, i) => i.toString()}
           renderItem={({item, index}) => (
@@ -321,7 +325,7 @@ const MarketChart = props => {
             </TouchableOpacity>
           )}
           data={availableTimeFrame}
-        />
+        /> */}
         {/* </View> */}
         {/* </View> */}
       </View>
@@ -385,7 +389,6 @@ const MarketChart = props => {
         }}
         onPress={() => {
           navigation.navigate('TradePage', {state: currentItem});
-          // <TradePage navigation={props.navigation} />;
         }}>
         <LinearGradient
           useAngle={true}
@@ -408,342 +411,7 @@ const MarketChart = props => {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-      {/* <View
-        style={{
-          height: 50,
-          marginHorizontal: '5%',
-          justifyContent: 'space-evenly',
-          flexDirection: 'row',
-          borderRadius: 6,
-          marginTop: '13%',
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-        }}></View> */}
-      <View style={styles.longshortContainer}>
-        {/* <View
-          style={{
-            flexDirection: 'row',
-            height: 50,
-            borderRadius: 10,
-            backgroundColor: '#1C1B20',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: 4,
-            marginVertical: 24,
-            marginHorizontal: '5%',
-          }}>
-          <TouchableOpacity
-            style={
-              state?.section === 'news'
-                ? {
-                    padding: 9,
-                    paddingHorizontal: 30,
-                    fontWeight: 'bold',
-                    backgroundColor: '#5B5A60',
-                    borderRadius: 10,
-                    color: '#FAF9FC',
-                    fontSize: 0.85,
-                    cursor: 'pointer',
-                  }
-                : {
-                    color: '#ADADAF',
-                    fontWeight: 'bold',
-                    fontSize: 0.85,
-                    padding: 12,
-                    paddingHorizontal: 30,
-                    cursor: 'pointer',
-                  }
-            }
-            onPress={() => setState({...state, section: 'news'})}>
-            <Text style={{color: '#FFFFFF'}}>News</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={
-              state?.section === 'degenai'
-                ? {
-                    padding: 9,
-                    paddingHorizontal: 30,
-                    fontWeight: 'bold',
-                    backgroundColor: '#5B5A60',
-                    borderRadius: 10,
-                    color: '#FAF9FC',
-                    fontSize: 0.85,
-                    cursor: 'pointer',
-                  }
-                : {
-                    color: '#ADADAF',
-                    fontWeight: 'bold',
-                    fontSize: 0.85,
-                    padding: 12,
-                    paddingHorizontal: 30,
-                    cursor: 'pointer',
-                  }
-            }>
-            <Text style={{color: '#FFFFFF'}}>Degen AI</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={
-              state?.section === 'about'
-                ? {
-                    padding: 9,
-                    paddingHorizontal: 30,
-                    fontWeight: 'bold',
-                    backgroundColor: '#5B5A60',
-                    borderRadius: 10,
-                    color: '#FAF9FC',
-                    fontSize: 0.85,
-                    cursor: 'pointer',
-                  }
-                : {
-                    color: '#ADADAF',
-                    fontWeight: 'bold',
-                    fontSize: 0.85,
-                    padding: 12,
-                    paddingHorizontal: 30,
-                    cursor: 'pointer',
-                  }
-            }>
-            <Text style={{color: '#FFFFFF'}}>About</Text>
-          </TouchableOpacity>
-        </View> */}
-
-        {/* <View style={{paddingHorizontal: '5%'}}>
-          {state?.section === 'news' ? (
-            news?.map((data, index) => (
-              <View
-                key={index}
-                style={{
-                  marginBottom: 50,
-                  alignItems: 'flex-start',
-                  gap: 10,
-                }}>
-                <TouchableOpacity onPress={() => Linking.openURL(data.url)}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      gap: 5,
-                      color: 'gray',
-                      alignItems: 'center',
-                    }}>
-                    <Text style={{fontSize: 13, color: 'gray'}}>
-                      {formatDate(data.published_at).time}
-                    </Text>
-                    <Text style={{marginHorizontal: 5, color: 'gray'}}>·</Text>
-                    <Text style={{fontSize: 13, color: 'gray'}}>
-                      {formatDate(data.published_at).date}
-                    </Text>
-                    <Text style={{marginHorizontal: 5, color: 'gray'}}>·</Text>
-                    <Text style={{fontSize: 13, color: 'gray'}}>
-                      {capitalizeFirstLetter(data.source.title)}
-                    </Text>
-                  </View>
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      color: '#D1D2D9',
-                      fontFamily: 'Satoshi-Bold',
-                      textAlign: 'justify',
-                    }}>
-                    {data.title}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ))
-          ) : state?.section === 'about' ? (
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'column',
-              }}>
-              <Text
-                style={{
-                  color: '#ffffff',
-                  fontSize: 24,
-                  fontFamily: 'Satoshi-Bold',
-                  letterSpacing: 0.1,
-                }}>
-                About
-              </Text>
-
-              <ReadMoreLess text={state.about} maxChars={300} />
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginTop: 15,
-                }}></View>
-              <View
-                style={{
-                  height: 1,
-                  width: '100%',
-                  backgroundColor: '#282A2F',
-                  marginVertical: 12,
-                }}></View>
-              <Text
-                style={{
-                  color: '#ffffff',
-                  fontSize: 24,
-                  fontFamily: 'Satoshi-Bold',
-                  letterSpacing: 0.1,
-                }}>
-                Market Stats
-              </Text>
-              <View style={{width: '100%', flexDirection: 'column'}}>
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginTop: 10,
-                  }}>
-                  <Text
-                    style={{
-                      color: '#82828f',
-                      textAlign: 'center',
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: '#82828f',
-                      fontSize: 14,
-                    }}>
-                    Market Cap
-                  </Text>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      fontSize: 13,
-                      color: 'white',
-                    }}>
-                    $ {state.marketCap.toLocaleString()}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text
-                    style={{
-                      color: '#82828f',
-                      textAlign: 'center',
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: '#82828f',
-                      fontSize: 14,
-                    }}>
-                    All Time High
-                  </Text>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      fontSize: 13,
-                      color: 'white',
-                    }}>
-                    $ {state.allTimeHigh.toLocaleString()}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text
-                    style={{
-                      color: '#82828f',
-                      textAlign: 'center',
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: '#82828f',
-                      fontSize: 14,
-                    }}>
-                    All Time Low
-                  </Text>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      fontSize: 13,
-                      color: 'white',
-                    }}>
-                    $ {state.allTimeLow}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}>
-                  <Text
-                    style={{
-                      color: '#82828f',
-                      textAlign: 'center',
-                      borderBottomWidth: 0.5,
-                      borderBottomColor: '#82828f',
-                      fontSize: 14,
-                    }}>
-                    Fully Diluted Value
-                  </Text>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      fontSize: 13,
-                      color: 'white',
-                    }}>
-                    $ {state.fully_diluted_valuation.toLocaleString()}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginBottom: 5,
-                  }}></View>
-              </View>
-            </View>
-          ) : (
-            <View
-              style={{
-                height: 500,
-                width: '100%',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <View>
-                <Image
-                  source={ImageAssets.algoImg}
-                  style={{height: 200, width: 200}}
-                />
-              </View>
-              <View
-                style={{
-                  marginBottom: 50,
-                  alignItems: 'flex-start',
-                  gap: 10,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: 'bold',
-                    color: '#D1D2D9',
-                    textAlign: 'justify',
-                  }}>
-                  Coming Soon
-                </Text>
-              </View>
-            </View>
-          )}
-        </View> */}
-      </View>
+      <View style={styles.longshortContainer}></View>
     </ScrollView>
   );
 };
