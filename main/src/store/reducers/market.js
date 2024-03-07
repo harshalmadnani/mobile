@@ -7,6 +7,14 @@ const initialState = {
   selectedAssetMetaData: null,
   selectedTimeFramePriceInfo: null,
   selectedAssetWalletHolding: null,
+  bestSwappingTrades: null,
+  tokenBalanceUSD: null,
+  availableBlockchain: [
+    'BNB Smart Chain (BEP20)',
+    'Polygon',
+    'Avalanche C-Chain',
+    'Arbitrum',
+  ],
 };
 
 export const marketSlice = createSlice({
@@ -25,6 +33,14 @@ export const marketSlice = createSlice({
     },
     setSelectedAssetWalletHolding: (state, action) => {
       state.selectedAssetWalletHolding = action.payload;
+    },
+    setBestSwappingRates: (state, action) => {
+      console.log('best rates.....swapping', action.payload);
+      state.bestSwappingTrades = action.payload;
+    },
+    setTokenUsdcBalance: (state, action) => {
+      console.log('best rates.....swapping', action.payload);
+      state.tokenBalanceUSD = action.payload;
     },
   },
 });

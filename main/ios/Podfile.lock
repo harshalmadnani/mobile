@@ -401,6 +401,8 @@ PODS:
     - React-Core
   - react-native-netinfo (9.4.1):
     - React-Core
+  - react-native-network-info (5.2.1):
+    - React
   - react-native-notifications (4.3.5):
     - React-Core
   - react-native-pager-view (6.2.3):
@@ -548,10 +550,20 @@ PODS:
     - FirebaseCoreExtension (= 10.7.0)
     - React-Core
     - RNFBApp
+  - RNGestureHandler (2.15.0):
+    - RCT-Folly (= 2021.07.22.00)
+    - React-Core
   - RNInAppBrowser (3.7.0):
+    - React-Core
+  - RNNotifee (7.8.2):
+    - React-Core
+    - RNNotifee/NotifeeCore (= 7.8.2)
+  - RNNotifee/NotifeeCore (7.8.2):
     - React-Core
   - RNOS (1.2.6):
     - React
+  - RNReactNativeHapticFeedback (2.2.0):
+    - React-Core
   - RNReanimated (3.4.2):
     - DoubleConversion
     - FBLazyVector
@@ -586,7 +598,7 @@ PODS:
     - React-Core
   - RNSnackbar (2.6.2):
     - React-Core
-  - RNSVG (13.13.0):
+  - RNSVG (15.0.0):
     - React-Core
   - RNTextGradientView (0.1.7):
     - React
@@ -687,6 +699,7 @@ DEPENDENCIES:
   - react-native-floating-label-input (from `../node_modules/react-native-floating-label-input`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-network-info (from `../node_modules/react-native-network-info`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - "react-native-particle-aa (from `../node_modules/@particle-network/rn-aa`)"
@@ -721,8 +734,11 @@ DEPENDENCIES:
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNInAppBrowser (from `../node_modules/react-native-inappbrowser-reborn`)
+  - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNOS (from `../node_modules/react-native-os`)
+  - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
@@ -838,6 +854,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-get-random-values"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-network-info:
+    :path: "../node_modules/react-native-network-info"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
   react-native-pager-view:
@@ -906,10 +924,16 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNInAppBrowser:
     :path: "../node_modules/react-native-inappbrowser-reborn"
+  RNNotifee:
+    :path: "../node_modules/@notifee/react-native"
   RNOS:
     :path: "../node_modules/react-native-os"
+  RNReactNativeHapticFeedback:
+    :path: "../node_modules/react-native-haptic-feedback"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -988,6 +1012,7 @@ SPEC CHECKSUMS:
   react-native-floating-label-input: 70b2864337fa690c6d71d75dad66d8ec1d6bf162
   react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
   react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
+  react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-notifications: 504143d59f9628c3b0c22fd0ccf34b65b9182d01
   react-native-pager-view: e26d35e382d86950c936f8917e3beb9188115ccc
   react-native-particle-aa: 0d9bb2c928df1ef1f46989fcf988b74f4e82d33a
@@ -1022,13 +1047,16 @@ SPEC CHECKSUMS:
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: d59efa0872fff4e27de03cca3c528c203a436ae5
   RNFBMessaging: 216693dd5ba4f18ba65fb39fc73a44a23c26190f
+  RNGestureHandler: 7909c50383a18f0cb10ce1db7262b9a6da504c03
   RNInAppBrowser: e36d6935517101ccba0e875bac8ad7b0cb655364
+  RNNotifee: 8e2d3df3f0e9ce8f5d1fe4c967431138190b6175
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
+  RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
   RNReanimated: b05e38849bcbe9fe521380815b53f816c72f0e29
   RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
   RNSnackbar: 3727b42bf6c4314a53c18185b5203e915a4ab020
-  RNSVG: ed492aaf3af9ca01bc945f7a149d76d62e73ec82
+  RNSVG: 3f65a03e0c61a8495dee92bf82545ed9041cbf3b
   RNTextGradientView: 3eb4744303f801546fad35ac47a53cc82257cb25
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b

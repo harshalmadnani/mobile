@@ -1,4 +1,4 @@
-import React, {useState,useEffect, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -18,7 +18,7 @@ import {
   getListOfCryptoFromMobulaApi,
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
-import getMarketData from '../../../utils/cryptoMarketsApi'
+import {getMarketData} from '../../../utils/cryptoMarketsApi';
 
 const ComingSoonView = () => (
   <View
@@ -52,19 +52,19 @@ const Investments = ({navigation}) => {
   useEffect(() => {
     const fetchMarketData = async () => {
       try {
-       
-        const data = await getMarketData("0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"); // Fetch market data for Bitcoin
+        const data = await getMarketData(
+          '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+        ); // Fetch market data for Bitcoin
         setMarketData(data); // Store the market data
         setIsLoading(false); // Hide loading indicator
       } catch (error) {
-        console.error("Failed to fetch market data:", error);
-       
+        console.error('Failed to fetch market data:', error);
       }
     };
 
     fetchMarketData();
   }, []);
-  console.log("market data",marketData);
+  console.log('market data', marketData);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -105,20 +105,31 @@ const Investments = ({navigation}) => {
         backgroundColor: '#000000',
         paddingBottom: 80,
       }}>
-                <View style={{marginTop: '8%', marginLeft: '5%', marginRight:'5%',flexDirection: 'row', justifyContent: 'space-between',}}>
-          <Text style={{fontFamily:'Unbounded-Medium',color:'#fff',fontSize: 20}}>MARKETS</Text>
-           <TouchableOpacity 
-         onPress={() => navigation.push('TransactionHistory')}>
-      <Image
-        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png' }}
+      <View
         style={{
-          width: 40,
-          height: 40,
-          bottom: 3,
-        }}
-      />
-    </TouchableOpacity>
-        </View>
+          marginTop: '8%',
+          marginLeft: '5%',
+          marginRight: '5%',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}>
+        <Text
+          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
+          MARKETS
+        </Text>
+        <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
+          <Image
+            source={{
+              uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png',
+            }}
+            style={{
+              width: 40,
+              height: 40,
+              bottom: 3,
+            }}
+          />
+        </TouchableOpacity>
+      </View>
       <View>
         <View
           style={{
@@ -240,7 +251,7 @@ const Investments = ({navigation}) => {
           )}
         </View>
       )}
-    {!isLoading && section === 'stocks' && (
+      {!isLoading && section === 'stocks' && (
         <View
           scrollEnabled
           style={{
