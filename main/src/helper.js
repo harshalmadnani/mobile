@@ -9,7 +9,7 @@ export async function getEvmTokenTransaction(sender, receiver, amount) {
   const mainnetJSON = await AsyncStorage.getItem('mainnet');
   const mainnet = JSON.parse(mainnetJSON);
   const contractAddress = mainnet
-    ? '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+    ? '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
     : '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 
   if (mainnet) {

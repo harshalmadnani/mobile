@@ -23,7 +23,7 @@ import {ethers} from 'ethers';
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
-const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 
 var weekday = new Array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 var monthname = new Array(

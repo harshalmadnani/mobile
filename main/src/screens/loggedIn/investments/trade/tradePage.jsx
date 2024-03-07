@@ -42,7 +42,7 @@ const TradePage = ({route, navigation}) => {
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
   const [isModalOpen, setIsModalOpen] = useState(true);
-  const [value, setValue] = useState('100');
+  const [value, setValue] = useState('1');
   const [convertedValue, setConvertedValue] = useState('token');
   const address = useSelector(x => x.auth.address);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -93,19 +93,26 @@ const TradePage = ({route, navigation}) => {
       console.log('Here... no tx data');
     }
   };
-  //   getTradeSigningData();
-  // }, [bestSwappingTrades]);
+  const getBestPrice = async () => {
+    dispatch(
+      getBestDLNCrossSwapRate(
+        selectedAssetMetaData?.blockchains,
+        selectedAssetMetaData?.contracts,
+        value * 1000000,
+      ),
+    );
+  };
   // Example of logging state changes
   useFocusEffect(
     useCallback(() => {
-      dispatch(
-        getBestDLNCrossSwapRate(
-          selectedAssetMetaData?.blockchains,
-          selectedAssetMetaData?.contracts,
-          value * 1000000,
-        ),
-      );
-
+      // dispatch(
+      //   getBestDLNCrossSwapRate(
+      //     selectedAssetMetaData?.blockchains,
+      //     selectedAssetMetaData?.contracts,
+      //     value * 1000000,
+      //   ),
+      // );
+      getBestPrice();
       return () => {
         console.log('firedd cleanup ======>');
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
@@ -113,7 +120,7 @@ const TradePage = ({route, navigation}) => {
     }, []),
   );
   // Log when component mounts
-  console.log('state.......', state?.decimals);
+  console.log('state.......', state);
   return (
     <SafeAreaView
       style={{
@@ -709,7 +716,8 @@ const TradePage = ({route, navigation}) => {
                     fontFamily: 'Unbounded-Bold',
                   }}>
                   {(
-                    bestSwappingTrades?.estimation?.dstChainTokenOut?.amount /
+                    (bestSwappingTrades?.estimation?.dstChainTokenOut?.amount *
+                      value) /
                     1e18
                   ).toFixed(5) || '...'}{' '}
                   {state?.symbol}{' '}
@@ -1024,12 +1032,14 @@ const TradePage = ({route, navigation}) => {
           ) : (
             <TouchableOpacity
               onPress={async () => {
-                const res = await getTradeSigningData();
-                await confirmDLNTransaction(
-                  res?.estimation?.srcChainTokenIn?.amount,
-                  res?.estimation?.srcChainTokenIn?.address,
-                  res?.tx,
-                );
+                if (bestSwappingTrades) {
+                  const res = await getTradeSigningData();
+                  await confirmDLNTransaction(
+                    res?.estimation?.srcChainTokenIn?.amount,
+                    res?.estimation?.srcChainTokenIn?.address,
+                    res?.tx,
+                  );
+                }
               }}>
               <LinearGradient
                 style={{
@@ -1051,7 +1061,7 @@ const TradePage = ({route, navigation}) => {
                     color: '#acff8e',
                     textAlign: 'center',
                   }}>
-                  Coming Soon
+                  {!bestSwappingTrades ? 'Calculating....' : 'Place Order'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>

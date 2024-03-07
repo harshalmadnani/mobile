@@ -36,7 +36,7 @@ export async function transferUSDC(
   setStatus,
   isAuth,
 ) {
-  const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+  const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
   const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
 
   const decimals = 6;
@@ -262,7 +262,7 @@ export async function transferUSDCV2(
   let txToSend;
   let totalGasUSDC;
   const contractAddress = '0x895510d75335db3c8b1463dd5ffc2d85994e1092';
-  const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+  const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 
   const decimals = 6;
 
@@ -418,7 +418,7 @@ export const transferUSDCWithParticleAAGasless = async (
   setStatus,
   isAuth,
 ) => {
-  const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+  const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
   const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
 
   const decimals = 6;

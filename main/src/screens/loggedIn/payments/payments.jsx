@@ -71,7 +71,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {getCryptoHoldingForAddressFromMobula} from '../../../store/actions/portfolio';
 import {marketSlice, marketsAction} from '../../../store/reducers/market';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
-const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 
 // import {transferUSDC} from './remmitexv1';
 

@@ -95,10 +95,6 @@ export const getDLNTradeCreateBuyOrderTxn = async (
   try {
     const eoaAddress = await getUserAddressFromAuthCoreSDK();
     const smartAccount = await getSmartAccountAddress(eoaAddress);
-    console.log(
-      'URL========',
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false`,
-    );
     const response = await axios.get(
       `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false`,
     );
@@ -151,20 +147,7 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   console.log('Signature Signed...........', signature);
   if (signature) {
     console.log('Signature Signed confirmwd...........', signature);
-    // const signature2 = await signAndSendBatchTransactionWithGasless(
-    //   eoaAddress,
-    //   smartAccount,
-    //   [txs[1]],
-    // );
-    // console.log('Signature Signed confirmwd...........', signature2);
-    // return {
-    //   status: true,
-    //   fees: null,
-    // };
   } else {
-    // return {
-    //   status: false,
-    //   fees: JSON.stringify('fail'),
-    // };
+    return false;
   }
 };
