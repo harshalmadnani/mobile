@@ -321,7 +321,6 @@ const TradePage = ({route, navigation}) => {
           >
             {/* Market, Limit, Stop */}
 
-
             {/*Buy and Sell */}
             <View
               style={{
@@ -329,7 +328,7 @@ const TradePage = ({route, navigation}) => {
                 borderRadius: 17,
                 backgroundColor: '#151515',
                 alignItems: 'center',
-                height:56,
+                height: 56,
                 justifyContent: 'space-between',
                 margin: 8,
                 padding: 6,
@@ -394,7 +393,7 @@ const TradePage = ({route, navigation}) => {
                     }}>
                     <Text
                       style={{
-   fontFamily:'Unbounded-Medium',
+                        fontFamily: 'Unbounded-Medium',
                         color: '#fff',
                         fontSize: 14,
                         width: '40%',
@@ -407,7 +406,7 @@ const TradePage = ({route, navigation}) => {
                   <Text
                     style={{
                       color: '#848484',
-                      fontFamily:'Unbounded-Medium',
+                      fontFamily: 'Unbounded-Medium',
                       fontSize: 14,
                       textAlign: 'center',
                     }}>
@@ -416,7 +415,6 @@ const TradePage = ({route, navigation}) => {
                 )}
               </TouchableOpacity>
             </View>
-     
 
             {tradeType === 'buy' ? (
               <View
@@ -525,7 +523,7 @@ const TradePage = ({route, navigation}) => {
                 <Text
                   style={{
                     fontSize: 56,
-   
+
                     color: '#252525',
                     textAlign: 'center',
                     marginTop: 10,
@@ -536,7 +534,7 @@ const TradePage = ({route, navigation}) => {
                 <TextInput
                   style={{
                     fontSize: 56,
-             
+
                     color: '#ffffff',
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Medium',
@@ -614,145 +612,199 @@ const TradePage = ({route, navigation}) => {
                 {/* <Image source={ImageAssets.arrowImg} /> */}
               </View>
             )}
-          
 
             {/*order summary */}
-<View style={{marginTop:'25%'}}>
- <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <LinearGradient
-        colors={['#000','#191919' ,'#fff']} // Replace with your desired gradient colors
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={{ height: 2, width: '80%' }} // Adjust the height and width as needed
-      />
-    </View>
-    <View style={{ flex: 1, justifyContent: "flex-start",marginVertical:'5%',paddingHorizontal:'8%'}}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 16 }}>
-        <Text style={{ fontSize: 16, fontFamily:'Montreal-Medium', alignSelf: 'flex-start',color:'#fff' }}>Entry Price:</Text>
-        <Text style={{ fontSize: 16, fontFamily:'Unbounded-Medium',alignSelf: 'flex-end' ,color:'#fff'}}>${state?.current_price}</Text>
-      </View>
+            <View style={{marginTop: '25%'}}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <LinearGradient
+                  colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+                />
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'flex-start',
+                  marginVertical: '5%',
+                  paddingHorizontal: '8%',
+                }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 16,
+                    marginBottom: 16,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Montreal-Medium',
+                      alignSelf: 'flex-start',
+                      color: '#fff',
+                    }}>
+                    Entry Price:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Unbounded-Medium',
+                      alignSelf: 'flex-end',
+                      color: '#fff',
+                    }}>
+                    ${state?.current_price}
+                  </Text>
+                </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 16 }}>
-        <Text style={{fontSize: 16, fontFamily:'Montreal-Medium', alignSelf: 'flex-start',color:'#fff' }}>Estimated Fees:</Text>
-        <Text style={{ fontSize: 16, fontFamily:'Unbounded-Medium',alignSelf: 'flex-end' ,color:'#fff' }}>$0.01</Text>
-      </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 16,
+                    marginBottom: 16,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Montreal-Medium',
+                      alignSelf: 'flex-start',
+                      color: '#fff',
+                    }}>
+                    Estimated Fees:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Unbounded-Medium',
+                      alignSelf: 'flex-end',
+                      color: '#fff',
+                    }}>
+                    $0.01
+                  </Text>
+                </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, marginBottom: 16 }}>
-        <Text style={{  fontSize: 16, fontFamily:'Montreal-Medium', alignSelf: 'flex-start',color:'#fff' }}>Transaction will take:</Text>
-        <Text style={{fontSize: 16, fontFamily:'Unbounded-Medium',alignSelf: 'flex-end' ,color:'#fff'}}>     {bestSwappingTrades?.order
-                          ?.approximateFulfillmentDelay || '...'}
-                        s</Text>
-      </View>
-    </View>
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <LinearGradient
-        colors={['#fff','#191919' ,'#000']} // Replace with your desired gradient colors
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={{ height: 2, width: '80%' }} // Adjust the height and width as needed
-      />
-    </View>
-    </View>
-
-
-
-         
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 16,
+                    marginBottom: 16,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Montreal-Medium',
+                      alignSelf: 'flex-start',
+                      color: '#fff',
+                    }}>
+                    Transaction will take:
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Unbounded-Medium',
+                      alignSelf: 'flex-end',
+                      color: '#fff',
+                    }}>
+                    {' '}
+                    {bestSwappingTrades?.order?.approximateFulfillmentDelay ||
+                      '...'}
+                    s
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <LinearGradient
+                  colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+                />
+              </View>
+            </View>
           </ScrollView>
-<View style={{flexDirection:'row',marginTop:'10%',marginRight:'5%'}}>
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' ,width:'20%',flexDirection:'row'}}>
-      <TouchableOpacity
-        style={{
-          padding: 10,
-          borderRadius: 5,
-          flexDirection:'row'
-        }}
-        // onPress={openBottomSheet}
-      >
-        <Text style={{ color: 'white', fontSize: 12,fontFamily:'Unbounded-Medium' }}>MARKET</Text>
-        <Icon
-              name={'expand-more'}
-              size={20}
-              color={'#f0f0f0'}
-              type="materialicons"
-            />
-      </TouchableOpacity>
-
-      <Modal
-        isVisible={isBottomSheetVisible}
-        onBackdropPress={closeBottomSheet}
-        style={{
-          justifyContent: 'flex-end',
-          margin: 0,
-        }}
-        animationIn="slideInUp"
-        animationOut="slideOutDown"
-      >
-        <View
-          style={{
-            backgroundColor: 'white',
-            padding: 16,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}
-        >
-          <Text>This is the content of the Bottom Sheet</Text>
-          <TouchableOpacity
-            onPress={closeBottomSheet}
-            style={{
-              marginTop: 16,
-              padding: 10,
-              backgroundColor: 'blue',
-              borderRadius: 5,
-            }}
-          >
-            <Text style={{ color: 'white', fontSize: 16 }}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
-          {tradeType === 'sell' ? (
-            <LinearGradient
-            style={{
-              borderRadius: 17,
-              backgroundColor: 'transparent',
-              paddingVertical: 22,
-              paddingHorizontal: '10%'
-            }}
-            locations={[0, 1]}
-            colors={['#fff', '#fff']}
-            useAngle={true}
-            angle={95.96}>
-            <Text
+          <View
+            style={{flexDirection: 'row', marginTop: '10%', marginRight: '5%'}}>
+            <View
               style={{
-                fontSize: 14,
-                letterSpacing: 0.2,
-                fontFamily: 'Unbounded-Bold',
-                color: '#000',
-                textAlign: 'center',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '20%',
+                flexDirection: 'row',
               }}>
-            CONFIRM
-            </Text>
-          </LinearGradient>
-          ) : (
-            <TouchableOpacity
-              onPress={async () => {
-                if (bestSwappingTrades) {
-                  const res = await getTradeSigningData();
-                  JSON.stringify(res);
-                  await confirmDLNTransaction(
-                    res?.estimation?.srcChainTokenIn?.amount,
-                    res?.estimation?.srcChainTokenIn?.address,
-                    res?.tx,
-                  );
-                  await displayNotification();
-                }
-              }}>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  borderRadius: 5,
+                  flexDirection: 'row',
+                }}
+                // onPress={openBottomSheet}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 12,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  MARKET
+                </Text>
+                <Icon
+                  name={'expand-more'}
+                  size={20}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                />
+              </TouchableOpacity>
+
+              <Modal
+                isVisible={isBottomSheetVisible}
+                onBackdropPress={closeBottomSheet}
+                style={{
+                  justifyContent: 'flex-end',
+                  margin: 0,
+                }}
+                animationIn="slideInUp"
+                animationOut="slideOutDown">
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    padding: 16,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                  }}>
+                  <Text>This is the content of the Bottom Sheet</Text>
+                  <TouchableOpacity
+                    onPress={closeBottomSheet}
+                    style={{
+                      marginTop: 16,
+                      padding: 10,
+                      backgroundColor: 'blue',
+                      borderRadius: 5,
+                    }}>
+                    <Text style={{color: 'white', fontSize: 16}}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </Modal>
+            </View>
+            {tradeType === 'sell' ? (
               <LinearGradient
                 style={{
                   borderRadius: 17,
                   backgroundColor: 'transparent',
                   paddingVertical: 22,
-                  paddingHorizontal: '10%'
+                  paddingHorizontal: '10%',
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
@@ -766,11 +818,51 @@ const TradePage = ({route, navigation}) => {
                     color: '#000',
                     textAlign: 'center',
                   }}>
-                  {!bestSwappingTrades ? 'Calculating....' : 'CONFIRM'}
+                  CONFIRM
                 </Text>
               </LinearGradient>
-            </TouchableOpacity>
-          )}
+            ) : (
+              <TouchableOpacity
+                onPress={async () => {
+                  if (bestSwappingTrades) {
+                    const res = await getTradeSigningData();
+                    JSON.stringify(res);
+                    const signature = await confirmDLNTransaction(
+                      res?.estimation?.srcChainTokenIn?.amount,
+                      res?.estimation?.srcChainTokenIn?.address,
+                      res?.tx,
+                    );
+                    console.log('txn hash', signature);
+                    if (signature) {
+                      navigation.navigate('');
+                    }
+                    // await displayNotification();
+                  }
+                }}>
+                <LinearGradient
+                  style={{
+                    borderRadius: 17,
+                    backgroundColor: 'transparent',
+                    paddingVertical: 22,
+                    paddingHorizontal: '10%',
+                  }}
+                  locations={[0, 1]}
+                  colors={['#fff', '#fff']}
+                  useAngle={true}
+                  angle={95.96}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      letterSpacing: 0.2,
+                      fontFamily: 'Unbounded-Bold',
+                      color: '#000',
+                      textAlign: 'center',
+                    }}>
+                    {!bestSwappingTrades ? 'Calculating....' : 'CONFIRM'}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
         </>
       )}

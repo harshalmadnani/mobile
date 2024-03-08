@@ -137,7 +137,8 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   );
   console.log('Signature Signed...........', signature);
   if (signature) {
-    console.log('Signature Signed confirmwd...........', signature);
+    console.log('Signature Signed confirmed...........', signature);
+    return signature;
   } else {
     return false;
   }

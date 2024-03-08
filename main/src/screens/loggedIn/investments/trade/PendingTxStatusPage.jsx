@@ -1,42 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  Dimensions,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
-import {ImageAssets} from '../../../../../assets';
-import {Icon} from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
-import '@ethersproject/shims';
-import {useDispatch, useSelector} from 'react-redux';
-import {getBestDLNCrossSwapRate} from '../../../../store/actions/market';
-import {useFocusEffect} from '@react-navigation/native';
-import {ethers} from 'ethers';
-import {
-  confirmDLNTransaction,
-  getDLNTradeCreateBuyOrderTxn,
-} from '../../../../utils/DLNTradeApi';
-import {displayNotification} from '../../../../utils/NotifeeSetup';
-const idToChain = {
-  btc: {
-    tokenAddress: '0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6',
-    chain: 'polygon',
-    decimal: '18',
-  },
-  eth: {
-    tokenAddress: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-    chain: 'polygon',
-  },
-  matic: {
-    tokenAddress: '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-    chain: 'polygon',
-  },
-};
+import {SafeAreaView} from 'react-native';
+
 const PendingTxStatusPage = ({route, navigation}) => {
   //   const txQuoteInfo = route.params.state;
   const txQuoteInfo = {

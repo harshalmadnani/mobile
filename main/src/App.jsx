@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Buffer } from 'buffer';
+import React, {useEffect} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Buffer} from 'buffer';
 global.Buffer = Buffer;
 import './global';
 import {
@@ -34,15 +34,16 @@ import EnterSavingsAmountComponent from './screens/loggedIn/savings/savingStatus
 import SendEmailComponent from './screens/loggedIn/send/sendEmail';
 import SendMobileComponent from './screens/loggedIn/send/sendMobile';
 import SendWalletComponent from './screens/loggedIn/send/sendWallet';
-import { Text } from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import TopBar from './screens/loggedIn/topbar';
 import Pending from './screens/loggedIn/txStatus/pending';
-import { Provider } from 'react-redux';
+import {Provider} from 'react-redux';
 import Successful from './screens/loggedIn/txStatus/successful';
 import Unsuccessful from './screens/loggedIn/txStatus/unsuccessful';
 import MarketInfo from './screens/loggedIn/investments/marketInfo';
 import SavingsPending from './screens/loggedIn/savings/savingStatus/pending';
 import SavingsSuccessful from './screens/loggedIn/savings/savingStatus/successful';
+import PendingTxStatusPage from './screens/loggedIn/investments/trade/PendingTxStatusPage';
 // import SavingsUnsuccessful from './screens/loggedIn/savings/savingStatus/unsuccessful';
 import Ramper from './screens/loggedIn/payments/Ramps/ramper';
 import LiFi from './screens/loggedIn/payments/Ramps/lifi';
@@ -64,8 +65,8 @@ const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
 import messaging from '@react-native-firebase/messaging';
-import { requestUserPermission, generateTopic } from './utils/push';
-import { getDeviceToken } from 'react-native-device-info';
+import {requestUserPermission, generateTopic} from './utils/push';
+import {getDeviceToken} from 'react-native-device-info';
 import FastImage from 'react-native-fast-image';
 import AddBankAccount from './screens/loggedIn/card/bankAccount/addBankAccount';
 import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccount';
@@ -73,10 +74,10 @@ import AddFund from './screens/loggedIn/card/fund/addFund';
 import CardInfo from './screens/loggedIn/card/info/cardInfo';
 import TradePage from './screens/loggedIn/investments/trade/tradePage';
 import Portfolio from './screens/loggedIn/investments/portfolio/portfolio';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, store } from './store/store';
+import {PersistGate} from 'redux-persist/integration/react';
+import {persistor, store} from './store/store';
 import WebView from 'react-native-webview';
-function PreLaunchLoad({ navigation }) {
+function PreLaunchLoad({navigation}) {
   return (
     <View>
       <PreLoad navigation={navigation} />
@@ -84,7 +85,7 @@ function PreLaunchLoad({ navigation }) {
   );
 }
 
-function ChooseWallet({ navigation }) {
+function ChooseWallet({navigation}) {
   return (
     <View>
       <ChooseConnect navigation={navigation} />
@@ -92,7 +93,7 @@ function ChooseWallet({ navigation }) {
   );
 }
 
-function EnterName({ navigation }) {
+function EnterName({navigation}) {
   return (
     <View>
       <Name navigation={navigation} />
@@ -100,7 +101,7 @@ function EnterName({ navigation }) {
   );
 }
 
-function OnRamp({ navigation }) {
+function OnRamp({navigation}) {
   return (
     <View>
       <FiatAmountComponent navigation={navigation} />
@@ -108,7 +109,7 @@ function OnRamp({ navigation }) {
   );
 }
 
-function FiatAggregator({ navigation }) {
+function FiatAggregator({navigation}) {
   return (
     <View>
       <FiatAggregatorComponent navigation={navigation} />
@@ -116,7 +117,7 @@ function FiatAggregator({ navigation }) {
   );
 }
 
-function WidgetPage({ navigation }) {
+function WidgetPage({navigation}) {
   return (
     <View>
       <FiatWidgetComponent navigation={navigation} />
@@ -124,11 +125,10 @@ function WidgetPage({ navigation }) {
   );
 }
 
-function Settings({ navigation }) {
-  
+function Settings({navigation}) {
   return (
     <SafeAreaView style={styles.black}>
-      <ScrollView style={{ height: windowHeight * 0.8 }}>
+      <ScrollView style={{height: windowHeight * 0.8}}>
         <View>
           <SettingsComponent navigation={navigation} />
         </View>
@@ -137,7 +137,7 @@ function Settings({ navigation }) {
     </SafeAreaView>
   );
 }
-function LoggedIn({ navigation }) {
+function LoggedIn({navigation}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -151,7 +151,7 @@ function LoggedIn({ navigation }) {
   );
 }
 
-function Connected({ navigation }) {
+function Connected({navigation}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -165,7 +165,7 @@ function Connected({ navigation }) {
   );
 }
 
-function Error({ navigation }) {
+function Error({navigation}) {
   return (
     <ImageBackground source={particle} style={styles.bg}>
       <SafeAreaView>
@@ -182,9 +182,9 @@ function Error({ navigation }) {
   );
 }
 
-function Loading({ navigation }) {
+function Loading({navigation}) {
   return (
-    <View style={{ width: '100%', backgroundColor: '#0C0C0C', height: '100%' }}>
+    <View style={{width: '100%', backgroundColor: '#0C0C0C', height: '100%'}}>
       <SafeAreaView>
         <Text
           style={{
@@ -219,11 +219,11 @@ function Loading({ navigation }) {
   );
 }
 
-function ComingSoon({ navigation }) {
+function ComingSoon({navigation}) {
   return (
-    <View source={particle} style={[styles.bg, { backgroundColor: 'black' }]}>
+    <View source={particle} style={[styles.bg, {backgroundColor: 'black'}]}>
       <ScrollView>
-        <SafeAreaView style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <SafeAreaView style={{alignItems: 'center', justifyContent: 'center'}}>
           <FastImage
             source={require('./cat.png')}
             style={{
@@ -241,11 +241,11 @@ function ComingSoon({ navigation }) {
     </View>
   );
 }
-function Savings({ navigation, route }) {
+function Savings({navigation, route}) {
   return (
     <SafeAreaView style={styles.container}>
       <TopBar navigation={navigation} headers={'Savings'} />
-      <ScrollView style={[styles.content, { zIndex: -1 }]}>
+      <ScrollView style={[styles.content, {zIndex: -1}]}>
         <SavingsComponent navigation={navigation} route={route} />
       </ScrollView>
       <BottomNavbar navigation={navigation} selected="Savings" />
@@ -253,7 +253,7 @@ function Savings({ navigation, route }) {
   );
 }
 
-function Investment({ navigation }) {
+function Investment({navigation}) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.container}>
@@ -264,7 +264,7 @@ function Investment({ navigation }) {
   );
 }
 
-function Portfolios({ navigation }) {
+function Portfolios({navigation}) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.container}>
@@ -275,8 +275,7 @@ function Portfolios({ navigation }) {
   );
 }
 
-
-function Payments({ navigation }) {
+function Payments({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {
@@ -297,7 +296,7 @@ function Payments({ navigation }) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        style={[styles.content, { zIndex: -1 }]}
+        style={[styles.content, {zIndex: -1}]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -313,7 +312,7 @@ function Payments({ navigation }) {
   );
 }
 
-function Redeem({ navigation }) {
+function Redeem({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
 
   const onRefresh = React.useCallback(async () => {
@@ -332,7 +331,7 @@ function Redeem({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TopBar navigation={navigation} headers={'Store'} />
       <ScrollView
-        style={[styles.content, { zIndex: -1 }]}
+        style={[styles.content, {zIndex: -1}]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -348,7 +347,7 @@ function Redeem({ navigation }) {
   );
 }
 
-function EnterAmount({ navigation, route }) {
+function EnterAmount({navigation, route}) {
   return (
     // <ScrollView>
     <View style={styles.black}>
@@ -361,7 +360,7 @@ function EnterAmount({ navigation, route }) {
   );
 }
 
-function EnterSavingsAmount({ navigation, route }) {
+function EnterSavingsAmount({navigation, route}) {
   return (
     // <ScrollView>
     <View style={styles.black}>
@@ -373,28 +372,36 @@ function EnterSavingsAmount({ navigation, route }) {
     </View>
   );
 }
-function MarketInfoScreen({ route, navigation }) {
+function MarketInfoScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={''} /> */}
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <MarketInfo navigation={navigation} item={route.params.item} />
       </ScrollView>
     </SafeAreaView>
   );
 }
-function TradePageScreen({ route, navigation }) {
+function TradePageScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <TradePage navigation={navigation} route={route} />
       </ScrollView>
-
     </SafeAreaView>
   );
 }
-function SendEmail({ navigation }) {
+function PendingTxStatusScreen({route, navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={{height: '100%'}}>
+        <PendingTxStatusPage navigation={navigation} route={route} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+function SendEmail({navigation}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -408,7 +415,7 @@ function SendEmail({ navigation }) {
   );
 }
 
-function SendMobile({ navigation }) {
+function SendMobile({navigation}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -422,7 +429,7 @@ function SendMobile({ navigation }) {
   );
 }
 
-function SendWallet({ navigation }) {
+function SendWallet({navigation}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -436,11 +443,11 @@ function SendWallet({ navigation }) {
   );
 }
 
-function XadeCard({ navigation }) {
+function XadeCard({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <TopBar navigation={navigation} headers={'Card'} />
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <Card navigation={navigation} />
       </ScrollView>
       <BottomNavbar navigation={navigation} selected="Card" />
@@ -448,11 +455,11 @@ function XadeCard({ navigation }) {
   );
 }
 
-function AddFundToCard({ navigation }) {
+function AddFundToCard({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <AddFund navigation={navigation} />
       </ScrollView>
       {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
@@ -460,11 +467,11 @@ function AddFundToCard({ navigation }) {
   );
 }
 
-function CardInfoScreen({ navigation }) {
+function CardInfoScreen({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <CardInfo navigation={navigation} />
       </ScrollView>
       {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
@@ -472,11 +479,11 @@ function CardInfoScreen({ navigation }) {
   );
 }
 
-function CreateBankAccount({ navigation }) {
+function CreateBankAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <AddBankAccount navigation={navigation} />
       </ScrollView>
       {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
@@ -484,11 +491,11 @@ function CreateBankAccount({ navigation }) {
   );
 }
 
-function ListBankAccount({ navigation }) {
+function ListBankAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
-      <ScrollView style={{ height: '100%' }}>
+      <ScrollView style={{height: '100%'}}>
         <ListBankAccounts navigation={navigation} />
       </ScrollView>
       {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
@@ -496,7 +503,7 @@ function ListBankAccount({ navigation }) {
   );
 }
 
-function ViewTransaction({ navigation, route }) {
+function ViewTransaction({navigation, route}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -510,7 +517,7 @@ function ViewTransaction({ navigation, route }) {
   );
 }
 
-function TransactionHistory({ navigation, route }) {
+function TransactionHistory({navigation, route}) {
   return (
     <View style={styles.black}>
       <SafeAreaView>
@@ -525,9 +532,7 @@ function TransactionHistory({ navigation, route }) {
   );
 }
 
-
-
-function ReferCode({ navigation }) {
+function ReferCode({navigation}) {
   return (
     <ScrollView>
       <View style={styles.black}>
@@ -541,7 +546,7 @@ function ReferCode({ navigation }) {
   );
 }
 
-export default function App({ navigation, uri }) {
+export default function App({navigation, uri}) {
   useEffect(() => {
     console.log('Global', global.withAuth);
     async function preLaunchChecks() {
@@ -565,250 +570,256 @@ export default function App({ navigation, uri }) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <NavigationContainer screenOptions={{ animationEnabled: false }}>
-          <Stack.Navigator screenOptions={{ animation: 'none' }}>
+        <NavigationContainer screenOptions={{animationEnabled: false}}>
+          <Stack.Navigator screenOptions={{animation: 'none'}}>
             <Stack.Screen
               name="Home"
               component={PreLaunchLoad}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
 
             <Stack.Screen
               name="LoggedOutHome"
               component={StaticHomeScreen}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="EnterName"
               component={EnterName}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="MarketInfo"
               component={MarketInfoScreen}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="ChooseConnect"
               component={ChooseWallet}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="LoggedIn"
               component={LoggedIn}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Connected"
               component={Connected}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Error"
               component={Error}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Loading"
               component={Loading}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="ComingSoon"
               component={ComingSoon}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="QRScreen"
               component={QRPage}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Investments"
               component={Investment}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Portfolio"
               component={Portfolios}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Savings"
               component={Savings}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Payments"
               component={Payments}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="EnterAmount"
               component={EnterAmount}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="EnterSavingsAmount"
               component={EnterSavingsAmount}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="SendEmail"
               component={SendEmail}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Ramper"
               component={Ramper}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
 
-                  <Stack.Screen
+            <Stack.Screen
               name="Uniramp"
               component={Uniramp}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
-           <Stack.Screen
+            <Stack.Screen
               name="LiFi"
               component={LiFi}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="SendMobile"
               component={SendMobile}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="SendWallet"
               component={SendWallet}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Pending"
               component={Pending}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="TradePage"
               component={TradePageScreen}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="PendingTxStatusPage"
+              component={PendingTxStatusScreen}
+              navigation={navigation}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Successful"
               component={Successful}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Unsuccessful"
               component={Unsuccessful}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="SavingsPending"
               component={SavingsPending}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="SavingsSuccessful"
               component={SavingsSuccessful}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="WidgetPage"
               component={WidgetPage}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Referrals"
               component={Referrals}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="ViewTransaction"
               component={ViewTransaction}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="TransactionHistory"
               component={TransactionHistory}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Redeem"
               component={Redeem}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="RedeemForm"
               component={RedeemForm}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Settings"
               component={Settings}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="Card"
               component={XadeCard}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="ReferralCode"
               component={ReferCode}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="CreateBankAccount"
               component={CreateBankAccount}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="ListBankAccount"
               component={ListBankAccount}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="AddFund"
               component={AddFundToCard}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
             <Stack.Screen
               name="CardInfo"
               component={CardInfoScreen}
               navigation={navigation}
-              options={{ headerShown: false }}
+              options={{headerShown: false}}
             />
           </Stack.Navigator>
         </NavigationContainer>

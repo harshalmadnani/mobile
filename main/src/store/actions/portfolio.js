@@ -25,7 +25,6 @@ export const getCryptoHoldingForAddressFromMobula = asset => {
     console.log('smart account address holding', smartAccount);
     const data = await getCryptoHoldingForAddress(smartAccount, asset);
     console.log('Reducer Portfolio', data);
-    // dispatch(portfolioAction.setHoldings(data));
     return data;
   };
 };
