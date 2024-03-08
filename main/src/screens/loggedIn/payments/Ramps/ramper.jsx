@@ -111,20 +111,20 @@ const Ramper = ({ navigation }) => {
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginRight: 30 }}>
                             <Text style={{
                                 color: '#F0F0F0',
-                                fontFamily: 'Satoshi-Black',
+                                fontFamily: 'Unbounded-Medium',
                                 fontSize: 16,
                             }}>Deposit Funds</Text>
                         </View>
                     </View>
                     <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 }}>
                         {selectedId === 'wallet' ? (
-                            <Text style={{ fontSize: 80, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>$</Text>)
+                            <Text style={{ fontSize: 80, color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Medium' }}>$</Text>)
                             :
                             (
-                                <Text style={{ fontSize: 80, fontWeight: "900", color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-ExtraBold' }}>{getCurrencySymbol(fiat.id)}</Text>
+                                <Text style={{ fontSize: 80,  color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Medium' }}>{getCurrencySymbol(fiat.id)}</Text>
                             )}
                         <TextInput
-                            style={{ fontSize: 80, fontWeight: "900", color: "#fff", textAlign: "center", fontFamily: "Unbounded-ExtraBold", }}
+                            style={{ fontSize: 80, color: "#fff", textAlign: "center", fontFamily: "Unbounded-Medium", }}
                             value={value}
                             onChangeText={(text) => {
                                 setValue(text)

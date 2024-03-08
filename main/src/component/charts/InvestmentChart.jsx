@@ -262,7 +262,7 @@ const address = useSelector(x => x.auth.address);
                 style={{
                     flexDirection: 'row',
                     width: apx(750),
-                    height: apx(350),
+                    height: apx(500),
                     alignSelf: 'stretch',
                 }}>
                 <View style={{ flex: 1 }} {...panResponder.current.panHandlers}>
