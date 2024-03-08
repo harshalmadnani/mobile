@@ -645,7 +645,7 @@ export default function App({navigation, uri}) {
             />
             <Stack.Screen
               name="Portfolio"
-              component={Portfolios}
+              component={PendingTxStatusPage}
               navigation={navigation}
               options={{headerShown: false}}
             />
