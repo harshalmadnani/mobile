@@ -55,7 +55,7 @@ export const getAuthCoreProvider = loginType => {
   return web3;
 };
 export const connectWithAuthCore = async () => {
-  const supportAuthType = [ SupportAuthType.Email];
+  const supportAuthType = [SupportAuthType.Email];
   const result = await particleAuthCore.connect(
     LoginType.Email,
     null,
@@ -63,7 +63,8 @@ export const connectWithAuthCore = async () => {
     SocialLoginPrompt.SelectAccount,
     {
       projectName: 'Enter a new era of finance',
-      imagePath: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709582736/adlu2jdpsgeaao3apqoz.png',
+      imagePath:
+        'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709582736/adlu2jdpsgeaao3apqoz.png',
     },
   );
   if (result.status) {
@@ -166,7 +167,7 @@ export const signAndSendBatchTransactionWithGasless = async (
     const isDeploy = resultDeploy.data;
     console.log('isDeploy result', isDeploy);
   } else {
-    const error = result.data;
+    const error = resultDeploy.data;
     console.log('isDeploy result', error);
   }
   const resultAAEnableMode = await particleAA.isAAModeEnable();

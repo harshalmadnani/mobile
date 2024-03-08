@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 const mobulaBaseURL = 'https://api.mobula.io/api/1/';
-const marketRoutes = {getNFTs: '/nft', getWallets: 'wallet/portfolio',getHistory:'/wallet/history'};
+const marketRoutes = {
+  getNFTs: '/nft',
+  getWallets: 'wallet/portfolio',
+  getHistory: '/wallet/history',
+};
 
 export const getNftsHoldingForAddress = async address => {
   try {
@@ -17,17 +21,12 @@ export const getNftsHoldingForAddress = async address => {
 };
 export const getCryptoHoldingForAddress = async (address, asset) => {
   try {
-    console.log(
-      'crypto url....',
-      `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`,
-    );
-    
     const response = await axios.get(
       asset
         ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
         : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
     );
-    console.log('response from wallet',response.data);
+    console.log('response from wallet holding', address, response.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);
@@ -47,7 +46,7 @@ export const getWalletHistoricalData = async (address, from) => {
         ? `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}&from=${from}`
         : `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}`,
     );
-    console.log('response from history',response.data);
+    console.log('response from history', response.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from history api:', error);

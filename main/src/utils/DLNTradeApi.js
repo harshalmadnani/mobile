@@ -7,6 +7,7 @@ import {
   getUserAddressFromAuthCoreSDK,
   signAndSendBatchTransactionWithGasless,
 } from './particleCoreSDK';
+import BigNumber from 'bignumber.js';
 const DLNBaseURL = 'https://api.dln.trade/v1.0/dln';
 const tradeRoutes = {
   createOrder: '/order/create-tx',
@@ -77,7 +78,7 @@ export const getBestCrossSwapRate = async (
     'txn quote results:::::::',
     JSON.stringify(results.filter(x => x !== null)[0]),
   );
-  return results.filter(x => x !== null)[0];
+  return results.filter(x => x !== null)[1];
 };
 export const getDLNTradeCreateBuyOrderTxn = async (
   srcChainId,
@@ -103,8 +104,10 @@ export const getDLNTradeCreateBuyOrderTxn = async (
 };
 export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   let txs = [];
+  console.log('inside execution.......', amount, tokenAddress, txData);
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
+  console.log('smart contract address.......', smartAccount);
   const usdcAbi = new ethers.utils.Interface(usdAbi);
   const approveData = usdcAbi.encodeFunctionData('approve', [
     txData?.to,
@@ -123,7 +126,7 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
     smartAccount,
     txData?.to,
     txData?.data,
-    txData?.value,
+    BigNumber(txData?.value).toString(16),
   );
   console.log('tx sendTX part', sendTX);
   txs.push(sendTX);
