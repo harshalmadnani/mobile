@@ -15,14 +15,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import '@ethersproject/shims';
 import {useDispatch, useSelector} from 'react-redux';
-import {getBestDLNCrossSwapRate} from '../../../../store/actions/market';
+import {
+  getBestDLNCrossSwapRateBuy,
+  getUSDCHoldingForAddressFromMobula,
+} from '../../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
-import {ethers} from 'ethers';
+
 import {
   confirmDLNTransaction,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
-import {displayNotification} from '../../../../utils/NotifeeSetup';
 
 const TradePage = ({route, navigation}) => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
@@ -38,10 +40,8 @@ const TradePage = ({route, navigation}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [isModalOpen, setIsModalOpen] = useState(true);
   const [value, setValue] = useState('1');
   const [convertedValue, setConvertedValue] = useState('token');
-  const address = useSelector(x => x.auth.address);
   const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
   const state = route.params.state;
@@ -50,8 +50,7 @@ const TradePage = ({route, navigation}) => {
     x => x.market.selectedAssetMetaData,
   );
   const tokenBalanceUSD = useSelector(x => x.market.tokenBalanceUSD);
-  const [finalTxQuote, setFinalTxQuote] = useState(null);
-  const bestSwappingTrades = useSelector(x => x.market.bestSwappingTrades);
+  const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   useEffect(() => {
     console.log('Selected dropdown value:', selectedDropDownValue);
     console.log('Order type:', orderType);
@@ -71,19 +70,15 @@ const TradePage = ({route, navigation}) => {
   }, [selectedDropDownValue, orderType]);
   // useEffect(() => {
   const getTradeSigningData = async () => {
-    console.log('best rate ......', bestSwappingTrades);
-    if (bestSwappingTrades) {
+    if (bestSwappingBuyTrades) {
       const res = await getDLNTradeCreateBuyOrderTxn(
-        bestSwappingTrades?.estimation?.srcChainTokenIn?.chainId,
-        bestSwappingTrades?.estimation?.srcChainTokenIn?.address,
-        bestSwappingTrades?.estimation?.srcChainTokenIn?.amount,
-        bestSwappingTrades?.estimation?.dstChainTokenOut?.chainId,
-        bestSwappingTrades?.estimation?.dstChainTokenOut?.address,
-        bestSwappingTrades?.estimation?.dstChainTokenOut?.amount,
-        address,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.amount,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount,
       );
-      console.log(res?.tx);
-      setFinalTxQuote(res);
       return res;
     } else {
       console.log('Here... no tx data');
@@ -91,24 +86,27 @@ const TradePage = ({route, navigation}) => {
   };
   const getBestPrice = async () => {
     dispatch(
-      getBestDLNCrossSwapRate(
+      getBestDLNCrossSwapRateBuy(
         selectedAssetMetaData?.blockchains,
         selectedAssetMetaData?.contracts,
-        value * 1000000,
+        value * 1000000, //USDC
       ),
     );
   };
   // Example of logging state changes
   useFocusEffect(
     useCallback(() => {
+      dispatch(getUSDCHoldingForAddressFromMobula());
       getBestPrice();
-      return () => {
-        console.log('firedd cleanup ======>');
-      };
+      return () => {};
     }, []),
   );
   // Log when component mounts
-  console.log('state.......', state);
+  console.log(
+    'state.......',
+    value > tokenBalanceUSD?.data?.total_wallet_balance,
+    bestSwappingBuyTrades,
+  );
   return (
     <SafeAreaView
       style={{
@@ -431,7 +429,7 @@ const TradePage = ({route, navigation}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-ExtraBold',
                   }}>
-                  ${tokenBalanceUSD}{' '}
+                  ${tokenBalanceUSD?.data?.total_wallet_balance?.toFixed(2)}{' '}
                 </Text>
                 <Text
                   style={{
@@ -534,7 +532,6 @@ const TradePage = ({route, navigation}) => {
                 <TextInput
                   style={{
                     fontSize: 56,
-
                     color: '#ffffff',
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Medium',
@@ -572,7 +569,8 @@ const TradePage = ({route, navigation}) => {
                     fontFamily: 'Unbounded-Bold',
                   }}>
                   {(
-                    (bestSwappingTrades?.estimation?.dstChainTokenOut?.amount *
+                    (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                      ?.amount *
                       value) /
                     1e18
                   ).toFixed(5) || '...'}{' '}
@@ -713,8 +711,8 @@ const TradePage = ({route, navigation}) => {
                       color: '#fff',
                     }}>
                     {' '}
-                    {bestSwappingTrades?.order?.approximateFulfillmentDelay ||
-                      '...'}
+                    {bestSwappingBuyTrades?.order
+                      ?.approximateFulfillmentDelay || '...'}
                     s
                   </Text>
                 </View>
@@ -824,19 +822,21 @@ const TradePage = ({route, navigation}) => {
             ) : (
               <TouchableOpacity
                 onPress={async () => {
-                  if (bestSwappingTrades) {
+                  if (
+                    bestSwappingBuyTrades.length > 0 &&
+                    value <= tokenBalanceUSD?.total_wallet_balance
+                  ) {
                     const res = await getTradeSigningData();
-                    JSON.stringify(res);
                     const signature = await confirmDLNTransaction(
                       res?.estimation?.srcChainTokenIn?.amount,
                       res?.estimation?.srcChainTokenIn?.address,
                       res?.tx,
                     );
-                    console.log('txn hash', signature);
                     if (signature) {
-                      navigation.navigate('');
+                      console.log('txn hash', signature);
                     }
-                    // await displayNotification();
+                  } else if (bestSwappingBuyTrades !== null) {
+                    await getBestPrice();
                   }
                 }}>
                 <LinearGradient
@@ -858,7 +858,11 @@ const TradePage = ({route, navigation}) => {
                       color: '#000',
                       textAlign: 'center',
                     }}>
-                    {!bestSwappingTrades ? 'Calculating....' : 'CONFIRM'}
+                    {!bestSwappingBuyTrades
+                      ? 'Calculating....'
+                      : bestSwappingBuyTrades.length === 0
+                      ? 'Try Again'
+                      : 'CONFIRM'}
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>

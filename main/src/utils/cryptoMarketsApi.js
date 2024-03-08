@@ -22,20 +22,6 @@ export const getMarketAssetData = async page => {
 };
 // First create an api call to get the desired data in utils/CryptoMarketsApi.js
 
-export const getTop100MarketAssetData = async () => {
-  try {
-    const response = await axios.get(
-      `${coingeckoBaseURL}${
-        marketRoutes.getMarket
-      }?vs_currency=usd&order=market_cap_desc&per_page=50&page=${1}&sparkline=false&locale=en`,
-    );
-    console.log('response from market investment api:', response?.data?.length);
-    return response?.data;
-  } catch (error) {
-    console.log('error from market investment api:', error);
-    return [];
-  }
-};
 export const getAssetMetadata = async assetName => {
   try {
     const response = await axios.get(

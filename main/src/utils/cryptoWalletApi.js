@@ -27,7 +27,7 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
         : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
     );
     console.log('response from wallet holding', address, response.data);
-    return response?.data?.data;
+    return response?.data;
   } catch (error) {
     console.log('error  from asset api:', error);
     return [];

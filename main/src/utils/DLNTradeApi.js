@@ -25,13 +25,10 @@ export const getDLNTradeCreateBuyOrder = async (
     const response = await axios.get(
       `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
     );
-    console.log(
-      'response from DLN api:',
-      response?.data?.estimation?.dstChainTokenOut,
-    );
+    console.log('response from DLN api:', dstChainId);
     return response?.data;
   } catch (error) {
-    console.log('error  from DLN api:', error);
+    console.log('error  from DLN api:', dstChainId, error);
     return null;
   }
 };
@@ -46,7 +43,7 @@ const getChainIdOnChainName = chainName => {
     return 43114;
   }
 };
-export const getBestCrossSwapRate = async (
+export const getBestCrossSwapRateBuy = async (
   blockchains,
   contractAddress,
   value,
@@ -63,6 +60,10 @@ export const getBestCrossSwapRate = async (
   );
 
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
+    console.log(
+      'block chain to be called',
+      getChainIdOnChainName(x?.blockchains),
+    );
     const res = await getDLNTradeCreateBuyOrder(
       137,
       '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
@@ -74,11 +75,36 @@ export const getBestCrossSwapRate = async (
   });
   let results = await Promise.all(ratesOfDifferentChainOut);
   // best rate calculation
-  console.log(
-    'txn quote results:::::::',
-    JSON.stringify(results.filter(x => x !== null)[0]),
+  results = results.filter(x => x !== null);
+  const bestTradingPrice = results.map(x => {
+    return {
+      fee: isNaN(
+        parseInt(x?.estimation?.dstChainTokenOut?.amount) -
+          parseInt(x?.estimation?.costsDetails?.[0]?.payload?.feeAmount),
+      )
+        ? 0
+        : parseInt(x?.estimation?.dstChainTokenOut?.amount) -
+          parseInt(x?.estimation?.costsDetails?.[0]?.payload?.feeAmount),
+      chainId: x?.estimation?.dstChainTokenOut?.chainId,
+    };
+  });
+  const bestPrice = Math.max(...bestTradingPrice.map(x => x.fee));
+  results = results.filter(
+    x =>
+      x.estimation?.dstChainTokenOut?.chainId ===
+      bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
   );
-  return results.filter(x => x !== null)[1];
+  if (results.length > 0) {
+    console.log(
+      'Best trading price',
+      results[0]?.estimation?.dstChainTokenOut?.chainId,
+      bestPrice,
+      bestTradingPrice,
+    );
+    return results[0];
+  } else {
+    return [];
+  }
 };
 export const getDLNTradeCreateBuyOrderTxn = async (
   srcChainId,
@@ -87,7 +113,6 @@ export const getDLNTradeCreateBuyOrderTxn = async (
   dstChainId,
   dstChainTokenOut,
   dstChainTokenOutAmount,
-  authorityAddress,
 ) => {
   try {
     const eoaAddress = await getUserAddressFromAuthCoreSDK();
@@ -95,7 +120,6 @@ export const getDLNTradeCreateBuyOrderTxn = async (
     const response = await axios.get(
       `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false`,
     );
-    console.log('response from DLN api tx:', JSON.stringify(response?.data));
     return response?.data;
   } catch (error) {
     console.log('error  from DLN api:', error);

@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useRef } from 'react';
+import React, {Component, useEffect, useRef} from 'react';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -9,7 +9,7 @@ import {
   Dimensions,
   Button,
   Platform,
-  Animated
+  Animated,
 } from 'react-native';
 import {Text} from '@rneui/themed';
 import BouncyIcon from './BouncyIcon';
@@ -17,10 +17,15 @@ import {Icon} from 'react-native-elements';
 const Web3 = require('web3');
 import {PNAccount} from '../../Models/PNAccount';
 import FastImage from 'react-native-fast-image';
-import { FlingGestureHandler, Directions, State , GestureHandlerRootView} from 'react-native-gesture-handler';
+import {
+  FlingGestureHandler,
+  Directions,
+  State,
+  GestureHandlerRootView,
+} from 'react-native-gesture-handler';
 import {LoginCarousel} from './loginCarousel';
 import {onClickLogin} from '../../particle-auth';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 // import * as particleAuth from 'react-native-particle-auth';
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -87,71 +92,74 @@ const StaticHomeScreen = ({navigation}) => {
     }, 3000);
   }, []);
 
-  const handleSwipeUp = ({ nativeEvent }) => {
+  const handleSwipeUp = ({nativeEvent}) => {
     if (nativeEvent.state === State.ACTIVE) {
       // Trigger haptic feedback
       const options = {
         enableVibrateFallback: true,
-        ignoreAndroidSystemSettings: false
+        ignoreAndroidSystemSettings: false,
       };
-      ReactNativeHapticFeedback.trigger("impactHeavy", options);
-  
+      ReactNativeHapticFeedback.trigger('impactHeavy', options);
+
       dispatch(onAuthCoreLogin(navigation));
     }
   };
   return (
     <GestureHandlerRootView>
-    <SafeAreaView style={styles.bg}>
-            <FlingGestureHandler
-        direction={Directions.UP}
-        onHandlerStateChange={handleSwipeUp}>
-      <ScrollView>
-        <View style={styles.container}>
-          <View style={styles.topbar}>
-            <View
-              style={
-                selectedButton == `Introducing a new${'\n'}era of finance`
-                  ? styles.selected
-                  : styles.carouselIndicator
-              }></View>
-            <View
-              style={
-                selectedButton == `Pay globally with${'\n'}close to zero fees`
-                  ? styles.selected
-                  : styles.carouselIndicator
-              }></View>
-            <View
-              style={
-                selectedButton == `Save with Xade to${'\n'}beat inflation`
-                  ? styles.selected
-                  : styles.carouselIndicator
-              }></View>
-            <View
-              style={
-                selectedButton == `Trade anything${'\n'}with 10x leverage`
-                  ? styles.selected
-                  : styles.carouselIndicator
-              }></View>
-            <View
-              style={
-                selectedButton == `Finance your loans${'\n'}fast and easily`
-                  ? styles.selected
-                  : styles.carouselIndicator
-              }></View>
-          </View>
-          <View style={styles.mainContent}>
-            <LoginCarousel
-              images={images}
-              navigation={navigation}
-              address={'0x'}
-              key={images}
-            />
-            <View style={{marginTop:'0%'}}>
-               <BouncyIcon />
- <Text style={styles.getStartedText}>SWIPE UP TO GET STARTED</Text>
- </View>
+      <SafeAreaView style={styles.bg}>
+        <FlingGestureHandler
+          direction={Directions.UP}
+          onHandlerStateChange={handleSwipeUp}>
+          <ScrollView>
+            <View style={styles.container}>
+              <View style={styles.topbar}>
+                <View
+                  style={
+                    selectedButton == `Introducing a new${'\n'}era of finance`
+                      ? styles.selected
+                      : styles.carouselIndicator
+                  }></View>
+                <View
+                  style={
+                    selectedButton ==
+                    `Pay globally with${'\n'}close to zero fees`
+                      ? styles.selected
+                      : styles.carouselIndicator
+                  }></View>
+                <View
+                  style={
+                    selectedButton == `Save with Xade to${'\n'}beat inflation`
+                      ? styles.selected
+                      : styles.carouselIndicator
+                  }></View>
+                <View
+                  style={
+                    selectedButton == `Trade anything${'\n'}with 10x leverage`
+                      ? styles.selected
+                      : styles.carouselIndicator
+                  }></View>
+                <View
+                  style={
+                    selectedButton == `Finance your loans${'\n'}fast and easily`
+                      ? styles.selected
+                      : styles.carouselIndicator
+                  }></View>
+              </View>
+              <View style={styles.mainContent}>
+                <LoginCarousel
+                  images={images}
+                  navigation={navigation}
+                  address={'0x'}
+                  key={images}
+                />
+                <View style={{marginTop: '0%'}}>
+                  <BouncyIcon />
+                  <Text style={styles.getStartedText}>
+                    SWIPE UP TO GET STARTED
+                  </Text>
+                </View>
 
-            {/* <TouchableOpacity onPress={() => navigation.push('ChooseConnect')}>
+                {/* <TouchableOpacity onPress={() => navigation.push('ChooseConnect')}>
               <Text style={styles.connectText}>
                 Have an existing wallet?{' '}
                 <Text
@@ -170,13 +178,11 @@ const StaticHomeScreen = ({navigation}) => {
                 </Text>
               </Text>
             </TouchableOpacity> */}
-
-
-          </View>
-        </View>
-      </ScrollView>
-      </FlingGestureHandler>
-    </SafeAreaView>
+              </View>
+            </View>
+          </ScrollView>
+        </FlingGestureHandler>
+      </SafeAreaView>
     </GestureHandlerRootView>
   );
 };
@@ -286,9 +292,9 @@ const styles = StyleSheet.create({
   getStartedText: {
     color: '#A1A1A1',
     fontFamily: `Unbounded-Medium`,
-    textAlign:'center',
+    textAlign: 'center',
     fontSize: 11,
-    marginTop:'1%'
+    marginTop: '1%',
   },
 
   connectText: {
