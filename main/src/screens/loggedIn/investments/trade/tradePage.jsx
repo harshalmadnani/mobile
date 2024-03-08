@@ -17,10 +17,9 @@ import '@ethersproject/shims';
 import {useDispatch, useSelector} from 'react-redux';
 import {getBestDLNCrossSwapRate} from '../../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
+import {ethers} from 'ethers';
 import {
   confirmDLNTransaction,
-  getBestCrossSwapRate,
-  getDLNTradeCreateBuyOrder,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
 import {displayNotification} from '../../../../utils/NotifeeSetup';
@@ -83,7 +82,6 @@ const TradePage = ({route, navigation}) => {
         bestSwappingTrades?.estimation?.dstChainTokenOut?.amount,
         address,
       );
-      console.log('Here....tx data');
       console.log(res?.tx);
       setFinalTxQuote(res);
       return res;
@@ -103,17 +101,9 @@ const TradePage = ({route, navigation}) => {
   // Example of logging state changes
   useFocusEffect(
     useCallback(() => {
-      // dispatch(
-      //   getBestDLNCrossSwapRate(
-      //     selectedAssetMetaData?.blockchains,
-      //     selectedAssetMetaData?.contracts,
-      //     value * 1000000,
-      //   ),
-      // );
       getBestPrice();
       return () => {
         console.log('firedd cleanup ======>');
-        // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
     }, []),
   );

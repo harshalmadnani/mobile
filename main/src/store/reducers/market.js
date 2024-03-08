@@ -4,6 +4,7 @@ import {createSlice} from '@reduxjs/toolkit';
 // This is the initial state of the slice
 const initialState = {
   listOfCrypto: [],
+  listOfFilteredCrypto: [],
   selectedAssetMetaData: null,
   selectedTimeFramePriceInfo: null,
   selectedAssetWalletHolding: null,
@@ -24,6 +25,9 @@ export const marketSlice = createSlice({
     // All the reducers go here
     setListOfCrypto: (state, action) => {
       state.listOfCrypto = action.payload;
+    },
+    setFilteredListOfCrypto: (state, action) => {
+      state.listOfFilteredCrypto = action.payload;
     },
     setSelectedAssetData: (state, action) => {
       state.selectedAssetMetaData = action.payload;

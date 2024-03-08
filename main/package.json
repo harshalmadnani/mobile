@@ -41,7 +41,7 @@
     "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "big-integer": "^1.6.51",
-    "bignumber.js": "^9.1.1",
+    "bignumber.js": "^9.1.0",
     "bluebird": "^3.7.2",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.2",

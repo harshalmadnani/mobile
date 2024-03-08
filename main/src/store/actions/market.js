@@ -2,6 +2,7 @@ import {
   getAssetMetadata,
   getHistoricalData,
   getMarketAssetData,
+  getTop100MarketAssetData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
 import {getBestCrossSwapRate} from '../../utils/DLNTradeApi';
@@ -12,6 +13,19 @@ export const getListOfCryptoFromCoinGeckoApi = page => {
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData(page);
     dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
+  };
+};
+// First create an api call to get the desired data in actions/market.js
+//100, featured and etc.
+export const getListFilteredFromCoinGeckoApi = type => {
+  return async (dispatch, getState) => {
+    if (type === 'top') {
+      const data = await getTop100MarketAssetData();
+      dispatch(marketsAction.setListOfCrypto(data));
+    } else if (type === 'featured') {
+      const data = await getTop100MarketAssetData();
+      dispatch(marketsAction.setListOfCrypto(data));
+    }
   };
 };
 export const setAssetMetadata = assetName => {

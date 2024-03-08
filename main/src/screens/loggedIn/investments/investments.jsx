@@ -14,6 +14,7 @@ import {ImageAssets} from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  getListFilteredFromCoinGeckoApi,
   getListOfCryptoFromCoinGeckoApi,
   getListOfCryptoFromMobulaApi,
 } from '../../../store/actions/market';
@@ -49,27 +50,12 @@ const ComingSoonView = () => (
 const Investments = ({navigation}) => {
   const [marketData, setMarketData] = useState(null);
 
-  useEffect(() => {
-    const fetchMarketData = async () => {
-      try {
-        const data = await getMarketData(
-          '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-        ); // Fetch market data for Bitcoin
-        setMarketData(data); // Store the market data
-        setIsLoading(false); // Hide loading indicator
-      } catch (error) {
-        console.error('Failed to fetch market data:', error);
-      }
-    };
-
-    fetchMarketData();
-  }, []);
-  console.log('market data', marketData);
+  // console.log('market data', marketData);
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
   const cryptoData = useSelector(x => x.market.listOfCrypto);
-
+  const cryptoFilteredData = useSelector(x => x.market.listOfFilteredCrypto);
   const [isLoading, setIsLoading] = useState(false);
   const [section, setSection] = useState('crypto');
   const [page, setPage] = useState(1);
@@ -89,6 +75,10 @@ const Investments = ({navigation}) => {
       };
     }, []),
   );
+  //
+  const onPressFilters = type => {
+    dispatch(getListFilteredFromCoinGeckoApi(type));
+  };
   const onEndReachedFetch = async () => {
     console.log('firedd on end ======>');
     if (page <= 3) {
