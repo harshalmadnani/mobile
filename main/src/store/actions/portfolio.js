@@ -22,9 +22,8 @@ export const getCryptoHoldingForAddressFromMobula = asset => {
   return async (dispatch, getState) => {
     const eoaAddress = await getUserAddressFromAuthCoreSDK();
     const smartAccount = await getSmartAccountAddress(eoaAddress);
-    console.log('smart account address holding', smartAccount);
     const data = await getCryptoHoldingForAddress(smartAccount, asset);
-    console.log('Reducer Portfolio', data);
+    dispatch(portfolioAction.setHoldings(data?.data));
     return data;
   };
 };

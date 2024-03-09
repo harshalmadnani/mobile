@@ -40,7 +40,7 @@ const TradePage = ({route, navigation}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('1');
+  const [value, setValue] = useState('8');
   const [convertedValue, setConvertedValue] = useState('token');
   const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
@@ -49,7 +49,8 @@ const TradePage = ({route, navigation}) => {
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
-  const tokenBalanceUSD = useSelector(x => x.market.tokenBalanceUSD);
+  const holdings = useSelector(x => x.portfolio.holdings);
+  const usdcValue = holdings?.assets.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   useEffect(() => {
     console.log('Selected dropdown value:', selectedDropDownValue);
@@ -96,17 +97,12 @@ const TradePage = ({route, navigation}) => {
   // Example of logging state changes
   useFocusEffect(
     useCallback(() => {
-      dispatch(getUSDCHoldingForAddressFromMobula());
       getBestPrice();
       return () => {};
     }, []),
   );
   // Log when component mounts
-  console.log(
-    'state.......',
-    value > tokenBalanceUSD?.data?.total_wallet_balance,
-    bestSwappingBuyTrades,
-  );
+  console.log('state.......', JSON.stringify(bestSwappingBuyTrades));
   return (
     <SafeAreaView
       style={{
@@ -429,7 +425,7 @@ const TradePage = ({route, navigation}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-ExtraBold',
                   }}>
-                  ${tokenBalanceUSD?.data?.total_wallet_balance?.toFixed(2)}{' '}
+                  ${usdcValue?.[1]?.estimated_balance?.toFixed(2)}{' '}
                 </Text>
                 <Text
                   style={{
@@ -572,7 +568,11 @@ const TradePage = ({route, navigation}) => {
                     (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                       ?.amount *
                       value) /
-                    1e18
+                    Math.pow(
+                      10,
+                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                        ?.decimals,
+                    )
                   ).toFixed(5) || '...'}{' '}
                   {state?.symbol.toUpperCase()}{' '}
                 </Text>
@@ -822,10 +822,11 @@ const TradePage = ({route, navigation}) => {
             ) : (
               <TouchableOpacity
                 onPress={async () => {
-                  if (
-                    bestSwappingBuyTrades.length > 0 &&
-                    value <= tokenBalanceUSD?.total_wallet_balance
-                  ) {
+                  console.log(
+                    bestSwappingBuyTrades,
+                    value <= usdcValue?.[1]?.estimated_balance,
+                  );
+                  if (value <= usdcValue?.[1]?.estimated_balance) {
                     const res = await getTradeSigningData();
                     const signature = await confirmDLNTransaction(
                       res?.estimation?.srcChainTokenIn?.amount,
@@ -834,6 +835,9 @@ const TradePage = ({route, navigation}) => {
                     );
                     if (signature) {
                       console.log('txn hash', signature);
+                      navigation.navigate('PendingTxStatusPage', {
+                        state: currentItem,
+                      });
                     }
                   } else if (bestSwappingBuyTrades !== null) {
                     await getBestPrice();

@@ -26,10 +26,17 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
         ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
         : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
     );
-    console.log('response from wallet holding', address, response.data);
+    console.log(
+      'response from wallet holding asset::::::::: getCryptoHoldingForAddress',
+      JSON.stringify(response.data),
+    );
     return response?.data;
   } catch (error) {
-    console.log('error  from asset api:', error);
+    console.log(
+      'error from asset api:',
+      `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
+      error,
+    );
     return [];
   }
 };
@@ -46,7 +53,6 @@ export const getWalletHistoricalData = async (address, from) => {
         ? `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}&from=${from}`
         : `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}`,
     );
-    console.log('response from history', response.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from history api:', error);

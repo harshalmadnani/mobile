@@ -2,7 +2,6 @@ import {PROJECT_ID, CLIENT_KEY} from '@env';
 import {Polygon} from '@particle-network/chains';
 import * as particleAuth from '@particle-network/rn-auth';
 import {Env, ParticleInfo} from '@particle-network/rn-auth';
-import {AAVersion} from '@particle-network/rn-auth';
 import * as particleAuthCore from '@particle-network/rn-auth-core';
 import * as particleAA from '@particle-network/rn-aa';
 import {
@@ -11,7 +10,6 @@ import {
   SupportAuthType,
 } from '@particle-network/rn-auth';
 import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
 // Get your project id and client from dashboard,
@@ -23,7 +21,6 @@ const biconomyApiKeys = {
   137: 'Tooya3Rgo.1b5a0b68-a83c-4fe3-9ae9-9a5cb57fa809',
   80001: 'hYZIwIsf2.e18c790b-cafb-4c4e-a438-0289fc25dba1',
 };
-
 export const initializedAuthCore = () => {
   ParticleInfo.projectId = projectId; // your project id
   ParticleInfo.clientKey = clientKey; // your client key

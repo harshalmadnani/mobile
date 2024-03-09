@@ -2,18 +2,15 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 // This is the initial state of the slice
-const initialState = {nft: [], holdings: null};
+const initialState = {holdings: null};
 
 export const portfolioSlice = createSlice({
   name: 'portfolio', // This is the name of the slice, we will later use this name to access the slice from the store
   initialState: initialState, // This is the initial state of the slice
   reducers: {
     // All the reducers go here
-    setNftHoldings: (state, action) => {
-      state.nft = action.payload;
-    },
     setHoldings: (state, action) => {
-      console.log("Inside Reducer Data",action.payload)
+      console.log('Inside Reducer Data', action.payload);
       state.holdings = action.payload;
     },
   },

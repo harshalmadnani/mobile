@@ -38,22 +38,17 @@ const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const currentItem = props.item;
-  const selectedAssetWalletHolding = useSelector(
-    x => x.market.selectedAssetWalletHolding,
+  const holdings = useSelector(x => x.portfolio.holdings);
+  const currentAsset = holdings?.assets.filter(
+    x => x.asset?.symbol === currentItem?.symbol.toUpperCase(),
   );
   const currentTimeFramePrice = useSelector(
     x => x.market.selectedTimeFramePriceInfo,
   );
-  const selectedAssetMetaData = useSelector(
-    x => x.market.selectedAssetMetaData,
-  );
-  const availableChain = useSelector(x => x.market.availableBlockchain);
-  console.log('Coin asset data.......', availableChain, selectedAssetMetaData);
   const fetchUserDetails = () => {
     if (global.withAuth) {
       authAddress = global.loginAccount.publicAddress;
       const scwAddress = global.loginAccount.scw;
-      console.log(scwAddress);
       setScwAddress(scwAddress);
     } else {
       authAddress = global.connectAccount.publicAddress;
@@ -81,7 +76,6 @@ const MarketChart = props => {
     ) {
       const date = moment().subtract(7, 'days').format('YYYY-MM-DD');
       const unix = moment(date).unix() * 1000;
-      console.log(unix);
       dispatch(
         setHistoricalDataOfSelectedTimeFrame(
           currentItem?.name,
@@ -95,8 +89,7 @@ const MarketChart = props => {
     ) {
       const date = moment().subtract(1, 'months').format('YYYY-MM-DD');
       const unix = moment(date).unix() * 1000;
-      console.log(unix);
-      await dispatch(
+      dispatch(
         setHistoricalDataOfSelectedTimeFrame(
           currentItem?.name,
           currentItem.current_price,
@@ -109,7 +102,7 @@ const MarketChart = props => {
     ) {
       const date = moment().subtract(3, 'months').format('YYYY-MM-DD');
       const unix = moment(date).unix() * 1000;
-      console.log(unix);
+
       dispatch(
         setHistoricalDataOfSelectedTimeFrame(
           currentItem?.name,
@@ -123,7 +116,7 @@ const MarketChart = props => {
     ) {
       const date = moment().subtract(1, 'years').format('YYYY-MM-DD');
       const unix = moment(date).unix() * 1000;
-      console.log(unix);
+
       dispatch(
         setHistoricalDataOfSelectedTimeFrame(
           currentItem?.name,
@@ -135,32 +128,6 @@ const MarketChart = props => {
     setTimeFrame(availableTimeFrame[index]);
   };
 
-  const formatDate = timestamp => {
-    const date = new Date(timestamp);
-
-    // Get hours and minutes
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-
-    // Format hours and minutes
-    const formattedTime = `${String(hours).padStart(2, '0')}:${String(
-      minutes,
-    ).padStart(2, '0')}`;
-
-    // Get day, month, and year
-    const day = date.getDate();
-    const month = date.toLocaleString('default', {month: 'short'});
-
-    // Format the final string
-    return {
-      time: formattedTime,
-      date: `${day} ${month}`,
-    };
-  };
-
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
   const getRelativeTime = () => {
     if (timeFrameSelected === '1D') {
       return '24 h';
@@ -176,6 +143,8 @@ const MarketChart = props => {
   };
 
   const onFocusFunction = async () => {
+    // dispatch(getCryptoHoldingForAddressFromMobula());
+    dispatch(setAssetMetadata(currentItem?.name));
     const date = moment().subtract(1, 'days').format('YYYY-MM-DD');
     const unix = moment(date).unix() * 1000;
     dispatch(
@@ -185,33 +154,25 @@ const MarketChart = props => {
         unix,
       ),
     );
-    console.log('asset....calls');
-    dispatch(getCryptoHoldingForAddressFromMobula(currentItem?.name));
-    dispatch(getCryptoHoldingForMarketFromMobula(currentItem?.name));
-    dispatch(setAssetMetadata(currentItem?.name));
   };
   useFocusEffect(
     useCallback(() => {
-      console.log('fired cleanup ======> focus');
       onFocusFunction();
       return () => {
-        console.log('fired cleanup ======>');
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
     }, []),
   );
+  console.log('asset value', JSON.stringify(holdings));
   const {width, height} = Dimensions.get('window');
   return (
     <ScrollView contentContainerStyle={{minHeight: height, minWidth: width}}>
-      {/* <View style={styles.investmentsNav}> */}
-      {/* <View style={styles.longshortContainer}> */}
       <View
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'flex-start',
           width: '100%',
-          // marginBottom: '10%',
         }}>
         <Icon
           name={'navigate-before'}
@@ -278,9 +239,6 @@ const MarketChart = props => {
             </View>
           </View>
         </View>
-        {/* <View style={styles.chartContainer}>
-          <TradingViewChart width={screenWidth} height={300} />
-        </View> */}
         <View style={styles.chartContainer}>
           {/* <TradingViewChart width={screenWidth} height={300} /> */}
           <InvestmentChart />
@@ -326,8 +284,6 @@ const MarketChart = props => {
           )}
           data={availableTimeFrame}
         /> */}
-        {/* </View> */}
-        {/* </View> */}
       </View>
       <TouchableOpacity
         style={{
@@ -354,9 +310,7 @@ const MarketChart = props => {
               fontFamily: `Unbounded-Bold`,
               marginTop: '1%',
             }}>
-            $
-            {selectedAssetWalletHolding?.total_wallet_balance?.toFixed(2) ||
-              0.0}
+            $ {currentAsset?.[0]?.estimated_balance?.toFixed(2) ?? 0.0}
           </Text>
           <Text
             style={{
@@ -365,15 +319,7 @@ const MarketChart = props => {
               textTransform: 'uppercase',
               fontSize: 14,
             }}>
-            {(
-              selectedAssetWalletHolding?.total_wallet_balance /
-              currentItem?.current_price
-            )?.toFixed(2) === 'NAN'
-              ? 0
-              : (
-                  selectedAssetWalletHolding?.total_wallet_balance /
-                  currentItem?.current_price
-                )?.toFixed(2)}
+            {currentAsset?.[0]?.token_balance?.toFixed(6) ?? 0.0}
             {` ${currentItem.symbol}`}
           </Text>
         </View>
