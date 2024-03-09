@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,} from 'react';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -23,7 +23,7 @@ import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
 import {ChainId} from '@biconomy/core-types';
 // import Clipboard from '@react-native-clipboard/clipboard';
-
+import Snackbar from 'react-native-snackbar';
 const bg = require('../../../assets/choose.png');
 const windowHeight = Dimensions.get('window').height;
 
@@ -50,7 +50,29 @@ const ruleStyles = StyleSheet.create({
     // marginTop: '0%',
   },
 });
+func = () => {
+  Clipboard.setString(
+    `
+Xade is reshaping finance with its super decentralised bank powered by DeFi where you can help us both earn Xade Coins by joining Xade using my refer code: ${
+      global.withAuth
+        ? global.loginAccount.scw
+        : global.connectAccount.publicAddress
+    }
 
+Download Now: https://bit.ly/xadefinance
+`,
+  );
+
+  Snackbar.show({'text': 'Referral link copied'});
+
+  // Alert.alert('Referral link copied');
+};
+this.state = {
+  selectedIndex: 0,
+  externalLinkHeading : '',
+  externalLinkUri : '',
+  showExternalLinkModal : false
+};
 // import {signAndSendTransactionConnect} from '../../particle-connect';
 let address;
 let info;
@@ -104,8 +126,7 @@ PROFILE
         style={{width: width}}
         contentContainerStyle={{alignItems: 'center'}}>
         <View style={styles.nameSettings}>
-          {/* <FastImage style={{width: 55, height: 55}} source={{uri: imageUrl}} /> */}
-          <View style={{marginTop:'5%'}}>
+          <View style={{marginBottom:'5%'}}>
             <Text
               style={{
                 color: 'white',
@@ -136,13 +157,13 @@ PROFILE
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL(
-                  'https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv',
+                  'https://zealy.io/cw/xadefinance/questboard',
                 );
               }}>
               <FastImage
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: 70,
+                  height: 70,
                   borderRadius: 10,
                 }}
                 source={require('./quests.png')}
@@ -152,7 +173,7 @@ PROFILE
               style={{
                 textAlign: 'center',
                 fontSize: 17,
-                fontFamily: `Montreal-Medium`,
+                fontFamily: `Unbounded-Medium`,
                 color: '#f0f0f0',
                 marginTop: '4%',
               }}>
@@ -163,45 +184,49 @@ PROFILE
             <TouchableOpacity
               onPress={() => {
                 Linking.openURL(
-                  'https://xade-finance.gitbook.io/introducing-xade/important-links',
+                  'https://app.komet.me/nfts/Xade_Explorers/346',
                 );
               }}>
               <FastImage
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: 70,
+                  height: 70,
                   borderRadius: 10,
                 }}
-                source={require('./updates.png')}
+                source={require('./tokens.png')}
               />
             </TouchableOpacity>
             <Text
               style={{
                 textAlign: 'center',
                 fontSize: 17,
-                fontFamily: `Montreal-Medium`,
+                fontFamily: `Unbounded-Medium`,
                 color: '#f0f0f0',
                 marginTop: '4%',
               }}>
-              Tokens
+              Plus
             </Text>
           </View>
           <View>
-            <TouchableOpacity>
+          <TouchableOpacity
+           
+            onPress={() => {
+              this.func()
+            }}>
               <FastImage
                 style={{
-                  width: 80,
-                  height: 80,
+                  width: 70,
+                  height: 70,
                   borderRadius: 10,
                 }}
-                source={require('./invite.png')}
+                source={require('./Incognito.png')}
               />
             </TouchableOpacity>
             <Text
               style={{
                 textAlign: 'center',
                 fontSize: 17,
-                fontFamily: `Montreal-Medium`,
+                fontFamily: `Unbounded-Medium`,
                 color: '#f0f0f0',
                 marginTop: '4%',
               }}>
@@ -211,36 +236,37 @@ PROFILE
         </View>
 
         <View style={[styles.otherSettings, {marginTop: 20, marginBottom: 10}]}>
-          <TouchableOpacity
+        <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => Linking.openURL('mailto:support@xade.finance')}>
             <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
-              source={require('./contact.png')}
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./face-id.png')}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Contact Us</Text>
-              <Icon
-                name={'angle-right'}
-                size={20}
-                color={'#86969A'}
-                type="font-awesome"
+              <Text style={styles.settingsText}>FaceID</Text>
+              <Switch
+                trackColor={{false: '#767577', true: '#fff'}}
+                thumbColor={'#fff'}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleSwitch}
+                value={faceID}
               />
             </View>
           </TouchableOpacity>
 
-
+          <HorizontalRule />
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
-              Linking.openURL('https://t.me/xadefi');
+              Linking.openURL('https://docs.xade.finance/');
             }}>
             <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
-              source={require('./support.png')}
+              source={require('./wallet.png')}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Support</Text>
+              <Text style={styles.settingsText}>Wallets</Text>
               <Icon
                 name={'angle-right'}
                 size={20}
@@ -254,14 +280,14 @@ PROFILE
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
-              Linking.openURL('https://docs.xade.finance');
+              Linking.openURL('https://docs.xade.finance/');
             }}>
             <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
-              source={require('./docs.png')}
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./book-open.png')}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Docs</Text>
+              <Text style={styles.settingsText}>About Xade</Text>
               <Icon
                 // style={styles.tup}
                 name={'angle-right'}
@@ -272,7 +298,6 @@ PROFILE
               />
             </View>
           </TouchableOpacity>
-
           {/* <HorizontalRule /> */}
         </View>
         <View style={[styles.otherSettings, {marginBottom: 20}]}>
@@ -282,8 +307,8 @@ PROFILE
               Linking.openURL('https://xade.finance/privacy-policy');
             }}>
             <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
-              source={require('./privacy-policy.png')}
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./lock.png')}
             />
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>Privacy Policy</Text>
@@ -304,8 +329,8 @@ PROFILE
               Linking.openURL('https://xade.finance/terms-of-service');
             }}>
             <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
-              source={require('./tos.png')}
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./document-duplicate.png')}
             />
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>Terms of Service</Text>
@@ -321,26 +346,24 @@ PROFILE
           </TouchableOpacity>
           <HorizontalRule />
           <TouchableOpacity
-            style={styles.innerSettings}
-            onPress={() => {
-              setNetworksVisible(true);
-            }}>
-            <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
-              source={require('./network.png')}
+          style={styles.innerSettings}
+          onPress={async () => {
+            global.withAuth
+              ? particleAuth.fastLogout()
+              : particleConnect.disconnect();
+            await AsyncStorage.setItem('isConnected', JSON.stringify(false));
+            navigation.push('LoggedOutHome');
+            console.log('Logged Out/Disconnected Successfully');
+          }}>
+                      <FastImage
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./logout.png')}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Networks</Text>
-              <Icon
-                // style={styles.tup}
-                name={'angle-right'}
-                size={20}
-                color={'#86969A'}
-                type="font-awesome"
-                // style = {{marginRight: '1%'}}
-              />
+              <Text style={styles.settingsText}>Logout</Text>
+       
             </View>
-          </TouchableOpacity>
+        </TouchableOpacity>
           <Modal
             animationType="slide"
             visible={networksVisible}
@@ -451,38 +474,7 @@ PROFILE
             </ImageBackground>
           </Modal>
         </View>
-        <View style={[styles.otherSettings, {marginTop: 10, marginBottom: 10}]}>
-          <TouchableOpacity
-            style={styles.innerSettings}
-            onPress={() => Linking.openURL('mailto:support@xade.finance')}>
-            <FastImage
-              style={{width: 40, height: 40, borderRadius: 10}}
-              source={require('./contact.png')}
-            />
-            <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>FaceID</Text>
-              <Switch
-                trackColor={{false: '#767577', true: '#ffbd59'}}
-                thumbColor={'#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={faceID}
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          style={styles.logout}
-          onPress={async () => {
-            global.withAuth
-              ? particleAuth.fastLogout()
-              : particleConnect.disconnect();
-            await AsyncStorage.setItem('isConnected', JSON.stringify(false));
-            navigation.push('LoggedOutHome');
-            console.log('Logged Out/Disconnected Successfully');
-          }}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+
         <View style={styles.socialMedia}>
           <View style={styles.innerMedia}>
             <TouchableOpacity

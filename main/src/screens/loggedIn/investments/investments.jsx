@@ -9,6 +9,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  ScrollView,
+  Button
 } from 'react-native';
 import {ImageAssets} from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
@@ -86,6 +88,40 @@ const Investments = ({navigation}) => {
       setPage(page + 1);
     }
   };
+
+
+    const buttons = [
+      { id: '1', text: 'Top 100', imageUrl: 'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/il3ax7galndf11jfrfg9.png' },
+      { id: '2', text: 'Trending', imageUrl: 'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/bhhjkci2g9jlqzndoo8c.png' },
+      { id: '3', text: 'Gainers', imageUrl: 'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/dfta8732xnsjxhacnls9.png' },
+      { id: '4', text: 'More', imageUrl: 'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/c239jsmth02drolahkpa.png' },
+    ];
+
+    const [selectedButton, setSelectedButton] = useState(null);
+  
+    const handleButtonPress = (buttonId) => {
+      switch (buttonId) {
+        case '1':
+          // Action for Top 100 button
+          console.log('Top 100 clicked');
+          break;
+        case '2':
+          // Action for Trending button
+          console.log('Trending clicked');
+          break;
+        case '3':
+          // Action for Gainers button
+          console.log('Gainers clicked');
+          break;
+        case '4':
+          // Action for More button
+          console.log('More clicked');
+          break;
+        default:
+          break;
+      }
+      setSelectedButton(buttonId);
+    };
   return (
     <SafeAreaView
       style={{
@@ -210,6 +246,37 @@ const Investments = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
+        <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={{ paddingVertical: 10,marginLeft:10 }}
+    >
+      {buttons.map((button) => (
+        <TouchableOpacity
+          key={button.id}
+          onPress={() => handleButtonPress(button.id)}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor:  '#000',
+            borderRadius: 100,
+            borderWidth: 1,
+            borderColor: selectedButton === button.id ? '#fff' : null,
+            marginRight: 10,
+            paddingHorizontal: 10,
+            height: 34,
+          }}
+        >
+          <Image
+            source={{ uri: button.imageUrl }}
+            style={{ width: 24, height: 24, marginRight: 5 }}
+          />
+          <Text style={{ color: selectedButton === button.id ? '#fff' : '#999', fontSize: 14, fontFamily: 'Montreal-Bold' }}>
+            {button.text}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView> 
       </View>
 
       {isLoading && (

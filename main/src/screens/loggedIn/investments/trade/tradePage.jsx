@@ -142,11 +142,35 @@ const TradePage = ({route, navigation}) => {
                 fontSize: 16,
                 color: '#ffffff',
                 fontFamily: `Unbounded-Medium`,
-                marginLeft: '40%',
+                marginLeft: '5%',
               }}>
               {state.symbol.toUpperCase()}/USD
             </Text>
           </View>
+          <TouchableOpacity
+                style={{
+                  padding: 10,
+                  borderRadius: 5,
+                  flexDirection: 'row',
+                  marginLeft:'30%'
+                }}
+                // onPress={openBottomSheet}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 12,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  MARKET
+                </Text>
+                <Icon
+                  name={'expand-more'}
+                  size={20}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                />
+              </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsDropDownOpen(!isDropDownOpen)}>
             <View></View>
             {/* Drop-down options go here */}
@@ -183,16 +207,6 @@ const TradePage = ({route, navigation}) => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      color: '#ffffff',
-                      fontSize: 16,
-                      fontFamily: 'Benzin-Semibold',
-                      textAlign: 'center',
-                    }}>
-                    Market
-                  </Text>
                 </LinearGradient>
               ) : (
                 <Text
@@ -733,69 +747,7 @@ const TradePage = ({route, navigation}) => {
             </View>
           </ScrollView>
           <View
-            style={{flexDirection: 'row', marginTop: '10%', marginRight: '5%'}}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '20%',
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  borderRadius: 5,
-                  flexDirection: 'row',
-                }}
-                // onPress={openBottomSheet}
-              >
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 12,
-                    fontFamily: 'Unbounded-Medium',
-                  }}>
-                  MARKET
-                </Text>
-                <Icon
-                  name={'expand-more'}
-                  size={20}
-                  color={'#f0f0f0'}
-                  type="materialicons"
-                />
-              </TouchableOpacity>
-
-              <Modal
-                isVisible={isBottomSheetVisible}
-                onBackdropPress={closeBottomSheet}
-                style={{
-                  justifyContent: 'flex-end',
-                  margin: 0,
-                }}
-                animationIn="slideInUp"
-                animationOut="slideOutDown">
-                <View
-                  style={{
-                    backgroundColor: 'white',
-                    padding: 16,
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}>
-                  <Text>This is the content of the Bottom Sheet</Text>
-                  <TouchableOpacity
-                    onPress={closeBottomSheet}
-                    style={{
-                      marginTop: 16,
-                      padding: 10,
-                      backgroundColor: 'blue',
-                      borderRadius: 5,
-                    }}>
-                    <Text style={{color: 'white', fontSize: 16}}>Close</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
-            </View>
+            style={{ justifyContent:'center',marginTop: '10%', marginRight: '5%',flexDirection:'row'}}>
             {tradeType === 'sell' ? (
               <LinearGradient
                 style={{
@@ -803,6 +755,8 @@ const TradePage = ({route, navigation}) => {
                   backgroundColor: 'transparent',
                   paddingVertical: 22,
                   paddingHorizontal: '10%',
+                  width:'90%',
+                  justifyContent:'center'
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
@@ -846,9 +800,10 @@ const TradePage = ({route, navigation}) => {
                 <LinearGradient
                   style={{
                     borderRadius: 17,
+                    
                     backgroundColor: 'transparent',
                     paddingVertical: 22,
-                    paddingHorizontal: '10%',
+                    paddingHorizontal: '30%',
                   }}
                   locations={[0, 1]}
                   colors={['#fff', '#fff']}

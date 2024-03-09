@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     marginTop: '5%',
-    width: '95%',
+    width: '100%',
   },
 
   switch: {

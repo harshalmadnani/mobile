@@ -298,7 +298,7 @@ const MarketChart = props => {
           <Text
             style={{
               color: '#747474',
-              fontFamily: 'Satoshi-Black',
+              fontFamily: 'Montreal-Bold',
               fontSize: 16,
             }}>
             Amount owned
@@ -314,7 +314,7 @@ const MarketChart = props => {
           </Text>
           <Text
             style={{
-              color: '#BC88FF',
+              color: '#747474',
               fontFamily: 'Unbounded-ExtraBold',
               textTransform: 'uppercase',
               fontSize: 14,
@@ -331,7 +331,7 @@ const MarketChart = props => {
           width: '100%',
           borderRadius: 6,
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          marginTop: 12,
+          marginTop: '30%',
         }}
         onPress={() => {
           navigation.navigate('TradePage', {state: currentItem});
@@ -339,7 +339,7 @@ const MarketChart = props => {
         <LinearGradient
           useAngle={true}
           angle={150}
-          colors={['#BC88FF', '#BC88FF']}
+          colors={['#fff', '#fff']}
           style={{
             width: '100%',
             borderRadius: 100,
