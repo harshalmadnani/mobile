@@ -1,8 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native';
-
+import { Text ,View} from 'react-native';
+import { Svg, Circle, Text as SvgText } from 'react-native-svg';
+// import { View } from 'react-native-reanimated/lib/typescript/Animated';
+const { BigNumber } = require('bignumber.js');
 const PendingTxStatusPage = ({route, navigation}) => {
   //   const txQuoteInfo = route.params.state;
+  console.log("Pending Page");
   const txQuoteInfo = {
     estimation: {
       srcChainTokenIn: {
@@ -88,15 +92,106 @@ const PendingTxStatusPage = ({route, navigation}) => {
     fixFee: '500000000000000000',
     userPoints: 0.59,
   };
-  const [status, setStatus] = useState('pending');
-  console.log('txQuoteInfo.......', status, txQuoteInfo);
+
+  const [countdown, setCountdown] = useState(txQuoteInfo.order.approximateFulfillmentDelay);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      // Decrement countdown every second until it reaches 0
+      setCountdown((prevCountdown) => (prevCountdown > 0 ? prevCountdown - 1 : 0));
+    }, 1000);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(timer);
+  }, []);
+
+  const calculatePercentage = () => {
+    const totalDuration = txQuoteInfo.order.approximateFulfillmentDelay;
+    const circumference = 2 * Math.PI * 40; // 40 is the radius of the circle
+    return (countdown / totalDuration) * circumference;
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+  const weiAmount = new BigNumber(txQuoteInfo.estimation.dstChainTokenOut.amount);
+  const percent  = ((txQuoteInfo.order.approximateFulfillmentDelay-countdown)/txQuoteInfo.order.approximateFulfillmentDelay)*100;
+  const formattedPercent = Math.round(percent) + '%';
+  const normalAmount = (weiAmount).div(10 ** (txQuoteInfo.estimation.dstChainTokenOut.decimals)).toNumber();
   return (
     <SafeAreaView
       style={{
         backgroundColor: '#000',
         paddingBottom: 80,
         flex: 1,
-      }}></SafeAreaView>
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+<Svg height="300" width="300">
+  <Circle
+    cx="150"
+    cy="150"
+    r="147"  
+    stroke="#fff"
+    strokeWidth="4" 
+    fill="transparent"
+  />
+  
+  <Circle
+    cx="150"
+    cy="150"
+    r="120"
+    stroke="#fff"
+    strokeWidth="8"
+    fill="transparent"
+  />
+
+  {/* Inner border circle */}
+  <Circle
+    cx="150"
+    cy="150"
+    r="99" 
+    stroke="#fff"
+    strokeWidth="4" 
+    fill="transparent"
+  />
+
+  {/* Animated dash array circle */}
+  <Circle
+    cx="150"
+    cy="150"
+    r="120"
+    stroke="#000"
+    strokeWidth="8"
+    fill="transparent"
+    strokeDasharray={[calculatePercentage(), 256]}
+    strokeDashoffset="0"
+  />
+
+  <SvgText
+    x="50%"
+    y="50%"
+    textAnchor="middle"
+    alignmentBaseline="middle"
+    fontFamily='Unbounded-Medium'
+    fontSize="48"
+    fill="#fff">
+    {formattedPercent}
+  </SvgText>
+</Svg>
+
+<View style={{justifyContent:"center",marginTop:'10%',}}>
+<Text style={{fontFamily:'Unbounded-Medium',fontSize: 16,textAlign:'center',color:"#fff"}}>TRANSACTION IS PENDING</Text>
+<Text style={{ fontFamily: 'Unbounded-Medium', fontSize: 16, textAlign: 'center', marginTop: 10,color:"#fff" }}>
+          Time remaining: {formatTime(countdown)}
+        </Text>
+        <Text style={{ fontFamily: 'Unbounded-Medium', fontSize: 12, textAlign: 'center', marginTop: '20%',color:"#949494" }}>
+         {normalAmount} {txQuoteInfo.estimation.dstChainTokenOut.name} {'\n'}
+         are on the way
+        </Text>
+</View>
+      </SafeAreaView>
   );
 };
 

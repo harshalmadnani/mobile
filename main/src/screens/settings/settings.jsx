@@ -104,17 +104,16 @@ PROFILE
         style={{width: width}}
         contentContainerStyle={{alignItems: 'center'}}>
         <View style={styles.nameSettings}>
-          <FastImage style={{width: 55, height: 55}} source={{uri: imageUrl}} />
+          {/* <FastImage style={{width: 55, height: 55}} source={{uri: imageUrl}} /> */}
           <View style={{marginTop:'5%'}}>
             <Text
               style={{
- 
                 color: 'white',
                 fontSize: 23,
                 fontFamily: `Unbounded-Medium`,
                 textAlign:'center',
               }}>
-              {info}
+              {info.toUpperCase()}
             </Text>
             <Text
               style={{
