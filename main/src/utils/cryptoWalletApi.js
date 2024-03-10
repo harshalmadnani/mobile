@@ -21,11 +21,13 @@ export const getNftsHoldingForAddress = async address => {
 };
 export const getCryptoHoldingForAddress = async (address, asset) => {
   try {
-    const response = await axios.get(
-      asset
-        ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
-        : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
-    );
+    const url = asset
+      ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
+      : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`;
+    console.log('wallet holding url......', address, url);
+    const response = await axios.get(url, {
+      headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+    });
     console.log(
       'response from wallet holding asset::::::::: getCryptoHoldingForAddress',
       JSON.stringify(response.data),

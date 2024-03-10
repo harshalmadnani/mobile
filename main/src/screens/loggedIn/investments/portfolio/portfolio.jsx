@@ -16,11 +16,12 @@ import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/po
 import {getCryptoHoldingForAddress} from '../../../../utils/cryptoWalletApi';
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 import {useFocusEffect} from '@react-navigation/native';
+import {getSmartAccountAddress} from '../../../../utils/particleCoreSDK';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
-  const [holdings, setHoldings] = useState(null);
-  console.log('Holdings', holdings);
-  const address = useSelector(x => x.auth.address);
+  // const [holdings, setHoldings] = useState(null);
+  const holdings = useSelector(x => x.portfolio.holdings);
+  console.log('Holdings Porfolio Page', holdings);
   const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
@@ -54,31 +55,33 @@ const Portfolio = ({navigation}) => {
     }
   };
   const [points, setPoints] = useState('...');
-  useEffect(() => {
-    async function logic() {
-      const _points = await addPoints();
-      global.points = _points;
-      setPoints(_points);
-    }
-    logic();
-  });
+  // useEffect(() => {
+  async function logic() {
+    const _points = await addPoints();
+    global.points = _points;
+    setPoints(_points);
+  }
+  // });
 
-  useEffect(() => {
-    async function init() {
-      try {
-        const data = await getCryptoHoldingForAddress(address);
-        console.log('Data from API', data);
-        setHoldings(data);
+  // useEffect(() => {
+  //   async function init() {
+  //     try {
+  //       const eoaAddress = await getUserAddressFromAuthCoreSDK();
+  //       console.log('Data from API coin........', eoaAddress, data);
+  //       const smartAccount = await getSmartAccountAddress(eoaAddress);
+  //       const data = await getCryptoHoldingForAddress(smartAccount);
 
-        // fetch selected coin contract address
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    init();
-  }, []);
+  //       // fetch selected coin contract address
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   }
+  //   init();
+  // }, []);
   const onFocusFunction = async () => {
+    console.log('firred balnce holding');
     dispatch(getCryptoHoldingForAddressFromMobula());
+    await logic();
   };
   useFocusEffect(
     useCallback(() => {
@@ -88,7 +91,7 @@ const Portfolio = ({navigation}) => {
       };
     }, []),
   );
-  console.log('Holdings', holdings);
+  console.log('Holdings', JSON.stringify(holdings));
 
   const extractUSDCBalanceOnPolygon = holdings => {
     // Check if holdings or holdings.assets is not defined
@@ -108,14 +111,17 @@ const Portfolio = ({navigation}) => {
     if (!usdcAsset) {
       return '0'; // Return a default value if the USDC asset isn't found
     }
-
+    console.log(
+      'balance......',
+      usdcAsset.cross_chain_balances.Polygon.balance,
+    );
     // Assuming the balance is directly available on usdcAsset (or adapt based on actual structure)
     return usdcAsset.cross_chain_balances.Polygon.balance || 0;
   };
 
   // Extract the USDC balance
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
-  console.log(usdcBalance);
+  console.log('usd balance....', usdcBalance);
 
   return (
     <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
@@ -196,10 +202,7 @@ const Portfolio = ({navigation}) => {
                 color: '#fff',
                 fontSize: 16,
               }}>
-              $
-              {Number(usdcBalance || 'Loading...')
-                .toFixed(2)
-                .toLocaleString('en-US')}
+              ${Number(usdcBalance).toFixed(2).toLocaleString('en-US')}
             </Text>
           </View>
           <View
@@ -302,7 +305,11 @@ const Portfolio = ({navigation}) => {
             </View>
           ) : (
             <View
-              style={{flex: 1, backgroundColor: '#000', paddingBottom: '30%'}}>
+              style={{
+                width: '90%',
+                backgroundColor: '#000',
+                paddingBottom: '30%',
+              }}>
               <FlatList
                 data={holdings.assets.filter(item => item.token_balance > 0)}
                 keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
