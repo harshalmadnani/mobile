@@ -77,6 +77,7 @@ import Portfolio from './screens/loggedIn/investments/portfolio/portfolio';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './store/store';
 import WebView from 'react-native-webview';
+import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxStatusPage';
 function PreLaunchLoad({navigation}) {
   return (
     <View>
@@ -401,6 +402,15 @@ function PendingTxStatusScreen({route, navigation}) {
     </SafeAreaView>
   );
 }
+function SuccessTxStatusScreen({route, navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={{height: '100%'}}>
+        <SuccessTxStatusPage navigation={navigation} route={route} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
 function SendEmail({navigation}) {
   return (
     <ScrollView>
@@ -715,8 +725,14 @@ export default function App({navigation, uri}) {
               options={{headerShown: false}}
             />
             <Stack.Screen
-              name="PendingTxStatusPage"
+              name="PendingTxStatus"
               component={PendingTxStatusScreen}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="SuccessTxStatus"
+              component={SuccessTxStatusScreen}
               navigation={navigation}
               options={{headerShown: false}}
             />

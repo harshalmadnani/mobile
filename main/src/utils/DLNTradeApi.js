@@ -37,6 +37,32 @@ export const getDLNTradeCreateBuyOrder = async (
     return null;
   }
 };
+export const getDLNTradeCreateSellOrder = async (
+  srcChainId,
+  srcChainTokenIn,
+  srcChainTokenInAmount,
+  dstChainId,
+  dstChainTokenOut,
+) => {
+  try {
+    console.log(
+      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
+    );
+    const response = await axios.get(
+      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
+    );
+    console.log('response from DLN api:', dstChainId);
+    return response?.data;
+  } catch (error) {
+    console.log(
+      'error  from DLN api:',
+      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
+      dstChainId,
+      error.toString(),
+    );
+    return null;
+  }
+};
 const getChainIdOnChainName = chainName => {
   if (chainName === 'Ethereum') {
     return 1;
@@ -111,65 +137,7 @@ export const getBestCrossSwapRateBuy = async (
     return [];
   }
 };
-export const getBestCrossSwapRateSell = async (
-  blockchains,
-  contractAddress,
-  value,
-) => {
-  let blockchainsContractAddress = blockchains.map((x, i) => {
-    return {blockchains: blockchains[i], contractAddress: contractAddress[i]};
-  });
-  blockchainsContractAddress = blockchainsContractAddress.filter(
-    x =>
-      x.blockchains === 'Ethereum' ||
-      x.blockchains === 'BNB Smart Chain (BEP20)' ||
-      x.blockchains === 'Polygon' ||
-      x.blockchains === 'Avalanche C-Chain',
-  );
 
-  const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
-    const res = await getDLNTradeCreateBuyOrder(
-      137,
-      '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-      value,
-      getChainIdOnChainName(x?.blockchains),
-      x?.contractAddress,
-    );
-    return res;
-  });
-  let results = await Promise.all(ratesOfDifferentChainOut);
-  // best rate calculation
-  results = results.filter(x => x !== null);
-  const bestTradingPrice = results.map(x => {
-    return {
-      fee: isNaN(
-        parseInt(x?.estimation?.dstChainTokenOut?.amount) -
-          parseInt(x?.estimation?.costsDetails?.[0]?.payload?.feeAmount),
-      )
-        ? 0
-        : parseInt(x?.estimation?.dstChainTokenOut?.amount) -
-          parseInt(x?.estimation?.costsDetails?.[0]?.payload?.feeAmount),
-      chainId: x?.estimation?.dstChainTokenOut?.chainId,
-    };
-  });
-  const bestPrice = Math.max(...bestTradingPrice.map(x => x.fee));
-  results = results.filter(
-    x =>
-      x.estimation?.dstChainTokenOut?.chainId ===
-      bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
-  );
-  if (results.length > 0) {
-    console.log(
-      'Best trading price',
-      results[0]?.estimation?.dstChainTokenOut?.chainId,
-      bestPrice,
-      bestTradingPrice,
-    );
-    return results[0];
-  } else {
-    return [];
-  }
-};
 export const getDLNTradeCreateBuyOrderTxn = async (
   srcChainId,
   srcChainTokenIn,
@@ -186,7 +154,11 @@ export const getDLNTradeCreateBuyOrderTxn = async (
     );
     return response?.data;
   } catch (error) {
-    console.log('error  from DLN api:', error);
+    console.log(
+      'error  from DLN api:',
+      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false`,
+      error,
+    );
     return null;
   }
 };

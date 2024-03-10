@@ -143,7 +143,7 @@ const MarketChart = props => {
   };
 
   const onFocusFunction = async () => {
-    // dispatch(getCryptoHoldingForAddressFromMobula());
+    dispatch(getCryptoHoldingForAddressFromMobula());
     dispatch(setAssetMetadata(currentItem?.name));
     const date = moment().subtract(1, 'days').format('YYYY-MM-DD');
     const unix = moment(date).unix() * 1000;
@@ -334,7 +334,12 @@ const MarketChart = props => {
           marginTop: '30%',
         }}
         onPress={() => {
-          navigation.navigate('TradePage', {state: currentItem});
+          if (holdings) {
+            navigation.navigate('TradePage', {
+              state: currentItem,
+              asset: currentAsset,
+            });
+          }
         }}>
         <LinearGradient
           useAngle={true}

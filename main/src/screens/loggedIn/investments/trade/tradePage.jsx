@@ -17,7 +17,7 @@ import '@ethersproject/shims';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getBestDLNCrossSwapRateBuy,
-  getUSDCHoldingForAddressFromMobula,
+  getBestDLNCrossSwapRateSell,
 } from '../../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
 
@@ -45,6 +45,7 @@ const TradePage = ({route, navigation}) => {
   const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
   const state = route.params.state;
+  const tradeAsset = route.params.asset;
   const dispatch = useDispatch();
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
@@ -52,26 +53,30 @@ const TradePage = ({route, navigation}) => {
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
+  const tokensToSell = tradeAsset[0]?.contracts_balances;
   useEffect(() => {
-    console.log('Selected dropdown value:', selectedDropDownValue);
-    console.log('Order type:', orderType);
-
-    if (
-      selectedDropDownValue === 'Margin' ||
-      selectedDropDownValue === 'Algo' ||
-      orderType === 'limit' ||
-      orderType === 'stop'
-    ) {
-      console.log('Setting commingSoon to true');
-      setCommingSoon(true);
-    } else {
-      console.log('Setting commingSoon to false');
-      setCommingSoon(false);
+    console.log(
+      'Trade type:',
+      JSON.stringify(tradeAsset[0]?.cross_chain_balances),
+      tradeType,
+    );
+    if (tradeType === 'sell') {
+      dispatch(
+        getBestDLNCrossSwapRateSell(
+          tokensToSell[0],
+          value * Math.pow(10, tokensToSell[0]?.decimals),
+        ),
+      );
     }
-  }, [selectedDropDownValue, orderType]);
-  // useEffect(() => {
+  }, [tradeType]);
+
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
+      console.log(
+        'Swapping......',
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address,
+      );
       const res = await getDLNTradeCreateBuyOrderTxn(
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address,
@@ -148,29 +153,29 @@ const TradePage = ({route, navigation}) => {
             </Text>
           </View>
           <TouchableOpacity
-                style={{
-                  padding: 10,
-                  borderRadius: 5,
-                  flexDirection: 'row',
-                  marginLeft:'30%'
-                }}
-                // onPress={openBottomSheet}
-              >
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 12,
-                    fontFamily: 'Unbounded-Medium',
-                  }}>
-                  MARKET
-                </Text>
-                <Icon
-                  name={'expand-more'}
-                  size={20}
-                  color={'#f0f0f0'}
-                  type="materialicons"
-                />
-              </TouchableOpacity>
+            style={{
+              padding: 10,
+              borderRadius: 5,
+              flexDirection: 'row',
+              marginLeft: '30%',
+            }}
+            // onPress={openBottomSheet}
+          >
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 12,
+                fontFamily: 'Unbounded-Medium',
+              }}>
+              MARKET
+            </Text>
+            <Icon
+              name={'expand-more'}
+              size={20}
+              color={'#f0f0f0'}
+              type="materialicons"
+            />
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => setIsDropDownOpen(!isDropDownOpen)}>
             <View></View>
             {/* Drop-down options go here */}
@@ -206,8 +211,7 @@ const TradePage = ({route, navigation}) => {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
-                  }}>
-                </LinearGradient>
+                  }}></LinearGradient>
               ) : (
                 <Text
                   style={{
@@ -450,9 +454,6 @@ const TradePage = ({route, navigation}) => {
                   }}>
                   available to invest{' '}
                 </Text>
-
-                {/* image to allow btc input */}
-                {/* <Image source={ImageAssets.arrowImg} /> */}
               </View>
             ) : (
               <View
@@ -469,7 +470,8 @@ const TradePage = ({route, navigation}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
-                  0.006 BTC{' '}
+                  {tokensToSell?.[0]?.balance?.toFixed(2)}{' '}
+                  {state.symbol.toUpperCase()}{' '}
                 </Text>
                 <Text
                   style={{
@@ -747,16 +749,121 @@ const TradePage = ({route, navigation}) => {
             </View>
           </ScrollView>
           <View
-            style={{ justifyContent:'center',marginTop: '10%', marginRight: '5%',flexDirection:'row'}}>
-            {tradeType === 'sell' ? (
+            style={{flexDirection: 'row', marginTop: '10%', marginRight: '5%'}}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '20%',
+                flexDirection: 'row',
+              }}>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  borderRadius: 5,
+                  flexDirection: 'row',
+                }}
+                // onPress={openBottomSheet}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 12,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  MARKET
+                </Text>
+                <Icon
+                  name={'expand-more'}
+                  size={20}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                />
+              </TouchableOpacity>
+
+              <Modal
+                isVisible={isBottomSheetVisible}
+                onBackdropPress={closeBottomSheet}
+                style={{
+                  justifyContent: 'flex-end',
+                  margin: 0,
+                }}
+                animationIn="slideInUp"
+                animationOut="slideOutDown">
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    padding: 16,
+                    borderTopLeftRadius: 10,
+                    borderTopRightRadius: 10,
+                  }}>
+                  <Text>This is the content of the Bottom Sheet</Text>
+                  <TouchableOpacity
+                    onPress={closeBottomSheet}
+                    style={{
+                      marginTop: 16,
+                      padding: 10,
+                      backgroundColor: 'blue',
+                      borderRadius: 5,
+                    }}>
+                    <Text style={{color: 'white', fontSize: 16}}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </Modal>
+            </View>
+            <TouchableOpacity
+              onPress={async () => {
+                console.log(
+                  value * Math.pow(10, tokensToSell[0]?.decimals),
+                  tokensToSell?.[0],
+                  tradeType,
+                );
+                if (
+                  value <= usdcValue?.[1]?.estimated_balance &&
+                  tradeType === 'buy'
+                ) {
+                  const res = await getTradeSigningData();
+                  const signature = await confirmDLNTransaction(
+                    res?.estimation?.srcChainTokenIn?.amount,
+                    res?.estimation?.srcChainTokenIn?.address,
+                    res?.tx,
+                  );
+                  if (signature) {
+                    console.log('txn hash', signature);
+                    navigation.navigate('PendingTxStatusPage', {
+                      state: currentItem,
+                    });
+                  }
+                } else if (
+                  value * Math.pow(10, tokensToSell[0]?.decimals) <=
+                    tokensToSell?.[0]?.balanceRaw &&
+                  tradeType === 'sell'
+                ) {
+                  const res = await getTradeSigningData();
+                  const signature = await confirmDLNTransaction(
+                    res?.estimation?.srcChainTokenIn?.amount,
+                    res?.estimation?.srcChainTokenIn?.address,
+                    res?.tx,
+                  );
+                  if (signature) {
+                    console.log('txn hash', signature);
+                    navigation.navigate('PendingTxStatusPage', {
+                      state: currentItem,
+                    });
+                  }
+                } else if (bestSwappingBuyTrades !== null) {
+                  await getBestPrice();
+                }
+              }}>
               <LinearGradient
                 style={{
                   borderRadius: 17,
                   backgroundColor: 'transparent',
                   paddingVertical: 22,
                   paddingHorizontal: '10%',
-                  width:'90%',
-                  justifyContent:'center'
+                  width: '90%',
+                  justifyContent: 'center',
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
@@ -770,62 +877,14 @@ const TradePage = ({route, navigation}) => {
                     color: '#000',
                     textAlign: 'center',
                   }}>
-                  CONFIRM
+                  {!bestSwappingBuyTrades
+                    ? 'Calculating....'
+                    : bestSwappingBuyTrades.length === 0
+                    ? 'Try Again'
+                    : 'CONFIRM'}
                 </Text>
               </LinearGradient>
-            ) : (
-              <TouchableOpacity
-                onPress={async () => {
-                  console.log(
-                    bestSwappingBuyTrades,
-                    value <= usdcValue?.[1]?.estimated_balance,
-                  );
-                  if (value <= usdcValue?.[1]?.estimated_balance) {
-                    const res = await getTradeSigningData();
-                    const signature = await confirmDLNTransaction(
-                      res?.estimation?.srcChainTokenIn?.amount,
-                      res?.estimation?.srcChainTokenIn?.address,
-                      res?.tx,
-                    );
-                    if (signature) {
-                      console.log('txn hash', signature);
-                      navigation.navigate('PendingTxStatusPage', {
-                        state: currentItem,
-                      });
-                    }
-                  } else if (bestSwappingBuyTrades !== null) {
-                    await getBestPrice();
-                  }
-                }}>
-                <LinearGradient
-                  style={{
-                    borderRadius: 17,
-                    
-                    backgroundColor: 'transparent',
-                    paddingVertical: 22,
-                    paddingHorizontal: '30%',
-                  }}
-                  locations={[0, 1]}
-                  colors={['#fff', '#fff']}
-                  useAngle={true}
-                  angle={95.96}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      letterSpacing: 0.2,
-                      fontFamily: 'Unbounded-Bold',
-                      color: '#000',
-                      textAlign: 'center',
-                    }}>
-                    {!bestSwappingBuyTrades
-                      ? 'Calculating....'
-                      : bestSwappingBuyTrades.length === 0
-                      ? 'Try Again'
-                      : 'CONFIRM'}
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
+            </TouchableOpacity>
           </View>
         </>
       )}

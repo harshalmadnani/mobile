@@ -5,7 +5,10 @@ import {
   getTop100MarketAssetData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
-import {getBestCrossSwapRateBuy} from '../../utils/DLNTradeApi';
+import {
+  getBestCrossSwapRateBuy,
+  getDLNTradeCreateBuyOrder,
+} from '../../utils/DLNTradeApi';
 import {
   getSmartAccountAddress,
   getUserAddressFromAuthCoreSDK,
@@ -77,6 +80,19 @@ export const getBestDLNCrossSwapRateBuy = (
       value,
     );
     console.log('best rates.....reducer', bestRate);
+    dispatch(marketsAction.setBestSwappingRates(bestRate));
+  };
+};
+export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
+  return async (dispatch, getState) => {
+    const bestRate = await getDLNTradeCreateBuyOrder(
+      tokenInfo?.chainId,
+      tokenInfo?.address,
+      value,
+      137,
+      '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+    );
+    console.log('best rates.....reducer', JSON.stringify(bestRate));
     dispatch(marketsAction.setBestSwappingRates(bestRate));
   };
 };
