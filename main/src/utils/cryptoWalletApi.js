@@ -1,4 +1,8 @@
 import axios from 'axios';
+import {
+  getSmartAccountAddress,
+  getUserAddressFromAuthCoreSDK,
+} from './particleCoreSDK';
 
 const mobulaBaseURL = 'https://api.mobula.io/api/1/';
 const marketRoutes = {
@@ -24,14 +28,9 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
     const url = asset
       ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
       : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`;
-    console.log('wallet holding url......', address, url);
     const response = await axios.get(url, {
       headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
     });
-    console.log(
-      'response from wallet holding asset::::::::: getCryptoHoldingForAddress',
-      JSON.stringify(response.data),
-    );
     return response?.data;
   } catch (error) {
     console.log(
@@ -43,17 +42,17 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
   }
 };
 
-export const getWalletHistoricalData = async (address, from) => {
+export const getWalletHistoricalData = async from => {
   try {
-    console.log(
-      'crypto url....',
-      `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}&from=${from}`,
-    );
-
+    const eoaAddress = await getUserAddressFromAuthCoreSDK();
+    const smartAccount = await getSmartAccountAddress(eoaAddress);
     const response = await axios.get(
       from
-        ? `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}&from=${from}`
-        : `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${address}`,
+        ? `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${smartAccount}&from=${from}`
+        : `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${smartAccount}`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
     );
     return response?.data?.data;
   } catch (error) {

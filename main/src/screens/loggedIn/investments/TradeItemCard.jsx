@@ -1,4 +1,4 @@
-import React, {useState, Component, useEffect} from 'react';
+import React, {useState, Component, useEffect, memo} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -6,6 +6,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Pressable,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
@@ -14,12 +15,12 @@ import {useDispatch} from 'react-redux';
 
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
-const TradeItemCard = ({navigation, item}) => {
+const TradeItemCard = memo(({item}) => {
   const dispatch = useDispatch();
-
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity
-      onPress={e => {
+    <Pressable
+      onPress={() => {
         navigation.navigate('MarketInfo', {item: item});
       }}
       style={{
@@ -90,9 +91,9 @@ const TradeItemCard = ({navigation, item}) => {
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   heading: {

@@ -43,6 +43,7 @@ const TradePage = ({route}) => {
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
   const [value, setValue] = useState('2');
   const [convertedValue, setConvertedValue] = useState('token');
+  const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
   const state = route.params.state;
@@ -448,7 +449,7 @@ const TradePage = ({route}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-ExtraBold',
                   }}>
-                  ${usdcValue?.[1]?.estimated_balance?.toFixed(2)}{' '}
+                  ${usdcValue?.[0]?.estimated_balance?.toFixed(2)}{' '}
                 </Text>
                 <Text
                   style={{
@@ -753,25 +754,21 @@ const TradePage = ({route}) => {
               </View>
             </View>
           </ScrollView>
-          <View
-            style={{ marginTop: '10%',alignSelf:'center'}}>
+          <View style={{marginTop: '10%', alignSelf: 'center'}}>
             <TouchableOpacity
               onPress={async () => {
-                // console.log(
-                //   value * Math.pow(10, tokensToSell[0]?.decimals),
-                //   tokensToSell?.[0],
-                //   tradeType,
-                // );
                 if (
                   // value <= usdcValue?.[1]?.estimated_balance &&
                   tradeType === 'buy'
                 ) {
+                  setPreparingTx(true);
                   const res = await getTradeSigningData();
                   const signature = await confirmDLNTransaction(
                     res?.estimation?.srcChainTokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address,
                     res?.tx,
                   );
+                  setPreparingTx(false);
                   if (signature) {
                     console.log('txn hash', signature);
                     navigation.navigate('PendingTxStatus', {
@@ -783,6 +780,7 @@ const TradePage = ({route}) => {
                     tokensToSell?.[0]?.balanceRaw &&
                   tradeType === 'sell'
                 ) {
+                  setPreparingTx(true);
                   const res = await getTradeSigningData();
                   if (res?.estimation?.srcChainTokenIn?.chainId !== 137) {
                     console.log(
@@ -798,6 +796,7 @@ const TradePage = ({route}) => {
                     res?.estimation?.srcChainTokenIn?.address,
                     res?.tx,
                   );
+                  setPreparingTx(false);
                   if (signature) {
                     console.log('txn hash', signature);
                     navigation.navigate('PendingTxStatus', {
@@ -835,6 +834,8 @@ const TradePage = ({route}) => {
                     ? 'Calculating....'
                     : bestSwappingBuyTrades.length === 0
                     ? 'Try Again'
+                    : preparingTx
+                    ? 'CONFIRMING....'
                     : 'CONFIRM'}
                 </Text>
               </LinearGradient>

@@ -13,7 +13,6 @@ export const getMarketAssetData = async page => {
     const response = await axios.get(
       `${coingeckoBaseURL}${marketRoutes.getMarket}?vs_currency=usd&order=market_cap_desc&per_page=50&page=${page}&sparkline=false&locale=en`,
     );
-    console.log('response from market investment api:', response?.data?.length);
     return response?.data;
   } catch (error) {
     console.log('error from market investment api:', error);
@@ -26,8 +25,10 @@ export const getAssetMetadata = async assetName => {
   try {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getAsset}?asset=${assetName}`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
     );
-    console.log('response from asset api ======:', response?.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);
@@ -38,6 +39,9 @@ export const getHistoricalData = async (assetName, from) => {
   try {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getHistorical}?asset=${assetName}&from=${from}`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
     );
     return response?.data?.data;
   } catch (error) {
@@ -49,6 +53,9 @@ export const getMarketData = async assets => {
   try {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getMarketData}?assets=${assets}`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
     );
     return response?.data?.data;
   } catch (error) {
