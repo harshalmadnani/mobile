@@ -308,7 +308,7 @@ const MarketChart = props => {
               color: '#F0F0F0',
               fontSize: 24,
               fontFamily: `Unbounded-Bold`,
-              marginTop: '1%',
+              marginTop: '2%',
             }}>
             $ {currentAsset?.[0]?.estimated_balance?.toFixed(2) ?? 0.0}
           </Text>
@@ -331,7 +331,7 @@ const MarketChart = props => {
           width: '100%',
           borderRadius: 6,
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          marginTop: '30%',
+          marginTop: '3%',
         }}
         onPress={() => {
           if (holdings) {
@@ -362,7 +362,6 @@ const MarketChart = props => {
           </Text>
         </LinearGradient>
       </TouchableOpacity>
-      <View style={styles.longshortContainer}></View>
     </ScrollView>
   );
 };

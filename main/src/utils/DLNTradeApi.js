@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {ethers} from 'ethers';
-import usdAbi from '../screens/loggedIn/payments/USDC.json';
+import erc20 from '../screens/loggedIn/payments/USDC.json';
 import {
   getEthereumTransaction,
   getSmartAccountAddress,
@@ -25,7 +25,11 @@ export const getDLNTradeCreateBuyOrder = async (
     const response = await axios.get(
       `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
     );
-    console.log('response from DLN api:', dstChainId);
+    console.log(
+      'response from DLN api:',
+      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
+      dstChainId,
+    );
     return response?.data;
   } catch (error) {
     console.log(
@@ -168,7 +172,7 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
   console.log('smart contract address.......', smartAccount);
-  const usdcAbi = new ethers.utils.Interface(usdAbi);
+  const usdcAbi = new ethers.utils.Interface(erc20);
   const approveData = usdcAbi.encodeFunctionData('approve', [
     txData?.to,
     amount,

@@ -1,5 +1,5 @@
 import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {Polygon} from '@particle-network/chains';
+import {Polygon, BNBChain} from '@particle-network/chains';
 import * as particleAuth from '@particle-network/rn-auth';
 import {Env, ParticleInfo} from '@particle-network/rn-auth';
 import * as particleAuthCore from '@particle-network/rn-auth-core';
@@ -40,6 +40,21 @@ export const initializedAuthCore = () => {
   console.log('init auth core....');
   particleAA.init(particleAuth.AccountName.BICONOMY_V1(), {});
   console.log('init AA sdk.....');
+};
+const chainInfoOnId = chainId => {
+  switch (chainId) {
+    case 137:
+      return Polygon;
+    case 56:
+      return BNBChain;
+  }
+};
+
+export const switchAuthCoreChain = async chainId => {
+  const chainInfo = chainInfoOnId(chainId);
+  const result = await particleAuthCore.switchChain(chainInfo);
+  console.log(result);
+  return result;
 };
 export const getAuthCoreProvider = loginType => {
   const provider = new particleAuthCore.ParticleAuthCoreProvider({

@@ -19,14 +19,15 @@ import {
   getBestDLNCrossSwapRateBuy,
   getBestDLNCrossSwapRateSell,
 } from '../../../../store/actions/market';
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 import {
   confirmDLNTransaction,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
+import {switchAuthCoreChain} from '../../../../utils/particleCoreSDK';
 
-const TradePage = ({route, navigation}) => {
+const TradePage = ({route}) => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
   const openBottomSheet = () => {
@@ -36,11 +37,11 @@ const TradePage = ({route, navigation}) => {
   const closeBottomSheet = () => {
     setBottomSheetVisible(false);
   };
-
+  const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('8');
+  const [value, setValue] = useState('2');
   const [convertedValue, setConvertedValue] = useState('token');
   const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
@@ -73,9 +74,13 @@ const TradePage = ({route, navigation}) => {
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
       console.log(
-        'Swapping......',
+        'Swapping......TXDATA',
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.amount,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount,
       );
       const res = await getDLNTradeCreateBuyOrderTxn(
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
@@ -107,7 +112,7 @@ const TradePage = ({route, navigation}) => {
     }, []),
   );
   // Log when component mounts
-  console.log('state.......', JSON.stringify(bestSwappingBuyTrades));
+  console.log('state.......', JSON.stringify(holdings?.assets));
   return (
     <SafeAreaView
       style={{
@@ -814,13 +819,13 @@ const TradePage = ({route, navigation}) => {
             </View>
             <TouchableOpacity
               onPress={async () => {
-                console.log(
-                  value * Math.pow(10, tokensToSell[0]?.decimals),
-                  tokensToSell?.[0],
-                  tradeType,
-                );
+                // console.log(
+                //   value * Math.pow(10, tokensToSell[0]?.decimals),
+                //   tokensToSell?.[0],
+                //   tradeType,
+                // );
                 if (
-                  value <= usdcValue?.[1]?.estimated_balance &&
+                  // value <= usdcValue?.[1]?.estimated_balance &&
                   tradeType === 'buy'
                 ) {
                   const res = await getTradeSigningData();
@@ -831,8 +836,8 @@ const TradePage = ({route, navigation}) => {
                   );
                   if (signature) {
                     console.log('txn hash', signature);
-                    navigation.navigate('PendingTxStatusPage', {
-                      state: currentItem,
+                    navigation.navigate('PendingTxStatus', {
+                      state: res,
                     });
                   }
                 } else if (
@@ -841,6 +846,15 @@ const TradePage = ({route, navigation}) => {
                   tradeType === 'sell'
                 ) {
                   const res = await getTradeSigningData();
+                  if (res?.estimation?.srcChainTokenIn?.chainId !== 137) {
+                    console.log(
+                      'chain switching.......',
+                      res?.estimation?.srcChainTokenIn,
+                    );
+                    await switchAuthCoreChain(
+                      res?.estimation?.srcChainTokenIn?.chainId,
+                    );
+                  }
                   const signature = await confirmDLNTransaction(
                     res?.estimation?.srcChainTokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address,
@@ -848,11 +862,14 @@ const TradePage = ({route, navigation}) => {
                   );
                   if (signature) {
                     console.log('txn hash', signature);
-                    navigation.navigate('PendingTxStatusPage', {
-                      state: currentItem,
+                    navigation.navigate('PendingTxStatus', {
+                      state: res,
                     });
                   }
-                } else if (bestSwappingBuyTrades !== null) {
+                } else if (
+                  bestSwappingBuyTrades !== null &&
+                  bestSwappingBuyTrades.length === 0
+                ) {
                   await getBestPrice();
                 }
               }}>
