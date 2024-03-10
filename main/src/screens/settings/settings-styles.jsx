@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   nameSettings: {
     width: '90%',
     marginTop: '5%',
-    backgroundColor: '#101010',
+    backgroundColor:'transparent',
     padding: 20,
     justifyContent: 'space-between',
     borderRadius: 10,
