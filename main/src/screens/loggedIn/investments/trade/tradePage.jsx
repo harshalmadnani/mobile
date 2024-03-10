@@ -754,69 +754,7 @@ const TradePage = ({route}) => {
             </View>
           </ScrollView>
           <View
-            style={{flexDirection: 'row', marginTop: '10%', marginRight: '5%'}}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '20%',
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity
-                style={{
-                  padding: 10,
-                  borderRadius: 5,
-                  flexDirection: 'row',
-                }}
-                // onPress={openBottomSheet}
-              >
-                <Text
-                  style={{
-                    color: 'white',
-                    fontSize: 12,
-                    fontFamily: 'Unbounded-Medium',
-                  }}>
-                  MARKET
-                </Text>
-                <Icon
-                  name={'expand-more'}
-                  size={20}
-                  color={'#f0f0f0'}
-                  type="materialicons"
-                />
-              </TouchableOpacity>
-
-              <Modal
-                isVisible={isBottomSheetVisible}
-                onBackdropPress={closeBottomSheet}
-                style={{
-                  justifyContent: 'flex-end',
-                  margin: 0,
-                }}
-                animationIn="slideInUp"
-                animationOut="slideOutDown">
-                <View
-                  style={{
-                    backgroundColor: 'white',
-                    padding: 16,
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}>
-                  <Text>This is the content of the Bottom Sheet</Text>
-                  <TouchableOpacity
-                    onPress={closeBottomSheet}
-                    style={{
-                      marginTop: 16,
-                      padding: 10,
-                      backgroundColor: 'blue',
-                      borderRadius: 5,
-                    }}>
-                    <Text style={{color: 'white', fontSize: 16}}>Close</Text>
-                  </TouchableOpacity>
-                </View>
-              </Modal>
-            </View>
+            style={{ marginTop: '10%',alignSelf:'center'}}>
             <TouchableOpacity
               onPress={async () => {
                 // console.log(
@@ -878,8 +816,7 @@ const TradePage = ({route}) => {
                   borderRadius: 17,
                   backgroundColor: 'transparent',
                   paddingVertical: 22,
-                  paddingHorizontal: '10%',
-                  width: '90%',
+                  paddingHorizontal: '30%',
                   justifyContent: 'center',
                 }}
                 locations={[0, 1]}

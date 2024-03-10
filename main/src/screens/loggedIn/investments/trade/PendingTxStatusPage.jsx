@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Dimensions, SafeAreaView, TouchableOpacity} from 'react-native';
-import {Text, View} from 'react-native';
+import {Text, View,Image} from 'react-native';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import {Svg, Circle, Text as SvgText} from 'react-native-svg';
@@ -15,7 +15,8 @@ const PendingTxComponent = ({
   calculatePercentage,
 }) => {
   return (
-    <View>
+
+    <View style={{justifyContent: 'center'}}>
       <Svg height="300" width="300">
         <Circle
           cx="150"
@@ -101,8 +102,15 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
   const navigation = useNavigation();
   return (
     <View style={{width: '100%'}}>
-      <Svg height="295" width="295"></Svg>
-      <View style={{justifyContent: 'center'}}>
+      <View style={{justifyContent: 'flex-start'}}>
+        <View style={{justifyContent:'center',alignSelf:'center',marginTop:'20%'}}>
+      <Image
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710094353/ucvuadhlnkmbfn44aroo.png' }}
+        style={{ width: 200,
+        height: 200,}}
+           // Replace with the URL of your image
+      />
+      </View>
         <Text
           style={{
             fontFamily: 'Unbounded-Bold',
@@ -125,7 +133,7 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
           {txQuoteInfo?.estimation.dstChainTokenOut.name}
         </Text>
       </View>
-      <View style={{marginTop: 24}}>
+      <View style={{marginTop: '15%'}}>
         <View
           style={{
             // flex: 1,
@@ -213,7 +221,7 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
                 alignSelf: 'flex-start',
                 color: '#fff',
               }}>
-              Transaction will take:
+              Transaction took:
             </Text>
             <Text
               style={{
@@ -245,11 +253,12 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
           height: 50,
           marginTop: 24,
           backgroundColor: 'white',
-          width: '98%',
+          width: '90%',
           borderRadius: 16,
           justifyContent: 'center',
           alignItems: 'center',
           alignSelf: 'center',
+          marginTop:'20%'
         }}
         onPress={() => navigation.navigate('Portfolio')}>
         <Text
@@ -260,7 +269,7 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
             color: '#000',
             textAlign: 'center',
           }}>
-          CONFIRM
+ GO BACK
         </Text>
       </TouchableOpacity>
     </View>

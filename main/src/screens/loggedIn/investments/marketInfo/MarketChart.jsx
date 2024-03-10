@@ -166,6 +166,7 @@ const MarketChart = props => {
   console.log('asset value', JSON.stringify(holdings));
   const {width, height} = Dimensions.get('window');
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView contentContainerStyle={{minHeight: height, minWidth: width}}>
       <View
         style={{
@@ -324,45 +325,50 @@ const MarketChart = props => {
           </Text>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          height: 52,
-          width: '100%',
-          borderRadius: 6,
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          marginTop: '3%',
-        }}
-        onPress={() => {
-          if (holdings) {
-            navigation.navigate('TradePage', {
-              state: currentItem,
-              asset: currentAsset,
-            });
-          }
-        }}>
-        <LinearGradient
-          useAngle={true}
-          angle={150}
-          colors={['#fff', '#fff']}
-          style={{
-            width: '100%',
-            borderRadius: 100,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              color: '#000',
-              fontSize: 14,
-              fontFamily: 'Unbounded-ExtraBold',
-            }}>
-            TRADE {currentItem.symbol.toUpperCase()}
-          </Text>
-        </LinearGradient>
-      </TouchableOpacity>
     </ScrollView>
+          <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            height: 52,
+            width: '100%',
+            borderRadius: 6,
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            marginTop: '30%',
+            position: 'absolute',
+            bottom: 60, // Adjust the bottom spacing as needed
+            left: 0,
+            right: 0,
+          }}
+          onPress={() => {
+            if (holdings) {
+              navigation.navigate('TradePage', {
+                state: currentItem,
+                asset: currentAsset,
+              });
+            }
+          }}>
+          <LinearGradient
+            useAngle={true}
+            angle={150}
+            colors={['#fff', '#fff']}
+            style={{
+              width: '100%',
+              borderRadius: 100,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Text
+              style={{
+                color: '#000',
+                fontSize: 14,
+                fontFamily: 'Unbounded-ExtraBold',
+              }}>
+              TRADE {currentItem.symbol.toUpperCase()}
+            </Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        </View>
   );
 };
 
