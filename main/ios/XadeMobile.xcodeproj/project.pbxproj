@@ -68,7 +68,7 @@
 		00E356EE1AD99517003FC87E /* XadeMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XadeMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* XadeMobileTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XadeMobileTests.m; sourceTree = "<group>"; };
-		08DFB6C64E074CB294F5CB81 /* Satoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Bold.otf"; path = "../assets/fonts/Satoshi-Bold.otf"; sourceTree = "<group>"; };
+		08DFB6C64E074CB294F5CB81 /* Satoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Bold.otf"; path = "../assets/fonts/Satoshi-Bold.otf"; sourceTree = "<group>"; };
 		0F29E1AB951D4AC4BFACFF79 /* VelaSans-SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "VelaSans-SemiBold.otf"; path = "../assets/fonts/VelaSans-SemiBold.otf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* XadeMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XadeMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = XadeMobile/AppDelegate.h; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		5709B34CF0A7D63546082F79 /* Pods-XadeMobile.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XadeMobile.release.xcconfig"; path = "Target Support Files/Pods-XadeMobile/Pods-XadeMobile.release.xcconfig"; sourceTree = "<group>"; };
 		577B344C2AE84ED993161D2B /* VelaSans-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "VelaSans-Bold.otf"; path = "../assets/fonts/VelaSans-Bold.otf"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-XadeMobile-XadeMobileTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XadeMobile-XadeMobileTests.debug.xcconfig"; path = "Target Support Files/Pods-XadeMobile-XadeMobileTests/Pods-XadeMobile-XadeMobileTests.debug.xcconfig"; sourceTree = "<group>"; };
-		672192825C334C988FB82B95 /* Satoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Regular.otf"; path = "../assets/fonts/Satoshi-Regular.otf"; sourceTree = "<group>"; };
+		672192825C334C988FB82B95 /* Satoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Regular.otf"; path = "../assets/fonts/Satoshi-Regular.otf"; sourceTree = "<group>"; };
 		7DDD8CA4C4F04E72A9337D7F /* VelaSans-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "VelaSans-Medium.otf"; path = "../assets/fonts/VelaSans-Medium.otf"; sourceTree = "<group>"; };
 		886A90F9CB6993848EDF0BB4 /* Pods_XadeMobile_XadeMobileTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XadeMobile_XadeMobileTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-XadeMobile-XadeMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XadeMobile-XadeMobileTests.release.xcconfig"; path = "Target Support Files/Pods-XadeMobile-XadeMobileTests/Pods-XadeMobile-XadeMobileTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -585,7 +585,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 5F22SCR6J9;
+				DEVELOPMENT_TEAM = 9L72L5QRVX;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -619,7 +619,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = 5F22SCR6J9;
+				DEVELOPMENT_TEAM = 9L72L5QRVX;
 				INFOPLIST_FILE = XadeMobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -650,7 +650,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = XadeMobile/XadeMobile.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 85KPK5A6SK;
+				DEVELOPMENT_TEAM = 9L72L5QRVX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = XadeMobile/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Xade Finance";
@@ -686,7 +686,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = XadeMobile/XadeMobile.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 85KPK5A6SK;
+				DEVELOPMENT_TEAM = 9L72L5QRVX;
 				INFOPLIST_FILE = XadeMobile/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Xade Finance";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
