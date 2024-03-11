@@ -11,7 +11,7 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 
 const MyInvestmentItemCard = ({navigation, item}) => {
-  console.log('Image', item.price_change_percentage_24h);
+  console.log('Image', item.unrealized_pnl);
 
   return (
     <TouchableOpacity
@@ -75,18 +75,17 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             </Text>
           </View>
           <View>
-            {item.price_change_percentage_24h >= 0 && (
+            {item.unrealized_pnl >= 0 && (
               <Text style={styles.text3}>
-                +{' '}
-                {item.price_change_percentage_24h /
-                  (item.current_price - item.price_change_percentage_24h)}{' '}
-                %
+                +
+                {((item.unrealized_pnl+item.realized_pnl)/item.price_bought).toFixed(2)}%
+           
               </Text>
             )}
-            {item.price_change_percentage_24h < 0 && (
+            {item.unrealized_pnl < 0 && (
               <Text style={styles.text4}>
-                {' '}
-                {item.price_change_percentage_24h.toFixed(2)} %
+              
+                {((item.unrealized_pnl+item.realized_pnl)/item.price_bought).toFixed(2)}%
               </Text>
             )}
           </View>
@@ -117,13 +116,11 @@ const styles = StyleSheet.create({
   },
   text3: {
     fontSize: 14,
-    fontWeight: '500',
     fontFamily: 'Unbounded-Medium',
     color: '#ADFF6C',
   },
   text4: {
     fontSize: 14,
-    fontWeight: '500',
     fontFamily: 'Unbounded-Medium',
     color: '#ff6c6c',
   },

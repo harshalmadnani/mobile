@@ -22,7 +22,7 @@ import {
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
 import {getMarketData} from '../../../utils/cryptoMarketsApi';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const ComingSoonView = () => (
   <View
     style={{
@@ -89,30 +89,26 @@ const Investments = ({navigation}) => {
     {
       id: '1',
       text: 'Top 100',
-      imageUrl:
-        'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/il3ax7galndf11jfrfg9.png',
+      iconName: 'bar-chart', // Example icon, replace with actual icons you want
     },
     {
       id: '2',
       text: 'Trending',
-      imageUrl:
-        'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/bhhjkci2g9jlqzndoo8c.png',
+      iconName: 'trending-up', // Example icon
     },
     {
       id: '3',
       text: 'Gainers',
-      imageUrl:
-        'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/dfta8732xnsjxhacnls9.png',
+      iconName: 'arrow-upward', // Example icon
     },
     {
       id: '4',
       text: 'More',
-      imageUrl:
-        'https://res.cloudinary.com/xade-finance/image/upload/v1710016581/c239jsmth02drolahkpa.png',
+      iconName: 'more-horiz', // Example icon
     },
   ];
 
-  const [selectedButton, setSelectedButton] = useState(null);
+  const [selectedButton, setSelectedButton] = useState("1");
 
   const handleButtonPress = buttonId => {
     switch (buttonId) {
@@ -258,39 +254,41 @@ const Investments = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{paddingVertical: 10, marginLeft: 10}}>
-          {buttons.map(button => (
-            <TouchableOpacity
-              key={button.id}
-              onPress={() => handleButtonPress(button.id)}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: '#000',
-                borderRadius: 100,
-                borderWidth: 1,
-                borderColor: selectedButton === button.id ? '#fff' : null,
-                marginRight: 10,
-                paddingHorizontal: 10,
-                height: 34,
-              }}>
-              <Image
-                source={{uri: button.imageUrl}}
-                style={{width: 24, height: 24, marginRight: 5}}
-              />
-              <Text
-                style={{
-                  color: selectedButton === button.id ? '#fff' : '#999',
-                  fontSize: 14,
-                  fontFamily: 'Montreal-Bold',
-                }}>
-                {button.text}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={{paddingVertical: 10, marginLeft: 10}}>
+      {buttons.map((button) => (
+        <TouchableOpacity
+          key={button.id}
+          onPress={() => handleButtonPress(button.id)}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: '#222',
+            borderRadius: 100,
+            borderWidth: 1,
+            borderColor: selectedButton === button.id ? '#fff' : null,
+            marginRight: 10,
+            paddingHorizontal: 10,
+            height: 34,
+          }}>
+          <Icon
+            name={button.iconName}
+            size={24}
+            color={selectedButton === button.id ? '#fff' : '#999'}
+            style={{marginRight: 5}}
+          />
+          <Text
+            style={{
+              color: selectedButton === button.id ? '#fff' : '#999',
+              fontSize: 14,
+              fontFamily: 'Montserrat-Bold', // Check the font family name
+            }}>
+            {button.text}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
       </View>
 
       {isLoading && (
