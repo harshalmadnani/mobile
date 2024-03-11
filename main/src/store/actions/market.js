@@ -1,5 +1,6 @@
 import {
   getAssetMetadata,
+  getForexListData,
   getHistoricalData,
   getMarketAssetData,
   getTop100MarketAssetData,
@@ -19,7 +20,13 @@ export const getListOfCryptoFromCoinGeckoApi = page => {
   return async (dispatch, getState) => {
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData(page);
-    dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
+    console.log(data, page);
+    if (page !== 1) {
+      dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
+    } else {
+      console.log(data);
+      dispatch(marketsAction.setListOfCrypto([]));
+    }
   };
 };
 // First create an api call to get the desired data in actions/market.js
@@ -33,6 +40,19 @@ export const getListFilteredFromCoinGeckoApi = type => {
       const data = await getTop100MarketAssetData();
       dispatch(marketsAction.setListOfCrypto(data));
     }
+  };
+};
+export const getListOfForexFromMobulaApi = type => {
+  return async (dispatch, getState) => {
+    const data = await getForexListData();
+
+    const forexList = [];
+    Object.keys(data).forEach(function (key, index) {
+      console.log('index', index);
+      forexList.push(data[key]);
+    });
+    console.log('key object', forexList.length, forexList);
+    dispatch(marketsAction.setListOfCrypto(forexList));
   };
 };
 export const setAssetMetadata = assetName => {

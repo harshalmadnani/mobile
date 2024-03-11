@@ -63,3 +63,18 @@ export const getMarketData = async assets => {
     return [];
   }
 };
+export const getForexListData = async assets => {
+  try {
+    const response = await axios.get(
+      `${mobulaBaseURL}/market/multi-data?assets=0xdc3326e71d45186f113a2f448984ca0e8d201995,0xcdb3867935247049e87c38ea270edd305d84c9ae,0xe6a537a407488807f0bbeb0038b79004f19dddfb`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
+    );
+    console.log('forex data....', response.data);
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};

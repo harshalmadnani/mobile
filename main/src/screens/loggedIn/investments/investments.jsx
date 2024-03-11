@@ -19,10 +19,11 @@ import {
   getListFilteredFromCoinGeckoApi,
   getListOfCryptoFromCoinGeckoApi,
   getListOfCryptoFromMobulaApi,
+  getListOfForexFromMobulaApi,
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
-import {getMarketData} from '../../../utils/cryptoMarketsApi';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
+
 const ComingSoonView = () => (
   <View
     style={{
@@ -64,6 +65,8 @@ const Investments = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);
+      setSection('crypto');
+      setSection('crypto');
       dispatch(getListOfCryptoFromCoinGeckoApi(page));
       setPage(2);
       setIsLoading(false);
@@ -74,12 +77,9 @@ const Investments = ({navigation}) => {
       };
     }, []),
   );
-  //
-  const onPressFilters = type => {
-    dispatch(getListFilteredFromCoinGeckoApi(type));
-  };
+
   const onEndReachedFetch = async () => {
-    if (page <= 3) {
+    if (page <= 3 && section === 'crypto') {
       dispatch(getListOfCryptoFromCoinGeckoApi(page));
       setPage(page + 1);
     }
@@ -108,7 +108,7 @@ const Investments = ({navigation}) => {
     },
   ];
 
-  const [selectedButton, setSelectedButton] = useState("1");
+  const [selectedButton, setSelectedButton] = useState('1');
 
   const handleButtonPress = buttonId => {
     switch (buttonId) {
@@ -185,7 +185,11 @@ const Investments = ({navigation}) => {
               paddingHorizontal: 16,
               marginBottom: section === 'crypto' ? -2 : 0,
             }}
-            onPress={() => setSection('crypto')}>
+            onPress={() => {
+              setSection('crypto');
+              setPage(1);
+              dispatch(getListOfCryptoFromCoinGeckoApi(page));
+            }}>
             <Text
               style={{
                 fontFamily: `Montreal-Medium`,
@@ -194,6 +198,28 @@ const Investments = ({navigation}) => {
                 fontWeight: '500',
               }}>
               CRYPTO
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              borderBottomWidth: section === 'forex' ? 2 : 0,
+              borderBottomColor: section === 'forex' ? '#ffffff' : '#1C1C1C',
+              paddingBottom: 16,
+              paddingHorizontal: 16,
+              marginBottom: section === 'forex' ? -2 : 0,
+            }}
+            onPress={() => {
+              setSection('forex');
+              dispatch(getListOfForexFromMobulaApi());
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Montreal-Medium',
+                fontSize: 12,
+                color: section === 'forex' ? '#ffffff' : '#717171',
+                fontWeight: '500',
+              }}>
+              FOREX
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -233,62 +259,41 @@ const Investments = ({navigation}) => {
               COMMODITIES
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              borderBottomWidth: section === 'forex' ? 2 : 0,
-              borderBottomColor: section === 'forex' ? '#ffffff' : '#1C1C1C',
-              paddingBottom: 16,
-              paddingHorizontal: 16,
-              marginBottom: section === 'forex' ? -2 : 0,
-            }}
-            onPress={() => setSection('forex')}>
-            <Text
-              style={{
-                fontFamily: 'Montreal-Medium',
-                fontSize: 12,
-                color: section === 'forex' ? '#ffffff' : '#717171',
-                fontWeight: '500',
-              }}>
-              FOREX
-            </Text>
-          </TouchableOpacity>
         </View>
-        <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={{paddingVertical: 10, marginLeft: 10}}>
-      {buttons.map((button) => (
-        <TouchableOpacity
-          key={button.id}
-          onPress={() => handleButtonPress(button.id)}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#222',
-            borderRadius: 100,
-            borderWidth: 1,
-            borderColor: selectedButton === button.id ? '#fff' : null,
-            marginRight: 10,
-            paddingHorizontal: 10,
-            height: 34,
-          }}>
-          <Icon
-            name={button.iconName}
-            size={24}
-            color={selectedButton === button.id ? '#fff' : '#999'}
-            style={{marginRight: 5}}
-          />
-          <Text
-            style={{
-              color: selectedButton === button.id ? '#fff' : '#999',
-              fontSize: 14,
-              fontFamily: 'Montserrat-Bold', // Check the font family name
-            }}>
-            {button.text}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+        {/* <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{paddingVertical: 10, marginLeft: 10}}>
+          {buttons.map(button => (
+            <TouchableOpacity
+              key={button.id}
+              onPress={() => handleButtonPress(button.id)}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: '#000',
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: selectedButton === button.id ? '#fff' : null,
+                marginRight: 10,
+                paddingHorizontal: 10,
+                height: 34,
+              }}>
+              <Image
+                source={{uri: button.imageUrl}}
+                style={{width: 24, height: 24, marginRight: 5}}
+              />
+              <Text
+                style={{
+                  color: selectedButton === button.id ? '#fff' : '#999',
+                  fontSize: 14,
+                  fontFamily: 'Montreal-Bold',
+                }}>
+                {button.text}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView> */}
       </View>
 
       {isLoading && (
@@ -320,7 +325,26 @@ const Investments = ({navigation}) => {
           )}
         </View>
       )}
-      {!isLoading && section === 'stocks' && (
+      {!isLoading && section === 'forex' && (
+        <View
+          scrollEnabled
+          style={{
+            marginTop: '1%',
+          }}>
+          {cryptoData && (
+            <FlatList
+              data={cryptoData}
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
+                <TradeItemCard navigation={navigation} item={item} />
+              )}
+              onEndReached={async () => await onEndReachedFetch()}
+              keyExtractor={(item, i) => i.toString()}
+            />
+          )}
+        </View>
+      )}
+      {/* {!isLoading && section === 'stocks' && (
         <View
           scrollEnabled
           style={{
@@ -340,7 +364,7 @@ const Investments = ({navigation}) => {
             />
           )}
         </View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

@@ -18,6 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 const TradeItemCard = memo(({item}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  console.log('item.......', item.price_change_24h);
   return (
     <Pressable
       onPress={() => {
@@ -47,7 +48,7 @@ const TradeItemCard = memo(({item}) => {
             <FastImage
               style={{width: 42, height: 42}}
               source={{
-                uri: `${item.image}`,
+                uri: `${item.image || item.logo}`,
               }}
             />
           </View>
@@ -69,23 +70,32 @@ const TradeItemCard = memo(({item}) => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'flex-end',
-            // backgroundColor: 'red'
           }}>
           <View>
             <Text style={styles.text1}>
-              ${item.current_price?.toLocaleString()}
+              $
+              {item.current_price?.toLocaleString() ||
+                item.price?.toLocaleString()}
             </Text>
           </View>
           <View>
-            {item.price_change_24h >= 0 && (
+            {(item.price_change_24h >= 0 ||
+              item.price_change_percentage_24h >= 0) && (
               <Text style={styles.text3}>
-                + {item.price_change_percentage_24h?.toFixed(2)} %
+                +{' '}
+                {item.price_change_percentage_24h?.toFixed(2) ||
+                  item?.price_change_24h?.toFixed(2) ||
+                  0.0}{' '}
+                %
               </Text>
             )}
-            {item.price_change_percentage_24h < 0 && (
+            {(item.price_change_24h < 0 ||
+              item.price_change_percentage_24h < 0) && (
               <Text style={styles.text4}>
-                {' '}
-                {item.price_change_percentage_24h.toFixed(2)} %
+                {item.price_change_percentage_24h?.toFixed(2) ||
+                  item?.price_change_24h?.toFixed(2) ||
+                  0.0}{' '}
+                %
               </Text>
             )}
           </View>
