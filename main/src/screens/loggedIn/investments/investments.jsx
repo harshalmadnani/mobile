@@ -315,7 +315,10 @@ const Investments = ({navigation}) => {
 
       {section === 'crypto' ? (
         <Pressable
-          onPress={() => navigation.navigate('MarketSearch')}
+          onPress={() => {
+            console.log(cryptoData.length);
+            navigation.navigate('MarketSearch', {cryptoData});
+          }}
           style={{
             height: 54,
             width: '90%',

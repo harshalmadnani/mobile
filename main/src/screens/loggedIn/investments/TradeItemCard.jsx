@@ -15,7 +15,7 @@ import {useDispatch} from 'react-redux';
 
 import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
-const TradeItemCard = memo(({item}) => {
+const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   console.log('item.......', item.price_change_24h);
@@ -63,43 +63,45 @@ const TradeItemCard = memo(({item}) => {
           </View>
         </View>
 
-        <View
-          style={{
-            paddingHorizontal: 10,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'flex-end',
-          }}>
-          <View>
-            <Text style={styles.text1}>
-              $
-              {item.current_price?.toLocaleString() ||
-                item.price?.toLocaleString()}
-            </Text>
-          </View>
-          <View>
-            {(item.price_change_24h >= 0 ||
-              item.price_change_percentage_24h >= 0) && (
-              <Text style={styles.text3}>
-                +{' '}
-                {item.price_change_percentage_24h?.toFixed(2) ||
-                  item?.price_change_24h?.toFixed(2) ||
-                  0.0}{' '}
-                %
+        {!onlyMeta && (
+          <View
+            style={{
+              paddingHorizontal: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'flex-end',
+            }}>
+            <View>
+              <Text style={styles.text1}>
+                $
+                {item.current_price?.toLocaleString() ||
+                  item.price?.toLocaleString()}
               </Text>
-            )}
-            {(item.price_change_24h < 0 ||
-              item.price_change_percentage_24h < 0) && (
-              <Text style={styles.text4}>
-                {item.price_change_percentage_24h?.toFixed(2) ||
-                  item?.price_change_24h?.toFixed(2) ||
-                  0.0}{' '}
-                %
-              </Text>
-            )}
+            </View>
+            <View>
+              {(item.price_change_24h >= 0 ||
+                item.price_change_percentage_24h >= 0) && (
+                <Text style={styles.text3}>
+                  +{' '}
+                  {item.price_change_percentage_24h?.toFixed(2) ||
+                    item?.price_change_24h?.toFixed(2) ||
+                    0.0}{' '}
+                  %
+                </Text>
+              )}
+              {(item.price_change_24h < 0 ||
+                item.price_change_percentage_24h < 0) && (
+                <Text style={styles.text4}>
+                  {item.price_change_percentage_24h?.toFixed(2) ||
+                    item?.price_change_24h?.toFixed(2) ||
+                    0.0}{' '}
+                  %
+                </Text>
+              )}
+            </View>
           </View>
-        </View>
+        )}
       </View>
     </Pressable>
   );

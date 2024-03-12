@@ -14,9 +14,12 @@ import {
 import {searchCryptoByName} from '../../../utils/cryptoMarketsApi';
 import {useDispatch, useSelector} from 'react-redux';
 
-const MarketSearchScreen = ({navigation}) => {
+const MarketSearchScreen = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {width, height} = Dimensions.get('window');
+  const [searchTerm, setSearchTerm] = useState('');
+  const {cryptoData} = route.params;
+  console.log('Trending.........', cryptoData.length);
   const [textInputStyleObj, setTextInputStyleObj] = useState({
     placeholderTextColor: 'white',
     textColor: 'white',
@@ -43,8 +46,12 @@ const MarketSearchScreen = ({navigation}) => {
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>Search</Text>
           </View>
-          <Text style={styles.secondaryHeaderTitle}>Recent Searches</Text>
-          {searchResult && (
+          <Text style={styles.secondaryHeaderTitle}>
+            {searchTerm.length === 0 && searchResult.length === 0
+              ? 'Trending'
+              : 'Recent Searches'}
+          </Text>
+          {searchResult.length > 0 && (
             <FlatList
               data={searchResult}
               style={{
@@ -57,6 +64,25 @@ const MarketSearchScreen = ({navigation}) => {
               keyExtractor={(item, i) => i.toString()}
             />
           )}
+          {searchTerm.length === 0 &&
+            searchResult.length === 0 &&
+            cryptoData.length > 0 && (
+              <FlatList
+                data={cryptoData}
+                style={{
+                  marginBottom: 64,
+                  width: '100%',
+                }}
+                renderItem={({item}) => (
+                  <TradeItemCard
+                    onlyMeta={true}
+                    navigation={navigation}
+                    item={item}
+                  />
+                )}
+                keyExtractor={(item, i) => i.toString()}
+              />
+            )}
         </View>
         <View />
         <View
@@ -69,7 +95,7 @@ const MarketSearchScreen = ({navigation}) => {
             borderRadius: 32,
             flexDirection: 'row',
             paddingHorizontal: 16,
-            marginBottom: 64,
+            marginBottom: 32,
           }}>
           <AntDesign
             name="search1"
@@ -86,7 +112,9 @@ const MarketSearchScreen = ({navigation}) => {
               color: textInputStyleObj.textColor,
               marginLeft: 16,
             }}
+            value={searchTerm}
             onChangeText={async text => {
+              setSearchTerm(text);
               const result = await searchCryptoByName(text);
               console.log('text.......', result.length, text);
               setSearchResult(result);

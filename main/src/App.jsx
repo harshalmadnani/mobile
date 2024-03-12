@@ -264,11 +264,11 @@ function Investment({navigation}) {
     </View>
   );
 }
-function MarketSearch({navigation}) {
+function MarketSearch({navigation, route}) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.container}>
-        <MarketSearchScreen navigation={navigation} />
+        <MarketSearchScreen route={route} navigation={navigation} />
         {/* <BottomNavbar navigation={navigation} selected="Investments" /> */}
       </SafeAreaView>
     </View>
