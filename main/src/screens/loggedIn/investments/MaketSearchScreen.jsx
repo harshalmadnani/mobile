@@ -40,7 +40,11 @@ const MarketSearchScreen = ({navigation}) => {
           {searchResult && (
             <FlatList
               data={searchResult}
-              style={{marginBottom: 64}}
+              style={{
+                marginBottom: 64,
+                left: 0,
+                right: 0,
+              }}
               renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
