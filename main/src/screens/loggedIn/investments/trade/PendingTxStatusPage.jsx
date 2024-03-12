@@ -234,13 +234,21 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                 color: '#fff',
               }}>
               $
-              {txQuoteInfo?.estimation?.costsDetails.filter(
-                x => x.type === 'DlnProtocolFee',
-              )[0]?.payload?.feeAmount /
-                Math.pow(
-                  10,
-                  txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                )}
+              {tradeType === 'sell'
+                ? txQuoteInfo?.estimation?.costsDetails.filter(
+                    x => x.type === 'DlnProtocolFee',
+                  )[0]?.payload?.feeAmount /
+                  Math.pow(
+                    10,
+                    txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                  )
+                : txQuoteInfo?.estimation?.costsDetails.filter(
+                    x => x.type === 'DlnProtocolFee',
+                  )[0]?.payload?.feeAmount /
+                  Math.pow(
+                    10,
+                    txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                  )}
             </Text>
           </View>
 

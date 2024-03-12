@@ -41,7 +41,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('100');
+  const [value, setValue] = useState('10');
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -64,6 +64,8 @@ const TradePage = ({route}) => {
           value * Math.pow(10, tokensToSell[0]?.decimals),
         ),
       );
+    } else {
+      getBestPrice();
     }
   }, [tradeType]);
 
@@ -588,9 +590,8 @@ const TradePage = ({route}) => {
                     fontFamily: 'Unbounded-Bold',
                   }}>
                   {(
-                    (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                      ?.amount *
-                      value) /
+                    bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                      ?.amount /
                     Math.pow(
                       10,
                       bestSwappingBuyTrades?.estimation?.dstChainTokenOut
@@ -627,7 +628,15 @@ const TradePage = ({route}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
-                  $55,000{' '}
+                  {(
+                    bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                      ?.amount /
+                    Math.pow(
+                      10,
+                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                        ?.decimals,
+                    )
+                  ).toFixed(5) || '...'}{' '}
                 </Text>
                 {/* image to allow btc input */}
                 {/* <Image source={ImageAssets.arrowImg} /> */}
@@ -740,14 +749,23 @@ const TradePage = ({route}) => {
                       color: '#fff',
                     }}>
                     $
-                    {bestSwappingBuyTrades?.estimation?.costsDetails.filter(
-                      x => x.type === 'DlnProtocolFee',
-                    )[0]?.payload?.feeAmount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.decimals,
-                      )}
+                    {tradeType === 'sell'
+                      ? bestSwappingBuyTrades?.estimation?.costsDetails.filter(
+                          x => x.type === 'DlnProtocolFee',
+                        )[0]?.payload?.feeAmount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.decimals,
+                        )
+                      : bestSwappingBuyTrades?.estimation?.costsDetails.filter(
+                          x => x.type === 'DlnProtocolFee',
+                        )[0]?.payload?.feeAmount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )}
                   </Text>
                 </View>
 
