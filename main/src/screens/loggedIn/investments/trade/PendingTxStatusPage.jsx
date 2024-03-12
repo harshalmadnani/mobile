@@ -1,7 +1,7 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Dimensions, SafeAreaView, TouchableOpacity} from 'react-native';
-import {Text, View,Image} from 'react-native';
+import {Text, View, Image} from 'react-native';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import {Svg, Circle, Text as SvgText} from 'react-native-svg';
@@ -15,7 +15,6 @@ const PendingTxComponent = ({
   calculatePercentage,
 }) => {
   return (
-
     <View style={{justifyContent: 'center'}}>
       <Svg height="300" width="300">
         <Circle
@@ -98,19 +97,25 @@ const PendingTxComponent = ({
     </View>
   );
 };
-const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
+const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
   const navigation = useNavigation();
   return (
     <View style={{width: '100%'}}>
       <View style={{justifyContent: 'flex-start'}}>
-        <View style={{justifyContent:'center',alignSelf:'center',marginTop:'20%'}}>
-      <Image
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710094353/ucvuadhlnkmbfn44aroo.png' }}
-        style={{ width: 200,
-        height: 200,}}
-           // Replace with the URL of your image
-      />
-      </View>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignSelf: 'center',
+            marginTop: '20%',
+          }}>
+          <Image
+            source={{
+              uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710094353/ucvuadhlnkmbfn44aroo.png',
+            }}
+            style={{width: 200, height: 200}}
+            // Replace with the URL of your image
+          />
+        </View>
         <Text
           style={{
             fontFamily: 'Unbounded-Bold',
@@ -176,7 +181,32 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
                 alignSelf: 'flex-end',
                 color: '#fff',
               }}>
-              ${tokenInfo?.current_price}
+              $
+              {tradeType === 'sell'
+                ? (
+                    txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                    Math.pow(
+                      10,
+                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                    ) /
+                    (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                      ))
+                  ).toFixed(6)
+                : (
+                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                    Math.pow(
+                      10,
+                      txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                    ) /
+                    (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                      ))
+                  ).toFixed(6)}
             </Text>
           </View>
 
@@ -203,7 +233,14 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
                 alignSelf: 'flex-end',
                 color: '#fff',
               }}>
-              $0.01
+              $
+              {txQuoteInfo?.estimation?.costsDetails.filter(
+                x => x.type === 'DlnProtocolFee',
+              )[0]?.payload?.feeAmount /
+                Math.pow(
+                  10,
+                  txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                )}
             </Text>
           </View>
 
@@ -258,7 +295,7 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
           justifyContent: 'center',
           alignItems: 'center',
           alignSelf: 'center',
-          marginTop:'20%'
+          marginTop: '20%',
         }}
         onPress={() => navigation.navigate('Portfolio')}>
         <Text
@@ -269,14 +306,14 @@ const SuccessTxComponent = ({txQuoteInfo, tokenInfo, normalAmount}) => {
             color: '#000',
             textAlign: 'center',
           }}>
- GO BACK
+          GO BACK
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
 const PendingTxStatusPage = ({route, navigation}) => {
-  const {state, tokenInfo, signature} = route.params;
+  const {state, tradeType, signature} = route.params;
   const txQuoteInfo = state;
 
   const [countdown, setCountdown] = useState(
@@ -317,7 +354,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
     .div(10 ** txQuoteInfo?.estimation.dstChainTokenOut.decimals)
     .toNumber();
   // {
-  console.log(tokenInfo);
+  console.log(tradeType);
   // }
   return (
     <SafeAreaView
@@ -334,7 +371,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
         <SuccessTxComponent
           txQuoteInfo={txQuoteInfo}
           normalAmount={normalAmount}
-          tokenInfo={tokenInfo}
+          tradeType={tradeType}
         />
       ) : (
         <PendingTxComponent

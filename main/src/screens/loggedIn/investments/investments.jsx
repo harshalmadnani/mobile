@@ -66,7 +66,6 @@ const Investments = ({navigation}) => {
     useCallback(() => {
       setIsLoading(true);
       setSection('crypto');
-      setSection('crypto');
       dispatch(getListOfCryptoFromCoinGeckoApi(page));
       setPage(2);
       setIsLoading(false);
@@ -79,7 +78,7 @@ const Investments = ({navigation}) => {
   );
 
   const onEndReachedFetch = async () => {
-    if (page <= 3 && section === 'crypto') {
+    if (page <= 3 && section === 'crypto' && cryptoData.length > 0) {
       dispatch(getListOfCryptoFromCoinGeckoApi(page));
       setPage(page + 1);
     }
@@ -129,6 +128,7 @@ const Investments = ({navigation}) => {
     }
     setSelectedButton(buttonId);
   };
+  console.log('dataaaa...', cryptoData);
   return (
     <SafeAreaView
       style={{

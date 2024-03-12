@@ -41,7 +41,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('2');
+  const [value, setValue] = useState('100');
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -57,11 +57,6 @@ const TradePage = ({route}) => {
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const tokensToSell = tradeAsset[0]?.contracts_balances;
   useEffect(() => {
-    console.log(
-      'Trade type:',
-      JSON.stringify(tradeAsset[0]?.cross_chain_balances),
-      tradeType,
-    );
     if (tradeType === 'sell') {
       dispatch(
         getBestDLNCrossSwapRateSell(
@@ -113,7 +108,13 @@ const TradePage = ({route}) => {
     }, []),
   );
   // Log when component mounts
-  console.log('state.......', JSON.stringify(holdings?.assets));
+  console.log(
+    'Trade type:',
+    bestSwappingBuyTrades?.estimation?.costsDetails.filter(
+      x => x.type === 'DlnProtocolFee',
+    )[0]?.payload?.feeAmount,
+    tradeType,
+  );
   return (
     <SafeAreaView
       style={{
@@ -678,7 +679,40 @@ const TradePage = ({route}) => {
                       alignSelf: 'flex-end',
                       color: '#fff',
                     }}>
-                    ${state?.current_price}
+                    $
+                    {tradeType === 'sell'
+                      ? (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            ))
+                        ).toFixed(6)
+                      : (
+                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              ?.decimals,
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            ))
+                        ).toFixed(6)}
                   </Text>
                 </View>
 
@@ -705,7 +739,15 @@ const TradePage = ({route}) => {
                       alignSelf: 'flex-end',
                       color: '#fff',
                     }}>
-                    $0.01
+                    $
+                    {bestSwappingBuyTrades?.estimation?.costsDetails.filter(
+                      x => x.type === 'DlnProtocolFee',
+                    )[0]?.payload?.feeAmount /
+                      Math.pow(
+                        10,
+                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          ?.decimals,
+                      )}
                   </Text>
                 </View>
 
@@ -773,6 +815,7 @@ const TradePage = ({route}) => {
                     console.log('txn hash', signature);
                     navigation.navigate('PendingTxStatus', {
                       state: res,
+                      tradeType,
                     });
                   }
                 } else if (
@@ -801,6 +844,7 @@ const TradePage = ({route}) => {
                     console.log('txn hash', signature);
                     navigation.navigate('PendingTxStatus', {
                       state: res,
+                      tradeType,
                     });
                   }
                 } else if (

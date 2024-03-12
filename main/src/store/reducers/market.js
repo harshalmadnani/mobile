@@ -39,7 +39,7 @@ export const marketSlice = createSlice({
       state.selectedAssetWalletHolding = action.payload;
     },
     setBestSwappingRates: (state, action) => {
-      console.log('best rates.....swapping', action.payload);
+      console.log('best rates.....swapping', JSON.stringify(action.payload));
       state.bestSwappingTrades = action.payload;
     },
     setTokenUsdcBalance: (state, action) => {

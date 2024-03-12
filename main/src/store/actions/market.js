@@ -20,8 +20,8 @@ export const getListOfCryptoFromCoinGeckoApi = page => {
   return async (dispatch, getState) => {
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData(page);
-    console.log(data, page);
-    if (page !== 1) {
+    console.log('coin gecko.....', data.length, page);
+    if (data.length > 0) {
       dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
     } else {
       console.log(data);

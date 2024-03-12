@@ -15,7 +15,11 @@ export const getMarketAssetData = async page => {
     );
     return response?.data;
   } catch (error) {
-    console.log('error from market investment api:', error);
+    console.log(
+      'error from market investment api:',
+      `${coingeckoBaseURL}${marketRoutes.getMarket}?vs_currency=usd&order=market_cap_desc&per_page=50&page=${page}&sparkline=false&locale=en`,
+      error,
+    );
     return [];
   }
 };
