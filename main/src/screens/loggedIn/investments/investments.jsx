@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -11,6 +12,7 @@ import {
   FlatList,
   ScrollView,
   Button,
+  Pressable,
 } from 'react-native';
 import {ImageAssets} from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
@@ -260,40 +262,6 @@ const Investments = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{paddingVertical: 10, marginLeft: 10}}>
-          {buttons.map(button => (
-            <TouchableOpacity
-              key={button.id}
-              onPress={() => handleButtonPress(button.id)}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: '#000',
-                borderRadius: 100,
-                borderWidth: 1,
-                borderColor: selectedButton === button.id ? '#fff' : null,
-                marginRight: 10,
-                paddingHorizontal: 10,
-                height: 34,
-              }}>
-              <Image
-                source={{uri: button.imageUrl}}
-                style={{width: 24, height: 24, marginRight: 5}}
-              />
-              <Text
-                style={{
-                  color: selectedButton === button.id ? '#fff' : '#999',
-                  fontSize: 14,
-                  fontFamily: 'Montreal-Bold',
-                }}>
-                {button.text}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView> */}
       </View>
 
       {isLoading && (
@@ -344,27 +312,34 @@ const Investments = ({navigation}) => {
           )}
         </View>
       )}
-      {/* {!isLoading && section === 'stocks' && (
-        <View
-          scrollEnabled
+
+      {section === 'crypto' ? (
+        <Pressable
+          onPress={() => navigation.navigate('MarketSearch')}
           style={{
-            marginTop: '1%',
+            height: 54,
+            width: '90%',
+            backgroundColor: '#272B30',
+            position: 'absolute',
+            top: height * 0.82,
+            alignSelf: 'center',
+            alignItems: 'center',
+            borderRadius: 32,
+            flexDirection: 'row',
+            padding: 16,
           }}>
-          {stocksData && (
-            <FlatList
-              data={stocksData}
-              removeClippedSubviews
-              maxToRenderPerBatch={10}
-              style={{marginBottom: 64}}
-              renderItem={({item}) => (
-                <TradeItemCard navigation={navigation} item={item} />
-              )}
-              onEndReached={async () => await onEndReachedFetch()}
-              keyExtractor={(item, i) => i.toString()}
-            />
-          )}
-        </View>
-      )} */}
+          <AntDesign name="search1" size={16} color={'white'} />
+          <Text
+            style={{
+              fontFamily: 'Unbounded-Thin',
+              color: '#fff',
+              fontSize: 14,
+              marginLeft: 16,
+            }}>
+            Search crypto
+          </Text>
+        </Pressable>
+      ) : null}
     </SafeAreaView>
   );
 };

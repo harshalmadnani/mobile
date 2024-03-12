@@ -82,3 +82,15 @@ export const getForexListData = async assets => {
     return [];
   }
 };
+export const searchCryptoByName = async text => {
+  try {
+    const response = await axios.get(`${mobulaBaseURL}/search?input=${text}`, {
+      headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+    });
+    console.log('search data....', response.data);
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};

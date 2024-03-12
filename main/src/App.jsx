@@ -76,8 +76,8 @@ import TradePage from './screens/loggedIn/investments/trade/tradePage';
 import Portfolio from './screens/loggedIn/investments/portfolio/portfolio';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './store/store';
-import WebView from 'react-native-webview';
 import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxStatusPage';
+import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
 function PreLaunchLoad({navigation}) {
   return (
     <View>
@@ -264,7 +264,16 @@ function Investment({navigation}) {
     </View>
   );
 }
-
+function MarketSearch({navigation}) {
+  return (
+    <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <MarketSearchScreen navigation={navigation} />
+        {/* <BottomNavbar navigation={navigation} selected="Investments" /> */}
+      </SafeAreaView>
+    </View>
+  );
+}
 function Portfolios({navigation}) {
   return (
     <View style={styles.container}>
@@ -822,6 +831,12 @@ export default function App({navigation, uri}) {
             <Stack.Screen
               name="ListBankAccount"
               component={ListBankAccount}
+              navigation={navigation}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="MarketSearch"
+              component={MarketSearch}
               navigation={navigation}
               options={{headerShown: false}}
             />
