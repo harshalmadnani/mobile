@@ -32,7 +32,14 @@ const MarketSearchScreen = ({navigation}) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
-        <View style={{position: 'absolute'}}>
+        <View
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            top: 0,
+          }}>
           <View style={styles.headerContainer}>
             <Text style={styles.headerTitle}>Search</Text>
           </View>
@@ -42,8 +49,7 @@ const MarketSearchScreen = ({navigation}) => {
               data={searchResult}
               style={{
                 marginBottom: 64,
-                left: 0,
-                right: 0,
+                width: '100%',
               }}
               renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
