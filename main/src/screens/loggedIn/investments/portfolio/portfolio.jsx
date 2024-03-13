@@ -11,6 +11,7 @@ import {
 import LineChart from '../../../../component/charts/LineChart';
 import styles from '../investment-styles';
 import {POINTS_KEY} from '@env';
+import Svg, { Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/portfolio';
 import {getCryptoHoldingForAddress} from '../../../../utils/cryptoWalletApi';

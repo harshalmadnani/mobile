@@ -10,6 +10,7 @@ import {
   Button
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import Svg, { Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
 import { Icon, Image} from '@rneui/themed';
 const MyInvestmentItemCard = ({navigation, item}) => {
   console.log('Image', item.unrealized_pnl);
@@ -97,34 +98,118 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             type="materialicons"
             onPress={() => navigation.goBack()}
           />
-            <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginTop: 22 }}>
-          <View style={{
-            backgroundColor: 'white',
-            borderRadius: 20,
-            padding: 35,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-            width: '100%',
-          }}>
-            <Text style={{ marginBottom: 15, textAlign: 'center' }}>
-              This is a modal!
-            </Text>
-            <Button title="Hide Modal" onPress={() => setModalVisible(!modalVisible)} />
-          </View>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
+      }}
+    >
+      <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginTop: 22 }}>
+        <View style={{
+          backgroundColor: '#151515',
+          borderRadius: 20,
+          padding: 35,
+          paddingTop: 60, // Add more padding at the top for the icon
+          alignItems: 'center',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 4,
+          elevation: 5,
+          width: '100%',
+          height:'75%',
+          position: 'relative', // To absolutely position the close icon
+        }}>
+          {/* Close Icon */}
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              top: 25, // Adjust as needed
+              left: 15, // Adjust as needed
+              zIndex: 1, // Ensure it's above other content
+            }}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Icon name="close" size={35} color="#fff" />
+          </TouchableOpacity>
+
+          {/* Image */}
+          <Image
+            source={{ uri: item.image }}
+            style={{ width: 48, height: 48 }}
+            resizeMode="contain"
+          />
+
+          {/* Price */}
+          <Text style={{ color: '#fff', fontSize: 24, fontFamily: 'Unbounded-Medium', marginVertical: 10 }}>
+            ${item.current_price.toFixed(2)}
+          </Text>
+          <Text style={{ color: '#A4A4A4', fontSize: 16, fontFamily: 'Montreal-Medium', marginTop: '0.5%' }}>
+            {item.name} ({item.symbol})
+          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10%',marginTop:'10%',marginHorizontal:'-8%' }}>
+
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',paddingHorizontal: 10, paddingVertical: 40, marginRight: '1%', backgroundColor: '#121212', borderRadius: 30 }}>
+        <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Current Value</Text>
+        <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Unbounded-Bold' }}>
+          ${(item.current_price * item.balance).toFixed(2)}
+        </Text>
+      </View>
+
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',paddingHorizontal: 10, paddingVertical: 40, marginLeft: '1%', borderRadius: 30, backgroundColor: '#121212' }}>
+        <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Total Returns</Text>
+        <Text style={{ fontSize: 16,  color: item.unrealized_pnl >= 0 ? 'green' : 'red', fontFamily: 'Unbounded-Bold' }}>
+          ${(item.realized_pnl + item.unrealized_pnl).toFixed(2)}({((item.realized_pnl + item.unrealized_pnl)/((item.current_price * item.balance)-item.unrealized_pnl-item.realized_pnl)).toFixed(2)}%)
+        </Text>
+      </View>
+</View>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1,fontFamily:'Montreal-Medium' }}>Total Invested:</Text>
+        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}> ${((item.current_price * item.balance)-item.unrealized_pnl-item.realized_pnl).toFixed(2)}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1 ,fontFamily:'Montreal-Medium'}}>Entry Price:</Text>
+        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.price_bought.toFixed(2)}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1,fontFamily:'Montreal-Medium' }}>Unrealized PnL:</Text>
+        <Text style={{ fontSize: 16, color: item.unrealized_pnl >= 0 ? 'green' : 'red', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.unrealized_pnl.toFixed(2)}</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1 ,fontFamily:'Montreal-Medium'}}>Realized PnL:</Text>
+        <Text style={{ fontSize: 16, color: item.realized_pnl >= 0 ? 'green' : 'red', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.realized_pnl.toFixed(2)}</Text>
+      </View>
+
         </View>
-      </Modal>
+        <TouchableOpacity
+        onPress={() => {
+          navigation.push('Ramper');
+        }}
+        style={{
+          position: 'absolute', // Positions the button over the content
+          width: '95%',
+          height: 56, // Button height
+          borderRadius: 28, // Circular button
+          backgroundColor: '#FFF', // Button color
+          justifyContent: 'center', // Center the icon or text inside the button
+          alignItems: 'center', // Center the icon or text inside the button
+          shadowColor: '#C68DFF', // Shadow for the button
+          shadowOffset: {
+            width: 0,
+          },
+          shadowOpacity: 0.5,
+          shadowRadius: 10,
+        }}>
+        <Text
+          style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Medium'}}>
+          TRADE {item.symbol}
+        </Text>
+      </TouchableOpacity>
+      </View>
+    </Modal>
           </View>
       </View>
     </TouchableOpacity>

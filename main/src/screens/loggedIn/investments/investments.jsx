@@ -155,7 +155,7 @@ const Investments = ({navigation}) => {
         <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
           <Image
             source={{
-              uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/euhlvs3wvgzdovdj7gxg.png',
+              uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png',
             }}
             style={{
               width: 40,
@@ -313,36 +313,35 @@ const Investments = ({navigation}) => {
         </View>
       )}
 
-      {section === 'crypto' ? (
         <Pressable
           onPress={() => {
             console.log(cryptoData.length);
             navigation.navigate('MarketSearch', {cryptoData});
           }}
           style={{
-            height: 54,
-            width: '90%',
-            backgroundColor: '#272B30',
+            height: 60,
+            width: '95%',
+            backgroundColor: '#1d1d1d',
             position: 'absolute',
-            top: height * 0.82,
+            top: height * 0.85,
             alignSelf: 'center',
             alignItems: 'center',
             borderRadius: 32,
             flexDirection: 'row',
             padding: 16,
           }}>
-          <AntDesign name="search1" size={16} color={'white'} />
+          <AntDesign name="search1" size={16} color={'#999'} />
           <Text
             style={{
               fontFamily: 'Unbounded-Thin',
-              color: '#fff',
+              color: '#999',
               fontSize: 14,
               marginLeft: 16,
             }}>
-            Search crypto
+            Search crypto, stocks, forex & more
           </Text>
         </Pressable>
-      ) : null}
+
     </SafeAreaView>
   );
 };

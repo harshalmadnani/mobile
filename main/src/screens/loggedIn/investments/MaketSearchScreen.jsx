@@ -2,6 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {FlatList, KeyboardAvoidingView, Text} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import TradeItemCard from './TradeItemCard';
+import { Icon} from '@rneui/themed';
 import {
   Dimensions,
   SafeAreaView,
@@ -44,12 +45,13 @@ const MarketSearchScreen = ({route, navigation}) => {
             top: 0,
           }}>
           <View style={styles.headerContainer}>
+          <Icon name="close" size={30} color="#fff" />
             <Text style={styles.headerTitle}>Search</Text>
           </View>
           <Text style={styles.secondaryHeaderTitle}>
             {searchTerm.length === 0 && searchResult.length === 0
               ? 'Trending'
-              : 'Recent Searches'}
+              : 'Top Results'}
           </Text>
           {searchResult.length > 0 && (
             <FlatList
@@ -88,14 +90,14 @@ const MarketSearchScreen = ({route, navigation}) => {
         <View
           style={{
             height: 54,
-            width: '90%',
+            width: '95%',
             backgroundColor: textInputStyleObj.backgroundColor,
             alignSelf: 'center',
             alignItems: 'center',
             borderRadius: 32,
             flexDirection: 'row',
             paddingHorizontal: 16,
-            marginBottom: 32,
+            marginBottom: 55,
           }}>
           <AntDesign
             name="search1"
@@ -128,7 +130,7 @@ const MarketSearchScreen = ({route, navigation}) => {
             }}
             autoFocus
             placeholderTextColor={textInputStyleObj.placeholderTextColor}
-            placeholder="Search crypto"
+            placeholder="Search crypto, stocks, forex & more"
           />
         </View>
       </KeyboardAvoidingView>
@@ -145,19 +147,19 @@ const styles = StyleSheet.create({
   headerContainer: {
     width: '100%',
     flexDirection: 'row',
-    marginTop: '8%',
+    marginTop: '2%',
     marginLeft: '5%',
-    marginRight: '5%',
+    marginRight: '10%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
   },
-  headerTitle: {fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20},
+  headerTitle: {fontFamily: 'Montreal-Medium', color: '#fff', fontSize: 16,alignSelf:'center',marginLeft:'33%'},
   secondaryHeaderTitle: {
-    fontFamily: 'Unbounded-Thin',
+    fontFamily: 'Unbounded-Medium',
     color: '#fff',
-    fontSize: 20,
+    fontSize: 16,
     marginLeft: '5%',
-    marginTop: '5%',
+    marginVertical: '8%',
   },
 });
 
