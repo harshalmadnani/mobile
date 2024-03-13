@@ -17,7 +17,7 @@ const MarketChart = props => {
   const currentItem = props.item;
   const holdings = useSelector(x => x.portfolio.holdings);
   const currentAsset = holdings?.assets.filter(
-    x => x.asset?.symbol === currentItem?.symbol.toUpperCase(),
+    x => x.asset?.symbol.toLowerCase() === currentItem?.symbol.toLowerCase(),
   );
   const currentTimeFramePrice = useSelector(
     x => x.market.selectedTimeFramePriceInfo,
@@ -40,6 +40,9 @@ const MarketChart = props => {
 
   useFocusEffect(
     useCallback(() => {
+      async function onFocusFunction() {
+        dispatch(setAssetMetadata(currentItem?.name));
+      }
       onFocusFunction();
       fetchUserDetails();
       return () => {
@@ -47,6 +50,7 @@ const MarketChart = props => {
       };
     }, []),
   );
+  console.log('current holdings', currentAsset);
   const {width, height} = Dimensions.get('window');
   return (
     <View style={{flex: 1}}>
@@ -136,12 +140,12 @@ const MarketChart = props => {
           right: 0,
         }}
         onPress={() => {
-          if (holdings) {
-            navigation.navigate('TradePage', {
-              state: currentItem,
-              asset: currentAsset,
-            });
-          }
+          // if (holdings) {
+          navigation.navigate('TradePage', {
+            state: currentItem,
+            asset: currentAsset,
+          });
+          // }
         }}>
         <LinearGradient
           useAngle={true}

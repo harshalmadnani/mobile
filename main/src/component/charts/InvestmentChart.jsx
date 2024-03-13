@@ -102,27 +102,28 @@ function InteractiveChart({assetName}) {
     }
     init();
   }, [selectedTimeframe]);
-  const initialHistoryFetch = async () => {
-    try {
-      const selectedTimeframeObject = timeframes.find(
-        timeframe => timeframe.value === selectedTimeframe,
-      );
-      const from = selectedTimeframeObject
-        ? selectedTimeframeObject.timestamp
-        : null;
 
-      const data = await getHistoricalData(assetName, from);
-
-      const prices = data.price_history.map(entry => entry[1]); // Extracting the price part
-      setPriceList(prices);
-      setcurrentPrice(data?.price_history[0][1]);
-    } catch (e) {
-      console.log(e);
-    }
-  };
   useFocusEffect(
     useCallback(async () => {
-      initialHistoryFetch();
+      async function initialHistoryFetch() {
+        try {
+          const selectedTimeframeObject = timeframes.find(
+            timeframe => timeframe.value === selectedTimeframe,
+          );
+          const from = selectedTimeframeObject
+            ? selectedTimeframeObject.timestamp
+            : null;
+
+          const data = await getHistoricalData(assetName, from);
+
+          const prices = data.price_history.map(entry => entry[1]); // Extracting the price part
+          setPriceList(prices);
+          setcurrentPrice(data?.price_history[0][1]);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      await initialHistoryFetch();
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };

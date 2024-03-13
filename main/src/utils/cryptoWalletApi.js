@@ -15,6 +15,9 @@ export const getNftsHoldingForAddress = async address => {
   try {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getNFTs}?wallet=${address}`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
     );
     console.log('response from nft api:', response?.data?.length);
     return response?.data?.data;
@@ -24,20 +27,17 @@ export const getNftsHoldingForAddress = async address => {
   }
 };
 export const getCryptoHoldingForAddress = async (address, asset) => {
+  const url = asset
+    ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
+    : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`;
   try {
-    const url = asset
-      ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
-      : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`;
     const response = await axios.get(url, {
       headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
     });
+    console.log('data from wallet holding api:', url, response?.data);
     return response?.data;
   } catch (error) {
-    console.log(
-      'error from asset api:',
-      `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`,
-      error,
-    );
+    console.log('error from wallet holding api:', url, error);
     return [];
   }
 };

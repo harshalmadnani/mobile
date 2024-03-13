@@ -11,7 +11,12 @@ import {
 import LineChart from '../../../../component/charts/LineChart';
 import styles from '../investment-styles';
 import {POINTS_KEY} from '@env';
-import Svg, { Defs, LinearGradient, Stop, Text as SvgText } from 'react-native-svg';
+import Svg, {
+  Defs,
+  LinearGradient,
+  Stop,
+  Text as SvgText,
+} from 'react-native-svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/portfolio';
 import {getCryptoHoldingForAddress} from '../../../../utils/cryptoWalletApi';
@@ -79,14 +84,21 @@ const Portfolio = ({navigation}) => {
   //   }
   //   init();
   // }, []);
-  const onFocusFunction = async () => {
-    console.log('firred balnce holding');
-    dispatch(getCryptoHoldingForAddressFromMobula());
-    await logic();
-  };
+  // const onFocusFunction = async () => {
+  //   console.log('firred balnce holding');
+  //   dispatch(getCryptoHoldingForAddressFromMobula());
+  //   await logic();
+  // };
   useFocusEffect(
-    useCallback(() => {
-      onFocusFunction();
+    useCallback(async () => {
+      async function fetchData() {
+        // You can await here
+        dispatch(getCryptoHoldingForAddressFromMobula());
+        // await logic();
+        // ...
+      }
+
+      fetchData(); // await onFocusFunction();
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
@@ -321,7 +333,7 @@ const Portfolio = ({navigation}) => {
                       ...item.asset, // Assuming the structure matches what MyInvestmentItemCard expects
                       balance: item.token_balance, // Adapt properties as needed
                       current_price: item.price,
-                       unrealized_pnl: item.unrealized_pnl,
+                      unrealized_pnl: item.unrealized_pnl,
                       realized_pnl: item.realized_pnl, // Example
                       image: item.asset.logo,
                       price_bought: item.price_bought,

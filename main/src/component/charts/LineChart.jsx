@@ -71,29 +71,30 @@ function InteractiveChart() {
     {label: 'All', value: '', timestamp: genesis.getTime()},
   ];
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
-  const initialHistoryFetch = async () => {
-    try {
-      const selectedTimeframeObject = timeframes.find(
-        timeframe => timeframe.value === selectedTimeframe,
-      );
-      const from = selectedTimeframeObject
-        ? selectedTimeframeObject.timestamp
-        : null;
-      console.log('Fired when time======1', from);
-      const data = await getWalletHistoricalData(from);
-      console.log('Data from API wallet historicalll.......', data);
-      // Assuming data.balance_history is an array of [timestamp, price] pairs
-      const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
-      setPriceList(prices);
-      setcurrentPrice(data.balance_usd);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+
   useFocusEffect(
     useCallback(async () => {
       console.log('Fired in line chart');
-      initialHistoryFetch();
+      async function initialHistoryFetch() {
+        try {
+          const selectedTimeframeObject = timeframes.find(
+            timeframe => timeframe.value === selectedTimeframe,
+          );
+          const from = selectedTimeframeObject
+            ? selectedTimeframeObject.timestamp
+            : null;
+          console.log('Fired when time======1', from);
+          const data = await getWalletHistoricalData(from);
+          console.log('Data from API wallet historicalll.......', data);
+          // Assuming data.balance_history is an array of [timestamp, price] pairs
+          const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
+          setPriceList(prices);
+          setcurrentPrice(data.balance_usd);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      await initialHistoryFetch();
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };

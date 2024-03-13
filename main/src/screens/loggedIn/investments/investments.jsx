@@ -25,6 +25,7 @@ import {
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
 import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
+import {marketsAction} from '../../../store/reducers/market';
 
 const ComingSoonView = () => (
   <View
@@ -188,6 +189,7 @@ const Investments = ({navigation}) => {
               marginBottom: section === 'crypto' ? -2 : 0,
             }}
             onPress={() => {
+              dispatch(marketsAction.setListOfCrypto([]));
               setSection('crypto');
               setPage(1);
               dispatch(getListOfCryptoFromCoinGeckoApi(page));
@@ -313,35 +315,34 @@ const Investments = ({navigation}) => {
         </View>
       )}
 
-        <Pressable
-          onPress={() => {
-            console.log(cryptoData.length);
-            navigation.navigate('MarketSearch', {cryptoData});
-          }}
+      <Pressable
+        onPress={() => {
+          console.log(cryptoData.length);
+          navigation.navigate('MarketSearch', {cryptoData});
+        }}
+        style={{
+          height: 60,
+          width: '95%',
+          backgroundColor: '#1d1d1d',
+          position: 'absolute',
+          top: height * 0.8,
+          alignSelf: 'center',
+          alignItems: 'center',
+          borderRadius: 32,
+          flexDirection: 'row',
+          padding: 16,
+        }}>
+        <AntDesign name="search1" size={16} color={'#999'} />
+        <Text
           style={{
-            height: 60,
-            width: '95%',
-            backgroundColor: '#1d1d1d',
-            position: 'absolute',
-            top: height * 0.85,
-            alignSelf: 'center',
-            alignItems: 'center',
-            borderRadius: 32,
-            flexDirection: 'row',
-            padding: 16,
+            fontFamily: 'Unbounded-Thin',
+            color: '#999',
+            fontSize: 14,
+            marginLeft: 16,
           }}>
-          <AntDesign name="search1" size={16} color={'#999'} />
-          <Text
-            style={{
-              fontFamily: 'Unbounded-Thin',
-              color: '#999',
-              fontSize: 14,
-              marginLeft: 16,
-            }}>
-            Search crypto, stocks, forex & more
-          </Text>
-        </Pressable>
-
+          Search crypto, stocks, forex & more
+        </Text>
+      </Pressable>
     </SafeAreaView>
   );
 };

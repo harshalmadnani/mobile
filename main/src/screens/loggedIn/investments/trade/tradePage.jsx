@@ -53,15 +53,15 @@ const TradePage = ({route}) => {
     x => x.market.selectedAssetMetaData,
   );
   const holdings = useSelector(x => x.portfolio.holdings);
-  const usdcValue = holdings?.assets.filter(x => x.asset?.symbol === 'USDC');
+  const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
-  const tokensToSell = tradeAsset[0]?.contracts_balances;
+  const tokensToSell = tradeAsset?.[0]?.contracts_balances;
   useEffect(() => {
     if (tradeType === 'sell') {
       dispatch(
         getBestDLNCrossSwapRateSell(
-          tokensToSell[0],
-          value * Math.pow(10, tokensToSell[0]?.decimals),
+          tokensToSell?.[0],
+          value * Math.pow(10, tokensToSell?.[0]?.decimals),
         ),
       );
     } else {
@@ -71,22 +71,41 @@ const TradePage = ({route}) => {
 
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
+      console.log('confirming', bestSwappingBuyTrades);
       console.log(
         'Swapping......TXDATA',
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address,
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.amount,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
+          bestSwappingBuyTrades?.estimation?.tokenIn?.address,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.amount ??
+          bestSwappingBuyTrades?.estimation?.tokenIn?.amount,
+        value *
+          Math.pow(
+            10,
+            bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
+              bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals,
+          ),
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId ?? 137,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address ??
+          bestSwappingBuyTrades?.estimation?.tokenOut?.address,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
+          bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
       );
       const res = await getDLNTradeCreateBuyOrderTxn(
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId,
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address,
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.amount,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
+          bestSwappingBuyTrades?.estimation?.tokenIn?.address,
+        value *
+          Math.pow(
+            10,
+            bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
+              bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals,
+          ),
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId ?? 137,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address ??
+          bestSwappingBuyTrades?.estimation?.tokenOut?.address,
+        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
+          bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
       );
       return res;
     } else {
@@ -110,13 +129,7 @@ const TradePage = ({route}) => {
     }, []),
   );
   // Log when component mounts
-  console.log(
-    'Trade type:',
-    bestSwappingBuyTrades?.estimation?.costsDetails.filter(
-      x => x.type === 'DlnProtocolFee',
-    )[0]?.payload?.feeAmount,
-    tradeType,
-  );
+
   return (
     <SafeAreaView
       style={{
@@ -589,16 +602,32 @@ const TradePage = ({route}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
-                  {(
+                  {isNaN(
                     bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                       ?.amount /
-                    Math.pow(
-                      10,
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.decimals,
-                    )
-                  ).toFixed(5) || '...'}{' '}
-                  {state?.symbol.toUpperCase()}{' '}
+                      Math.pow(
+                        10,
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.decimals,
+                      ),
+                  )
+                    ? (
+                        bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.tokenOut?.decimals,
+                        )
+                      ).toFixed(5)
+                    : (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )
+                      ).toFixed(5)}
+                  {' ' + state?.symbol.toUpperCase()}
                 </Text>
 
                 {/* image to allow btc input */}
@@ -628,15 +657,31 @@ const TradePage = ({route}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
-                  {(
+                  {isNaN(
                     bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                       ?.amount /
-                    Math.pow(
-                      10,
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.decimals,
-                    )
-                  ).toFixed(5) || '...'}{' '}
+                      Math.pow(
+                        10,
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.decimals,
+                      ),
+                  )
+                    ? (
+                        bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.tokenOut?.decimals,
+                        )
+                      ).toFixed(5)
+                    : (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )
+                      ).toFixed(5)}
                 </Text>
                 {/* image to allow btc input */}
                 {/* <Image source={ImageAssets.arrowImg} /> */}
@@ -658,6 +703,22 @@ const TradePage = ({route}) => {
                   style={{height: 2, width: '80%'}} // Adjust the height and width as needed
                 />
               </View>
+              {/* ? (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            ))
+                        ).toFixed(6) || */}
               <View
                 style={{
                   flex: 1,
@@ -691,36 +752,63 @@ const TradePage = ({route}) => {
                     $
                     {tradeType === 'sell'
                       ? (
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.decimals,
-                          ) /
-                          (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.amount /
+                          bestSwappingBuyTrades?.estimation?.tokenOut?.amount /
                             Math.pow(
                               10,
-                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              bestSwappingBuyTrades?.estimation?.tokenOut
                                 ?.decimals,
-                            ))
-                        ).toFixed(6)
-                      : (
-                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                              ?.decimals,
-                          ) /
-                          (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.tokenIn
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation?.tokenIn
+                                  ?.decimals,
+                              )) ||
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                             ?.amount /
                             Math.pow(
                               10,
                               bestSwappingBuyTrades?.estimation
                                 ?.dstChainTokenOut?.decimals,
-                            ))
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.srcChainTokenIn?.decimals,
+                              ))
+                        ).toFixed(6)
+                      : //when same chain
+                        (
+                          bestSwappingBuyTrades?.estimation?.tokenIn?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.tokenIn
+                                ?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.tokenOut
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation?.tokenOut
+                                  ?.decimals,
+                              )) || //when cross chain
+                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
+                              ))
                         ).toFixed(6)}
                   </Text>
                 </View>
@@ -750,7 +838,7 @@ const TradePage = ({route}) => {
                     }}>
                     $
                     {tradeType === 'sell'
-                      ? bestSwappingBuyTrades?.estimation?.costsDetails.filter(
+                      ? bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
                           x => x.type === 'DlnProtocolFee',
                         )[0]?.payload?.feeAmount /
                         Math.pow(
@@ -758,7 +846,7 @@ const TradePage = ({route}) => {
                           bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                             ?.decimals,
                         )
-                      : bestSwappingBuyTrades?.estimation?.costsDetails.filter(
+                      : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
                           x => x.type === 'DlnProtocolFee',
                         )[0]?.payload?.feeAmount /
                         Math.pow(
@@ -794,7 +882,7 @@ const TradePage = ({route}) => {
                     }}>
                     {' '}
                     {bestSwappingBuyTrades?.order
-                      ?.approximateFulfillmentDelay || '...'}
+                      ?.approximateFulfillmentDelay ?? '15 '}
                     s
                   </Text>
                 </View>
@@ -824,8 +912,10 @@ const TradePage = ({route}) => {
                   setPreparingTx(true);
                   const res = await getTradeSigningData();
                   const signature = await confirmDLNTransaction(
-                    res?.estimation?.srcChainTokenIn?.amount,
-                    res?.estimation?.srcChainTokenIn?.address,
+                    res?.estimation?.srcChainTokenIn?.amount ||
+                      res?.tokenIn?.amount,
+                    res?.estimation?.srcChainTokenIn?.address ||
+                      res?.tokenIn?.address,
                     res?.tx,
                   );
                   setPreparingTx(false);
@@ -836,25 +926,22 @@ const TradePage = ({route}) => {
                       tradeType,
                     });
                   }
-                } else if (
-                  value * Math.pow(10, tokensToSell[0]?.decimals) <=
-                    tokensToSell?.[0]?.balanceRaw &&
-                  tradeType === 'sell'
-                ) {
+                } else if (tradeType === 'sell') {
                   setPreparingTx(true);
                   const res = await getTradeSigningData();
-                  if (res?.estimation?.srcChainTokenIn?.chainId !== 137) {
-                    console.log(
-                      'chain switching.......',
-                      res?.estimation?.srcChainTokenIn,
-                    );
+                  if (
+                    res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
+                    res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                  ) {
                     await switchAuthCoreChain(
                       res?.estimation?.srcChainTokenIn?.chainId,
                     );
                   }
                   const signature = await confirmDLNTransaction(
-                    res?.estimation?.srcChainTokenIn?.amount,
-                    res?.estimation?.srcChainTokenIn?.address,
+                    res?.estimation?.srcChainTokenIn?.amount ||
+                      res?.tokenIn?.amount,
+                    res?.estimation?.srcChainTokenIn?.address ||
+                      res?.tokenIn?.address,
                     res?.tx,
                   );
                   setPreparingTx(false);

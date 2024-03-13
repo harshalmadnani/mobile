@@ -90,7 +90,10 @@ const PendingTxComponent = ({
             marginTop: '20%',
             color: '#949494',
           }}>
-          {normalAmount} {txQuoteInfo?.estimation.dstChainTokenOut.name} {'\n'}
+          {normalAmount}{' '}
+          {txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
+            txQuoteInfo?.tokenOut?.name}{' '}
+          {'\n'}
           are on the way
         </Text>
       </View>
@@ -135,7 +138,8 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
             color: '#949494',
           }}>
           You have successfully bought {normalAmount}{' '}
-          {txQuoteInfo?.estimation.dstChainTokenOut.name}
+          {txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
+            txQuoteInfo?.tokenOut?.name}
         </Text>
       </View>
       <View style={{marginTop: '15%'}}>
@@ -184,28 +188,37 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
               $
               {tradeType === 'sell'
                 ? (
+                    txQuoteInfo?.tokenOut?.amount /
+                      Math.pow(10, txQuoteInfo?.tokenOut?.decimals) /
+                      (txQuoteInfo?.tokenIn?.amount /
+                        Math.pow(10, txQuoteInfo?.tokenIn?.decimals)) ||
                     txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                    Math.pow(
-                      10,
-                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                    ) /
-                    (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                      ))
-                  ).toFixed(6)
-                : (
-                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                    Math.pow(
-                      10,
-                      txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                    ) /
-                    (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
                       Math.pow(
                         10,
                         txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      ))
+                      ) /
+                      (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                        ))
+                  ).toFixed(6)
+                : //when same chain
+                  (
+                    txQuoteInfo?.tokenIn?.amount /
+                      Math.pow(10, txQuoteInfo?.tokenIn?.decimals) /
+                      (txQuoteInfo?.tokenOut?.amount /
+                        Math.pow(10, txQuoteInfo?.tokenOut?.decimals)) || //when cross chain
+                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                      ) /
+                      (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                        ))
                   ).toFixed(6)}
             </Text>
           </View>
@@ -235,20 +248,48 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
               }}>
               $
               {tradeType === 'sell'
-                ? txQuoteInfo?.estimation?.costsDetails.filter(
-                    x => x.type === 'DlnProtocolFee',
-                  )[0]?.payload?.feeAmount /
-                  Math.pow(
-                    10,
-                    txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                  )
-                : txQuoteInfo?.estimation?.costsDetails.filter(
-                    x => x.type === 'DlnProtocolFee',
-                  )[0]?.payload?.feeAmount /
-                  Math.pow(
-                    10,
-                    txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                  )}
+                ? (
+                    txQuoteInfo?.estimation?.tokenOut?.amount /
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.tokenOut?.decimals,
+                      ) /
+                      (txQuoteInfo?.estimation?.tokenIn?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.tokenIn?.decimals,
+                        )) ||
+                    txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                      ) /
+                      (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                        ))
+                  ).toFixed(6)
+                : //when same chain
+                  (
+                    txQuoteInfo?.estimation?.tokenIn?.amount /
+                      Math.pow(10, txQuoteInfo?.estimation?.tokenIn?.decimals) /
+                      (txQuoteInfo?.estimation?.tokenOut?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.tokenOut?.decimals,
+                        )) || //when cross chain
+                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                      ) /
+                      (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                        ))
+                  ).toFixed(6)}
             </Text>
           </View>
 
@@ -276,7 +317,7 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                 color: '#fff',
               }}>
               {' '}
-              {txQuoteInfo?.order?.approximateFulfillmentDelay || '...'}s
+              {txQuoteInfo?.order?.approximateFulfillmentDelay || '15 '}s
             </Text>
           </View>
         </View>
@@ -325,7 +366,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
   const txQuoteInfo = state;
 
   const [countdown, setCountdown] = useState(
-    txQuoteInfo?.order?.approximateFulfillmentDelay,
+    txQuoteInfo?.order?.approximateFulfillmentDelay || 15,
   );
   useEffect(() => {
     const timer = setInterval(() => {
@@ -340,7 +381,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
   }, []);
 
   const calculatePercentage = () => {
-    const totalDuration = txQuoteInfo?.order.approximateFulfillmentDelay;
+    const totalDuration = txQuoteInfo?.order?.approximateFulfillmentDelay || 15;
     const circumference = 2 * Math.PI * 40; // 40 is the radius of the circle
     return (countdown / totalDuration) * circumference;
   };
@@ -351,18 +392,27 @@ const PendingTxStatusPage = ({route, navigation}) => {
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
   const weiAmount = new BigNumber(
-    txQuoteInfo?.estimation.dstChainTokenOut.amount,
+    txQuoteInfo?.estimation?.dstChainTokenOut?.amount ||
+      txQuoteInfo?.tokenOut?.amount,
   );
   const percent =
-    ((txQuoteInfo?.order.approximateFulfillmentDelay - countdown) /
-      txQuoteInfo?.order.approximateFulfillmentDelay) *
+    (((txQuoteInfo?.order?.approximateFulfillmentDelay || 15) - countdown) /
+      (txQuoteInfo?.order?.approximateFulfillmentDelay || 15)) *
     100;
   const formattedPercent = Math.round(percent) + '%';
   const normalAmount = weiAmount
-    .div(10 ** txQuoteInfo?.estimation.dstChainTokenOut.decimals)
+    .div(
+      10 **
+        (txQuoteInfo?.estimation?.dstChainTokenOut.decimals ||
+          txQuoteInfo?.tokenOut.decimals),
+    )
     .toNumber();
   // {
-  console.log(tradeType);
+  console.log(
+    'trade info',
+    txQuoteInfo?.tokenOut?.amount /
+      Math.pow(10, txQuoteInfo?.tokenOut?.decimals),
+  );
   // }
   return (
     <SafeAreaView

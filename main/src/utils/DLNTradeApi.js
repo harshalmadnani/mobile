@@ -22,19 +22,79 @@ export const getDLNTradeCreateBuyOrder = async (
   dstChainTokenOut,
 ) => {
   try {
-    const response = await axios.get(
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-    );
+    let response;
+    // const eoaAddress = await getUserAddressFromAuthCoreSDK();
+    // const smartAccount = await getSmartAccountAddress(eoaAddress);
+    if (dstChainId === srcChainId) {
+      response = await axios.get(
+        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+      console.log(
+        'token quote same......',
+        srcChainId,
+        srcChainTokenIn,
+        srcChainTokenInAmount,
+        dstChainId,
+        dstChainTokenOut,
+        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+    } else {
+      console.log(
+        'token quote......',
+        srcChainId,
+        srcChainTokenIn,
+        srcChainTokenInAmount,
+        dstChainId,
+        dstChainTokenOut,
+        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+      response = await axios.get(
+        `${DLNBaseURL}${
+          tradeRoutes.createOrder
+        }?srcChainId=${srcChainId}&srcChainTokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+    }
     console.log(
-      'response from DLN api:',
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      'response from DLN same api: matic check',
       dstChainId,
+      response?.data,
     );
     return response?.data;
   } catch (error) {
     console.log(
-      'error  from DLN api:',
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false`,
+      'error from DLN same api: matic same',
       dstChainId,
       error.toString(),
     );
@@ -49,21 +109,39 @@ export const getDLNTradeCreateSellOrder = async (
   dstChainTokenOut,
 ) => {
   try {
-    console.log(
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-    );
-    const response = await axios.get(
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-    );
-    console.log('response from DLN api:', dstChainId);
+    let response;
+    if (dstChainId === 137) {
+      response = await axios.get(
+        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+    } else {
+      response = await axios.get(
+        `${DLNBaseURL}${
+          tradeRoutes.createOrder
+        }?srcChainId=${srcChainId}&srcChainTokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+    }
+
+    console.log('response from DLN api: sell', dstChainId, response?.data);
     return response?.data;
   } catch (error) {
-    console.log(
-      'error  from DLN api:',
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-      dstChainId,
-      error.toString(),
-    );
+    console.log('error  from DLN api:', dstChainId, error.toString());
     return null;
   }
 };
@@ -86,6 +164,7 @@ export const getBestCrossSwapRateBuy = async (
   let blockchainsContractAddress = blockchains.map((x, i) => {
     return {blockchains: blockchains[i], contractAddress: contractAddress[i]};
   });
+  console.log('block chain to be called call', blockchains);
   blockchainsContractAddress = blockchainsContractAddress.filter(
     x =>
       x.blockchains === 'Ethereum' ||
@@ -93,12 +172,7 @@ export const getBestCrossSwapRateBuy = async (
       x.blockchains === 'Polygon' ||
       x.blockchains === 'Avalanche C-Chain',
   );
-
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
-    console.log(
-      'block chain to be called',
-      getChainIdOnChainName(x?.blockchains),
-    );
     const res = await getDLNTradeCreateBuyOrder(
       137,
       '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
@@ -109,33 +183,41 @@ export const getBestCrossSwapRateBuy = async (
     return res;
   });
   let results = await Promise.all(ratesOfDifferentChainOut);
+
   // best rate calculation
   results = results.filter(x => x !== null);
   const bestTradingPrice = results.map(x => {
     return {
       fee: isNaN(
-        parseInt(x?.estimation?.dstChainTokenOut?.amount) -
-          parseInt(x?.estimation?.costsDetails?.[0]?.payload?.feeAmount),
+        parseInt(
+          x?.estimation?.dstChainTokenOut?.amount ||
+            x?.estimation?.tokenOut?.amount,
+        ),
       )
         ? 0
-        : parseInt(x?.estimation?.dstChainTokenOut?.amount) -
-          parseInt(x?.estimation?.costsDetails?.[0]?.payload?.feeAmount),
-      chainId: x?.estimation?.dstChainTokenOut?.chainId,
+        : parseInt(
+            x?.estimation?.dstChainTokenOut?.amount ||
+              x?.estimation?.tokenOut?.amount,
+          ),
+      chainId: x?.estimation?.dstChainTokenOut?.chainId || 137,
     };
   });
   const bestPrice = Math.max(...bestTradingPrice.map(x => x.fee));
-  results = results.filter(
-    x =>
-      x.estimation?.dstChainTokenOut?.chainId ===
-      bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
+  console.log(
+    'before filter',
+    bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
+    results,
   );
+  results =
+    bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId === 137
+      ? results.filter(x => x.estimation?.tokenOut !== undefined)
+      : results.filter(
+          x =>
+            x.estimation?.dstChainTokenOut?.chainId ===
+            bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
+        );
+  console.log('after filter', results);
   if (results.length > 0) {
-    console.log(
-      'Best trading price',
-      results[0]?.estimation?.dstChainTokenOut?.chainId,
-      bestPrice,
-      bestTradingPrice,
-    );
     return results[0];
   } else {
     return [];
@@ -150,12 +232,38 @@ export const getDLNTradeCreateBuyOrderTxn = async (
   dstChainTokenOut,
   dstChainTokenOutAmount,
 ) => {
+  const eoaAddress = await getUserAddressFromAuthCoreSDK();
+  const smartAccount = await getSmartAccountAddress(eoaAddress);
   try {
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
-    const response = await axios.get(
-      `${DLNBaseURL}${tradeRoutes.createOrder}?srcChainId=${srcChainId}&srcChainTokenIn=${srcChainTokenIn}&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${dstChainTokenOut}&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-    );
+    let response;
+    if (dstChainId === srcChainId) {
+      response = await axios.get(
+        `https://api.dln.trade/v1.0/chain/transaction?chainId=${srcChainId}&tokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&tokenOutRecipient=${smartAccount}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+    } else {
+      response = await axios.get(
+        `${DLNBaseURL}${
+          tradeRoutes.createOrder
+        }?srcChainId=${srcChainId}&srcChainTokenIn=${
+          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : srcChainTokenIn
+        }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
+          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : dstChainTokenOut
+        }&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      );
+    }
+    console.log(dstChainId, response?.data);
     return response?.data;
   } catch (error) {
     console.log('error  from DLN api:', error);
@@ -167,9 +275,8 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
   console.log('inside execution.......', amount, tokenAddress, txData);
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
-  console.log('smart contract address.......', smartAccount);
-  const usdcAbi = new ethers.utils.Interface(erc20);
-  const approveData = usdcAbi.encodeFunctionData('approve', [
+  const erc20Abi = new ethers.utils.Interface(erc20);
+  const approveData = erc20Abi.encodeFunctionData('approve', [
     txData?.to,
     amount,
   ]);
@@ -179,7 +286,7 @@ export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
     approveData,
     '0',
   );
-  console.log('tx approval part', approveTX);
+  console.log('smart contract address.......', approveTX, smartAccount);
   txs.push(approveTX);
 
   const sendTX = await getEthereumTransaction(
