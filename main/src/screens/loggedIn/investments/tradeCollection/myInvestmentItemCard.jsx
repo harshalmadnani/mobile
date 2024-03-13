@@ -6,17 +6,18 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Modal,
+  Button
 } from 'react-native';
-import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
-
+import { Icon, Image} from '@rneui/themed';
 const MyInvestmentItemCard = ({navigation, item}) => {
   console.log('Image', item.unrealized_pnl);
-
+  const [modalVisible, setModalVisible] = useState(false);
   return (
     <TouchableOpacity
       onPress={e => {
-        // navigation.push('MarketInfo');
+        setModalVisible(true)
       }}
       style={{
         width: '100%',
@@ -59,13 +60,12 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             </View>
           </View>
         </View>
-
+<View style={{flexDirection:'row'}}>
         <View
           style={{
             paddingHorizontal: 10,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
             alignItems: 'flex-end',
             // backgroundColor: 'red'
           }}>
@@ -90,8 +90,45 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             )}
           </View>
         </View>
+        <Icon
+            name={'expand-more'}
+            size={24}
+            color={'#f0f0f0'}
+            type="materialicons"
+            onPress={() => navigation.goBack()}
+          />
+            <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginTop: 22 }}>
+          <View style={{
+            backgroundColor: 'white',
+            borderRadius: 20,
+            padding: 35,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
+            width: '100%',
+          }}>
+            <Text style={{ marginBottom: 15, textAlign: 'center' }}>
+              This is a modal!
+            </Text>
+            <Button title="Hide Modal" onPress={() => setModalVisible(!modalVisible)} />
+          </View>
+        </View>
+      </Modal>
+          </View>
       </View>
     </TouchableOpacity>
+    
   );
 };
 
@@ -101,7 +138,6 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontFamily: `Satoshi-Bold`,
     fontWeight: '500',
-    marginLeft: 30,
   },
   text1: {
     fontSize: 16,
