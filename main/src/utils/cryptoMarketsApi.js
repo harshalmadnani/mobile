@@ -11,7 +11,7 @@ const marketRoutes = {
 export const getMarketAssetData = async page => {
   try {
     const response = await axios.get(
-      `${coingeckoBaseURL}${marketRoutes.getMarket}?vs_currency=usd&order=market_cap_desc&per_page=50&page=${page}&sparkline=false&locale=en`,
+      'https://api.mobula.io/api/1/market/query?filters=volume:10000:&sortBy=market_cap&limit=100',
     );
     return response?.data;
   } catch (error) {

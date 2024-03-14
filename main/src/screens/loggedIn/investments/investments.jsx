@@ -10,16 +10,12 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
-  ScrollView,
-  Button,
   Pressable,
 } from 'react-native';
 import {ImageAssets} from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  getListFilteredFromCoinGeckoApi,
-  getListOfCryptoFromCoinGeckoApi,
   getListOfCryptoFromMobulaApi,
   getListOfForexFromMobulaApi,
 } from '../../../store/actions/market';
@@ -69,7 +65,7 @@ const Investments = ({navigation}) => {
     useCallback(() => {
       setIsLoading(true);
       setSection('crypto');
-      dispatch(getListOfCryptoFromCoinGeckoApi(page));
+      dispatch(getListOfCryptoFromMobulaApi());
       setPage(2);
       setIsLoading(false);
 
@@ -81,10 +77,10 @@ const Investments = ({navigation}) => {
   );
 
   const onEndReachedFetch = async () => {
-    if (page <= 3 && section === 'crypto' && cryptoData.length > 0) {
-      dispatch(getListOfCryptoFromCoinGeckoApi(page));
-      setPage(page + 1);
-    }
+    // if (page <= 3 && section === 'crypto' && cryptoData.length > 0) {
+    //   // dispatch(getListOfCryptoFromCoinGeckoApi(page));
+    //   setPage(page + 1);
+    // }
   };
 
   const buttons = [
@@ -191,8 +187,7 @@ const Investments = ({navigation}) => {
             onPress={() => {
               dispatch(marketsAction.setListOfCrypto([]));
               setSection('crypto');
-              setPage(1);
-              dispatch(getListOfCryptoFromCoinGeckoApi(page));
+              dispatch(getListOfCryptoFromMobulaApi());
             }}>
             <Text
               style={{
