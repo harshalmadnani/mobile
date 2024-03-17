@@ -165,33 +165,11 @@ class QRPage extends Component {
 
   render(navigation) {
     return (
-      <ImageBackground source={bg} style={styles.bg}>
+      
         <SafeAreaView>
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.topbar}>
-                <Icon
-                  style={styles.buttonIcon}
-                  name="arrow-left"
-                  size={30}
-                  color="white"
-                  type="feather"
-                  onPress={() => navigation.goBack()}
-                />
-                <View style={styles.nav}>
-                  <TouchableOpacity
-                    style={styles.navLeft}
-                    onPress={() => this.ShowQRScanner()}>
-                    <Text style={styles.leftText}>Code</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.navRight}
-                    onPress={() => {
-                      this.ShowQRScanner();
-                    }}>
-                    <Text style={styles.rightText}>Scan</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
               <View style={styles.mainContent}>
                 {this.state.status ? (
@@ -199,29 +177,11 @@ class QRPage extends Component {
                 ) : (
                   <QRScanner navigation={this.props.navigation} />
                 )}
-                <TouchableHighlight
-                  style={styles.bottomButton}
-                  onPress={() => this.props.navigation.navigate('SendEmail')}>
-                  <Text style={styles.bottomText}>
-                    Send To Email Address Or Mobile Instead
-                  </Text>
-                </TouchableHighlight>
-                <Text
-                  onPress={() => {
-                    global.withAuth
-                      ? particleAuth.fastLogout()
-                      : particleConnect.disconnect();
-                    this.props.navigation.navigate('LoggedOutHome');
-                    console.log('Logged Out/Disconnected Successfully');
-                  }}
-                  style={styles.logout}>
-                  Logout
-                </Text>
               </View>
             </View>
           </ScrollView>
         </SafeAreaView>
-      </ImageBackground>
+
     );
   }
 }

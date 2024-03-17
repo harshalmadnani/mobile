@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 10,
     alignItems: 'center',
+    alignSelf:'center'
   },
 
   otherSettings: {
@@ -46,16 +47,19 @@ const styles = StyleSheet.create({
     marginTop: width * 0.05,
     flexDirection: 'column',
     backgroundColor: '#101010',
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingHorizontal:10,
     // justifyContent: 'space-between',
-    borderRadius: 5,
+    borderRadius: 20,
     alignItems: 'center',
+    alignSelf:'center'
   },
 
   innerSettings: {
     paddingLeft: 10,
-    paddingRight: 20,
+
+    paddingBottom:10,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
@@ -71,6 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     fontFamily: "Montreal-Bold",
+    alignSelf:'center'
   },
 
   events: {
@@ -115,6 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: '5%',
+    alignSelf:'center'
   },
 
   innerMedia: {

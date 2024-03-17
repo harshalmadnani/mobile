@@ -93,7 +93,7 @@ const Ramper = ({ navigation }) => {
     return (
         <LinearGradient  start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
-        colors={['#0F0F0F', '#0F0F0F', '#0f0f0f']}
+        colors={['#000', '#000', '#000']}
         locations={[0.17, 0.99, 1.0]} style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }}>
                 {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}

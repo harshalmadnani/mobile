@@ -320,12 +320,13 @@ const Investments = ({navigation}) => {
           width: '95%',
           backgroundColor: '#1d1d1d',
           position: 'absolute',
-          top: height * 0.8,
+          top: height * 0.83,
           alignSelf: 'center',
           alignItems: 'center',
           borderRadius: 32,
           flexDirection: 'row',
           padding: 16,
+          shadowRadius:10
         }}>
         <AntDesign name="search1" size={16} color={'#999'} />
         <Text

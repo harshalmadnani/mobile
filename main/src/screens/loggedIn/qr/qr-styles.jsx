@@ -11,11 +11,16 @@ const styles = StyleSheet.create({
 
   container: {
     width: '100%',
+    backgroundColor:'#000',
+    height: windowHeight,
+    flexDirection: 'column',
+    justifyContent:'center',
+    alignContent:'center',
+    alignSelf:'center'
   },
 
   topbar: {
     width: '100%',
-    marginBottom: '10%',
     alignContent: 'flex-start',
   },
 
@@ -69,10 +74,14 @@ const styles = StyleSheet.create({
 
   mainContent: {
     width: '100%',
-    backgroundColor: 'transparent',
+    height:'100%',
+    backgroundColor: '#000',
     flex: 1,
     width: '100%',
     alignItems: 'center',
+    justifyContent:'center',
+    alignContent:'center',
+    alignSelf:'center'
   },
 
   header: {
@@ -83,7 +92,7 @@ const styles = StyleSheet.create({
   },
 
   qr: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#000',
     alignContent: 'center',
     padding: '2%',
     borderColor: 'white',
@@ -95,14 +104,7 @@ const styles = StyleSheet.create({
     width: 250,
   },
 
-  logout: {
-    textAlign: 'center',
-    fontFamily: 'EuclidCircularA-Medium',
-    fontSize: 30,
-    color: '#fff',
-    marginBottom: '15%',
-    marginTop: '20%',
-  },
+
 
   userInfo: {
     marginTop: '10%',

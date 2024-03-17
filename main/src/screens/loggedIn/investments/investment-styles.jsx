@@ -268,6 +268,7 @@ const styles = StyleSheet.create({
     color: '#989898',
     fontFamily: 'Montreal-Medium',
     fontSize: 16,
+    alignSelf:'center'
   },
 
   portfoioPriceContainer: {

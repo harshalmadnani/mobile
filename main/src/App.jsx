@@ -128,14 +128,12 @@ function WidgetPage({navigation}) {
 
 function Settings({navigation}) {
   return (
-    <SafeAreaView style={styles.black}>
-      <ScrollView style={{height: windowHeight * 0.8}}>
-        <View>
-          <SettingsComponent navigation={navigation} />
-        </View>
-      </ScrollView>
-      <BottomNavbar navigation={navigation} selected="Settings" />
-    </SafeAreaView>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <SettingsComponent navigation={navigation} />
+        <BottomNavbar navigation={navigation} selected="Settings" />
+      </SafeAreaView>
+    </View>
   );
 }
 function LoggedIn({navigation}) {

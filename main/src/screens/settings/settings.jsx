@@ -43,7 +43,7 @@ const HorizontalRule = () => {
 
 const ruleStyles = StyleSheet.create({
   hr: {
-    borderBottomColor: 'rgba(125, 127, 124, 0.5)',
+    borderBottomColor: '#101010',
     borderBottomWidth: 1,
     marginVertical: 10,
     width: '100%',
@@ -98,7 +98,7 @@ const Component = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{width: '100%', height: '100%', }}>
+    <SafeAreaView style={{flex:1, paddingBottom:'10%' }}>
          <View style={{
     marginTop: '8%',
     marginBottom: '2%',
@@ -123,8 +123,7 @@ PROFILE
     </TouchableOpacity>
   </View>
       <ScrollView
-        style={{width: width}}
-        contentContainerStyle={{alignItems: 'center'}}>
+       >
         <View style={styles.nameSettings}>
           <View style={{marginBottom:'5%'}}>
             <Text
@@ -152,88 +151,44 @@ PROFILE
           </View>
         </View>
 
-        <View style={styles.events}>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL(
-                  'https://zealy.io/cw/xadefinance/questboard',
-                );
-              }}>
-              <FastImage
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 10,
-                }}
-                source={require('./quests.png')}
-              />
-            </TouchableOpacity>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 17,
-                fontFamily: `Unbounded-Medium`,
-                color: '#f0f0f0',
-                marginTop: '4%',
-              }}>
-              Quests
-            </Text>
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL(
-                  'https://app.komet.me/nfts/Xade_Explorers/346',
-                );
-              }}>
-              <FastImage
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 10,
-                }}
-                source={require('./tokens.png')}
-              />
-            </TouchableOpacity>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 17,
-                fontFamily: `Unbounded-Medium`,
-                color: '#f0f0f0',
-                marginTop: '4%',
-              }}>
-              Plus
-            </Text>
-          </View>
-          <View>
-          <TouchableOpacity
-           
-            onPress={() => {
-              this.func()
-            }}>
-              <FastImage
-                style={{
-                  width: 70,
-                  height: 70,
-                  borderRadius: 10,
-                }}
-                source={require('./Incognito.png')}
-              />
-            </TouchableOpacity>
-            <Text
-              style={{
-                textAlign: 'center',
-                fontSize: 17,
-                fontFamily: `Unbounded-Medium`,
-                color: '#f0f0f0',
-                marginTop: '4%',
-              }}>
-              Referrals
-            </Text>
-          </View>
-        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity 
+  onPress={() => {
+    Linking.openURL('https://zealy.io/cw/xadefinance/questboard');
+  }}
+  style={{
+    justifyContent: 'center',
+    borderRadius:30,
+    padding:20,
+    backgroundColor:'#1a1a1a',
+    marginLeft:'3%',
+    width:'45%'
+  }}
+>
+  <Image source={{uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402529/du6fpp6plx9fhp6qdv1l.png'}} style={{ height: 60, width: 60 }} />
+  <Text style={{ fontSize: 16, fontFamily:'Unbounded-Medium',color:'#fff',marginVertical:'5%',textAlign:"left" }}>QUESTS</Text>
+  <Text style={{ fontSize: 12 , fontFamily:'Montreal-Medium',color:'#949494',marginBottom: '10%'}}>Get exclusive rewards such as Xade Shards & more</Text>
+</TouchableOpacity>
+
+<TouchableOpacity 
+  onPress={() => {
+    Linking.openURL('https://app.komet.me/nfts/Xade_Explorers/346');
+  }}
+  style={{
+    justifyContent: 'center',
+    borderRadius:30,
+    padding:20,
+    backgroundColor:'#1a1a1a',
+    width:'45%',
+    marginRight:'3%',
+  }}
+>
+  <Image source={{uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402530/eyybhybbljzq9tvnfxqn.png'}} style={{ height: 60, width: 60 }} />
+  <Text style={{ fontSize: 16, fontFamily:'Unbounded-Medium',color:'#fff',marginVertical:'5%'}}>EXPLORERS</Text>
+  <Text style={{ fontSize: 12 , fontFamily:'Montreal-Medium',color:'#949494',marginBottom: '10%' }}>Become a Xade Explorer to get the best that we have</Text>
+</TouchableOpacity>
+
+    </View>
 
         <View style={[styles.otherSettings, {marginTop: 20, marginBottom: 10}]}>
         <TouchableOpacity
@@ -546,6 +501,33 @@ PROFILE
           v1.1.3 (5) - beta
         </Text>
       </ScrollView>
+<TouchableOpacity
+  style={{
+    flexDirection: 'row',
+    height: 52,
+    width: '95%',
+    borderRadius: 30,
+    backgroundColor: '#fff', // Set background color to white
+    position: 'absolute',
+    bottom: 60, // Adjust the bottom spacing as needed
+    left: 0,
+    right: 0,
+    alignItems: 'center', // Center the text vertically
+    justifyContent: 'center', // Center the text horizontally
+  }}
+  onPress={() => {
+    navigation.push('SendEmail');
+  }}>
+  <Text
+    style={{
+      color: '#000', // Set text color to black
+      fontSize: 14,
+      fontFamily: 'Unbounded-ExtraBold',
+    }}>
+    TRANSFER FUNDS
+  </Text>
+</TouchableOpacity>
+
     </SafeAreaView>
   );
 };

@@ -45,7 +45,7 @@ const MarketSearchScreen = ({route, navigation}) => {
             top: 0,
           }}>
           <View style={styles.headerContainer}>
-          <Icon name="close" size={30} color="#fff" />
+          <Icon name="close" size={30} color="#fff" onPress={() => navigation.goBack()} />
             <Text style={styles.headerTitle}>Search</Text>
           </View>
           <Text style={styles.secondaryHeaderTitle}>

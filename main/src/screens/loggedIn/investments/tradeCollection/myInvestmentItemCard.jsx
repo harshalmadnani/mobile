@@ -91,13 +91,14 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             )}
           </View>
         </View>
+        <View style={{alignSelf:'center'}}>
         <Icon
             name={'expand-more'}
             size={24}
             color={'#f0f0f0'}
             type="materialicons"
-            onPress={() => navigation.goBack()}
           />
+          </View>
     <Modal
       animationType="slide"
       transparent={true}
@@ -160,8 +161,8 @@ const MyInvestmentItemCard = ({navigation, item}) => {
 
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center',paddingHorizontal: 10, paddingVertical: 40, marginLeft: '1%', borderRadius: 30, backgroundColor: '#121212' }}>
         <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Total Returns</Text>
-        <Text style={{ fontSize: 16,  color: item.unrealized_pnl >= 0 ? 'green' : 'red', fontFamily: 'Unbounded-Bold' }}>
-          ${(item.realized_pnl + item.unrealized_pnl).toFixed(2)}({((item.realized_pnl + item.unrealized_pnl)/((item.current_price * item.balance)-item.unrealized_pnl-item.realized_pnl)).toFixed(2)}%)
+        <Text style={{ fontSize: 16,  color: item.unrealized_pnl >= 0 ? '#ADFF6C' : 'red', fontFamily: 'Unbounded-Bold' }}>
+          {((item.realized_pnl + item.unrealized_pnl)/((item.current_price * item.balance)-item.unrealized_pnl-item.realized_pnl)).toFixed(2)}%
         </Text>
       </View>
 </View>
@@ -176,21 +177,19 @@ const MyInvestmentItemCard = ({navigation, item}) => {
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
         <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1,fontFamily:'Montreal-Medium' }}>Unrealized PnL:</Text>
-        <Text style={{ fontSize: 16, color: item.unrealized_pnl >= 0 ? 'green' : 'red', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.unrealized_pnl.toFixed(2)}</Text>
+        <Text style={{ fontSize: 16, color: item.unrealized_pnl >= 0 ? '#ADFF6C' : 'red', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.unrealized_pnl.toFixed(2)}</Text>
       </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: '10%' }}>
         <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1 ,fontFamily:'Montreal-Medium'}}>Realized PnL:</Text>
-        <Text style={{ fontSize: 16, color: item.realized_pnl >= 0 ? 'green' : 'red', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.realized_pnl.toFixed(2)}</Text>
+        <Text style={{ fontSize: 16, color: item.realized_pnl >= 0 ? '#ADFF6C' : 'red', textAlign: 'right', flex: 1 ,fontFamily:'Unbounded-Medium'}}>${item.realized_pnl.toFixed(2)}</Text>
       </View>
 
         </View>
         <TouchableOpacity
-        onPress={() => {
-          navigation.push('Ramper');
-        }}
         style={{
           position: 'absolute', // Positions the button over the content
           width: '95%',
+          marginTop:'10%',
           height: 56, // Button height
           borderRadius: 28, // Circular button
           backgroundColor: '#FFF', // Button color
@@ -202,6 +201,14 @@ const MyInvestmentItemCard = ({navigation, item}) => {
           },
           shadowOpacity: 0.5,
           shadowRadius: 10,
+        }}
+        onPress={() => {
+          // if (holdings) {
+          navigation.navigate('TradePage', {
+            state: item,
+            asset: item.name,
+          });
+          // }
         }}>
         <Text
           style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Medium'}}>
