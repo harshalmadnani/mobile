@@ -1,7 +1,10 @@
 import axios from 'axios';
 import {ethers} from 'ethers';
 import erc20 from '../screens/loggedIn/payments/USDC.json';
+import ProxyDLNAbi from './abis/ProxyDLNAbi.json';
 import {
+  encodeFunctionDataInstance,
+  encodeFunctionForDLN,
   getEthereumTransaction,
   getSmartAccountAddress,
   getUserAddressFromAuthCoreSDK,
@@ -175,7 +178,7 @@ export const getBestCrossSwapRateBuy = async (
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
     const res = await getDLNTradeCreateBuyOrder(
       137,
-      '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       value,
       getChainIdOnChainName(x?.blockchains),
       x?.contractAddress,
@@ -270,33 +273,63 @@ export const getDLNTradeCreateBuyOrderTxn = async (
     return null;
   }
 };
-export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
+export const confirmDLNTransaction = async (
+  quoteTxReciept,
+  amount,
+  tokenAddress,
+  txData,
+) => {
   let txs = [];
-  console.log('inside execution.......', amount, tokenAddress, txData);
+  console.log('Tx confirming started!!!');
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
   const erc20Abi = new ethers.utils.Interface(erc20);
-  const approveData = erc20Abi.encodeFunctionData('approve', [
-    txData?.to,
+  const proxyDlnAbi = new ethers.utils.Interface(ProxyDLNAbi);
+  const sendData = erc20Abi.encodeFunctionData('transfer', [
+    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
     amount,
   ]);
-  const approveTX = await getEthereumTransaction(
-    smartAccount,
-    tokenAddress,
-    approveData,
-    '0',
-  );
-  console.log('smart contract address.......', approveTX, smartAccount);
-  txs.push(approveTX);
 
   const sendTX = await getEthereumTransaction(
     smartAccount,
-    txData?.to,
-    txData?.data,
-    BigNumber(txData?.value).toString(16),
+    tokenAddress,
+    sendData,
+    '0',
   );
-  console.log('tx sendTX part', sendTX);
   txs.push(sendTX);
+  console.log('Tx send started!!!');
+  const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+    quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+    quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+    quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+    quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+    '56', // BNB Chain
+    smartAccount,
+    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+    smartAccount,
+  ]);
+  // const dlnProxyTxData = encodeFunctionForDLN([
+  // quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+  // quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+  // quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+  // quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+  // 56, // BNB Chain
+  // smartAccount,
+  // '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+  // smartAccount,
+  // '',
+  // '',
+  // '',
+  // ]);
+  const executeProxyDLN = await getEthereumTransaction(
+    smartAccount,
+    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+    dlnProxyTxData,
+    '0',
+  );
+  console.log('tx executing swapping part', dlnProxyTxData);
+  txs.push(executeProxyDLN);
+
   const signature = await signAndSendBatchTransactionWithGasless(
     eoaAddress,
     smartAccount,

@@ -2,6 +2,7 @@
  * @format
  */
 import 'react-native-get-random-values';
+import 'node-libs-react-native/globals';
 import {AppRegistry, Platform} from 'react-native';
 import './src/global';
 import './global';

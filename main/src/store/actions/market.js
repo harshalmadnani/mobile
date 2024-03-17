@@ -101,7 +101,7 @@ export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
       tokenInfo?.address,
       value,
       137,
-      '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
     );
     console.log('best rates.....sell', JSON.stringify(bestRate));
     dispatch(marketsAction.setBestSwappingRates(bestRate));

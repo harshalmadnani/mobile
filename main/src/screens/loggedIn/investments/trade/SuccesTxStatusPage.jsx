@@ -10,7 +10,7 @@ const SuccessTxStatusPage = ({route, navigation}) => {
   const txQuoteInfo = {
     estimation: {
       srcChainTokenIn: {
-        address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+        address: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
         chainId: 137,
         decimals: 6,
         name: 'USD Coin',
@@ -32,8 +32,8 @@ const SuccessTxStatusPage = ({route, navigation}) => {
       costsDetails: [
         {
           chain: '137',
-          tokenIn: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-          tokenOut: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          tokenIn: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+          tokenOut: '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
           amountIn: '1000000',
           amountOut: '999600',
           type: 'DlnProtocolFee',

@@ -43,7 +43,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('10');
+  const [value, setValue] = useState('2');
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -975,7 +975,7 @@ const TradePage = ({route}) => {
                 ) {
                   setPreparingTx(true);
                   const res = await getTradeSigningData();
-                  const signature = await confirmDLNTransaction(
+                  const signature = await confirmDLNTransaction(res,
                     res?.estimation?.srcChainTokenIn?.amount ||
                       res?.tokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address ||
@@ -984,7 +984,7 @@ const TradePage = ({route}) => {
                   );
                   setPreparingTx(false);
                   if (signature) {
-                    console.log('txn hash', signature);
+                    console.log('txn hash....', JSON.stringify(res), signature);
                     navigation.navigate('PendingTxStatus', {
                       state: res,
                       tradeType,
@@ -1001,7 +1001,7 @@ const TradePage = ({route}) => {
                       res?.estimation?.srcChainTokenIn?.chainId,
                     );
                   }
-                  const signature = await confirmDLNTransaction(
+                  const signature = await confirmDLNTransaction(res,
                     res?.estimation?.srcChainTokenIn?.amount ||
                       res?.tokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address ||
@@ -1010,7 +1010,7 @@ const TradePage = ({route}) => {
                   );
                   setPreparingTx(false);
                   if (signature) {
-                    console.log('txn hash', signature);
+                    console.log('txn hash',res, signature);
                     navigation.navigate('PendingTxStatus', {
                       state: res,
                       tradeType,
