@@ -114,6 +114,14 @@ export const getUserAddressFromAuthCoreSDK = async () => {
     return 0;
   }
 };
+export const getUserSolanaAddressFromAuthCoreSDK = async () => {
+  try {
+    const result = await particleAuthCore.solana.getAddress();
+    return result;
+  } catch (error) {
+    return 0;
+  }
+};
 export const getSmartAccountAddress = async eoaAddress => {
   try {
     const smartAccountParam = {
@@ -236,222 +244,222 @@ export const encodeFunctionForDLN = params => {
     '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
     [
       {
-        "inputs": [
+        inputs: [
           {
-            "internalType": "address",
-            "name": "_dlnSourceAddress",
-            "type": "address"
-          }
+            internalType: 'address',
+            name: '_dlnSourceAddress',
+            type: 'address',
+          },
         ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
+        stateMutability: 'nonpayable',
+        type: 'constructor',
       },
       {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
           {
-            "indexed": false,
-            "internalType": "bytes32",
-            "name": "orderId",
-            "type": "bytes32"
+            indexed: false,
+            internalType: 'bytes32',
+            name: 'orderId',
+            type: 'bytes32',
           },
           {
-            "components": [
+            components: [
               {
-                "internalType": "address",
-                "name": "giveTokenAddress",
-                "type": "address"
+                internalType: 'address',
+                name: 'giveTokenAddress',
+                type: 'address',
               },
               {
-                "internalType": "uint256",
-                "name": "giveAmount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'giveAmount',
+                type: 'uint256',
               },
               {
-                "internalType": "bytes",
-                "name": "takeTokenAddress",
-                "type": "bytes"
+                internalType: 'bytes',
+                name: 'takeTokenAddress',
+                type: 'bytes',
               },
               {
-                "internalType": "uint256",
-                "name": "takeAmount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'takeAmount',
+                type: 'uint256',
               },
               {
-                "internalType": "uint256",
-                "name": "takeChainId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'takeChainId',
+                type: 'uint256',
               },
               {
-                "internalType": "bytes",
-                "name": "receiverDst",
-                "type": "bytes"
+                internalType: 'bytes',
+                name: 'receiverDst',
+                type: 'bytes',
               },
               {
-                "internalType": "address",
-                "name": "givePatchAuthoritySrc",
-                "type": "address"
+                internalType: 'address',
+                name: 'givePatchAuthoritySrc',
+                type: 'address',
               },
               {
-                "internalType": "bytes",
-                "name": "orderAuthorityAddressDst",
-                "type": "bytes"
+                internalType: 'bytes',
+                name: 'orderAuthorityAddressDst',
+                type: 'bytes',
               },
               {
-                "internalType": "bytes",
-                "name": "allowedTakerDst",
-                "type": "bytes"
+                internalType: 'bytes',
+                name: 'allowedTakerDst',
+                type: 'bytes',
               },
               {
-                "internalType": "bytes",
-                "name": "externalCall",
-                "type": "bytes"
+                internalType: 'bytes',
+                name: 'externalCall',
+                type: 'bytes',
               },
               {
-                "internalType": "bytes",
-                "name": "allowedCancelBeneficiarySrc",
-                "type": "bytes"
-              }
+                internalType: 'bytes',
+                name: 'allowedCancelBeneficiarySrc',
+                type: 'bytes',
+              },
             ],
-            "indexed": false,
-            "internalType": "struct OrderCreation",
-            "name": "orderCreation",
-            "type": "tuple"
-          }
+            indexed: false,
+            internalType: 'struct OrderCreation',
+            name: 'orderCreation',
+            type: 'tuple',
+          },
         ],
-        "name": "OrderCallOrder",
-        "type": "event"
+        name: 'OrderCallOrder',
+        type: 'event',
       },
       {
-        "inputs": [],
-        "name": "deposit",
-        "outputs": [],
-        "stateMutability": "payable",
-        "type": "function"
+        inputs: [],
+        name: 'deposit',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function',
       },
       {
-        "inputs": [],
-        "name": "dlnSourceAddress",
-        "outputs": [
+        inputs: [],
+        name: 'dlnSourceAddress',
+        outputs: [
           {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
+            internalType: 'address',
+            name: '',
+            type: 'address',
+          },
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function',
       },
       {
-        "inputs": [],
-        "name": "globalFixedNativeFee",
-        "outputs": [
+        inputs: [],
+        name: 'globalFixedNativeFee',
+        outputs: [
           {
-            "internalType": "uint88",
-            "name": "",
-            "type": "uint88"
-          }
+            internalType: 'uint88',
+            name: '',
+            type: 'uint88',
+          },
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function',
       },
       {
-        "inputs": [],
-        "name": "ownerAddress",
-        "outputs": [
+        inputs: [],
+        name: 'ownerAddress',
+        outputs: [
           {
-            "internalType": "address",
-            "name": "",
-            "type": "address"
-          }
+            internalType: 'address',
+            name: '',
+            type: 'address',
+          },
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function',
       },
       {
-        "inputs": [
+        inputs: [
           {
-            "internalType": "address",
-            "name": "giveTokenAddress",
-            "type": "address"
+            internalType: 'address',
+            name: 'giveTokenAddress',
+            type: 'address',
           },
           {
-            "internalType": "uint256",
-            "name": "giveAmount",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'giveAmount',
+            type: 'uint256',
           },
           {
-            "internalType": "address",
-            "name": "takeTokenAddress",
-            "type": "address"
+            internalType: 'address',
+            name: 'takeTokenAddress',
+            type: 'address',
           },
           {
-            "internalType": "uint256",
-            "name": "takeAmount",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'takeAmount',
+            type: 'uint256',
           },
           {
-            "internalType": "uint256",
-            "name": "takeChainId",
-            "type": "uint256"
+            internalType: 'uint256',
+            name: 'takeChainId',
+            type: 'uint256',
           },
           {
-            "internalType": "address",
-            "name": "receiverDst",
-            "type": "address"
+            internalType: 'address',
+            name: 'receiverDst',
+            type: 'address',
           },
           {
-            "internalType": "address",
-            "name": "givePatchAuthoritySrc",
-            "type": "address"
+            internalType: 'address',
+            name: 'givePatchAuthoritySrc',
+            type: 'address',
           },
           {
-            "internalType": "address",
-            "name": "orderAuthorityAddressDst",
-            "type": "address"
-          }
+            internalType: 'address',
+            name: 'orderAuthorityAddressDst',
+            type: 'address',
+          },
         ],
-        "name": "placeOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'placeOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
       },
       {
-        "inputs": [
+        inputs: [
           {
-            "internalType": "address payable",
-            "name": "_to",
-            "type": "address"
-          }
+            internalType: 'address payable',
+            name: '_to',
+            type: 'address',
+          },
         ],
-        "name": "transferAllNativeToken",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'transferAllNativeToken',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
       },
       {
-        "inputs": [
+        inputs: [
           {
-            "internalType": "address",
-            "name": "_tokenAddress",
-            "type": "address"
+            internalType: 'address',
+            name: '_tokenAddress',
+            type: 'address',
           },
           {
-            "internalType": "address",
-            "name": "_to",
-            "type": "address"
+            internalType: 'address',
+            name: '_to',
+            type: 'address',
           },
           {
-            "internalType": "uint256",
-            "name": "value",
-            "type": "uint256"
-          }
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
+          },
         ],
-        "name": "transferAnyToken",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-      }
+        name: 'transferAnyToken',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
     ],
   );
   console.log(' params...... ', params);
