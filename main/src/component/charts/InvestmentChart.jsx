@@ -15,10 +15,15 @@ import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 export default InteractiveChart;
 
+function CustomPriceText() {
+  return <LineChart.PriceText style={styles.stockPrice} />;
+}
+
 function InteractiveChart({assetName}) {
   const dispatch = useDispatch();
   const [divisionResult, setDivisionResult] = useState(0);
   const [currentPrice, setcurrentPrice] = useState(0);
+  const [touchActive, setTouchActive] = useState(false);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;
@@ -110,121 +115,126 @@ function InteractiveChart({assetName}) {
   const [priceChange, setpriceChange] = useState(0); // The currently selected X coordinate position
 
   useEffect(() => {
-    if (priceList.length > 1) {
+    if (priceList.length > 1 || priceList?.[0]?.value === '0') {
       const result =
-        ((priceList[priceList.length - 1] - priceList[0]) /
-          priceList[priceList.length - 1]) *
+        ((priceList?.[priceList.length - 1]?.value - priceList?.[0]?.value) /
+          priceList[priceList.length - 1]?.value) *
         100;
-      const test = priceList[priceList.length - 1] - priceList[0];
+      const test = priceList[priceList.length - 1]?.value - priceList[0]?.value;
       setDivisionResult(result);
       setpriceChange(test); // Use the correct function name for setting state
+    } else {
+      setDivisionResult('0');
+      setpriceChange('0'); // Use the correct function name for setting state
     }
   }, [priceList]);
 
   return (
-    <View
-      style={{
-        backgroundColor: '#000',
-        alignItems: 'stretch',
-      }}>
-      <View style={styles.portfoioPriceContainer}>
-        <Text style={styles.stockPrice}>
-          $
-          {Number(currentPrice || '0')
-            .toFixed(2)
-            .toLocaleString('en-US')}
-        </Text>
+    <LineChart.Provider data={priceList}>
+      <View
+        style={{
+          backgroundColor: '#000',
+          alignItems: 'stretch',
+        }}>
+        <View style={styles.portfoioPriceContainer}>
+          {touchActive ? (
+            <CustomPriceText />
+          ) : (
+            <Text style={styles.stockPrice}>
+              {Number(currentPrice || '0')
+                .toFixed(2)
+                .toLocaleString('en-US')}
+            </Text>
+          )}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center', // Vertically center
+              justifyContent: 'center',
+              marginTop: '1%',
+            }}>
+            <Text
+              style={{
+                color: divisionResult < 0 ? '#FF5050' : '#ADFF6C',
+                fontFamily: 'Unbounded-Medium',
+                fontSize: 14,
+                textAlign: 'center',
+              }}>
+              $
+              {Number(priceChange || 0)
+                .toFixed(2)
+                .toLocaleString('en-US')}{' '}
+              (
+              {Number(divisionResult || 0)
+                .toFixed(2)
+                .toLocaleString('en-US')}
+              %)
+            </Text>
+          </View>
+        </View>
         <View
           style={{
             flexDirection: 'row',
-            alignItems: 'center', // Vertically center
-            justifyContent: 'center',
-            marginTop: '1%',
+            width: apx(750),
+            height: apx(500),
+            alignSelf: 'stretch',
           }}>
-          <Text
-            style={{
-              color: divisionResult < 0 ? '#FF5050' : '#ADFF6C',
-              fontFamily: 'Unbounded-Medium',
-              fontSize: 14,
-              textAlign: 'center',
-            }}>
-            $
-            {Number(priceChange || 0)
-              .toFixed(2)
-              .toLocaleString('en-US')}{' '}
-            (
-            {Number(divisionResult || 0)
-              .toFixed(2)
-              .toLocaleString('en-US')}
-            %)
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: apx(750),
-          height: apx(500),
-          alignSelf: 'stretch',
-        }}>
-        {priceList.length > 0 ? (
-          <GestureHandlerRootView>
-            <LineChart.Provider data={priceList}>
+          {priceList.length > 0 ? (
+            <GestureHandlerRootView>
               <LineChart width={apx(750)} height={apx(500)}>
                 <LineChart.Path color="white">
                   <LineChart.Gradient />
                 </LineChart.Path>
-                <LineChart.Tooltip
-                  textStyle={{
-                    backgroundColor: 'black',
-                    borderRadius: 4,
-                    color: 'white',
-                    fontSize: 18,
-                    padding: 4,
+                <LineChart.CursorCrosshair
+                  onActivated={() => {
+                    setTouchActive(true);
+                    console.log('startedddddd!!!!!');
+                  }}
+                  onEnded={() => {
+                    setTouchActive(false);
+                    console.log('Endedeeee!!!!!');
                   }}
                 />
-
-                <LineChart.CursorCrosshair />
               </LineChart>
-            </LineChart.Provider>
-          </GestureHandlerRootView>
-        ) : null}
-      </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          padding: apx(20),
-        }}>
-        {timeframes.map(timeframe => (
-          <TouchableOpacity
-            key={timeframe.value}
-            style={{
-              padding: apx(15),
-              backgroundColor:
-                selectedTimeframe === timeframe.value
-                  ? '#343434'
-                  : 'transparent',
-              borderRadius: apx(20),
-            }}
-            onPress={() => {
-              const options = {
-                enableVibrateFallback: true,
-                ignoreAndroidSystemSettings: false,
-              };
-              // ReactNativeHapticFeedback.trigger('impactHeavy', options);
-              setSelectedTimeframe(timeframe.value);
-            }}>
-            <Text
+            </GestureHandlerRootView>
+          ) : null}
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            padding: apx(20),
+          }}>
+          {timeframes.map(timeframe => (
+            <TouchableOpacity
+              key={timeframe.value}
               style={{
-                color:
-                  selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
+                padding: apx(15),
+                backgroundColor:
+                  selectedTimeframe === timeframe.value
+                    ? '#343434'
+                    : 'transparent',
+                borderRadius: apx(20),
+              }}
+              onPress={() => {
+                const options = {
+                  enableVibrateFallback: true,
+                  ignoreAndroidSystemSettings: false,
+                };
+                // ReactNativeHapticFeedback.trigger('impactHeavy', options);
+                setSelectedTimeframe(timeframe.value);
               }}>
-              {timeframe.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={{
+                  color:
+                    selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
+                }}>
+                {timeframe.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-    </View>
+    </LineChart.Provider>
   );
 }

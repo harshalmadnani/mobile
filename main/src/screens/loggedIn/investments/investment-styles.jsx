@@ -268,12 +268,12 @@ const styles = StyleSheet.create({
     color: '#989898',
     fontFamily: 'Montreal-Medium',
     fontSize: 16,
-    alignSelf:'center'
+    alignSelf: 'center',
   },
 
   portfoioPriceContainer: {
     marginTop: '2%',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   stockPriceContainer: {
@@ -281,7 +281,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
   },
-
 
   stockPrice: {
     color: '#F0F0F0',
@@ -292,7 +291,7 @@ const styles = StyleSheet.create({
 
   chartContainer: {
     marginTop: '10%',
-    alignItems:'center'
+    alignItems: 'center',
   },
 
   goldSelected: {

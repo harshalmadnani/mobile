@@ -43,7 +43,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('5');
+  const [value, setValue] = useState('15');
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -80,26 +80,6 @@ const TradePage = ({route}) => {
 
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
-      console.log('confirming', bestSwappingBuyTrades);
-      console.log(
-        'Swapping......TXDATA',
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
-          bestSwappingBuyTrades?.estimation?.tokenIn?.address,
-        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.amount ??
-          bestSwappingBuyTrades?.estimation?.tokenIn?.amount,
-        value *
-          Math.pow(
-            10,
-            bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
-              bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals,
-          ),
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId ?? 137,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address ??
-          bestSwappingBuyTrades?.estimation?.tokenOut?.address,
-        bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
-          bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
-      );
       const res = await getDLNTradeCreateBuyOrderTxn(
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
@@ -1017,6 +997,7 @@ const TradePage = ({route}) => {
                       res?.estimation?.srcChainTokenIn?.chainId,
                     );
                   }
+                  console.log('Final quote...', JSON.stringify(res));
                   const signature = await confirmDLNTransaction(
                     res,
                     res?.estimation?.srcChainTokenIn?.amount ||

@@ -298,24 +298,25 @@ export const confirmDLNTransaction = async (
   );
   txs.push(sendTX);
   console.log('Tx send started!!!');
-  // // const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
-  // //   quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
-  // //   quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
-  // //   quoteTxReciept?.estimation?.dstChainTokenOut?.address,
-  // //   quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
-  // //   '56', // BNB Chain
-  // //   smartAccount,
-  // //   '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
-  // //   smartAccount,
-  // // ]);
-  // // const executeProxyDLN = await getEthereumTransaction(
-  // //   smartAccount,
-  // //   '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
-  // //   dlnProxyTxData,
-  // //   '0',
-  // // );
-  // console.log('tx executing swapping part', dlnProxyTxData);
-  // txs.push(executeProxyDLN);
+
+  const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+    quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+    quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+    quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+    quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+    quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+    smartAccount,
+    '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
+    smartAccount,
+  ]);
+  const executeProxyDLN = await getEthereumTransaction(
+    smartAccount,
+    '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
+    dlnProxyTxData,
+    '0',
+  );
+  console.log('tx executing swapping part', dlnProxyTxData);
+  txs.push(executeProxyDLN);
 
   const signature = await signAndSendBatchTransactionWithGasless(
     eoaAddress,
