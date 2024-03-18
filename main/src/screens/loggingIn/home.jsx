@@ -93,7 +93,7 @@ const StaticHomeScreen = ({navigation}) => {
   }, []);
 
   const handleSwipeUp = ({nativeEvent}) => {
-    if (nativeEvent.state === State.ACTIVE) {
+    if (nativeEvent.oldState === State.BEGAN) {
       // Trigger haptic feedback
       const options = {
         enableVibrateFallback: true,

@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TextInput,
-  TouchableOpacity, 
+  TouchableOpacity,
   Image,
   Dimensions,
   SafeAreaView,
@@ -43,7 +43,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('2');
+  const [value, setValue] = useState('5');
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -54,12 +54,12 @@ const TradePage = ({route}) => {
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
-   const items = [
-    { left: 'SPOT MARKET', right: ' ' },
-    { left: 'SPOT LIMIT', right: 'COMING SOON' },
-    { left: 'FUTURES MARKET', right: 'COMING SOON' },
-    { left: 'FUTURES LIMIT', right: 'COMING SOON' },
-    { left: 'BOTS', right: 'COMING SOON' },
+  const items = [
+    {left: 'SPOT MARKET', right: ' '},
+    {left: 'SPOT LIMIT', right: 'COMING SOON'},
+    {left: 'FUTURES MARKET', right: 'COMING SOON'},
+    {left: 'FUTURES LIMIT', right: 'COMING SOON'},
+    {left: 'BOTS', right: 'COMING SOON'},
   ];
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
@@ -184,83 +184,98 @@ const TradePage = ({route}) => {
             </Text>
           </View>
           <TouchableOpacity
-  style={{
-    padding: 10,
-    borderRadius: 5,
-    flexDirection: 'row',
-    marginLeft: '30%',
-  }}
-  onPress={() => setModalVisible(true)} // Modified to open the modal
->
-<Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-          backgroundColor: '#151515',
-          padding: 20,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-        }}>
-          <View style={{
-             paddingBottom:'20%'
-            }}>
-                    <TouchableOpacity
             style={{
-              position: 'absolute',
-       left:'-5%',
-              zIndex: 1, 
-              
-            }}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Icon name="close" size={35} color="#fff" />
-          </TouchableOpacity>
-          </View>
-          {items.map((item, index) => (
-            <View key={index} style={{
+              padding: 10,
+              borderRadius: 5,
               flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '10%',
-            }}>
-              <Text style={{ color: '#fff', fontSize: 16, fontFamily: 'Unbounded-Medium' }}>{item.left}</Text>
-              {item.right !== ' ' && (
-                <View style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  borderRadius: 5,
-                  padding: 5,
+              marginLeft: '30%',
+            }}
+            onPress={() => setModalVisible(true)} // Modified to open the modal
+          >
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  width: '100%',
+                  backgroundColor: '#151515',
+                  padding: 20,
+                  borderTopLeftRadius: 20,
+                  borderTopRightRadius: 20,
                 }}>
-                  <Text style={{ color: '#fff', fontSize: 8, fontFamily: 'Unbounded-Medium' }}>{item.right}</Text>
+                <View
+                  style={{
+                    paddingBottom: '20%',
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      left: '-5%',
+                      zIndex: 1,
+                    }}
+                    onPress={() => setModalVisible(!modalVisible)}>
+                    <Icon name="close" size={35} color="#fff" />
+                  </TouchableOpacity>
                 </View>
-              )}
-            </View>
-          ))}
-        </View>
-      </Modal>
-  <Text
-    style={{
-      color: 'white',
-      fontSize: 12,
-      fontFamily: 'Unbounded-Medium',
-    }}
-  >
-    MARKET
-  </Text>
-  <Icon
-    name={'expand-more'}
-    size={20}
-    color={'#f0f0f0'}
-    type="materialicons"
-  />
-</TouchableOpacity>
+                {items.map((item, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '10%',
+                    }}>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: 16,
+                        fontFamily: 'Unbounded-Medium',
+                      }}>
+                      {item.left}
+                    </Text>
+                    {item.right !== ' ' && (
+                      <View
+                        style={{
+                          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                          borderRadius: 5,
+                          padding: 5,
+                        }}>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontSize: 8,
+                            fontFamily: 'Unbounded-Medium',
+                          }}>
+                          {item.right}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </View>
+            </Modal>
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 12,
+                fontFamily: 'Unbounded-Medium',
+              }}>
+              MARKET
+            </Text>
+            <Icon
+              name={'expand-more'}
+              size={20}
+              color={'#f0f0f0'}
+              type="materialicons"
+            />
+          </TouchableOpacity>
 
           <TouchableOpacity onPress={() => setIsDropDownOpen(!isDropDownOpen)}>
             <View></View>
@@ -975,7 +990,8 @@ const TradePage = ({route}) => {
                 ) {
                   setPreparingTx(true);
                   const res = await getTradeSigningData();
-                  const signature = await confirmDLNTransaction(res,
+                  const signature = await confirmDLNTransaction(
+                    res,
                     res?.estimation?.srcChainTokenIn?.amount ||
                       res?.tokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address ||
@@ -1001,7 +1017,8 @@ const TradePage = ({route}) => {
                       res?.estimation?.srcChainTokenIn?.chainId,
                     );
                   }
-                  const signature = await confirmDLNTransaction(res,
+                  const signature = await confirmDLNTransaction(
+                    res,
                     res?.estimation?.srcChainTokenIn?.amount ||
                       res?.tokenIn?.amount,
                     res?.estimation?.srcChainTokenIn?.address ||
@@ -1010,7 +1027,7 @@ const TradePage = ({route}) => {
                   );
                   setPreparingTx(false);
                   if (signature) {
-                    console.log('txn hash',res, signature);
+                    console.log('txn hash', res, signature);
                     navigation.navigate('PendingTxStatus', {
                       state: res,
                       tradeType,

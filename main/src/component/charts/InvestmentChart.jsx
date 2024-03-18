@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 // import * as React from 'react'
+import {LineChart} from 'react-native-wagmi-charts';
 import {
   PanResponder,
   Dimensions,
@@ -9,55 +10,21 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from '../../screens/loggedIn/investments/investment-styles';
-import {AreaChart, XAxis, YAxis} from 'react-native-svg-charts';
-import {
-  Circle,
-  Defs,
-  G,
-  Line,
-  LinearGradient,
-  Path,
-  Rect,
-  Stop,
-  Text as SvgText,
-} from 'react-native-svg';
-import * as shape from 'd3-shape';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {getHistoricalData} from '../../utils/cryptoMarketsApi';
 import {useFocusEffect} from '@react-navigation/native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 export default InteractiveChart;
 
 function InteractiveChart({assetName}) {
   const dispatch = useDispatch();
-  const [history, setHistory] = useState();
   const [divisionResult, setDivisionResult] = useState(0);
   const [currentPrice, setcurrentPrice] = useState(0);
-  const address = useSelector(x => x.auth.address);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;
   };
-  //   useEffect(() => {
-  //     async function init() {
-  //       try {
-  //         const data = await getHistoricalData(address, from);
-  //         console.log('Data from API', data);
-  //         setHistory(data);
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     }
-  //     init();
-  //   }, []);
 
-  const [dateList, setDateList] = useState([
-    '08-31 15:09',
-    '08-31 15:10',
-    '08-31 15:11',
-    '08-31 15:12',
-    '08-31 15:13',
-  ]);
-  const [priceList, setPriceList] = useState([0, 0, 0, 0, 0]);
+  const [priceList, setPriceList] = useState([]);
   const now = new Date();
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
   const oneHourAgo = new Date(now.getTime() - 1 * 60 * 60 * 1000);
@@ -89,12 +56,18 @@ function InteractiveChart({assetName}) {
       : null;
     async function init() {
       if (from === null) return; // Early exit if timestamp is not found
-
       try {
+        console.log('change date fire', assetName, from);
         const data = await getHistoricalData(assetName, from);
-        // Assuming data.balance_history is an array of [timestamp, price] pairs
-        const prices = data.price_history.map(entry => entry[1]); // Extracting the price part
-        setPriceList(prices);
+        const historicalPriceXYPair = data.price_history.map(entry => {
+          return {timestamp: entry[0], value: entry[1]};
+        });
+        console.log(
+          'change date fire',
+          selectedTimeframe,
+          historicalPriceXYPair.length,
+        );
+        setPriceList(historicalPriceXYPair);
         setcurrentPrice(data?.price_history[0][1]);
       } catch (e) {
         console.log(e);
@@ -115,9 +88,12 @@ function InteractiveChart({assetName}) {
             : null;
 
           const data = await getHistoricalData(assetName, from);
-
-          const prices = data.price_history.map(entry => entry[1]); // Extracting the price part
-          setPriceList(prices);
+          const historicalPriceXYPair = data.price_history.map(entry => {
+            return {timestamp: entry[0], value: entry[1]};
+          });
+          setPriceList(historicalPriceXYPair);
+          console.log('change focus fire', historicalPriceXYPair.length);
+          // Extracting the price part
           setcurrentPrice(data?.price_history[0][1]);
         } catch (e) {
           console.log(e);
@@ -129,8 +105,8 @@ function InteractiveChart({assetName}) {
       };
     }, []),
   );
-  const size = useRef(dateList.length);
-  const [positionX, setPositionX] = useState(-1); // The currently selected X coordinate position
+
+  // The currently selected X coordinate position
   const [priceChange, setpriceChange] = useState(0); // The currently selected X coordinate position
 
   useEffect(() => {
@@ -144,129 +120,6 @@ function InteractiveChart({assetName}) {
       setpriceChange(test); // Use the correct function name for setting state
     }
   }, [priceList]);
-
-  const panResponder = useRef(
-    PanResponder.create({
-      // 要求成为响应者：
-      onStartShouldSetPanResponder: (evt, gestureState) => true,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
-      onPanResponderTerminationRequest: (evt, gestureState) => true,
-
-      onPanResponderGrant: (evt, gestureState) => {
-        updatePosition(evt.nativeEvent.locationX);
-        return true;
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        updatePosition(evt.nativeEvent.locationX);
-        return true;
-      },
-      onPanResponderRelease: () => {
-        setPositionX(-1);
-      },
-    }),
-  );
-
-  const updatePosition = x => {
-    const YAxisWidth = apx(130);
-    const x0 = apx(0); // x0 position
-    const chartWidth = apx(750) - YAxisWidth - x0;
-    const xN = x0 + chartWidth; //xN position
-    const xDistance = chartWidth / size.current; // The width of each coordinate point
-    if (x <= x0) {
-      x = x0;
-    }
-    if (x >= xN) {
-      x = xN;
-    }
-
-    // console.log((x - x0) )
-
-    // The selected coordinate x :
-    // (x - x0)/ xDistance = value
-    let value = ((x - x0) / xDistance).toFixed(0);
-    if (value >= size.current - 1) {
-      value = size.current - 1; // Out of chart range, automatic correction
-    }
-
-    setPositionX(Number(value));
-  };
-
-  const CustomGrid = ({x, y, ticks}) => <G></G>;
-
-  const CustomLine = ({line}) => (
-    <Path key="line" d={line} stroke="#fff" strokeWidth={apx(6)} fill="none" />
-  );
-
-  const CustomGradient = () => (
-    <Defs key="gradient">
-      <LinearGradient id="gradient" x1="0" y="0%" x2="0%" y2="100%">
-        {/* <Stop offset="0%" stopColor="rgb(134, 65, 244)" /> */}
-        {/* <Stop offset="100%" stopColor="rgb(66, 194, 244)" /> */}
-
-        <Stop offset="0%" stopColor="#000" stopOpacity={0.25} />
-        <Stop offset="100%" stopColor="#000" stopOpacity={0} />
-      </LinearGradient>
-    </Defs>
-  );
-
-  const Tooltip = ({x, y, ticks}) => {
-    if (positionX < 0) {
-      return null;
-    }
-
-    const date = dateList[positionX];
-    return (
-      <G x={x(positionX)} key="tooltip">
-        {/* <G
-                    x={positionX > size.current / 2 ? -apx(300 + 10) : apx(10)}
-                    y={y(priceList[positionX]) - apx(10)}>
-                    <Rect
-                        y={-apx(24 + 24 + 20) / 2}
-                        rx={apx(12)} // borderRadius
-                        ry={apx(12)} // borderRadius
-                        width={apx(200)}
-                        height={apx(96)}
-                        fill="#787878"
-                    />
-
-                    <SvgText x={apx(20)} fill="#000" opacity={0.65} fontSize={apx(24)}>
-                        {date}
-                    </SvgText>
-                    <SvgText
-                        x={apx(20)}
-                        y={apx(24 + 20)}
-                        fontSize={apx(24)}
-                        fontWeight="bold"
-                        fontFamily='Unbounded-Medium'
-                        fill="#fff">
-                        ${priceList[positionX]}
-                    </SvgText>
-                </G> */}
-
-        <G x={x}>
-          <Line
-            y1={ticks[0]}
-            y2={ticks[Number(ticks.length)]}
-            stroke="#787878"
-            strokeWidth={apx(4)}
-            strokeDasharray={[6, 3]}
-          />
-
-          <Circle
-            cy={y(priceList[positionX])}
-            r={apx(20 / 2)}
-            stroke="#000"
-            strokeWidth={apx(2)}
-            fill="#fff"
-          />
-        </G>
-      </G>
-    );
-  };
-
-  const verticalContentInset = {top: apx(40), bottom: apx(40)};
 
   return (
     <View
@@ -314,20 +167,28 @@ function InteractiveChart({assetName}) {
           height: apx(500),
           alignSelf: 'stretch',
         }}>
-        <View style={{flex: 1}} {...panResponder.current.panHandlers}>
-          <AreaChart
-            style={{flex: 1}}
-            data={priceList}
-            // curve={shape.curveNatural}
-            curve={shape.curveMonotoneX}
-            contentInset={{...verticalContentInset}}
-            svg={{fill: 'url(#gradient)'}}>
-            <CustomLine />
-            <CustomGrid />
-            <CustomGradient />
-            <Tooltip />
-          </AreaChart>
-        </View>
+        {priceList.length > 0 ? (
+          <GestureHandlerRootView>
+            <LineChart.Provider data={priceList}>
+              <LineChart width={apx(750)} height={apx(500)}>
+                <LineChart.Path color="white">
+                  <LineChart.Gradient />
+                </LineChart.Path>
+                <LineChart.Tooltip
+                  textStyle={{
+                    backgroundColor: 'black',
+                    borderRadius: 4,
+                    color: 'white',
+                    fontSize: 18,
+                    padding: 4,
+                  }}
+                />
+
+                <LineChart.CursorCrosshair />
+              </LineChart>
+            </LineChart.Provider>
+          </GestureHandlerRootView>
+        ) : null}
       </View>
       <View
         style={{
@@ -351,7 +212,7 @@ function InteractiveChart({assetName}) {
                 enableVibrateFallback: true,
                 ignoreAndroidSystemSettings: false,
               };
-              ReactNativeHapticFeedback.trigger('impactHeavy', options);
+              // ReactNativeHapticFeedback.trigger('impactHeavy', options);
               setSelectedTimeframe(timeframe.value);
             }}>
             <Text

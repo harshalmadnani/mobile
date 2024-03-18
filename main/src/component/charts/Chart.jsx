@@ -24,6 +24,8 @@ import * as shape from 'd3-shape';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
 import {useFocusEffect} from '@react-navigation/native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {LineChart} from 'react-native-wagmi-charts';
 export default InteractiveChart;
 
 function InteractiveChart() {
@@ -48,7 +50,7 @@ function InteractiveChart() {
     '08-31 15:12',
     '08-31 15:13',
   ]);
-  const [priceList, setPriceList] = useState([0, 0, 0, 0, 0]);
+  const [priceList, setPriceList] = useState([]);
   const now = new Date();
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
   const oneHourAgo = new Date(now.getTime() - 1 * 60 * 60 * 1000);
@@ -85,10 +87,18 @@ function InteractiveChart() {
             : null;
           console.log('Fired when time======1', from);
           const data = await getWalletHistoricalData(from);
-          console.log('Data from API wallet historicalll.......', data);
+          const historicalPriceXYPair = data.balance_history.map(entry => {
+            return {timestamp: entry[0], value: entry[1]};
+          });
+          console.log(
+            'change date fire',
+            selectedTimeframe,
+            historicalPriceXYPair.length,
+          );
+          setPriceList(historicalPriceXYPair);
           // Assuming data.balance_history is an array of [timestamp, price] pairs
-          const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
-          setPriceList(prices);
+          // const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
+          // setPriceList(prices);
           setcurrentPrice(data.balance_usd);
         } catch (e) {
           console.log(e);
@@ -114,8 +124,15 @@ function InteractiveChart() {
         const data = await getWalletHistoricalData(from);
         console.log('Data from API history.....', data);
         // Assuming data.balance_history is an array of [timestamp, price] pairs
-        const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
-        setPriceList(prices);
+        const historicalPriceXYPair = data.balance_history.map(entry => {
+          return {timestamp: entry[0], value: entry[1]};
+        });
+        console.log(
+          'change date fire',
+          selectedTimeframe,
+          historicalPriceXYPair.length,
+        );
+        setPriceList(historicalPriceXYPair);
         setcurrentPrice(data.balance_usd);
       } catch (e) {
         console.log(e);
@@ -311,7 +328,7 @@ function InteractiveChart() {
           height: apx(350),
           alignSelf: 'stretch',
         }}>
-        <View style={{flex: 1}} {...panResponder.current.panHandlers}>
+        {/* <View style={{flex: 1}} {...panResponder.current.panHandlers}>
           <AreaChart
             style={{flex: 1}}
             data={priceList}
@@ -324,7 +341,29 @@ function InteractiveChart() {
             <CustomGradient />
             <Tooltip />
           </AreaChart>
-        </View>
+        </View> */}
+        {priceList.length > 0 ? (
+          <GestureHandlerRootView>
+            <LineChart.Provider data={priceList}>
+              <LineChart width={apx(750)} height={apx(350)}>
+                <LineChart.Path color="white">
+                  <LineChart.Gradient />
+                </LineChart.Path>
+                <LineChart.Tooltip
+                  textStyle={{
+                    backgroundColor: 'black',
+                    borderRadius: 4,
+                    color: 'white',
+                    fontSize: 18,
+                    padding: 4,
+                  }}
+                />
+
+                <LineChart.CursorCrosshair />
+              </LineChart>
+            </LineChart.Provider>
+          </GestureHandlerRootView>
+        ) : null}
       </View>
       <View
         style={{

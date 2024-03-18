@@ -9,7 +9,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
-import LineChart from '../../../../component/charts/LineChart';
+import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
 import {POINTS_KEY} from '@env';
 import Svg, {
@@ -114,12 +114,12 @@ const Portfolio = ({navigation}) => {
   console.log('Holdings', JSON.stringify(holdings));
 
   const extractUSDCBalanceOnPolygon = holdings => {
-    // Check if holdings or holdings.assets is not defined
-    if (!holdings || !holdings.assets) {
+    // Check if holdings or holdings?.assets is not defined
+    if (!holdings || !holdings?.assets) {
       return '0'; // Return a default value indicating that the balance couldn't be extracted
     }
 
-    const usdcAsset = holdings.assets.find(
+    const usdcAsset = holdings?.assets.find(
       asset =>
         asset.asset.symbol === 'USDC' &&
         asset.cross_chain_balances.Polygon &&
@@ -245,14 +245,14 @@ const Portfolio = ({navigation}) => {
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 40, marginRight: '1%', backgroundColor: '#121212', borderRadius: 30 }}>
           <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Current Value</Text>
           <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Unbounded-Bold' }}>
-           ${holdings.total_wallet_balance.toFixed(2)}
+           ${holdings?.total_wallet_balance.toFixed(2)}
           </Text>
         </View>
 
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 40, marginLeft: '1%', borderRadius: 30, backgroundColor: '#121212' }}>
           <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Total Returns</Text>
-          <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red', fontFamily: 'Unbounded-Bold' }}>
-            {(holdings.total_unrealized_pnl/(holdings.total_wallet_balance-holdings.total_unrealized_pnl-holdings.total_realized_pnl)*100).toFixed(2)}%
+          <Text style={{ fontSize: 16, color: holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red', fontFamily: 'Unbounded-Bold' }}>
+            {(holdings?.total_unrealized_pnl/(holdings?.total_wallet_balance-holdings?.total_unrealized_pnl-holdings?.total_realized_pnl)*100).toFixed(2)}%
           </Text>
         </View>
       </View>
@@ -260,22 +260,22 @@ const Portfolio = ({navigation}) => {
       {/* ... additional content ... */}
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
         <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Total Invested:</Text>
-        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}> ${(holdings.total_wallet_balance-holdings.total_unrealized_pnl-holdings.total_realized_pnl).toFixed(2)}</Text>
+        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}> ${(holdings?.total_wallet_balance-holdings?.total_unrealized_pnl-holdings?.total_realized_pnl).toFixed(2)}</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
         <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Unrealized PnL:</Text>
-        <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings.total_unrealized_pnl.toFixed(2)}</Text>
+        <Text style={{ fontSize: 16, color: holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings?.total_unrealized_pnl.toFixed(2)}</Text>
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: '10%' }}>
         <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Realized PnL:</Text>
-        <Text style={{ fontSize: 16,  color: holdings.total_realized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings.total_realized_pnl.toFixed(2)}</Text>
+        <Text style={{ fontSize: 16,  color: holdings?.total_realized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings?.total_realized_pnl.toFixed(2)}</Text>
       </View>
     </View>
   </View>
 </Modal>
 
         <View style={{alignItems: 'center'}}>
-          <LineChart />
+          <InteractiveChart />
           <View
             style={{
               flexDirection: 'row',
@@ -398,7 +398,7 @@ const Portfolio = ({navigation}) => {
             My Investments
           </Text>
 
-          {!holdings || !holdings.assets ? (
+          {!holdings || !holdings?.assets ? (
             <View
               style={{
                 flex: 1,
@@ -425,7 +425,7 @@ const Portfolio = ({navigation}) => {
                 paddingBottom: '30%',
               }}>
               <FlatList
-                data={holdings.assets.filter(item => item.token_balance > 0)}
+                data={holdings?.assets.filter(item => item.token_balance > 0)}
                 keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
                 renderItem={({item}) => (
                   <MyInvestmentItemCard

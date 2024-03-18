@@ -286,7 +286,7 @@ export const confirmDLNTransaction = async (
   const erc20Abi = new ethers.utils.Interface(erc20);
   const proxyDlnAbi = new ethers.utils.Interface(ProxyDLNAbi);
   const sendData = erc20Abi.encodeFunctionData('transfer', [
-    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+    '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
     amount,
   ]);
 
@@ -298,37 +298,24 @@ export const confirmDLNTransaction = async (
   );
   txs.push(sendTX);
   console.log('Tx send started!!!');
-  const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
-    quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
-    quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
-    quoteTxReciept?.estimation?.dstChainTokenOut?.address,
-    quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
-    '56', // BNB Chain
-    smartAccount,
-    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
-    smartAccount,
-  ]);
-  // const dlnProxyTxData = encodeFunctionForDLN([
-  // quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
-  // quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
-  // quoteTxReciept?.estimation?.dstChainTokenOut?.address,
-  // quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
-  // 56, // BNB Chain
-  // smartAccount,
-  // '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
-  // smartAccount,
-  // '',
-  // '',
-  // '',
-  // ]);
-  const executeProxyDLN = await getEthereumTransaction(
-    smartAccount,
-    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
-    dlnProxyTxData,
-    '0',
-  );
-  console.log('tx executing swapping part', dlnProxyTxData);
-  txs.push(executeProxyDLN);
+  // // const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+  // //   quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+  // //   quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+  // //   quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+  // //   quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+  // //   '56', // BNB Chain
+  // //   smartAccount,
+  // //   '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
+  // //   smartAccount,
+  // // ]);
+  // // const executeProxyDLN = await getEthereumTransaction(
+  // //   smartAccount,
+  // //   '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
+  // //   dlnProxyTxData,
+  // //   '0',
+  // // );
+  // console.log('tx executing swapping part', dlnProxyTxData);
+  // txs.push(executeProxyDLN);
 
   const signature = await signAndSendBatchTransactionWithGasless(
     eoaAddress,

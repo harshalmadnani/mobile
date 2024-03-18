@@ -241,7 +241,7 @@ export const signAndSendBatchTransactionWithGasless = async (
 export const encodeFunctionForDLN = params => {
   // const contractInterface = new Web3().eth.Contract();
   const proxyDLN = new ethers.Contract(
-    '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+    '0x2C4Bac6DeD5082ec95930c512aBa7e098Ea9037a',
     [
       {
         inputs: [
