@@ -127,7 +127,6 @@ const Investments = ({navigation}) => {
     }
     setSelectedButton(buttonId);
   };
-  console.log('dataaaa...', cryptoData);
   return (
     <SafeAreaView
       style={{
@@ -326,7 +325,7 @@ const Investments = ({navigation}) => {
           borderRadius: 32,
           flexDirection: 'row',
           padding: 16,
-          shadowRadius:10
+          shadowRadius: 10,
         }}>
         <AntDesign name="search1" size={16} color={'#999'} />
         <Text

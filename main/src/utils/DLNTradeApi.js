@@ -3,8 +3,6 @@ import {ethers} from 'ethers';
 import erc20 from '../screens/loggedIn/payments/USDC.json';
 import ProxyDLNAbi from './abis/ProxyDLNAbi.json';
 import {
-  encodeFunctionDataInstance,
-  encodeFunctionForDLN,
   getEthereumTransaction,
   getSmartAccountAddress,
   getUserAddressFromAuthCoreSDK,
@@ -253,14 +251,12 @@ export const confirmDLNTransaction = async (
   let txs = [];
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
-  console.log(
-    quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
-    quoteTxReciept?.estimation?.dstChainTokenOut?.chainId,
-  );
+  console.log(quoteTxReciept);
   if (
-    tradeType === 'buy' ||
+    tradeType === 'buy' &&
     quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
+    !quoteTxReciept?.tokenIn?.address
   ) {
     console.log('Tx confirming started!!!');
     const erc20Abi = new ethers.utils.Interface(erc20);
@@ -277,7 +273,13 @@ export const confirmDLNTransaction = async (
       '0',
     );
     txs.push(sendTX);
-    console.log('Tx send started!!!');
+    console.log(
+      'Tx send started!!!',
+      quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId,
+      quoteTxReciept?.estimation?.tokenIn?.chainId,
+      quoteTxReciept?.estimation?.tokenOut?.chainId,
+    );
 
     const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
       quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC

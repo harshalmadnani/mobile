@@ -16,7 +16,17 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 export default InteractiveChart;
 
 function CustomPriceText() {
-  return <LineChart.PriceText style={styles.stockPrice} />;
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text style={styles.stockPrice}>$</Text>
+      <LineChart.PriceText style={styles.stockPrice} />
+    </View>
+  );
 }
 
 function InteractiveChart({assetName}) {
@@ -73,7 +83,7 @@ function InteractiveChart({assetName}) {
           historicalPriceXYPair.length,
         );
         setPriceList(historicalPriceXYPair);
-        setcurrentPrice(data?.price_history[0][1]);
+        setcurrentPrice(data?.price_history[data?.price_history.length - 1][1]);
       } catch (e) {
         console.log(e);
       }
@@ -99,7 +109,9 @@ function InteractiveChart({assetName}) {
           setPriceList(historicalPriceXYPair);
           console.log('change focus fire', historicalPriceXYPair.length);
           // Extracting the price part
-          setcurrentPrice(data?.price_history[0][1]);
+          setcurrentPrice(
+            data?.price_history[data?.price_history.length - 1][1],
+          );
         } catch (e) {
           console.log(e);
         }
@@ -140,11 +152,20 @@ function InteractiveChart({assetName}) {
           {touchActive ? (
             <CustomPriceText />
           ) : (
-            <Text style={styles.stockPrice}>
-              {Number(currentPrice || '0')
-                .toFixed(2)
-                .toLocaleString('en-US')}
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                maxHeight: 50,
+              }}>
+              <Text style={styles.stockPrice}>$</Text>
+              <Text style={styles.stockPrice}>
+                {Number(currentPrice || '0')
+                  .toFixed(2)
+                  .toLocaleString('en-US')}
+              </Text>
+            </View>
           )}
           <View
             style={{
@@ -185,6 +206,9 @@ function InteractiveChart({assetName}) {
                 <LineChart.Path color="white">
                   <LineChart.Gradient />
                 </LineChart.Path>
+                <LineChart.Tooltip>
+                  <LineChart.DatetimeText />
+                </LineChart.Tooltip>
                 <LineChart.CursorCrosshair
                   color="white"
                   onActivated={() => {

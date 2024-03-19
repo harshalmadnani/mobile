@@ -28,7 +28,17 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 export default InteractiveChart;
 function CustomPriceText() {
-  return <LineChart.PriceText style={styles.stockPrice} />;
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text style={styles.stockPrice}>$</Text>
+      <LineChart.PriceText style={styles.stockPrice} />
+    </View>
+  );
 }
 function InteractiveChart() {
   const dispatch = useDispatch();
@@ -163,11 +173,20 @@ function InteractiveChart() {
           {touchActive ? (
             <CustomPriceText />
           ) : (
-            <Text style={styles.stockPrice}>
-              {Number(currentPrice || '0')
-                .toFixed(2)
-                .toLocaleString('en-US')}
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                // backgroundColor: 'red',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text style={styles.stockPrice}>
+                $
+                {Number(currentPrice || '0')
+                  .toFixed(2)
+                  .toLocaleString('en-US')}
+              </Text>
+            </View>
           )}
           <View
             style={{
@@ -208,18 +227,8 @@ function InteractiveChart() {
                 <LineChart.Path color="white">
                   <LineChart.Gradient />
                 </LineChart.Path>
-                {/* <LineChart.Tooltip
-                  textStyle={{
-                    backgroundColor: 'black',
-                    borderRadius: 4,
-                    color: 'white',
-                    fontSize: 18,
-                    padding: 4,
-                    fontFamily: 'Unbounded-Bold',
-                    // textAlign: 'center',
-                  }}
-                /> */}
                 <LineChart.CursorCrosshair
+                  color="white"
                   onActivated={() => {
                     setTouchActive(true);
                     console.log('startedddddd!!!!!');

@@ -247,49 +247,25 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                 color: '#fff',
               }}>
               $
-              {tradeType === 'sell'
-                ? (
-                    txQuoteInfo?.estimation?.tokenOut?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.tokenOut?.decimals,
-                      ) /
-                      (txQuoteInfo?.estimation?.tokenIn?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.tokenIn?.decimals,
-                        )) ||
-                    txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      ) /
-                      (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                        ))
-                  ).toFixed(6)
-                : //when same chain
-                  (
-                    txQuoteInfo?.estimation?.tokenIn?.amount /
-                      Math.pow(10, txQuoteInfo?.estimation?.tokenIn?.decimals) /
-                      (txQuoteInfo?.estimation?.tokenOut?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.tokenOut?.decimals,
-                        )) || //when cross chain
-                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+              {txQuoteInfo?.estimation?.costsDetails
+                ? tradeType === 'sell'
+                  ? (
+                      txQuoteInfo?.estimation?.costsDetails?.filter(
+                        x => x.type === 'DlnProtocolFee',
+                      )[0]?.payload?.feeAmount /
                       Math.pow(
                         10,
                         txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                      ) /
-                      (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                        ))
-                  ).toFixed(6)}
+                      )
+                    ).toFixed(2)
+                  : txQuoteInfo?.estimation?.costsDetails?.filter(
+                      x => x.type === 'DlnProtocolFee',
+                    )[0]?.payload?.feeAmount /
+                    Math.pow(
+                      10,
+                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                    )
+                : '0.01'}
             </Text>
           </View>
 

@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
+  Keyboard,
 } from 'react-native';
 import {ImageAssets} from '../../../../../assets';
 import {Icon} from 'react-native-elements';
@@ -44,6 +45,7 @@ const TradePage = ({route}) => {
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
   const [value, setValue] = useState('5');
+  const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -65,6 +67,23 @@ const TradePage = ({route}) => {
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const tokensToSell = tradeAsset?.[0]?.contracts_balances;
+  const localInputRef = useRef();
+
+  useEffect(() => {
+    if (tradeType === 'sell') {
+      setLoading(true);
+      dispatch(
+        getBestDLNCrossSwapRateSell(
+          tokensToSell?.[0],
+          value * Math.pow(10, tokensToSell?.[0]?.decimals),
+        ),
+      );
+      setLoading(false);
+    } else {
+      getBestPrice();
+    }
+  }, [tradeType]);
+
   useEffect(() => {
     if (tradeType === 'sell') {
       dispatch(
@@ -76,7 +95,7 @@ const TradePage = ({route}) => {
     } else {
       getBestPrice();
     }
-  }, [tradeType]);
+  }, [value]);
 
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
@@ -102,6 +121,7 @@ const TradePage = ({route}) => {
     }
   };
   const getBestPrice = async () => {
+    setLoading(true);
     dispatch(
       getBestDLNCrossSwapRateBuy(
         selectedAssetMetaData?.blockchains,
@@ -109,6 +129,7 @@ const TradePage = ({route}) => {
         value * 1000000, //USDC
       ),
     );
+    setLoading(false);
   };
   // Example of logging state changes
   useFocusEffect(
@@ -118,7 +139,12 @@ const TradePage = ({route}) => {
     }, []),
   );
   // Log when component mounts
-
+  console.log(
+    bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+      x => x.type === 'DlnProtocolFee',
+    )[0]?.payload?.feeAmount,
+    Math.pow(10, bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals),
+  );
   return (
     <SafeAreaView
       style={{
@@ -896,23 +922,27 @@ const TradePage = ({route}) => {
                       color: '#fff',
                     }}>
                     $
-                    {tradeType === 'sell'
-                      ? bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
-                          x => x.type === 'DlnProtocolFee',
-                        )[0]?.payload?.feeAmount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.decimals,
-                        )
-                      : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
-                          x => x.type === 'DlnProtocolFee',
-                        )[0]?.payload?.feeAmount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        )}
+                    {bestSwappingBuyTrades?.estimation?.costsDetails
+                      ? tradeType === 'sell'
+                        ? (
+                            bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                              x => x.type === 'DlnProtocolFee',
+                            )[0]?.payload?.feeAmount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            )
+                          ).toFixed(2)
+                        : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                            x => x.type === 'DlnProtocolFee',
+                          )[0]?.payload?.feeAmount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          )
+                      : '0.01'}
                   </Text>
                 </View>
 
@@ -964,63 +994,69 @@ const TradePage = ({route}) => {
           <View style={{marginTop: '10%', alignSelf: 'center'}}>
             <TouchableOpacity
               onPress={async () => {
-                if (
-                  // value <= usdcValue?.[1]?.estimated_balance &&
-                  tradeType === 'buy'
-                ) {
-                  setPreparingTx(true);
-                  const res = await getTradeSigningData();
-                  const signature = await confirmDLNTransaction(
-                    tradeType,
-                    res,
-                    res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.tokenIn?.amount,
-                    res?.estimation?.srcChainTokenIn?.address ||
-                      res?.tokenIn?.address,
-                    res?.tx,
-                  );
-                  setPreparingTx(false);
-                  if (signature) {
-                    console.log('txn hash....', JSON.stringify(res), signature);
-                    navigation.navigate('PendingTxStatus', {
-                      state: res,
-                      tradeType,
-                    });
-                  }
-                } else if (tradeType === 'sell') {
-                  setPreparingTx(true);
-                  const res = await getTradeSigningData();
+                if (!loading && bestSwappingBuyTrades && !preparingTx) {
                   if (
-                    res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
-                    res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                    // value <= usdcValue?.[1]?.estimated_balance &&
+                    tradeType === 'buy'
                   ) {
-                    await switchAuthCoreChain(
-                      res?.estimation?.srcChainTokenIn?.chainId,
-                    );
-                  }
-                  console.log('Final quote...', JSON.stringify(res));
-                  const signature = await confirmDLNTransaction(
-                    tradeType,
-                    res,
-                    res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.tokenIn?.amount,
-                    res?.estimation?.srcChainTokenIn?.address ||
-                      res?.tokenIn?.address,
-                    res?.tx,
-                  );
-                  setPreparingTx(false);
-                  if (signature) {
-                    console.log('txn hash', res, signature);
-                    navigation.navigate('PendingTxStatus', {
-                      state: res,
+                    setPreparingTx(true);
+                    const res = await getTradeSigningData();
+                    const signature = await confirmDLNTransaction(
                       tradeType,
-                    });
+                      res,
+                      res?.estimation?.srcChainTokenIn?.amount ||
+                        res?.tokenIn?.amount,
+                      res?.estimation?.srcChainTokenIn?.address ||
+                        res?.tokenIn?.address,
+                      res?.tx,
+                    );
+                    setPreparingTx(false);
+                    if (signature) {
+                      console.log(
+                        'txn hash....',
+                        JSON.stringify(res),
+                        signature,
+                      );
+                      navigation.navigate('PendingTxStatus', {
+                        state: res,
+                        tradeType,
+                      });
+                    }
+                  } else if (tradeType === 'sell') {
+                    setPreparingTx(true);
+                    const res = await getTradeSigningData();
+                    if (
+                      res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
+                      res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                    ) {
+                      await switchAuthCoreChain(
+                        res?.estimation?.srcChainTokenIn?.chainId,
+                      );
+                    }
+                    console.log('Final quote...', JSON.stringify(res));
+                    const signature = await confirmDLNTransaction(
+                      tradeType,
+                      res,
+                      res?.estimation?.srcChainTokenIn?.amount ||
+                        res?.tokenIn?.amount,
+                      res?.estimation?.srcChainTokenIn?.address ||
+                        res?.tokenIn?.address,
+                      res?.tx,
+                    );
+                    setPreparingTx(false);
+                    if (signature) {
+                      console.log('txn hash', res, signature);
+                      navigation.navigate('PendingTxStatus', {
+                        state: res,
+                        tradeType,
+                      });
+                    }
+                  } else if (
+                    bestSwappingBuyTrades !== null &&
+                    bestSwappingBuyTrades.length === 0
+                  ) {
+                    await getBestPrice();
                   }
-                } else if (
-                  bestSwappingBuyTrades !== null &&
-                  bestSwappingBuyTrades.length === 0
-                ) {
-                  await getBestPrice();
                 }
               }}>
               <LinearGradient
@@ -1043,7 +1079,7 @@ const TradePage = ({route}) => {
                     color: '#000',
                     textAlign: 'center',
                   }}>
-                  {!bestSwappingBuyTrades
+                  {!bestSwappingBuyTrades || loading
                     ? 'Calculating....'
                     : bestSwappingBuyTrades.length === 0
                     ? 'Try Again'
