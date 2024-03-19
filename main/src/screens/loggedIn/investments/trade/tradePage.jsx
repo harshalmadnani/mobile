@@ -43,7 +43,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [orderType, setOrderType] = useState('market');
   const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
-  const [value, setValue] = useState('15');
+  const [value, setValue] = useState('5');
   const [convertedValue, setConvertedValue] = useState('token');
   const [preparingTx, setPreparingTx] = useState(false);
   const [commingSoon, setCommingSoon] = useState(false);
@@ -971,6 +971,7 @@ const TradePage = ({route}) => {
                   setPreparingTx(true);
                   const res = await getTradeSigningData();
                   const signature = await confirmDLNTransaction(
+                    tradeType,
                     res,
                     res?.estimation?.srcChainTokenIn?.amount ||
                       res?.tokenIn?.amount,
@@ -999,6 +1000,7 @@ const TradePage = ({route}) => {
                   }
                   console.log('Final quote...', JSON.stringify(res));
                   const signature = await confirmDLNTransaction(
+                    tradeType,
                     res,
                     res?.estimation?.srcChainTokenIn?.amount ||
                       res?.tokenIn?.amount,

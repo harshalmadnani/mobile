@@ -186,6 +186,7 @@ function InteractiveChart({assetName}) {
                   <LineChart.Gradient />
                 </LineChart.Path>
                 <LineChart.CursorCrosshair
+                  color="white"
                   onActivated={() => {
                     setTouchActive(true);
                     console.log('startedddddd!!!!!');
