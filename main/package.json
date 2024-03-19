@@ -1,6 +1,6 @@
 {
   "name": "xademobile",
-  "version": "1.2.0",
+  "version": "1.2.7",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
+    "ca": "cd android && ./gradlew clean && ./gradlew --stop &&   npm cache clean --force &&  cd .. && yarn start --reset-cache",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
     "postinstall": "jetify && patch-package"
   },
@@ -116,7 +117,6 @@
     "react-native-udp": "^2.7.0",
     "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^10.0.3",
-    "react-native-version": "^4.0.0",
     "react-native-video": "^5.2.1",
     "react-native-wagmi-charts": "^2.3.2",
     "react-native-webview": "^12.0.1",
