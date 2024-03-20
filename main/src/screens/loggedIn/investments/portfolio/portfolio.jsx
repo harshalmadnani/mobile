@@ -200,79 +200,139 @@ const Portfolio = ({navigation}) => {
   }}
 >
   <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginTop: 22 }}>
-    <View style={{
-      backgroundColor: '#151515',
-      borderRadius: 20,
-      padding: 35,
-      paddingTop: 60,
-      alignItems: 'center',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
-      elevation: 5,
-      width: '100%',
-      height: '75%',
-      position: 'relative',
-    }}>
-      {/* Close Icon */}
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          top: 25,
-          left: 15,
-          zIndex: 1,
-        }}
-        onPress={() => setModalVisible(!modalVisible)}
-      >
-        <Icon name="close" size={35} color="#fff" />
-      </TouchableOpacity>
+    {holdings ? (
+      <View style={{
+        backgroundColor: '#151515',
+        borderRadius: 20,
+        padding: 35,
+        paddingTop: 60,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width: '100%',
+        height: '75%',
+        position: 'relative',
+      }}>
+        {/* Close Icon */}
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 25,
+            left: 15,
+            zIndex: 1,
+          }}
+          onPress={() => setModalVisible(!modalVisible)}
+        >
+          <Icon name="close" size={35} color="#fff" />
+        </TouchableOpacity>
 
-      {/* Image */}
-      <Image
-        source={{ uri:  imageUrl }} // Dummy image source
-        style={{ width: 48, height: 48 }}
-        resizeMode="contain"
-      />
+        {/* Content when holdings is loaded */}
+        <Image
+          source={{ uri: imageUrl }} // Ensure you have a valid `imageUrl`
+          style={{ width: 48, height: 48 }}
+          resizeMode="contain"
+        />
 
-      {/* Price */}
-      <Text style={{ color: '#fff', fontSize: 24, fontFamily: 'Unbounded-Medium', marginVertical: 10 }}>
-       {info}
+        <Text style={{ color: '#fff', fontSize: 24, fontFamily: 'Unbounded-Medium', marginVertical: 10 }}>
+          {info} {/* Ensure `info` is defined */}
+        </Text>
+
+        {/* Holdings Data Display */}
+        {/* Example for Current Value */}
+        <View style={{
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '10%',
+  marginTop: '10%',
+}}>
+  {/* Current Value */}
+  <View style={{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 40,
+    marginRight: '1%', // Adjust as necessary for spacing
+    backgroundColor: '#121212',
+    borderRadius: 30,
+  }}>
+    <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Current Value</Text>
+    <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Unbounded-Bold' }}>
+      ${holdings && holdings.total_wallet_balance ? holdings.total_wallet_balance.toFixed(2) : 'Loading...'}
+    </Text>
+  </View>
+
+  {/* Total Returns */}
+  <View style={{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 40,
+    marginLeft: '1%', // Adjust as necessary for spacing
+    backgroundColor: '#121212',
+    borderRadius: 30,
+  }}>
+    <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Total Returns</Text>
+    <Text style={{ fontSize: 16, color: holdings && holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red', fontFamily: 'Unbounded-Bold' }}>
+      {holdings ? ((holdings.total_unrealized_pnl / (holdings.total_wallet_balance - holdings.total_unrealized_pnl - holdings.total_realized_pnl) * 100).toFixed(2) + '%') : 'Loading...'}
+    </Text>
+  </View>
+</View>
+
+
+    {/* Total Invested */}
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 10 }}>
+      <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', fontFamily: 'Montreal-Medium' }}>Total Invested:</Text>
+      <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', fontFamily: 'Unbounded-Medium' }}>
+        ${(holdings.total_wallet_balance - holdings.total_unrealized_pnl - holdings.total_realized_pnl).toFixed(2)}
       </Text>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10%', marginTop: '10%', marginHorizontal: '-8%' }}>
-
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 40, marginRight: '1%', backgroundColor: '#121212', borderRadius: 30 }}>
-          <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Current Value</Text>
-          <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Unbounded-Bold' }}>
-           ${holdings.total_wallet_balance.toFixed(2)}
-          </Text>
-        </View>
-
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 40, marginLeft: '1%', borderRadius: 30, backgroundColor: '#121212' }}>
-          <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Total Returns</Text>
-          <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red', fontFamily: 'Unbounded-Bold' }}>
-            {(holdings.total_unrealized_pnl/(holdings.total_wallet_balance-holdings.total_unrealized_pnl-holdings.total_realized_pnl)*100).toFixed(2)}%
-          </Text>
-        </View>
-      </View>
-
-      {/* ... additional content ... */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Total Invested:</Text>
-        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}> ${(holdings.total_wallet_balance-holdings.total_unrealized_pnl-holdings.total_realized_pnl).toFixed(2)}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Unrealized PnL:</Text>
-        <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings.total_unrealized_pnl.toFixed(2)}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: '10%' }}>
-        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Realized PnL:</Text>
-        <Text style={{ fontSize: 16,  color: holdings.total_realized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings.total_realized_pnl.toFixed(2)}</Text>
-      </View>
     </View>
+
+    {/* Unrealized PnL */}
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 10 }}>
+      <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', fontFamily: 'Montreal-Medium' }}>Unrealized PnL:</Text>
+      <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red', textAlign: 'right', fontFamily: 'Unbounded-Medium' }}>
+        ${holdings.total_unrealized_pnl.toFixed(2)}
+      </Text>
+    </View>
+
+    {/* Realized PnL */}
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: '10%' }}>
+      <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', fontFamily: 'Montreal-Medium' }}>Realized PnL:</Text>
+      <Text style={{ fontSize: 16, color: holdings.total_realized_pnl >= 0 ? '#ADFF6C' : 'red', textAlign: 'right', fontFamily: 'Unbounded-Medium' }}>
+        ${holdings.total_realized_pnl.toFixed(2)}
+      </Text>
+    </View>
+        {/* Other data points like Total Invested, Unrealized PnL, Realized PnL... */}
+      </View>
+    ) : (
+      // Display a loading state or placeholder if holdings is not available
+      <View style={{
+        backgroundColor: '#151515',
+        borderRadius: 20,
+        padding: 35,
+        paddingTop: 60,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width: '100%',
+        height: '75%',
+        position: 'relative',
+      }}>
+        <Text style={{ color: '#fff', fontSize: 16, fontFamily: 'Unbounded-Medium' }}>Loading data...</Text>
+      </View>
+    )}
   </View>
 </Modal>
+
 
         <View style={{alignItems: 'center'}}>
           <LineChart />
