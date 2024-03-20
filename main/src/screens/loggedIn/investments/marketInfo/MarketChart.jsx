@@ -50,7 +50,7 @@ const MarketChart = props => {
       };
     }, []),
   );
-  console.log('current holdings', currentAsset);
+  console.log('current holdings', JSON.stringify(currentAsset));
   const {width, height} = Dimensions.get('window');
   return (
     <View style={{flex: 1}}>

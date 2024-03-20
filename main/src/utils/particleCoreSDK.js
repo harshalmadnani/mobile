@@ -10,6 +10,7 @@ import {
   SupportAuthType,
 } from '@particle-network/rn-auth';
 import Web3 from 'web3';
+import {ethers} from 'ethers';
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
 // Get your project id and client from dashboard,
@@ -113,6 +114,14 @@ export const getUserAddressFromAuthCoreSDK = async () => {
     return 0;
   }
 };
+export const getUserSolanaAddressFromAuthCoreSDK = async () => {
+  try {
+    const result = await particleAuthCore.solana.getAddress();
+    return result;
+  } catch (error) {
+    return 0;
+  }
+};
 export const getSmartAccountAddress = async eoaAddress => {
   try {
     const smartAccountParam = {
@@ -141,7 +150,9 @@ export const depolyAAAndGetSCAddress = async () => {
     console.log('scw address........', scw);
     let isAAModeEnable = await particleAA.isAAModeEnable();
     console.log('is enabled result', eoaAddress, isAAModeEnable);
-    if (!isAAModeEnable) particleAA.enableAAMode();
+    if (!isAAModeEnable) {
+      particleAA.enableAAMode();
+    }
     console.log('is enabled after result', scw, eoaAddress, isAAModeEnable);
     return scw;
   } else {
@@ -226,4 +237,231 @@ export const signAndSendBatchTransactionWithGasless = async (
   } catch (error) {
     console.log('error....', error);
   }
+};
+export const encodeFunctionForDLN = params => {
+  // const contractInterface = new Web3().eth.Contract();
+  const proxyDLN = new ethers.Contract(
+    '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+    [
+      {
+        inputs: [
+          {
+            internalType: 'address',
+            name: '_dlnSourceAddress',
+            type: 'address',
+          },
+        ],
+        stateMutability: 'nonpayable',
+        type: 'constructor',
+      },
+      {
+        anonymous: false,
+        inputs: [
+          {
+            indexed: false,
+            internalType: 'bytes32',
+            name: 'orderId',
+            type: 'bytes32',
+          },
+          {
+            components: [
+              {
+                internalType: 'address',
+                name: 'giveTokenAddress',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'giveAmount',
+                type: 'uint256',
+              },
+              {
+                internalType: 'bytes',
+                name: 'takeTokenAddress',
+                type: 'bytes',
+              },
+              {
+                internalType: 'uint256',
+                name: 'takeAmount',
+                type: 'uint256',
+              },
+              {
+                internalType: 'uint256',
+                name: 'takeChainId',
+                type: 'uint256',
+              },
+              {
+                internalType: 'bytes',
+                name: 'receiverDst',
+                type: 'bytes',
+              },
+              {
+                internalType: 'address',
+                name: 'givePatchAuthoritySrc',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes',
+                name: 'orderAuthorityAddressDst',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: 'allowedTakerDst',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: 'externalCall',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: 'allowedCancelBeneficiarySrc',
+                type: 'bytes',
+              },
+            ],
+            indexed: false,
+            internalType: 'struct OrderCreation',
+            name: 'orderCreation',
+            type: 'tuple',
+          },
+        ],
+        name: 'OrderCallOrder',
+        type: 'event',
+      },
+      {
+        inputs: [],
+        name: 'deposit',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'dlnSourceAddress',
+        outputs: [
+          {
+            internalType: 'address',
+            name: '',
+            type: 'address',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'globalFixedNativeFee',
+        outputs: [
+          {
+            internalType: 'uint88',
+            name: '',
+            type: 'uint88',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'ownerAddress',
+        outputs: [
+          {
+            internalType: 'address',
+            name: '',
+            type: 'address',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [
+          {
+            internalType: 'address',
+            name: 'giveTokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'giveAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'takeTokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'takeAmount',
+            type: 'uint256',
+          },
+          {
+            internalType: 'uint256',
+            name: 'takeChainId',
+            type: 'uint256',
+          },
+          {
+            internalType: 'address',
+            name: 'receiverDst',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'givePatchAuthoritySrc',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: 'orderAuthorityAddressDst',
+            type: 'address',
+          },
+        ],
+        name: 'placeOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        inputs: [
+          {
+            internalType: 'address payable',
+            name: '_to',
+            type: 'address',
+          },
+        ],
+        name: 'transferAllNativeToken',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+      {
+        inputs: [
+          {
+            internalType: 'address',
+            name: '_tokenAddress',
+            type: 'address',
+          },
+          {
+            internalType: 'address',
+            name: '_to',
+            type: 'address',
+          },
+          {
+            internalType: 'uint256',
+            name: 'value',
+            type: 'uint256',
+          },
+        ],
+        name: 'transferAnyToken',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function',
+      },
+    ],
+  );
+  console.log(' params...... ', params);
+  return proxyDLN.interface.encodeFunctionData('placeOrder', params);
 };

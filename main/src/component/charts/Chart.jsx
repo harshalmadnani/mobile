@@ -1,6 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 // import * as React from 'react'
-import {LineChart} from 'react-native-wagmi-charts';
 import {
   PanResponder,
   Dimensions,
@@ -10,11 +9,24 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from '../../screens/loggedIn/investments/investment-styles';
-import {getHistoricalData} from '../../utils/cryptoMarketsApi';
+import {AreaChart, XAxis, YAxis} from 'react-native-svg-charts';
+import {
+  Circle,
+  Defs,
+  G,
+  Line,
+  LinearGradient,
+  Path,
+  Stop,
+  Text as SvgText,
+} from 'react-native-svg';
+import * as shape from 'd3-shape';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
 import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {LineChart} from 'react-native-wagmi-charts';
 export default InteractiveChart;
-
 function CustomPriceText() {
   return (
     <View
@@ -28,17 +40,22 @@ function CustomPriceText() {
     </View>
   );
 }
-
-function InteractiveChart({assetName}) {
+function InteractiveChart() {
   const dispatch = useDispatch();
-  const [divisionResult, setDivisionResult] = useState(0);
-  const [currentPrice, setcurrentPrice] = useState(0);
+
+  const [divisionResult, setDivisionResult] = useState('0');
+  const [currentPrice, setcurrentPrice] = useState('0');
+  const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
+  const [priceChange, setpriceChange] = useState('0');
   const [touchActive, setTouchActive] = useState(false);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;
   };
+  // useEffect(() => {
 
+  //   init();
+  // }, []);
   const [priceList, setPriceList] = useState([]);
   const now = new Date();
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
@@ -51,9 +68,9 @@ function InteractiveChart({assetName}) {
     now.getMonth(),
     now.getDate(),
   );
-  const oneMinuteAgo = new Date(now.getTime() - 1 * 60 * 1000);
+  const oneMinuteAgo = new Date(now.getTime() - 5 * 60 * 1000);
   const timeframes = [
-    {label: 'LIVE', value: '1M', timestamp: oneMinuteAgo.getTime()},
+    {label: '1M', value: '1M', timestamp: oneMinuteAgo.getTime()},
     {label: '1H', value: '1H', timestamp: oneHourAgo.getTime()},
     {label: '1D', value: '1D', timestamp: oneDayAgo.getTime()},
     {label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime()},
@@ -61,38 +78,10 @@ function InteractiveChart({assetName}) {
     {label: '1Y', value: '1Y', timestamp: oneYearAgo.getTime()},
     {label: 'All', value: '', timestamp: genesis.getTime()},
   ];
-  const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
-  useEffect(() => {
-    const selectedTimeframeObject = timeframes.find(
-      timeframe => timeframe.value === selectedTimeframe,
-    );
-    const from = selectedTimeframeObject
-      ? selectedTimeframeObject.timestamp
-      : null;
-    async function init() {
-      if (from === null) return; // Early exit if timestamp is not found
-      try {
-        console.log('change date fire', assetName, from);
-        const data = await getHistoricalData(assetName, from);
-        const historicalPriceXYPair = data.price_history.map(entry => {
-          return {timestamp: entry[0], value: entry[1]};
-        });
-        console.log(
-          'change date fire',
-          selectedTimeframe,
-          historicalPriceXYPair.length,
-        );
-        setPriceList(historicalPriceXYPair);
-        setcurrentPrice(data?.price_history[data?.price_history.length - 1][1]);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    init();
-  }, [selectedTimeframe]);
 
   useFocusEffect(
     useCallback(async () => {
+      console.log('Fired in line chart');
       async function initialHistoryFetch() {
         try {
           const selectedTimeframeObject = timeframes.find(
@@ -101,17 +90,21 @@ function InteractiveChart({assetName}) {
           const from = selectedTimeframeObject
             ? selectedTimeframeObject.timestamp
             : null;
-
-          const data = await getHistoricalData(assetName, from);
-          const historicalPriceXYPair = data.price_history.map(entry => {
+          console.log('Fired when time======1', from);
+          const data = await getWalletHistoricalData(from);
+          const historicalPriceXYPair = data.balance_history.map(entry => {
             return {timestamp: entry[0], value: entry[1]};
           });
-          setPriceList(historicalPriceXYPair);
-          console.log('change focus fire', historicalPriceXYPair.length);
-          // Extracting the price part
-          setcurrentPrice(
-            data?.price_history[data?.price_history.length - 1][1],
+          console.log(
+            'change date fire',
+            selectedTimeframe,
+            historicalPriceXYPair.length,
           );
+          setPriceList(historicalPriceXYPair);
+          // Assuming data.balance_history is an array of [timestamp, price] pairs
+          // const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
+          // setPriceList(prices);
+          setcurrentPrice(data.balance_usd);
         } catch (e) {
           console.log(e);
         }
@@ -122,10 +115,38 @@ function InteractiveChart({assetName}) {
       };
     }, []),
   );
+  useEffect(() => {
+    const selectedTimeframeObject = timeframes.find(
+      timeframe => timeframe.value === selectedTimeframe,
+    );
+    const from = selectedTimeframeObject
+      ? selectedTimeframeObject.timestamp
+      : null;
+    async function init() {
+      if (from === null) return; // Early exit if timestamp is not found
+
+      try {
+        const data = await getWalletHistoricalData(from);
+        console.log('Data from API history.....', data);
+        // Assuming data.balance_history is an array of [timestamp, price] pairs
+        const historicalPriceXYPair = data.balance_history.map(entry => {
+          return {timestamp: entry[0], value: entry[1]};
+        });
+        console.log(
+          'change date fire',
+          selectedTimeframe,
+          historicalPriceXYPair.length,
+        );
+        setPriceList(historicalPriceXYPair);
+        setcurrentPrice(data.balance_usd);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    init();
+  }, [selectedTimeframe]);
 
   // The currently selected X coordinate position
-  const [priceChange, setpriceChange] = useState(0); // The currently selected X coordinate position
-
   useEffect(() => {
     if (priceList.length > 1 || priceList?.[0]?.value === '0') {
       const result =
@@ -140,7 +161,7 @@ function InteractiveChart({assetName}) {
       setpriceChange('0'); // Use the correct function name for setting state
     }
   }, [priceList]);
-
+  console.log('here....', touchActive);
   return (
     <LineChart.Provider data={priceList}>
       <View
@@ -155,12 +176,12 @@ function InteractiveChart({assetName}) {
             <View
               style={{
                 flexDirection: 'row',
+                // backgroundColor: 'red',
                 alignItems: 'center',
                 justifyContent: 'center',
-                maxHeight: 50,
               }}>
-              <Text style={styles.stockPrice}>$</Text>
               <Text style={styles.stockPrice}>
+                $
                 {Number(currentPrice || '0')
                   .toFixed(2)
                   .toLocaleString('en-US')}
@@ -197,18 +218,15 @@ function InteractiveChart({assetName}) {
           style={{
             flexDirection: 'row',
             width: apx(750),
-            height: apx(500),
+            height: apx(350),
             alignSelf: 'stretch',
           }}>
           {priceList.length > 0 ? (
             <GestureHandlerRootView>
-              <LineChart width={apx(750)} height={apx(500)}>
+              <LineChart width={apx(750)} height={apx(350)}>
                 <LineChart.Path color="white">
                   <LineChart.Gradient />
                 </LineChart.Path>
-                <LineChart.Tooltip>
-                  <LineChart.DatetimeText />
-                </LineChart.Tooltip>
                 <LineChart.CursorCrosshair
                   color="white"
                   onActivated={() => {
@@ -221,6 +239,7 @@ function InteractiveChart({assetName}) {
                   }}
                 />
               </LineChart>
+              {/* </LineChart.Provider> */}
             </GestureHandlerRootView>
           ) : null}
         </View>
@@ -246,7 +265,7 @@ function InteractiveChart({assetName}) {
                   enableVibrateFallback: true,
                   ignoreAndroidSystemSettings: false,
                 };
-                // ReactNativeHapticFeedback.trigger('impactHeavy', options);
+                ReactNativeHapticFeedback.trigger('impactHeavy', options);
                 setSelectedTimeframe(timeframe.value);
               }}>
               <Text

@@ -13,13 +13,10 @@ export const getMarketAssetData = async page => {
     const response = await axios.get(
       'https://api.mobula.io/api/1/market/query?filters=volume:10000:&sortBy=market_cap&limit=100',
     );
+    console.log('market data.....', response?.data?.length);
     return response?.data;
   } catch (error) {
-    console.log(
-      'error from market investment api:',
-      `${coingeckoBaseURL}${marketRoutes.getMarket}?vs_currency=usd&order=market_cap_desc&per_page=50&page=${page}&sparkline=false&locale=en`,
-      error,
-    );
+    console.log('error from market investment api:', error);
     return [];
   }
 };

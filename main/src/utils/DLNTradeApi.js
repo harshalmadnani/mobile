@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {ethers} from 'ethers';
 import erc20 from '../screens/loggedIn/payments/USDC.json';
+import ProxyDLNAbi from './abis/ProxyDLNAbi.json';
 import {
   getEthereumTransaction,
   getSmartAccountAddress,
@@ -37,41 +38,8 @@ export const getDLNTradeCreateBuyOrder = async (
             : dstChainTokenOut
         }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       );
-      console.log(
-        'token quote same......',
-        srcChainId,
-        srcChainTokenIn,
-        srcChainTokenInAmount,
-        dstChainId,
-        dstChainTokenOut,
-        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
-          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : srcChainTokenIn
-        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : dstChainTokenOut
-        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-      );
     } else {
-      console.log(
-        'token quote......',
-        srcChainId,
-        srcChainTokenIn,
-        srcChainTokenInAmount,
-        dstChainId,
-        dstChainTokenOut,
-        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
-          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : srcChainTokenIn
-        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : dstChainTokenOut
-        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-      );
+      console.log('hereeee...........');
       response = await axios.get(
         `${DLNBaseURL}${
           tradeRoutes.createOrder
@@ -86,16 +54,19 @@ export const getDLNTradeCreateBuyOrder = async (
         }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       );
     }
-    console.log(
-      'response from DLN same api: matic check',
-      dstChainId,
-      response?.data,
-    );
     return response?.data;
   } catch (error) {
     console.log(
       'error from DLN same api: matic same',
-      dstChainId,
+      `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
+        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : srcChainTokenIn
+      }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : dstChainTokenOut
+      }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       error.toString(),
     );
     return null;
@@ -175,7 +146,7 @@ export const getBestCrossSwapRateBuy = async (
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
     const res = await getDLNTradeCreateBuyOrder(
       137,
-      '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       value,
       getChainIdOnChainName(x?.blockchains),
       x?.contractAddress,
@@ -270,33 +241,89 @@ export const getDLNTradeCreateBuyOrderTxn = async (
     return null;
   }
 };
-export const confirmDLNTransaction = async (amount, tokenAddress, txData) => {
+export const confirmDLNTransaction = async (
+  tradeType,
+  quoteTxReciept,
+  amount,
+  tokenAddress,
+  txData,
+) => {
   let txs = [];
-  console.log('inside execution.......', amount, tokenAddress, txData);
   const eoaAddress = await getUserAddressFromAuthCoreSDK();
   const smartAccount = await getSmartAccountAddress(eoaAddress);
-  const erc20Abi = new ethers.utils.Interface(erc20);
-  const approveData = erc20Abi.encodeFunctionData('approve', [
-    txData?.to,
-    amount,
-  ]);
-  const approveTX = await getEthereumTransaction(
-    smartAccount,
-    tokenAddress,
-    approveData,
-    '0',
-  );
-  console.log('smart contract address.......', approveTX, smartAccount);
-  txs.push(approveTX);
+  console.log(quoteTxReciept);
+  if (
+    tradeType === 'buy' &&
+    quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
+    !quoteTxReciept?.tokenIn?.address
+  ) {
+    console.log('Tx confirming started!!!');
+    const erc20Abi = new ethers.utils.Interface(erc20);
+    const proxyDlnAbi = new ethers.utils.Interface(ProxyDLNAbi);
+    const sendData = erc20Abi.encodeFunctionData('transfer', [
+      '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+      amount,
+    ]);
 
-  const sendTX = await getEthereumTransaction(
-    smartAccount,
-    txData?.to,
-    txData?.data,
-    BigNumber(txData?.value).toString(16),
-  );
-  console.log('tx sendTX part', sendTX);
-  txs.push(sendTX);
+    const sendTX = await getEthereumTransaction(
+      smartAccount,
+      tokenAddress,
+      sendData,
+      '0',
+    );
+    txs.push(sendTX);
+    console.log(
+      'Tx send started!!!',
+      quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId,
+      quoteTxReciept?.estimation?.tokenIn?.chainId,
+      quoteTxReciept?.estimation?.tokenOut?.chainId,
+    );
+
+    const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+      smartAccount,
+      '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+      smartAccount,
+    ]);
+    const executeProxyDLN = await getEthereumTransaction(
+      smartAccount,
+      '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+      dlnProxyTxData,
+      '0',
+    );
+    console.log('tx executing swapping part', dlnProxyTxData);
+    txs.push(executeProxyDLN);
+  } else {
+    const erc20Abi = new ethers.utils.Interface(erc20);
+    const sendData = erc20Abi.encodeFunctionData('approve', [
+      txData?.to,
+      amount,
+    ]);
+
+    const sendTX = await getEthereumTransaction(
+      smartAccount,
+      tokenAddress,
+      sendData,
+      '0',
+    );
+    txs.push(sendTX);
+    console.log('Tx send started amount !!!', amount);
+
+    const executeDLNSap = await getEthereumTransaction(
+      smartAccount,
+      txData?.to,
+      txData?.data,
+      '0',
+    );
+    console.log('tx executing swapping part', executeDLNSap);
+    txs.push(executeDLNSap);
+  }
   const signature = await signAndSendBatchTransactionWithGasless(
     eoaAddress,
     smartAccount,

@@ -1,12 +1,12 @@
-import React, { useRef } from 'react';
-import { View, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, {useRef} from 'react';
+import {View, Button, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {WebView} from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon component
-import { useSelector } from 'react-redux';
-const LiFi = ({ route, navigation }) => {
+import {useSelector} from 'react-redux';
+const LiFi = ({route, navigation}) => {
   const webViewRef = useRef(null);
-  const { value } = route.params;
-  const address = useSelector(x => x.auth.address)
+  const {value} = route.params;
+  const address = useSelector(x => x.auth.address);
 
   const refresh = () => {
     if (webViewRef.current) webViewRef.current.reload();
@@ -17,13 +17,15 @@ const LiFi = ({ route, navigation }) => {
       <WebView
         ref={webViewRef}
         source={{
-          uri: `https://jumper.exchange/?fromAmount=${value}&fromChain=42161&fromToken=0xaf88d065e77c8cC2239327C5EDb3A432268e5831&toAddress=${address}&toChain=137&toToken=0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359`
+          uri: `https://jumper.exchange/?fromAmount=${value}&fromChain=42161&fromToken=0xaf88d065e77c8cC2239327C5EDb3A432268e5831&toAddress=${address}&toChain=137&toToken=0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359`,
         }}
         style={styles.webView}
       />
       {/* Overlay View */}
       <View style={styles.overlay}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.overlayText}>Deposit Funds</Text>
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginHorizontal: 20, // Space out the text from the icons
     justifyContent: 'center',
-    fontFamily: 'Satoshi-Bold'
+    fontFamily: 'Satoshi-Bold',
   },
   iconButton: {
     padding: 10, // Make it easier to tap the icons

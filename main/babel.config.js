@@ -2,6 +2,7 @@ module.exports = {
   env: {
     development: {
       presets: ['module:metro-react-native-babel-preset'],
+
       plugins: [
         [
           'module:react-native-dotenv',
@@ -25,11 +26,10 @@ module.exports = {
           },
         ],
         [
-          "babel-plugin-inline-import", {
-            "extensions": [
-              ".svg"
-            ]
-          }
+          'babel-plugin-inline-import',
+          {
+            extensions: ['.svg'],
+          },
         ],
       ],
     },
@@ -56,14 +56,19 @@ module.exports = {
           },
         ],
         [
-          "babel-plugin-inline-import", {
-            "extensions": [
-              ".svg"
-            ]
-          }
+          'babel-plugin-inline-import',
+          {
+            extensions: ['.svg'],
+          },
         ],
         ['transform-remove-console'],
       ],
     },
   },
+  overrides: [
+    {
+      test: './node_modules/ethers',
+      plugins: [['@babel/plugin-transform-private-methods', {loose: true}]],
+    },
+  ],
 };

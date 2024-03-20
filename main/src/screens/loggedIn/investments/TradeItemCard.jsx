@@ -18,7 +18,6 @@ import {useNavigation} from '@react-navigation/native';
 const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  console.log('item.......', item.price_change_24h);
   return (
     <Pressable
       onPress={() => {
