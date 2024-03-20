@@ -43,8 +43,6 @@ export async function JsonRpcRequest(
     chainId: chainId,
   });
 
-  console.log(`request body = ${body}`);
-
   const jsonRpcResponse = await fetch(fetchUrl, {
     method: 'POST',
     body: body,

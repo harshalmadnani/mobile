@@ -31,7 +31,6 @@ export default function EnterAmountComponent({navigation}) {
   //   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0};
   //   console.log(json);
 
-  console.log('Address: ', address);
   // console.log('User Info: ', info);
 
   function handleButtonPress(button) {

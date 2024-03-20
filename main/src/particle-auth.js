@@ -63,7 +63,6 @@ async function createSCW() {
 
 web3_getAccounts = async () => {
   const accounts = await web3.eth.getAccounts();
-  console.log('web3.eth.getAccounts', accounts);
 };
 
 init = async () => {

@@ -565,17 +565,11 @@ function ReferCode({navigation}) {
 
 export default function App({navigation, uri}) {
   useEffect(() => {
-    console.log('Global', global.withAuth);
     async function preLaunchChecks() {
       await requestUserPermission();
       await generateTopic();
 
-      messaging().onNotificationOpenedApp(remoteMessage => {
-        console.log(
-          'Notification caused app to open from background state:',
-          remoteMessage.notification,
-        );
-      });
+      messaging().onNotificationOpenedApp(remoteMessage => {});
       messaging().onMessage(async remoteMessage => {
         console.log('notification on foreground state.......', remoteMessage);
       });
