@@ -75,7 +75,6 @@ export default {
     onResolveErrorCallback,
     extension,
   ) => {
-    console.log('[resolveSymbol]: Method call', symbolName);
     const symbols = await getAllSymbols();
     const symbolItem = symbols.find(({full_name}) => full_name === symbolName);
     if (!symbolItem) {
@@ -113,7 +112,6 @@ export default {
     onErrorCallback,
   ) => {
     const {from, to, firstDataRequest} = periodParams;
-    console.log('[getBars]: Method call', symbolInfo, resolution, from, to);
     const parsedSymbol = parseFullSymbol(
       `${symbolInfo.exchange}:${symbolInfo.name}`,
     );

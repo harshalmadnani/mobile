@@ -72,16 +72,11 @@ function InteractiveChart({assetName}) {
     async function init() {
       if (from === null) return; // Early exit if timestamp is not found
       try {
-        console.log('change date fire', assetName, from);
         const data = await getHistoricalData(assetName, from);
         const historicalPriceXYPair = data.price_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
-        console.log(
-          'change date fire',
-          selectedTimeframe,
-          historicalPriceXYPair.length,
-        );
+
         setPriceList(historicalPriceXYPair);
         setcurrentPrice(data?.price_history[data?.price_history.length - 1][1]);
       } catch (e) {
@@ -107,7 +102,6 @@ function InteractiveChart({assetName}) {
             return {timestamp: entry[0], value: entry[1]};
           });
           setPriceList(historicalPriceXYPair);
-          console.log('change focus fire', historicalPriceXYPair.length);
           // Extracting the price part
           setcurrentPrice(
             data?.price_history[data?.price_history.length - 1][1],
@@ -213,11 +207,9 @@ function InteractiveChart({assetName}) {
                   color="white"
                   onActivated={() => {
                     setTouchActive(true);
-                    console.log('startedddddd!!!!!');
                   }}
                   onEnded={() => {
                     setTouchActive(false);
-                    console.log('Endedeeee!!!!!');
                   }}
                 />
               </LineChart>

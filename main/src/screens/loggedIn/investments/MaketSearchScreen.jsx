@@ -2,7 +2,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {FlatList, KeyboardAvoidingView, Text} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import TradeItemCard from './TradeItemCard';
-import { Icon} from '@rneui/themed';
+import {Icon} from '@rneui/themed';
 import {
   Dimensions,
   SafeAreaView,
@@ -20,7 +20,6 @@ const MarketSearchScreen = ({route, navigation}) => {
   const {width, height} = Dimensions.get('window');
   const [searchTerm, setSearchTerm] = useState('');
   const {cryptoData} = route.params;
-  console.log('Trending.........', cryptoData.length);
   const [textInputStyleObj, setTextInputStyleObj] = useState({
     placeholderTextColor: 'white',
     textColor: 'white',
@@ -45,15 +44,20 @@ const MarketSearchScreen = ({route, navigation}) => {
             top: 0,
           }}>
           <View style={styles.headerContainer}>
-          <Icon name="close" size={30} color="#fff" onPress={() => navigation.goBack()} />
+            <Icon
+              name="close"
+              size={30}
+              color="#fff"
+              onPress={() => navigation.goBack()}
+            />
             <Text style={styles.headerTitle}>Search</Text>
           </View>
           <Text style={styles.secondaryHeaderTitle}>
-            {searchTerm.length === 0 && searchResult.length === 0
+            {searchTerm?.length === 0 && searchResult?.length === 0
               ? 'Trending'
               : 'Top Results'}
           </Text>
-          {searchResult.length > 0 && (
+          {searchResult?.length > 0 && (
             <FlatList
               data={searchResult}
               style={{
@@ -66,9 +70,9 @@ const MarketSearchScreen = ({route, navigation}) => {
               keyExtractor={(item, i) => i.toString()}
             />
           )}
-          {searchTerm.length === 0 &&
-            searchResult.length === 0 &&
-            cryptoData.length > 0 && (
+          {searchTerm?.length === 0 &&
+            searchResult?.length === 0 &&
+            cryptoData?.length > 0 && (
               <FlatList
                 data={cryptoData}
                 style={{
@@ -118,7 +122,6 @@ const MarketSearchScreen = ({route, navigation}) => {
             onChangeText={async text => {
               setSearchTerm(text);
               const result = await searchCryptoByName(text);
-              console.log('text.......', result.length, text);
               setSearchResult(result);
             }}
             onFocus={() => {
@@ -153,7 +156,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
-  headerTitle: {fontFamily: 'Montreal-Medium', color: '#fff', fontSize: 16,alignSelf:'center',marginLeft:'33%'},
+  headerTitle: {
+    fontFamily: 'Montreal-Medium',
+    color: '#fff',
+    fontSize: 16,
+    alignSelf: 'center',
+    marginLeft: '33%',
+  },
   secondaryHeaderTitle: {
     fontFamily: 'Unbounded-Medium',
     color: '#fff',

@@ -21,7 +21,6 @@ export async function getEvmTokenTransaction(sender, receiver, amount) {
       amount,
     );
 
-    console.log(`data = ${data}`);
     const gasLimit = await EvmService.estimateGas(
       sender,
       contractAddress,

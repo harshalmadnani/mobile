@@ -173,7 +173,6 @@ export class EvmService {
       maxFeePerGas: maxFeePerGasHex,
     };
 
-    console.log(transaction);
     const json = JSON.stringify(transaction);
     const serialized = Buffer.from(json).toString('hex');
     return '0x' + serialized;

@@ -16,8 +16,10 @@ import {ImageAssets} from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {
+  getListOfCommoditiesFromMobulaApi,
   getListOfCryptoFromMobulaApi,
   getListOfForexFromMobulaApi,
+  getListOfStocksFromMobulaApi,
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
 import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
@@ -56,7 +58,6 @@ const Investments = ({navigation}) => {
   const height = Dimensions.get('window').height;
 
   const cryptoData = useSelector(x => x.market.listOfCrypto);
-  const cryptoFilteredData = useSelector(x => x.market.listOfFilteredCrypto);
   const [isLoading, setIsLoading] = useState(false);
   const [section, setSection] = useState('crypto');
   const [page, setPage] = useState(1);
@@ -71,62 +72,12 @@ const Investments = ({navigation}) => {
 
       return () => {
         setIsLoading(false);
-        // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
     }, []),
   );
 
-  const onEndReachedFetch = async () => {
-    // if (page <= 3 && section === 'crypto' && cryptoData.length > 0) {
-    //   // dispatch(getListOfCryptoFromCoinGeckoApi(page));
-    //   setPage(page + 1);
-    // }
-  };
+  const onEndReachedFetch = async () => {};
 
-  const buttons = [
-    {
-      id: '1',
-      text: 'Top 100',
-      iconName: 'bar-chart', // Example icon, replace with actual icons you want
-    },
-    {
-      id: '2',
-      text: 'Trending',
-      iconName: 'trending-up', // Example icon
-    },
-    {
-      id: '3',
-      text: 'Gainers',
-      iconName: 'arrow-upward', // Example icon
-    },
-    {
-      id: '4',
-      text: 'More',
-      iconName: 'more-horiz', // Example icon
-    },
-  ];
-
-  const [selectedButton, setSelectedButton] = useState('1');
-
-  const handleButtonPress = buttonId => {
-    switch (buttonId) {
-      case '1':
-        // Action for Top 100 button
-        break;
-      case '2':
-        // Action for Trending button
-        break;
-      case '3':
-        // Action for Gainers button
-        break;
-      case '4':
-        // Action for More button
-        break;
-      default:
-        break;
-    }
-    setSelectedButton(buttonId);
-  };
   return (
     <SafeAreaView
       style={{
@@ -227,7 +178,10 @@ const Investments = ({navigation}) => {
               paddingBottom: 16,
               marginBottom: section === 'stocks' ? -2 : 0,
             }}
-            onPress={() => setSection('stocks')}>
+            onPress={() => {
+              setSection('stocks');
+              dispatch(getListOfStocksFromMobulaApi());
+            }}>
             <Text
               style={{
                 fontFamily: 'Montreal-Medium',
@@ -246,7 +200,10 @@ const Investments = ({navigation}) => {
               paddingBottom: 16,
               marginBottom: section === 'commodities' ? -2 : 0,
             }}
-            onPress={() => setSection('commodities')}>
+            onPress={() => {
+              setSection('commodities');
+              dispatch(getListOfCommoditiesFromMobulaApi());
+            }}>
             <Text
               style={{
                 fontFamily: 'Montreal-Medium',
@@ -308,7 +265,44 @@ const Investments = ({navigation}) => {
           )}
         </View>
       )}
-
+      {!isLoading && section === 'commodities' && (
+        <View
+          scrollEnabled
+          style={{
+            marginTop: '1%',
+          }}>
+          {cryptoData && (
+            <FlatList
+              data={cryptoData}
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
+                <TradeItemCard navigation={navigation} item={item} />
+              )}
+              onEndReached={async () => await onEndReachedFetch()}
+              keyExtractor={(item, i) => i.toString()}
+            />
+          )}
+        </View>
+      )}
+      {!isLoading && section === 'stocks' && (
+        <View
+          scrollEnabled
+          style={{
+            marginTop: '1%',
+          }}>
+          {cryptoData && (
+            <FlatList
+              data={cryptoData}
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
+                <TradeItemCard navigation={navigation} item={item} />
+              )}
+              onEndReached={async () => await onEndReachedFetch()}
+              keyExtractor={(item, i) => i.toString()}
+            />
+          )}
+        </View>
+      )}
       <Pressable
         onPress={() => {
           console.log(cryptoData.length);

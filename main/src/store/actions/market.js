@@ -1,8 +1,10 @@
 import {
   getAssetMetadata,
+  getCommoditiesListData,
   getForexListData,
   getHistoricalData,
   getMarketAssetData,
+  getStocksListData,
   getTop100MarketAssetData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
@@ -32,7 +34,7 @@ export const getListOfCryptoFromMobulaApi = () => {
 // First create an api call to get the desired data in actions/market.js
 //100, featured and etc.
 
-export const getListOfForexFromMobulaApi = type => {
+export const getListOfForexFromMobulaApi = () => {
   return async (dispatch, getState) => {
     const data = await getForexListData();
 
@@ -43,6 +45,32 @@ export const getListOfForexFromMobulaApi = type => {
     });
     console.log('key object', forexList.length, forexList);
     dispatch(marketsAction.setListOfCrypto(forexList));
+  };
+};
+export const getListOfCommoditiesFromMobulaApi = () => {
+  return async (dispatch, getState) => {
+    const data = await getCommoditiesListData();
+
+    const commodityList = [];
+    Object.keys(data).forEach(function (key, index) {
+      console.log('index', index);
+      commodityList.push(data[key]);
+    });
+    console.log('key object commodity', commodityList.length, commodityList);
+    dispatch(marketsAction.setListOfCrypto(commodityList));
+  };
+};
+export const getListOfStocksFromMobulaApi = () => {
+  return async (dispatch, getState) => {
+    const data = await getStocksListData();
+
+    const stockList = [];
+    Object.keys(data).forEach(function (key, index) {
+      console.log('index', index);
+      stockList.push(data[key]);
+    });
+    console.log('key object commodity', stockList.length, stockList);
+    dispatch(marketsAction.setListOfCrypto(stockList));
   };
 };
 export const setAssetMetadata = assetName => {

@@ -52,13 +52,12 @@ export default function EnterAmountComponent({navigation, route}) {
   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0, ...params};
 
   // console.log('Address: ', address);
-  console.log('Params: ', params);
 
   async function calculateGas() {
     try {
       web3 = this.createProvider();
       const gasPrice = Number(await web3.eth.getGasPrice());
-      console.log('Calculating gas');
+
       if (global.withAuth) {
         if (route.params.type == 'v2') {
           const gasNeeded = Number('51975');
@@ -69,7 +68,6 @@ export default function EnterAmountComponent({navigation, route}) {
         } else {
           const gasNeeded = Number('90000') + Number('60000');
           const gasFees = 1.2 * gasNeeded * gasPrice;
-          console.log('Gas:', web3.utils.fromWei(gasFees.toString(), 'ether'));
           setGas(
             Number(web3.utils.fromWei(gasFees.toString(), 'ether')).toFixed(3),
           );
@@ -94,8 +92,6 @@ export default function EnterAmountComponent({navigation, route}) {
   }
 
   useEffect(() => {
-    console.log('Is Auth:', global.withAuth);
-
     if (route.params.type == 'email') {
       fetch(
         `https://user.api.xade.finance/polygon?address=${route.params.walletAddress.toLowerCase()}`,
@@ -104,7 +100,6 @@ export default function EnterAmountComponent({navigation, route}) {
         },
       )
         .then(response => {
-          console.log(response);
           if (response.status == 200) {
             return response.text();
           } else return '';

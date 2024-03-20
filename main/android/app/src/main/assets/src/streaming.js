@@ -17,7 +17,6 @@ socket.on('error', error => {
 });
 
 socket.on('m', data => {
-  console.log('[socket] Message:', data);
   const [
     eventTypeStr,
     exchange,

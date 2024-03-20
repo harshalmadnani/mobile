@@ -81,7 +81,6 @@ function InteractiveChart() {
 
   useFocusEffect(
     useCallback(async () => {
-      console.log('Fired in line chart');
       async function initialHistoryFetch() {
         try {
           const selectedTimeframeObject = timeframes.find(
@@ -90,16 +89,11 @@ function InteractiveChart() {
           const from = selectedTimeframeObject
             ? selectedTimeframeObject.timestamp
             : null;
-          console.log('Fired when time======1', from);
           const data = await getWalletHistoricalData(from);
           const historicalPriceXYPair = data.balance_history.map(entry => {
             return {timestamp: entry[0], value: entry[1]};
           });
-          console.log(
-            'change date fire',
-            selectedTimeframe,
-            historicalPriceXYPair.length,
-          );
+
           setPriceList(historicalPriceXYPair);
           // Assuming data.balance_history is an array of [timestamp, price] pairs
           // const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
@@ -127,16 +121,10 @@ function InteractiveChart() {
 
       try {
         const data = await getWalletHistoricalData(from);
-        console.log('Data from API history.....', data);
         // Assuming data.balance_history is an array of [timestamp, price] pairs
         const historicalPriceXYPair = data.balance_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
-        console.log(
-          'change date fire',
-          selectedTimeframe,
-          historicalPriceXYPair.length,
-        );
         setPriceList(historicalPriceXYPair);
         setcurrentPrice(data.balance_usd);
       } catch (e) {
@@ -161,7 +149,7 @@ function InteractiveChart() {
       setpriceChange('0'); // Use the correct function name for setting state
     }
   }, [priceList]);
-  console.log('here....', touchActive);
+
   return (
     <LineChart.Provider data={priceList}>
       <View
@@ -231,11 +219,9 @@ function InteractiveChart() {
                   color="white"
                   onActivated={() => {
                     setTouchActive(true);
-                    console.log('startedddddd!!!!!');
                   }}
                   onEnded={() => {
                     setTouchActive(false);
-                    console.log('Endedeeee!!!!!');
                   }}
                 />
               </LineChart>
