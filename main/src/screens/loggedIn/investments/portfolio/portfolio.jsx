@@ -24,7 +24,7 @@ import {getCryptoHoldingForAddress} from '../../../../utils/cryptoWalletApi';
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 import {useFocusEffect} from '@react-navigation/native';
 import {getSmartAccountAddress} from '../../../../utils/particleCoreSDK';
-import { Icon } from '@rneui/base';
+import {Icon} from '@rneui/base';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   // const [holdings, setHoldings] = useState(null);
@@ -66,7 +66,7 @@ const Portfolio = ({navigation}) => {
   let info;
   let imageUrl;
   info = global.loginAccount.name;
-    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
+  imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('...');
   // useEffect(() => {
   async function logic() {
@@ -173,107 +173,255 @@ const Portfolio = ({navigation}) => {
       </View>
 
       <ScrollView>
-      <TouchableOpacity
-        style={{
-          alignItems: 'center',
-          marginTop: '8%',
-          flexDirection: 'row',
-          alignSelf: 'center'
-        }}
-        onPress={() => setModalVisible(true)} // Set the modal visibility to true when the TouchableOpacity is pressed
-      >
-        <Text style={styles.portfolioHead}>Portfolio Value</Text>
-        <Icon
-          name={'expand-more'}
-          size={20}
-          color={'#989898'}
-          type="materialicons"
-        />
-      </TouchableOpacity>
-      {/* Modal Component */}
-      <Modal
-  animationType="slide"
-  transparent={true}
-  visible={modalVisible}
-  onRequestClose={() => {
-    setModalVisible(!modalVisible);
-  }}
->
-  <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginTop: 22 }}>
-    {holdings ? (
-      <View style={{
-        backgroundColor: '#151515',
-        borderRadius: 20,
-        padding: 35,
-        paddingTop: 60,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-        width: '100%',
-        height: '75%',
-        position: 'relative',
-      }}>
-        {/* Close Icon */}
         <TouchableOpacity
           style={{
-            position: 'absolute',
-            top: 25,
-            left: 15,
-            zIndex: 1,
+            alignItems: 'center',
+            marginTop: '8%',
+            flexDirection: 'row',
+            alignSelf: 'center',
           }}
-          onPress={() => setModalVisible(!modalVisible)}
+          onPress={() => setModalVisible(true)} // Set the modal visibility to true when the TouchableOpacity is pressed
         >
-          <Icon name="close" size={35} color="#fff" />
+          <Text style={styles.portfolioHead}>Portfolio Value</Text>
+          <Icon
+            name={'expand-more'}
+            size={20}
+            color={'#989898'}
+            type="materialicons"
+          />
         </TouchableOpacity>
+        {/* Modal Component */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              marginTop: 22,
+            }}>
+            <View
+              style={{
+                backgroundColor: '#151515',
+                borderRadius: 20,
+                padding: 35,
+                paddingTop: 60,
+                alignItems: 'center',
+                shadowColor: '#000',
+                shadowOffset: {width: 0, height: 2},
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5,
+                width: '100%',
+                height: '75%',
+                position: 'relative',
+              }}>
+              {/* Close Icon */}
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: 25,
+                  left: 15,
+                  zIndex: 1,
+                }}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Icon name="close" size={35} color="#fff" />
+              </TouchableOpacity>
 
-        {/* Content when holdings is loaded */}
-        <Image
-          source={{ uri: imageUrl }} // Ensure you have a valid `imageUrl`
-          style={{ width: 48, height: 48 }}
-          resizeMode="contain"
-        />
+              {/* Image */}
+              <Image
+                source={{uri: imageUrl}} // Dummy image source
+                style={{width: 48, height: 48}}
+                resizeMode="contain"
+              />
 
-        <Text style={{ color: '#fff', fontSize: 24, fontFamily: 'Unbounded-Medium', marginVertical: 10 }}>
-          {info} {/* Ensure `info` is defined */}
-        </Text>
+              {/* Price */}
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 24,
+                  fontFamily: 'Unbounded-Medium',
+                  marginVertical: 10,
+                }}>
+                {info}
+              </Text>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10%', marginTop: '10%', marginHorizontal: '-8%' }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '10%',
+                  marginTop: '10%',
+                  marginHorizontal: '-8%',
+                }}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    paddingVertical: 40,
+                    marginRight: '1%',
+                    backgroundColor: '#121212',
+                    borderRadius: 30,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: '#fff',
+                      marginBottom: 5,
+                      fontFamily: 'Montreal-Bold',
+                    }}>
+                    Current Value
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: '#fff',
+                      fontFamily: 'Unbounded-Bold',
+                    }}>
+                    ${holdings?.total_wallet_balance.toFixed(2)}
+                  </Text>
+                </View>
 
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 40, marginRight: '1%', backgroundColor: '#121212', borderRadius: 30 }}>
-          <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Current Value</Text>
-          <Text style={{ fontSize: 16, color: '#fff', fontFamily: 'Unbounded-Bold' }}>
-           ${holdings.total_wallet_balance.toFixed(2)}
-          </Text>
-        </View>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingHorizontal: 10,
+                    paddingVertical: 40,
+                    marginLeft: '1%',
+                    borderRadius: 30,
+                    backgroundColor: '#121212',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: '#fff',
+                      marginBottom: 5,
+                      fontFamily: 'Montreal-Bold',
+                    }}>
+                    Total Returns
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color:
+                        holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
+                      fontFamily: 'Unbounded-Bold',
+                    }}>
+                    {(
+                      (holdings?.total_unrealized_pnl /
+                        (holdings?.total_wallet_balance -
+                          holdings?.total_unrealized_pnl -
+                          holdings?.total_realized_pnl)) *
+                      100
+                    ).toFixed(2)}
+                    %
+                  </Text>
+                </View>
+              </View>
 
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 40, marginLeft: '1%', borderRadius: 30, backgroundColor: '#121212' }}>
-          <Text style={{ fontSize: 12, color: '#fff', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>Total Returns</Text>
-          <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red', fontFamily: 'Unbounded-Bold' }}>
-            {(holdings.total_unrealized_pnl/(holdings.total_wallet_balance-holdings.total_unrealized_pnl-holdings.total_realized_pnl)*100).toFixed(2)}%
-          </Text>
-        </View>
-      </View>
-
-      {/* ... additional content ... */}
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Total Invested:</Text>
-        <Text style={{ fontSize: 16, color: '#fff', textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}> ${(holdings.total_wallet_balance-holdings.total_unrealized_pnl-holdings.total_realized_pnl).toFixed(2)}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Unrealized PnL:</Text>
-        <Text style={{ fontSize: 16, color: holdings.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings.total_unrealized_pnl.toFixed(2)}</Text>
-      </View>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: '10%' }}>
-        <Text style={{ fontSize: 16, color: '#ADADAD', textAlign: 'left', flex: 1, fontFamily: 'Montreal-Medium' }}>Realized PnL:</Text>
-        <Text style={{ fontSize: 16,  color: holdings.total_realized_pnl >= 0 ? '#ADFF6C' : 'red',  textAlign: 'right', flex: 1, fontFamily: 'Unbounded-Medium' }}>${holdings.total_realized_pnl.toFixed(2)}</Text>
-      </View>
-    )}
-  </View>
-</Modal>
-
+              {/* ... additional content ... */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#ADADAD',
+                    textAlign: 'left',
+                    flex: 1,
+                    fontFamily: 'Montreal-Medium',
+                  }}>
+                  Total Invested:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#fff',
+                    textAlign: 'right',
+                    flex: 1,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  {' '}
+                  $
+                  {(
+                    holdings?.total_wallet_balance -
+                    holdings?.total_unrealized_pnl -
+                    holdings?.total_realized_pnl
+                  ).toFixed(2)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#ADADAD',
+                    textAlign: 'left',
+                    flex: 1,
+                    fontFamily: 'Montreal-Medium',
+                  }}>
+                  Unrealized PnL:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color:
+                      holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
+                    textAlign: 'right',
+                    flex: 1,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  ${holdings?.total_unrealized_pnl.toFixed(2)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: '10%',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#ADADAD',
+                    textAlign: 'left',
+                    flex: 1,
+                    fontFamily: 'Montreal-Medium',
+                  }}>
+                  Realized PnL:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color:
+                      holdings?.total_realized_pnl >= 0 ? '#ADFF6C' : 'red',
+                    textAlign: 'right',
+                    flex: 1,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  ${holdings?.total_realized_pnl.toFixed(2)}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </Modal>
 
         <View style={{alignItems: 'center'}}>
           <InteractiveChart />

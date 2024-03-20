@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const coingeckoBaseURL = 'https://api.coingecko.com/api/v3';
 const mobulaBaseURL = 'https://api.mobula.io/api/1';
 const marketRoutes = {
   getMarket: '/coins/markets',
@@ -67,12 +66,42 @@ export const getMarketData = async assets => {
 export const getForexListData = async assets => {
   try {
     const response = await axios.get(
-      `${mobulaBaseURL}/market/multi-data?assets=0xdc3326e71d45186f113a2f448984ca0e8d201995,0xcdb3867935247049e87c38ea270edd305d84c9ae,0xe6a537a407488807f0bbeb0038b79004f19dddfb`,
+      `${mobulaBaseURL}/market/multi-data?assets=0xC891EB4cbdEFf6e073e859e987815Ed1505c2ACD,0xdc3326e71d45186f113a2f448984ca0e8d201995,0xcdb3867935247049e87c38ea270edd305d84c9ae,0xe4095d9372e68d108225c306a4491cacfb33b097`,
       {
         headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
       },
     );
     console.log('forex data....', response.data);
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};
+export const getCommoditiesListData = async assets => {
+  try {
+    const response = await axios.get(
+      `${mobulaBaseURL}/market/multi-data?assets=0xA6da8C8999c094432c77E7d318951D34019AF24B,0x57fCbd6503C8BE3B1AbAD191Bc7799ef414A5b31,0x2e6978ceea865948f4c5685e35aec72652e3cb88`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
+    );
+    console.log('commodities data....', response.data);
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};
+export const getStocksListData = async assets => {
+  try {
+    const response = await axios.get(
+      `${mobulaBaseURL}/market/multi-data?assets=0x407274abb9241da0a1889c1b8ec65359dd9d316d`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
+    );
+    console.log('commodities data....', response.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);

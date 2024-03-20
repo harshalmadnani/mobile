@@ -1,34 +1,15 @@
 import React, {useState, Component, useEffect} from 'react';
 import {
-  TouchableOpacity,
-  TouchableHighlight,
   SafeAreaView,
-  Text,
   View,
-  Image,
   ScrollView,
-  Clipboard,
-  Alert,
-  Modal,
-  Linking,
   Dimensions,
-  RefreshControl,
   Platform,
   StyleSheet,
   ActivityIndicator,
   useWindowDimensions,
 } from 'react-native';
-import {Icon} from 'react-native-elements';
-import {CRYPTO_LIST} from './data/crypto';
-import TradeItemCard from './TradeItemCard';
-import {WebView} from 'react-native-webview';
-import LinearGradient from 'react-native-linear-gradient';
-import TradeSvg from './icon/tradeSvg';
-import DepositSvg from './icon/depositSvg';
 import MarketChart from './marketInfo/MarketChart';
-import {MaterialTabBar, Tabs} from 'react-native-collapsible-tab-view';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useSelector} from 'react-redux';
 
 const MarketInfo = ({route, navigation, item}) => {
   const width = Dimensions.get('window').width;
@@ -39,10 +20,7 @@ const MarketInfo = ({route, navigation, item}) => {
 
   const [showSellModal, setShowSellModal] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
-  const [index, setIndex] = useState(0);
-  const layout = useWindowDimensions();
 
-  console.log(item);
   const handleCloseBuyModal = () => {
     setShowBuyModal(false);
   };
@@ -110,22 +88,8 @@ const MarketInfo = ({route, navigation, item}) => {
         <ScrollView
           scrollEnabled
           style={{
-            // paddingTop:'15%',
             marginTop: '10%',
-            // backgroundColor: 'blue',
           }}>
-          {/* <WebView
-                        style={{flex: 1, height: 300}}
-                        source={{uri}}
-                        dataUrl={'https://tradingview.com/'}
-                        allowFileAccessFromFileURLs={true}
-                        domStorageEnabled={true}
-                        allowFileAccess={true}
-                        allowUniversalAccessFromFileURLs={true}
-                        originWhitelist={['*']}
-                        onShouldStartLoadWithRequest={() => true}
-                    /> */}
-
           <View>
             <View style={{}}>
               <MarketChart item={item} scwAddress={address} />
@@ -135,19 +99,10 @@ const MarketInfo = ({route, navigation, item}) => {
           <View margin={4} />
 
           {showBuyModal && (
-            <BuyModal
-              marketData={{}}
-              // transactionData={transactionData}
-              onClose={handleCloseBuyModal}
-            />
+            <BuyModal marketData={{}} onClose={handleCloseBuyModal} />
           )}
 
-          {showSellModal && (
-            <SellModal
-              // transactionData={transactionData}
-              onClose={handleCloseSellModal}
-            />
-          )}
+          {showSellModal && <SellModal onClose={handleCloseSellModal} />}
           {/*
                     <View>
                         <View style={{
