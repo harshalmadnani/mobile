@@ -383,10 +383,7 @@ function EnterSavingsAmount({navigation, route}) {
 function MarketInfoScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TopBar navigation={navigation} headers={''} /> */}
-      <ScrollView style={{height: '100%'}}>
         <MarketInfo navigation={navigation} item={route.params.item} />
-      </ScrollView>
     </SafeAreaView>
   );
 }

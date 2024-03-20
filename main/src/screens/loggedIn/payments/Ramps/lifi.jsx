@@ -1,11 +1,11 @@
-import React, {useRef} from 'react';
-import {View, Button, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {WebView} from 'react-native-webview';
+import React, { useRef } from 'react';
+import { View, Button, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { WebView } from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon component
-import {useSelector} from 'react-redux';
-const LiFi = ({route, navigation}) => {
+import { useSelector } from 'react-redux';
+const LiFi = ({ route, navigation }) => {
   const webViewRef = useRef(null);
-  const {value} = route.params;
+  const { value } = route.params;
   const address = useSelector(x => x.auth.address);
 
   const refresh = () => {

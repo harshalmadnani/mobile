@@ -50,7 +50,10 @@ const MarketInfo = ({route, navigation, item}) => {
   const handleCloseSellModal = () => {
     setShowSellModal(false);
   };
-
+  const holdings = useSelector(x => x.portfolio.holdings);
+  const currentAsset = holdings?.assets.filter(
+    x => x.asset?.symbol.toLowerCase() === item?.symbol.toLowerCase(),
+  );
   // console.log(route.params);
 
   const uri =
@@ -242,6 +245,50 @@ const MarketInfo = ({route, navigation, item}) => {
                     </View> */}
         </ScrollView>
       )}
+            <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          height: 52,
+          width: '100%',
+          borderRadius: 6,
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          marginTop: '30%',
+          position: 'absolute',
+          bottom: 15,
+          shadowColor:'#000', // Adjust the bottom spacing as needed
+          left: 0,
+          right: 0,
+        }}
+        onPress={() => {
+          // if (holdings) {
+          navigation.navigate('TradePage', {
+            state: item,
+            asset: currentAsset
+          });
+          // }
+        }}>
+          
+        <LinearGradient
+          useAngle={true}
+          angle={150}
+          colors={['#fff', '#fff']}
+          style={{
+            width: '100%',
+            borderRadius: 100,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color: '#000',
+              fontSize: 14,
+              fontFamily: 'Unbounded-ExtraBold',
+            }}>
+            TRADE {item.symbol.toUpperCase()}
+          </Text>
+        </LinearGradient>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
