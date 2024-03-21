@@ -1,4 +1,4 @@
-import React, {useState, Component, useEffect} from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import {
   SafeAreaView,
   View,
@@ -8,10 +8,13 @@ import {
   StyleSheet,
   ActivityIndicator,
   useWindowDimensions,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import MarketChart from './marketInfo/MarketChart';
-
-const MarketInfo = ({route, navigation, item}) => {
+import LinearGradient from 'react-native-linear-gradient';
+import { useDispatch, useSelector } from 'react-redux';
+const MarketInfo = ({ route, navigation, item }) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
@@ -38,7 +41,7 @@ const MarketInfo = ({route, navigation, item}) => {
     Platform.OS === 'android'
       ? `file:///android_asset/index.html?theme=dark&symbol=BINANCE:BTCUSDT&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
       : // ? `file:///android_asset/index.html?theme=dark&symbol=${item.symbol}&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-        'index.html';
+      'index.html';
 
   console.log(uri);
 
@@ -78,10 +81,10 @@ const MarketInfo = ({route, navigation, item}) => {
         // backgroundColor: 'red'
       }}>
       {isLoading && (
-        <View style={{height: '100%'}}>
+        <View style={{ height: '100%' }}>
           <ActivityIndicator
             size={30}
-            style={{marginTop: '40%'}}
+            style={{ marginTop: '40%' }}
             color="#fff"
           />
         </View>
@@ -200,7 +203,7 @@ const MarketInfo = ({route, navigation, item}) => {
                     </View> */}
         </ScrollView>
       )}
-            <TouchableOpacity
+      <TouchableOpacity
         style={{
           flexDirection: 'row',
           height: 52,
@@ -210,7 +213,7 @@ const MarketInfo = ({route, navigation, item}) => {
           marginTop: '30%',
           position: 'absolute',
           bottom: 15,
-          shadowColor:'#000', // Adjust the bottom spacing as needed
+          shadowColor: '#000', // Adjust the bottom spacing as needed
           left: 0,
           right: 0,
         }}
@@ -222,7 +225,7 @@ const MarketInfo = ({route, navigation, item}) => {
           });
           // }
         }}>
-          
+
         <LinearGradient
           useAngle={true}
           angle={150}

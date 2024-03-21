@@ -1,12 +1,12 @@
-import React, {useState, useCallback, useEffect} from 'react';
-import { Linking,ActivityIndicator,ScrollView, TouchableOpacity, View, Dimensions,FlatList} from 'react-native';
-import {Text, Icon, Image} from '@rneui/themed';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Linking, ActivityIndicator, ScrollView, TouchableOpacity, View, Dimensions, FlatList } from 'react-native';
+import { Text, Icon, Image } from '@rneui/themed';
 import styles from '../investment-styles';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import InvestmentChart from '../../../../component/charts/InvestmentChart';
-import {useDispatch, useSelector} from 'react-redux';
-import {setAssetMetadata} from '../../../../store/actions/market';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAssetMetadata } from '../../../../store/actions/market';
 import { WebView } from 'react-native-webview';
 const MarketChart = props => {
   const [scwAddress, setScwAddress] = useState();
@@ -45,17 +45,17 @@ const MarketChart = props => {
   // Function to render a single tab item
   const renderTabItem = (tabName) => (
     <TouchableOpacity
-    style={{
-      paddingVertical: 5,
-      paddingHorizontal: 20,
-      borderRadius:30,
-      backgroundColor: selectedTab === tabName ? '#444' : 'transparent',
-      margin: 5,
-    }}
-    onPress={() => setSelectedTab(tabName)}
-  >
-    <Text style={{ color: selectedTab === tabName ? 'white' : 'grey', fontSize: 14 }}>{tabName}</Text>
-  </TouchableOpacity>
+      style={{
+        paddingVertical: 5,
+        paddingHorizontal: 20,
+        borderRadius: 30,
+        backgroundColor: selectedTab === tabName ? '#444' : 'transparent',
+        margin: 5,
+      }}
+      onPress={() => setSelectedTab(tabName)}
+    >
+      <Text style={{ color: selectedTab === tabName ? 'white' : 'grey', fontSize: 14 }}>{tabName}</Text>
+    </TouchableOpacity>
   );
   const holdings = useSelector(x => x.portfolio.holdings);
   const currentAsset = holdings?.assets.filter(
@@ -93,8 +93,8 @@ const MarketChart = props => {
     }, []),
   );
   console.log('current holdings', JSON.stringify(currentAsset));
-  console.log('Metdata',selectedAssetMetaData);
-  const {width, height} = Dimensions.get('window');
+  console.log('Metdata', selectedAssetMetaData);
+  const { width, height } = Dimensions.get('window');
   const formatNumber = (numString) => {
     const num = parseFloat(numString);
     if (!isNaN(num)) {
@@ -112,32 +112,41 @@ const MarketChart = props => {
     }
     return 'Invalid Number'; // Return this or handle it as per your requirement
   };
-  
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439');
-      const json = await response.json();
-      setNewsData(json.results);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  fetchData();
-}, []);
-  const data = [
-    { label: 'Market Cap', value: selectedAssetMetaData.market_cap }, // Example value: 5 billion
-    { label: 'Volume', value: selectedAssetMetaData.volume }, // 3 million
-    { label: 'Circulating Supply', value: selectedAssetMetaData.total_supply }, // 1 million
-    { label: 'Total Supply', value: selectedAssetMetaData.max_supply}, // 7 billion
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439');
+        const json = await response.json();
+        setNewsData(json.results);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+  // Assuming selectedAssetMetaData is defined and not null
+  const data = [];
+
+  if (selectedAssetMetaData) {
+    selectedAssetMetaData.market_cap && data.push({ label: 'Market Cap', value: selectedAssetMetaData.market_cap });
+    selectedAssetMetaData.volume && data.push({ label: 'Volume', value: selectedAssetMetaData.volume });
+    selectedAssetMetaData.total_supply && data.push({ label: 'Circulating Supply', value: selectedAssetMetaData.total_supply });
+    selectedAssetMetaData.max_supply && data.push({ label: 'Total Supply', value: selectedAssetMetaData.max_supply });
+  }
+
+
+  if (!selectedAssetMetaData) {
+    // Return null or a placeholder component if selectedAssetMetaData is not available
+    return null; // or <PlaceholderComponent />;
+  }
 
   return (
-    <View style={{flex: 1}}>
-      <ScrollView contentContainerStyle={{minHeight: height, minWidth: width}}>
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ minHeight: height, minWidth: width }}>
         <View
           style={{
             flexDirection: 'row',
@@ -151,7 +160,7 @@ useEffect(() => {
             color={'#f0f0f0'}
             type="materialicons"
             onPress={() => navigation.goBack()}
-            style={{marginLeft: 20}}
+            style={{ marginLeft: 20 }}
           />
           <View
             style={{
@@ -169,24 +178,24 @@ useEffect(() => {
             <InvestmentChart assetName={currentItem?.name} />
           </View>
         </View>
-        <View style={{ backgroundColor: '#1414141',marginTop:'3%',borderBottomColor:'#333',borderBottomWidth:1,borderTopColor:'#333',borderTopWidth:1,paddingVertical:'5%'}}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ alignItems: 'center', paddingStart: 20, paddingEnd: 20 }}
-      >
-        {data.map((item, index) => (
-          <View key={index} style={{ alignItems: 'center', marginRight: 40 }}>
-            <Text style={{ color: 'white', marginBottom: 5 ,fontFamily:'Montreal-Bold'}}>{item.label}</Text>
-            <Text style={{ color: 'grey', fontFamily: 'Montreal-Medium' }}>
-  {item.label === 'Market Cap' || item.label === 'Volume' ? '$' : ''}
-  {formatNumber(item.value)}
-</Text>
+        <View style={{ backgroundColor: '#1414141', marginTop: '3%', borderBottomColor: '#333', borderBottomWidth: 1, borderTopColor: '#333', borderTopWidth: 1, paddingVertical: '5%' }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ alignItems: 'center', paddingStart: 20, paddingEnd: 20 }}
+          >
+            {data.map((item, index) => (
+              <View key={index} style={{ alignItems: 'center', marginRight: 40 }}>
+                <Text style={{ color: 'white', marginBottom: 5, fontFamily: 'Montreal-Bold' }}>{item.label}</Text>
+                <Text style={{ color: 'grey', fontFamily: 'Montreal-Medium' }}>
+                  {item.label === 'Market Cap' || item.label === 'Volume' ? '$' : ''}
+                  {formatNumber(item.value)}
+                </Text>
 
-          </View>
-        ))}
-      </ScrollView>
-    </View>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
         <TouchableOpacity
           style={{
             paddingHorizontal: '5%',
@@ -234,87 +243,87 @@ useEffect(() => {
              {selectedAssetMetaData.description}
             </Text>
           </View> */}
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#222', paddingVertical: 5,margin:'0.5%',borderRadius:30,marginVertical:"6%" }}>
-        {renderTabItem('News')}
-        {renderTabItem('Degen AI')}
-        {renderTabItem('Analytics')}
-      </View>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' }}>
-        {selectedTab === 'News' &&   <View>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={newsData}
-          keyExtractor={item => item.id.toString()}
-          renderItem={({ item }) => (
-            <View style={{ marginVertical:'5%', alignItems: 'flex-start',marginHorizontal:"5%" }}>
-              <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                  <Text style={{ fontSize: 13, color: 'gray', marginRight: 5 }}>{new Date(item.published_at).toLocaleTimeString()}</Text>
-                  <Text style={{ marginHorizontal: 5, color: 'gray' }}>·</Text>
-                  <Text style={{ fontSize: 13, color: 'gray', marginRight: 5 }}>{new Date(item.published_at).toLocaleDateString()}</Text>
-                  <Text style={{ marginHorizontal: 5, color: 'gray' }}>·</Text>
-                  <Text style={{ fontSize: 13, color: 'gray' }}>{item.source.title}</Text>
-                </View>
-                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify' }}>
-                  {item.title}
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around', backgroundColor: '#222', paddingVertical: 5, margin: '0.5%', borderRadius: 30, marginVertical: "6%" }}>
+          {renderTabItem('News')}
+          {renderTabItem('Degen AI')}
+          {renderTabItem('Analytics')}
+        </View>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' }}>
+          {selectedTab === 'News' && <View>
+            {isLoading ? (
+              <ActivityIndicator size="large" color="#0000ff" />
+            ) : (
+              <FlatList
+                data={newsData}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                  <View style={{ marginVertical: '5%', alignItems: 'flex-start', marginHorizontal: "5%" }}>
+                    <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
+                        <Text style={{ fontSize: 13, color: 'gray', marginRight: 5 }}>{new Date(item.published_at).toLocaleTimeString()}</Text>
+                        <Text style={{ marginHorizontal: 5, color: 'gray' }}>·</Text>
+                        <Text style={{ fontSize: 13, color: 'gray', marginRight: 5 }}>{new Date(item.published_at).toLocaleDateString()}</Text>
+                        <Text style={{ marginHorizontal: 5, color: 'gray' }}>·</Text>
+                        <Text style={{ fontSize: 13, color: 'gray' }}>{item.source.title}</Text>
+                      </View>
+                      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#D1D2D9', textAlign: 'justify' }}>
+                        {item.title}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            )}
+          </View>}
+          {selectedTab === 'Degen AI' && (
+            <>
+              <Image
+                source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710949855/lv9al2binq8dw6qpjrm0.png' }}
+                style={{ width: 300, height: 300 }} // Adjust size as needed
+              />
+              <Text style={{ color: 'white', fontSize: 20, marginTop: 20, fontFamily: 'Unbounded-Bold' }}>Coming Soon</Text>
+            </>
           )}
-        />
-      )}
-    </View>}
-        {selectedTab === 'Degen AI' && (
-          <>
-            <Image 
-              source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710949855/lv9al2binq8dw6qpjrm0.png' }} 
-              style={{ width: 300, height: 300 }} // Adjust size as needed
-            />
-            <Text style={{ color: 'white', fontSize: 20, marginTop: 20,fontFamily:'Unbounded-Bold' }}>Coming Soon</Text>
-          </>
-        )}
-   {selectedTab === 'Analytics' && (
-        <>
-          {isLoading && (
-            <ActivityIndicator
-              size="large"
-              color="#0000ff"
-              style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}
-            />
-          )}
-          <WebView
-            originWhitelist={['*']}
-            source={{
-              html: `
+          {selectedTab === 'Analytics' && (
+            <>
+              {isLoading && (
+                <ActivityIndicator
+                  size="large"
+                  color="#0000ff"
+                  style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' }}
+                />
+              )}
+              <WebView
+                originWhitelist={['*']}
+                source={{
+                  html: `
                 <style>
                   body { background-color: black; margin: 0; padding: 0; color: white; }
                 </style>
                 ${tradingViewWidgetHTML}`
-            }}
-            style={{ width: width, height: 400 }}
-            onLoadStart={() => setLoading(true)}
-            onLoad={() => {
-              console.log('WebView loaded.');
-              setLoading(false);
-            }}
-          />
-        </>
-      )}
-      </View>
+                }}
+                style={{ width: width, height: 400 }}
+                onLoadStart={() => setLoading(true)}
+                onLoad={() => {
+                  console.log('WebView loaded.');
+                  setLoading(false);
+                }}
+              />
+            </>
+          )}
+        </View>
       </ScrollView>
     </View>
   );
 };
 
-const ReadMoreLess = ({text, maxChars}) => {
+const ReadMoreLess = ({ text, maxChars }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const displayText = isExpanded ? text : `${text.slice(0, maxChars)}`;
 
   return (
     <View>
-      <Text style={{margin: 0, marginTop: 10, marginBottom: 8, color: 'white'}}>
+      <Text style={{ margin: 0, marginTop: 10, marginBottom: 8, color: 'white' }}>
         {displayText}
       </Text>
       {text.length > maxChars && (
