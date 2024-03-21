@@ -26,15 +26,13 @@ target 'XadeMobile' do
   pod 'ParticleNetworkBase', '0.14.5'
   pod 'ParticleAuthService', '0.14.5'
   pod 'ParticleBiconomy', '0.14.5'
-  
   pod 'ParticleConnect', '0.2.4'
- pod 'ConnectWalletConnectAdapter', '0.2.4'
- pod 'ConnectSolanaAdapter', '0.2.4'
- pod 'ConnectEVMAdapter', '0.2.4'
- pod 'ConnectCommon', '0.2.4'
- pod 'ConnectPhantomAdapter', '0.2.4'
- 
- pod 'WalletConnectSwiftV2', '1.6.10'
+  pod 'ConnectWalletConnectAdapter', '0.2.4'
+  pod 'ConnectSolanaAdapter', '0.2.4'
+  pod 'ConnectEVMAdapter', '0.2.4'
+  pod 'ConnectCommon', '0.2.4'
+  pod 'ConnectPhantomAdapter', '0.2.4'
+  pod 'WalletConnectSwiftV2', '1.6.10'
  
     use_react_native!(
     :path => config[:reactNativePath],

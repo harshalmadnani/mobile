@@ -21,7 +21,7 @@ export const portfolioSlice = createSlice({
       state.evmInfo = action.payload;
     },
     setEvmTxList: (state, action) => {
-      state.evmTxList = action.payload;
+      state.evmTxListInfo = action.payload;
     },
     setEvmDLNTradeList: (state, action) => {
       state.evmDLNTradesTxListInfo = action.payload;

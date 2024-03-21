@@ -3,18 +3,13 @@ import {
   Dimensions,
   SafeAreaView,
   StyleSheet,
-  Linking,
-  TouchableHighlight,
-  TouchableOpacity,
   View,
-  Clipboard,
-  ScrollView,
+  FlatList,
+  SectionList,
 } from 'react-native';
 import {Icon, Text} from 'react-native-elements';
-import FastImage from 'react-native-fast-image';
-
-import TransactionReceipt from './transactionReceipt';
-import Snackbar from 'react-native-snackbar';
+import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
+import WalletTransactionTradeCard from '../../../component/Transaction/WalletTransactionTradeCard';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getWalletTransactionForAddressFromDLN,
@@ -31,18 +26,22 @@ const TransactionList = ({navigation, route}) => {
   const evmDLNTradesTxListInfo = useSelector(
     x => x.portfolio.evmDLNTradesTxListInfo,
   );
+  const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
   const getAllTxHistory = async () => {
     dispatch(getWalletTransactionForAddressFromMobula(page));
   };
   const getAllDLNTradeHistory = async () => {
     dispatch(getWalletTransactionForAddressFromDLN(page));
   };
+  const onEndReachedFetch = async () => {
+    // dispatch(getWalletTransactionForAddressFromDLN(page));
+  };
   useEffect(() => {
-    if (txType === 'dln') {
-      getAllDLNTradeHistory();
-    } else {
-      getAllTxHistory();
-    }
+    // if (txType !== 'dln') {
+    getAllDLNTradeHistory();
+    // } else {
+    getAllTxHistory();
+    // }
   }, [txType, evmInfo]);
 
   return (
@@ -53,42 +52,63 @@ const TransactionList = ({navigation, route}) => {
         justifyContent: 'flex-start',
         alignItems: 'center',
       }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          width: '100%',
-          margin: '5%',
-          marginBottom: '0%',
-        }}>
-        <Icon
-          name={'navigate-before'}
-          size={30}
-          color={'#f0f0f0'}
-          type="materialicons"
-          onPress={() => navigation.goBack()}
+      {evmTxListInfo?.transactions?.length > 0 &&
+      evmDLNTradesTxListInfo?.orders.length > 0 ? (
+        <FlatList
+          style={{width: '100%', marginBottom: 64}}
+          data={[
+            ...evmDLNTradesTxListInfo?.orders,
+            ...evmTxListInfo?.transactions,
+          ]}
+          renderItem={({item}) =>
+            item?.type ? (
+              <WalletTransactionTransferCard item={item} />
+            ) : (
+              <WalletTransactionTradeCard item={item} />
+            )
+          }
+          onEndReached={async () => await onEndReachedFetch()}
+          keyExtractor={(item, i) => i.toString()}
+          stickySectionHeadersEnabled={true}
+          ListHeaderComponent={() => {
+            return (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start',
+                  width: '100%',
+                  paddingVertical: 16,
+                  marginBottom: '0%',
+                }}>
+                <Icon
+                  name={'navigate-before'}
+                  size={30}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                  onPress={() => navigation.goBack()}
+                />
+                <View
+                  style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#F0F0F0',
+                      fontFamily: 'Unbounded-Regular',
+                      fontSize: 16,
+                      right: 30,
+                    }}>
+                    Transaction History
+                  </Text>
+                </View>
+              </View>
+            );
+          }}
         />
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              color: '#F0F0F0',
-              fontFamily: 'Unbounded-Regular',
-              fontSize: 16,
-              right: 30,
-            }}>
-            Transaction History
-          </Text>
-        </View>
-      </View>
-      <ScrollView>
-        <View style={styles.transactionListContainer}></View>
-      </ScrollView>
+      ) : null}
     </SafeAreaView>
   );
 };
@@ -103,45 +123,6 @@ const styles = StyleSheet.create({
   },
   transactionListContainer: {
     margin: '3%',
-    // backgroundColor: 'blue',
-    top: '0%',
-  },
-
-  transactions: {
-    width: width - 30,
-    marginHorizontal: 15,
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 15,
-    borderRadius: 6,
-    backgroundColor: 'red',
-    backgroundColor: '#080808',
-  },
-  transactionLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  transactionRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '30%',
-    justifyContent: 'flex-end',
-    textAlign: 'center',
-    alignContent: 'flex-end',
-  },
-  noTransaction: {
-    color: '#d9d9d9',
-    marginTop: '7%',
-    textAlign: 'center',
-    fontFamily: `Satoshi-Regular`,
-    fontSize: 17,
-  },
-  ttext: {
-    marginLeft: 15,
-    marginTop: 5,
   },
 });
 

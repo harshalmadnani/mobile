@@ -22,7 +22,8 @@ export const getWalletTransactionForAddressFromMobula = page => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
     const data = await getTransactionsByWallet(evmInfo.smartAccount, page);
-    dispatch(portfolioAction.setEvmTxList(data?.data));
+    console.log('tx info data.....', data);
+    dispatch(portfolioAction.setEvmTxList(data));
     return data;
   };
 };
@@ -30,7 +31,7 @@ export const getWalletTransactionForAddressFromDLN = page => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
     const data = await getDLNTradeForAddress(evmInfo.smartAccount, page);
-    dispatch(portfolioAction.setEvmDLNTradeList(data?.data));
+    dispatch(portfolioAction.setEvmDLNTradeList(data));
     return data;
   };
 };

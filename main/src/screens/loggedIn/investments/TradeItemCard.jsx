@@ -13,7 +13,6 @@ import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 import {useDispatch} from 'react-redux';
 
-import moment from 'moment';
 import {useNavigation} from '@react-navigation/native';
 const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const dispatch = useDispatch();
