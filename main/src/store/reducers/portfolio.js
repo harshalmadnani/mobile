@@ -2,7 +2,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 
 // This is the initial state of the slice
-const initialState = {holdings: null};
+const initialState = {
+  holdings: null,
+  evmInfo: {address: null, smartAccount: null},
+  evmTxListInfo: null,
+  evmDLNTradesTxListInfo: null,
+};
 
 export const portfolioSlice = createSlice({
   name: 'portfolio', // This is the name of the slice, we will later use this name to access the slice from the store
@@ -10,8 +15,16 @@ export const portfolioSlice = createSlice({
   reducers: {
     // All the reducers go here
     setHoldings: (state, action) => {
-      console.log('Inside Reducer Data', action.payload);
       state.holdings = action.payload;
+    },
+    setEvmWalletInfo: (state, action) => {
+      state.evmInfo = action.payload;
+    },
+    setEvmTxList: (state, action) => {
+      state.evmTxList = action.payload;
+    },
+    setEvmDLNTradeList: (state, action) => {
+      state.evmDLNTradesTxListInfo = action.payload;
     },
   },
 });

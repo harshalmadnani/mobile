@@ -22,7 +22,6 @@ export const getListOfCryptoFromMobulaApi = () => {
   return async (dispatch, getState) => {
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData();
-    console.log('coin gecko.....', data.length);
     if (data.length > 0) {
       dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
     } else {
@@ -31,9 +30,6 @@ export const getListOfCryptoFromMobulaApi = () => {
     }
   };
 };
-// First create an api call to get the desired data in actions/market.js
-//100, featured and etc.
-
 export const getListOfForexFromMobulaApi = () => {
   return async (dispatch, getState) => {
     const data = await getForexListData();

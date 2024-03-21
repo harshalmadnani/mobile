@@ -25,32 +25,6 @@ import {useFocusEffect} from '@react-navigation/native';
 import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
 import {marketsAction} from '../../../store/reducers/market';
 
-const ComingSoonView = () => (
-  <View
-    style={{
-      height: '80%',
-      width: '100%',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
-    <View>
-      <Image source={ImageAssets.forexImg} style={{height: 200, width: 200}} />
-    </View>
-    <View style={{marginBottom: 50, alignItems: 'flex-start', gap: 10}}>
-      <Text
-        style={{
-          fontSize: 24,
-          fontWeight: 'bold',
-          color: '#D1D2D9',
-          textAlign: 'justify',
-          fontFamily: 'Montreal-Medium',
-        }}>
-        Coming Soon
-      </Text>
-    </View>
-  </View>
-);
 const Investments = ({navigation}) => {
   const [marketData, setMarketData] = useState(null);
 
@@ -62,6 +36,7 @@ const Investments = ({navigation}) => {
   const [section, setSection] = useState('crypto');
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
+  const evmInfo = useSelector(x => x.portfolio.evmInfo);
   useFocusEffect(
     useCallback(() => {
       setIsLoading(true);

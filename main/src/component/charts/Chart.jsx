@@ -1,29 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 // import * as React from 'react'
-import {
-  PanResponder,
-  Dimensions,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from '../../screens/loggedIn/investments/investment-styles';
-import {AreaChart, XAxis, YAxis} from 'react-native-svg-charts';
-import {
-  Circle,
-  Defs,
-  G,
-  Line,
-  LinearGradient,
-  Path,
-  Stop,
-  Text as SvgText,
-} from 'react-native-svg';
-import * as shape from 'd3-shape';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
-import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 export default InteractiveChart;
@@ -52,10 +33,7 @@ function InteractiveChart() {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;
   };
-  // useEffect(() => {
-
-  //   init();
-  // }, []);
+  const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const [priceList, setPriceList] = useState([]);
   const now = new Date();
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
@@ -79,36 +57,6 @@ function InteractiveChart() {
     {label: 'All', value: '', timestamp: genesis.getTime()},
   ];
 
-  useFocusEffect(
-    useCallback(async () => {
-      async function initialHistoryFetch() {
-        try {
-          const selectedTimeframeObject = timeframes.find(
-            timeframe => timeframe.value === selectedTimeframe,
-          );
-          const from = selectedTimeframeObject
-            ? selectedTimeframeObject.timestamp
-            : null;
-          const data = await getWalletHistoricalData(from);
-          const historicalPriceXYPair = data.balance_history.map(entry => {
-            return {timestamp: entry[0], value: entry[1]};
-          });
-
-          setPriceList(historicalPriceXYPair);
-          // Assuming data.balance_history is an array of [timestamp, price] pairs
-          // const prices = data.balance_history.map(entry => entry[1]); // Extracting the price part
-          // setPriceList(prices);
-          setcurrentPrice(data.balance_usd);
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      await initialHistoryFetch();
-      return () => {
-        // Perform any clean-up tasks here, such as cancelling requests or clearing state
-      };
-    }, []),
-  );
   useEffect(() => {
     const selectedTimeframeObject = timeframes.find(
       timeframe => timeframe.value === selectedTimeframe,
@@ -120,8 +68,7 @@ function InteractiveChart() {
       if (from === null) return; // Early exit if timestamp is not found
 
       try {
-        const data = await getWalletHistoricalData(from);
-        // Assuming data.balance_history is an array of [timestamp, price] pairs
+        const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
         const historicalPriceXYPair = data.balance_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
@@ -132,7 +79,7 @@ function InteractiveChart() {
       }
     }
     init();
-  }, [selectedTimeframe]);
+  }, [selectedTimeframe, evmInfo]);
 
   // The currently selected X coordinate position
   useEffect(() => {

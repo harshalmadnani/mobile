@@ -11,6 +11,7 @@ import {globalActions} from '../reducers/global';
 import {PNAccount} from '../../Models/PNAccount';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authActions} from '../reducers/auth';
+import {getEvmAddresses} from '../actions/portfolio';
 
 export const registerUserToDB = () => {
   return async dispatch => {};
@@ -36,18 +37,21 @@ export const checkNameOnSCWAddress = async (navigation, scwAddress, email) => {
       ) {
         console.log('Here....', userResponse);
         navigation.push('EnterName');
+        return;
       } else {
         global.loginAccount.name = userResponse;
-        navigation.push('Portfolio');
+        return true;
       }
     } catch (error) {
       console.log('Here....Error', error?.response?.data);
       if (error?.response?.data === 'wallet address was not found') {
         navigation.push('EnterName');
+        return;
       }
     }
   } else {
     navigation.navigate('Error');
+    return;
   }
   // };
 };
@@ -95,7 +99,15 @@ export const onAuthCoreLogin = navigation => {
                 ? userInfo.wallets[0].uuid
                 : userInfo.uuid,
             );
-            await checkNameOnSCWAddress(navigation, response?.data, email);
+            const status = await checkNameOnSCWAddress(
+              navigation,
+              response?.data,
+              email,
+            );
+            if (status) {
+              dispatch(getEvmAddresses());
+              navigation.navigate('Portfolio');
+            }
           }
         } catch (error) {
           console.log('error in lookup.....', error?.response);
@@ -112,7 +124,16 @@ export const onAuthCoreLogin = navigation => {
                   ? userInfo.wallets[0].uuid
                   : userInfo.uuid,
               );
-              await checkNameOnSCWAddress(navigation, scw, email);
+
+              const status = await checkNameOnSCWAddress(
+                navigation,
+                scw,
+                email,
+              );
+              if (status) {
+                dispatch(getEvmAddresses());
+                navigation.navigate('Portfolio');
+              }
             } else {
               navigation.navigate('Error');
             }
@@ -200,9 +221,8 @@ export const onIsLoginCheckAuthCore = (
                   uuid,
                 );
                 global.withAuth = true;
-                console.log('Logged In:', global.loginAccount);
-                navigation.push('Portfolio');
-                console.log('Navigating To Payments');
+                dispatch(getEvmAddresses());
+                navigation.navigate('Portfolio');
               } else {
                 navigation.push('LoggedOutHome');
               }

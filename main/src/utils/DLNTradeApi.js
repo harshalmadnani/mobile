@@ -4,11 +4,8 @@ import erc20 from '../screens/loggedIn/payments/USDC.json';
 import ProxyDLNAbi from './abis/ProxyDLNAbi.json';
 import {
   getEthereumTransaction,
-  getSmartAccountAddress,
-  getUserAddressFromAuthCoreSDK,
   signAndSendBatchTransactionWithGasless,
 } from './particleCoreSDK';
-import BigNumber from 'bignumber.js';
 const DLNBaseURL = 'https://api.dln.trade/v1.0/dln';
 const tradeRoutes = {
   createOrder: '/order/create-tx',
@@ -24,8 +21,6 @@ export const getDLNTradeCreateBuyOrder = async (
 ) => {
   try {
     let response;
-    // const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    // const smartAccount = await getSmartAccountAddress(eoaAddress);
     if (dstChainId === srcChainId) {
       response = await axios.get(
         `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
@@ -202,9 +197,8 @@ export const getDLNTradeCreateBuyOrderTxn = async (
   dstChainId,
   dstChainTokenOut,
   dstChainTokenOutAmount,
+  smartAccount,
 ) => {
-  const eoaAddress = await getUserAddressFromAuthCoreSDK();
-  const smartAccount = await getSmartAccountAddress(eoaAddress);
   try {
     let response;
     if (dstChainId === srcChainId) {
@@ -247,10 +241,9 @@ export const confirmDLNTransaction = async (
   amount,
   tokenAddress,
   txData,
+  smartAccount,
 ) => {
   let txs = [];
-  const eoaAddress = await getUserAddressFromAuthCoreSDK();
-  const smartAccount = await getSmartAccountAddress(eoaAddress);
   console.log(quoteTxReciept);
   if (
     tradeType === 'buy' &&
@@ -288,7 +281,7 @@ export const confirmDLNTransaction = async (
       quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
       quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
       smartAccount,
-      '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+      smartAccount,
       smartAccount,
     ]);
     const executeProxyDLN = await getEthereumTransaction(
@@ -352,4 +345,29 @@ export const getStatusFromDLNOrderId = async id => {
     );
     console.log('response.........', response?.data?.state);
   } catch (error) {}
+};
+export const getDLNTradeForAddress = async (smartAccount, page) => {
+  const res = await axios.post(
+    'https://stats-api.dln.trade/api/Orders/filteredList',
+    {
+      giveChainIds: [137, 56, 43114, 1],
+      takeChainIds: [137, 56, 43114, 1],
+      orderStates: ['ClaimedUnlock', 'Created', 'Fulfilled', 'SentUnlock'],
+      externalCallStates: [],
+      filter: '',
+      skip: page * 50,
+      take: 50,
+      blockTimestampFrom: null,
+      blockTimestampTo: null,
+      fulfiller: null,
+      unlockAuthorities: null,
+      maker: null,
+      creator: null,
+      referralCode: null,
+      orderAuthorityInSourceChain: smartAccount,
+      orderAuthorityInDestinationChain: smartAccount,
+    },
+  );
+  console.log('dln stats api....', res.data);
+  return res.data;
 };

@@ -67,7 +67,6 @@ const TradePage = ({route}) => {
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const tokensToSell = tradeAsset?.[0]?.contracts_balances;
-  const localInputRef = useRef();
 
   useEffect(() => {
     if (tradeType === 'sell') {
@@ -96,7 +95,7 @@ const TradePage = ({route}) => {
       getBestPrice();
     }
   }, [value]);
-
+  const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
       const res = await getDLNTradeCreateBuyOrderTxn(
@@ -114,6 +113,7 @@ const TradePage = ({route}) => {
           bestSwappingBuyTrades?.estimation?.tokenOut?.address,
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
           bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
+        evmInfo?.smartAccount,
       );
       return res;
     } else {

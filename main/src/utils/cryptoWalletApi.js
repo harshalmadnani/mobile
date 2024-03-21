@@ -1,14 +1,14 @@
 import axios from 'axios';
-import {
-  getSmartAccountAddress,
-  getUserAddressFromAuthCoreSDK,
-} from './particleCoreSDK';
+import // getSmartAccountAddress,
+// getUserAddressFromAuthCoreSDK,
+'./particleCoreSDK';
 
 const mobulaBaseURL = 'https://api.mobula.io/api/1/';
 const marketRoutes = {
   getNFTs: '/nft',
   getWallets: 'wallet/portfolio',
-  getHistory: '/wallet/history',
+  getWalletHistory: '/wallet/history',
+  getWalletTransactions: '/wallet/transactions',
 };
 
 export const getNftsHoldingForAddress = async address => {
@@ -42,17 +42,42 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
   }
 };
 
-export const getWalletHistoricalData = async from => {
+export const getWalletHistoricalData = async (smartAccount, from) => {
   try {
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
     const response = await axios.get(
       from
-        ? `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${smartAccount}&from=${from}`
-        : `${mobulaBaseURL}${marketRoutes.getHistory}?wallet=${smartAccount}`,
+        ? `${mobulaBaseURL}${marketRoutes.getWalletHistory}?wallet=${smartAccount}&from=${from}`
+        : `${mobulaBaseURL}${marketRoutes.getWalletHistory}?wallet=${smartAccount}`,
       {
         headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
       },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.log('error  from history api:', error);
+    return [];
+  }
+};
+export const getTransactionsByWallet = async (address, page) => {
+  try {
+    // const eoaAddress = await getUserAddressFromAuthCoreSDK();
+    // const smartAccount = await getSmartAccountAddress(eoaAddress);
+    const response = await axios.get(
+      `${mobulaBaseURL}${
+        marketRoutes.getWalletTransactions
+      }?wallet=${address}&order=asc&limit=${50}&offset=${
+        page ? page * 50 : 50
+      }`,
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
+    );
+    console.log(
+      'tx history list.....',
+      `${mobulaBaseURL}${
+        marketRoutes.getWalletTransactions
+      }?wallet=${address}&order=asc&limit=${50}&offset=${page * 50}`,
+      JSON.stringify(response?.data?.data),
     );
     return response?.data?.data;
   } catch (error) {

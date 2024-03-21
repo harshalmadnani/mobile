@@ -16,11 +16,6 @@ import {Text} from '@rneui/themed';
 
 import {PNAccount} from '../../Models/PNAccount';
 
-// import * as particleAuth from 'react-native-particle-auth';
-// import * as particleConnect from 'react-native-particle-connect';
-
-// import {WalletType, ChainInfo, Env} from 'react-native-particle-connect';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import TouchID from 'react-native-touch-id';
@@ -33,14 +28,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {onIsLoginCheckAuthCore} from '../../store/actions/auth';
 
 var DeviceInfo = require('react-native-device-info');
-// const TextEncodingPolyfill = require('text-encoding');
-// const BigInt = require('big-integer');
-
-// Object.assign(global, {
-//   TextEncoder: TextEncodingPolyfill.TextEncoder,
-//   TextDecoder: TextEncodingPolyfill.TextDecoder,
-//   BigInt: BigInt,
-// });
 
 global.TextEncoder = require('text-encoding').TextEncoder;
 
@@ -79,8 +66,6 @@ const PreLoad = ({navigation}) => {
 
       global.faceID = faceID;
 
-      console.log('FaceID Enabled:', faceID);
-
       global.mainnet = mainnet;
 
       particleAuth.init(
@@ -88,11 +73,8 @@ const PreLoad = ({navigation}) => {
         particleAuth.Env.Production,
       );
 
-      console.log('Device ID:', DeviceInfo.getUniqueIdSync());
-
-      console.log('Checking if user is logged in');
       const result = await particleAuth.isLogin();
-      console.log(result ? 'Logged In' : 'Not Logged In');
+
       if (result) {
         if (faceID) {
           setLoadingText('Waiting For FaceID Authentication...');
@@ -146,7 +128,6 @@ const PreLoad = ({navigation}) => {
                         } else return 0;
                       })
                       .then(data => {
-                        console.log('SCW:', data);
                         if (data == 0) {
                           navigation.push('LoggedOutHome');
                         }
@@ -166,7 +147,6 @@ const PreLoad = ({navigation}) => {
                         } else return 0;
                       })
                       .then(data => {
-                        console.log('SCW:', data);
                         if (data == 0) {
                           navigation.push('LoggedOutHome');
                         }
@@ -198,8 +178,8 @@ const PreLoad = ({navigation}) => {
                   global.withAuth = true;
 
                   console.log('Logged In:', global.loginAccount);
+                  dispatch(getEvmAddresses());
                   navigation.push('Portfolio');
-                  console.log('Navigating To Payments');
                 })
                 .catch(error => {
                   console.log(error);
@@ -221,8 +201,6 @@ const PreLoad = ({navigation}) => {
             : account.phone
             ? account.phone
             : account.googleEmail.toLowerCase();
-
-          console.log('Phone/Email:', email);
 
           const uuid = account.wallets[0].uuid;
 
@@ -297,6 +275,7 @@ const PreLoad = ({navigation}) => {
           global.withAuth = true;
 
           console.log('Logged In:', global.loginAccount);
+          dispatch(getEvmAddresses());
           navigation.push('Portfolio');
           console.log('Navigating To Payments');
         }
@@ -404,6 +383,7 @@ const PreLoad = ({navigation}) => {
                                       'Logged In:',
                                       global.connectAccount,
                                     );
+                                    dispatch(getEvmAddresses());
                                     navigation.push('Portfolio');
                                     console.log('Navigating To Payments');
                                   })
@@ -431,6 +411,7 @@ const PreLoad = ({navigation}) => {
                             global.withAuth = false;
                             global.walletType = types[i];
                             console.log('Logged In:', global.connectAccount);
+                            dispatch(getEvmAddresses());
                             navigation.push('Portfolio');
                             console.log('Navigating To Payments');
                           }
