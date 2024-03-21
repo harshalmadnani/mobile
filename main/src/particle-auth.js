@@ -1,13 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-undef */
-/* eslint-disable prettier/prettier */
-// import {
-//   ChainInfo,
-//   LoginType,
-//   SupportAuthType,
-//   Env,
-// } from 'react-native-particle-auth';
-// import * as particleAuth from 'react-native-particle-auth';
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';

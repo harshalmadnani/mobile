@@ -16,40 +16,26 @@ import FastImage from 'react-native-fast-image';
 import TransactionReceipt from './transactionReceipt';
 import Snackbar from 'react-native-snackbar';
 import {useDispatch, useSelector} from 'react-redux';
-import {getWalletTransactionForAddressFromMobula} from '../../../store/actions/portfolio';
+import {
+  getWalletTransactionForAddressFromDLN,
+  getWalletTransactionForAddressFromMobula,
+} from '../../../store/actions/portfolio';
 
 const width = Dimensions.get('window').width;
 
 const TransactionList = ({navigation, route}) => {
-  const [state, setState] = useState([
-    {
-      truth: true,
-      to: 'Loading',
-      from: 'Loading',
-      value: 0,
-      hash: '',
-      date: 'Loading',
-      time: 'Loading...',
-      month: 'Loading...',
-    },
-  ]);
   const [txType, setTxType] = useState('dln');
-  const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
-  const [transactionData, setTransactionData] = useState();
   const [page, setPage] = useState(0);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const dispatch = useDispatch();
-  const handleCloseTransactionReceiptModal = () => {
-    setShowTxnReceiptModal(false);
-  };
-
+  const evmDLNTradesTxListInfo = useSelector(
+    x => x.portfolio.evmDLNTradesTxListInfo,
+  );
   const getAllTxHistory = async () => {
-    console.log('evm info.....', evmInfo);
     dispatch(getWalletTransactionForAddressFromMobula(page));
   };
   const getAllDLNTradeHistory = async () => {
-    console.log('evm info.....', evmInfo);
-    dispatch(getWalletTransactionForAddressFromMobula(page));
+    dispatch(getWalletTransactionForAddressFromDLN(page));
   };
   useEffect(() => {
     if (txType === 'dln') {
@@ -101,117 +87,7 @@ const TransactionList = ({navigation, route}) => {
         </View>
       </View>
       <ScrollView>
-        {showTxnReceiptModal && (
-          <TransactionReceipt
-            transactionData={transactionData}
-            onClose={handleCloseTransactionReceiptModal}
-          />
-        )}
-
-        <View style={styles.transactionListContainer}>
-          {state.length > 0 ? (
-            state.slice(0, 20).map(json => {
-              return (
-                <TouchableOpacity
-                  keyboardShouldPersistTaps={true}
-                  // onPress={() => {
-                  //   navigation.push('ViewTransaction', {json: json});
-                  // }}
-                  onPress={() => {
-                    setTransactionData(json);
-                    setShowTxnReceiptModal(true);
-                  }}
-                  style={styles.transactions}
-                  key={state.indexOf(json)}>
-                  <View style={styles.transactionLeft}>
-                    <View
-                      style={{
-                        borderRadius: 50,
-                        backgroundColor: '#333333',
-                        width: 40,
-                        height: 40,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      <FastImage
-                        style={{width: 20, height: 20, borderRadius: 5}}
-                        source={
-                          json.truth == 2
-                            ? require('../payments/icon/pending.png')
-                            : json.truth == 1
-                            ? require('../payments/icon/positive.png')
-                            : require('../payments/icon/negative.png')
-                        }
-                      />
-                    </View>
-                    <View style={styles.ttext}>
-                      <TouchableHighlight
-                        key={json.hash}
-                        onPress={() => {
-                          Clipboard.setString(json.truth ? json.from : json.to);
-                          Snackbar.show({text: 'Copied address to clipboard'});
-                          // Alert.alert('Copied Address To Clipboard');
-                        }}>
-                        <Text
-                          style={{
-                            color: '#e9e9e9',
-                            fontFamily: `Satoshi-Regular`,
-                            fontSize: 16,
-                          }}>
-                          {(json.truth
-                            ? json.from ==
-                              '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65'.toLowerCase()
-                              ? 'RemmiteX V1'
-                              : json.from.slice(0, 12) + '...'
-                            : json.to ==
-                              '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65'.toLowerCase()
-                            ? 'RemmiteX V1'
-                            : json.to
-                          ).slice(0, 12) + '...'}
-                        </Text>
-                      </TouchableHighlight>
-
-                      <Text
-                        style={{
-                          color: '#7f7f7f',
-                          fontSize: 15,
-                          fontFamily: `Satoshi-Regular`,
-                        }}>
-                        {json.date}, {json.time}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.transactionRight}>
-                    <Text
-                      style={{
-                        color: json.truth ? '#A38CFF' : '#fff',
-                        fontSize: 17,
-                        fontFamily: `Satoshi-Regular`,
-                        textAlign: 'right',
-                        alignSelf: 'flex-end',
-                        alignContent: 'flex-end',
-                      }}>
-                      {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
-                      {json.value.toFixed(3)}
-                    </Text>
-                    {/* <Icon
-                                    // style={styles.tup}
-                                    name={'chevron-small-right'}
-                                    size={30}
-                                    color={'#7f7f7f'}
-                                    type="entypo"
-                                /> */}
-                  </View>
-                </TouchableOpacity>
-              );
-            })
-          ) : (
-            <View>
-              <Text style={styles.noTransaction}>No transaction found</Text>
-            </View>
-          )}
-        </View>
+        <View style={styles.transactionListContainer}></View>
       </ScrollView>
     </SafeAreaView>
   );

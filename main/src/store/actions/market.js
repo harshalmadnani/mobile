@@ -5,17 +5,12 @@ import {
   getHistoricalData,
   getMarketAssetData,
   getStocksListData,
-  getTop100MarketAssetData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
 import {
   getBestCrossSwapRateBuy,
   getDLNTradeCreateBuyOrder,
 } from '../../utils/DLNTradeApi';
-import {
-  getSmartAccountAddress,
-  getUserAddressFromAuthCoreSDK,
-} from '../../utils/particleCoreSDK';
 import {marketsAction} from '../reducers/market';
 
 export const getListOfCryptoFromMobulaApi = () => {
@@ -137,16 +132,5 @@ export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
     );
     console.log('best rates.....sell', JSON.stringify(bestRate));
     dispatch(marketsAction.setBestSwappingRates(bestRate));
-  };
-};
-export const getUSDCHoldingForAddressFromMobula = () => {
-  return async (dispatch, getState) => {
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
-    console.log('smart account address holding', eoaAddress);
-    const data = await getCryptoHoldingForAddress(eoaAddress, 'USDC');
-    console.log('Reducer Portfolio USDC', JSON.stringify(data));
-    dispatch(marketsAction.setTokenUsdcBalance(data));
-    return data;
   };
 };
