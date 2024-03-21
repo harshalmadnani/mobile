@@ -32,7 +32,13 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  if ([ParticleAuthSchemeManager handleUrl:url] == YES && [ParticleConnectSchemeManager handleUrl:url] == YES) {
+  // if ([ParticleAuthSchemeManager handleUrl:url] == YES && [ParticleConnectSchemeManager handleUrl:url] == YES) {
+  //   return YES;
+  // } else {
+  //   // other methods
+  // }
+  // return YES;
+  if ([ParticleAuthSchemeManager handleUrl:url] == YES) {
     return YES;
   } else {
     // other methods
