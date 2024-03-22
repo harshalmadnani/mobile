@@ -208,8 +208,11 @@
     "vm": "vm-browserify",
     "tls": false
   },
+  "resolutions": {
+    "react-native-gesture-handler": "*"
+  },
   "overrides": {
-    "react-native-gesture-handler": "^2.9.0",
-    "react-native-reanimated": "^3.0.2"
+    "react-native-gesture-handler": "^2.15.0",
+    "react-native-reanimated": "^3.8.0"
   }
 }

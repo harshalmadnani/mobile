@@ -22,11 +22,11 @@
       "sha1": "e65e89d2e27d999322e12026eea4a30f0342e243"
     },
     {
-      "path": "assets/fonts/Satoshi-Regular.otf",
+      "path": "assets/fonts/Inter-Regular.otf",
       "sha1": "8b4f761ea24ae0d0d173795d55c105e7af8ea892"
     },
     {
-      "path": "assets/fonts/Satoshi-Bold.otf",
+      "path": "assets/fonts/LemonMilk-Bold.otf",
       "sha1": "91cef6e742a3816c1f01f41ad039dc401bf6c968"
     },
     {
@@ -34,20 +34,112 @@
       "sha1": "1f660845f7fe40ee482aa7ccda7d101d20d870fa"
     },
     {
+      "path": "assets/fonts/Montreal-Bold.otf",
+      "sha1": "8a9ff2b61316994234dae5eaaaa2b99de1b29205"
+    },
+    {
+      "path": "assets/fonts/Montreal-BoldItalic.otf",
+      "sha1": "bb95301f855b9b4231c5e6f2b047a5964fbcb6a0"
+    },
+    {
+      "path": "assets/fonts/Montreal-Italic.otf",
+      "sha1": "ae05937234562ca37a1f4a50f0cc68a9bd9d5913"
+    },
+    {
+      "path": "assets/fonts/Montreal-Light.otf",
+      "sha1": "5177d0022e6ebb29eeb5afa31a81e10916f42c82"
+    },
+    {
+      "path": "assets/fonts/Montreal-LightItalic.otf",
+      "sha1": "069c0ff2b5dda0fb56c78e18bc7d0ba46e9e0190"
+    },
+    {
+      "path": "assets/fonts/Montreal-Medium.otf",
+      "sha1": "a1fde8e729ce0e78511dc692c8390836db6b8d92"
+    },
+    {
+      "path": "assets/fonts/Montreal-MediumItalic.otf",
+      "sha1": "4ae5cf9fc43e6e1c22bd52a91dcb8f643b57bfbb"
+    },
+    {
+      "path": "assets/fonts/Montreal-Regular.otf",
+      "sha1": "864b3c35552d8c45b0a4467d8262a111f103f015"
+    },
+    {
       "path": "assets/fonts/NeueMachina-UltraBold.otf",
       "sha1": "c155e76c72de772a8b166edc9d814bf734e38054"
     },
     {
-      "path": "assets/fonts/Satoshi-Regular.otf",
+      "path": "assets/fonts/NeueMontreal-Bold.otf",
       "sha1": "8a9ff2b61316994234dae5eaaaa2b99de1b29205"
     },
     {
+      "path": "assets/fonts/Sarala-Regular.otf",
+      "sha1": "7dcb59994f2bee1a4ef1f6c079ba0e99b409878b"
+    },
+    {
+      "path": "assets/fonts/Satoshi-Black.otf",
+      "sha1": "d92baad4dab9ca55bc72f1a8a0a6de72829e709f"
+    },
+    {
+      "path": "assets/fonts/Satoshi-BlackItalic.otf",
+      "sha1": "2fada5e2f31f7e2f252d458094603daca66f4a0a"
+    },
+    {
       "path": "assets/fonts/Satoshi-Bold.otf",
-      "sha1": "f141949bd7aa70289951121722aaf980b49d7edd"
+      "sha1": "57a9e1c24984708865f7d0c31a03773912fb975f"
+    },
+    {
+      "path": "assets/fonts/Satoshi-BoldItalic.otf",
+      "sha1": "c279f41805b46f030eb4a1d55ceaf7c4cacd1a39"
+    },
+    {
+      "path": "assets/fonts/Satoshi-Italic.otf",
+      "sha1": "1ee38a9969b628781bc30ed690f6571aca189451"
+    },
+    {
+      "path": "assets/fonts/Satoshi-Light.otf",
+      "sha1": "3b1b977f00db442bdf30f63603112e6e251b7dda"
+    },
+    {
+      "path": "assets/fonts/Satoshi-LightItalic.otf",
+      "sha1": "782b6239e9a537ffcd574fb26b69201b67b96dc2"
+    },
+    {
+      "path": "assets/fonts/Satoshi-Medium.otf",
+      "sha1": "704faccb5fff19f25c0b914d42d135ab75794a24"
+    },
+    {
+      "path": "assets/fonts/Satoshi-MediumItalic.otf",
+      "sha1": "89936e7345cfa18dadc048e3a9266947c7f12839"
     },
     {
       "path": "assets/fonts/Satoshi-Regular.otf",
-      "sha1": "60e85bdc2931ece5f47e2d2824f070cfda90e4fe"
+      "sha1": "7dcb59994f2bee1a4ef1f6c079ba0e99b409878b"
+    },
+    {
+      "path": "assets/fonts/Unbounded-Bold.otf",
+      "sha1": "2f454410035fea9cf5546d2402ac3e333662c0e5"
+    },
+    {
+      "path": "assets/fonts/Unbounded-ExtraBold.otf",
+      "sha1": "802042584899bca2a0e9115569a15d6b7fde4312"
+    },
+    {
+      "path": "assets/fonts/Unbounded-Medium.otf",
+      "sha1": "7cd7a1d84e422873b42d625a0f06c9aa953b61f7"
+    },
+    {
+      "path": "assets/fonts/Unbounded-Regular.otf",
+      "sha1": "e5213d96fa0b0576a5f1c7c0b1d873784b7ea942"
+    },
+    {
+      "path": "assets/fonts/Unbounded-SemiBold.otf",
+      "sha1": "58449fd26495f2e3149933cb86bf8e4e70f87c22"
+    },
+    {
+      "path": "assets/fonts/UnicaOne-Regular.ttf",
+      "sha1": "b7d90ad1591f1b4f24a13955bbf903eb8d5f9ce4"
     },
     {
       "path": "assets/fonts/VelaSans-Bold.otf",
