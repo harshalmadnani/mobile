@@ -20,33 +20,33 @@ import {EvmService} from '../../../../NetService/EvmService';
 const clearingHouseAddress = '0x602969FFAddA7d74f5da69B817688E984Ba4EBbD';
 const usdcAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9'; //USDC on Mumbai testnet
 
-const Web3 = require('web3');
-let web3;
+// const Web3 = require('web3');
+// let web3;
 const transactions = () => {
   const username = PARTICLE_USERNAME;
   const password = PARTICLE_PASSWORD;
   if (global.withAuth) {
     authAddress = global.loginAccount.publicAddress;
     console.log('Global Account:', global.loginAccount);
-    web3 = this.createProvider();
+    // web3 = this.createProvider();
     //  console.log(web3.eth.getAccounts());
   } else {
     authAddress = global.connectAccount.publicAddress;
     console.log('Global Account:', global.connectAccount);
     console.log('Global Wallet Type:', global.walletType);
-    web3 = this.createConnectProvider();
+    // web3 = this.createConnectProvider();
     // this.signAndSendTransactionConnect(
     //   '0xb02ccaf699f4708b348d2915e40a1fa31a2b4279',
     //   '1000000000000000',
     // );
   }
 
-  const clearingHouse = new web3.eth.Contract(
-    ClearingHouseABI.abi,
-    clearingHouseAddress,
-  );
+  // const clearingHouse = new web3.eth.Contract(
+  //   ClearingHouseABI.abi,
+  //   clearingHouseAddress,
+  // );
 
-  const usdc = new web3.eth.Contract(UsdcABI, usdcAddress);
+  // const usdc = new web3.eth.Contract(UsdcABI, usdcAddress);
 
   const openPosition = async (
     amm, // BTC
@@ -59,30 +59,30 @@ const transactions = () => {
     const Amm = getAmmAddress(amm).toLowerCase();
 
     const quoteAssetAmount = [
-      web3.utils
-        .toBN(web3.utils.toWei('10'.replace(',', ''), 'ether'))
-        .toString(),
+      // web3.utils
+      //   .toBN(web3.utils.toWei('10'.replace(',', ''), 'ether'))
+      //   .toString(),
     ];
 
     const leverage = [
-      web3.utils
-        .toBN(web3.utils.toWei(leveragei.toString(), 'ether'))
-        .toString(),
+      // web3.utils
+      //   .toBN(web3.utils.toWei(leveragei.toString(), 'ether'))
+      //   .toString(),
     ];
 
     const side = Number(sidei);
 
     const baseAssetAmountLimit = [
-      web3.utils
-        .toBN(web3.utils.toWei(baseAssetAmountLimiti.replace(',', ''), 'ether'))
-        .toString(),
+      // web3.utils
+      //   .toBN(web3.utils.toWei(baseAssetAmountLimiti.replace(',', ''), 'ether'))
+      //   .toString(),
     ];
     // 8000000
-    console.log('AMM Address:', Amm.toString());
-    console.log('Quoted Amount:', quoteAssetAmount.toString());
-    console.log('BTC Price:', baseAssetAmountLimit.toString());
-    console.log('Leverage:', leverage.toString());
-    console.log('Side:', side.toString());
+    // console.log('AMM Address:', Amm.toString());
+    // console.log('Quoted Amount:', quoteAssetAmount.toString());
+    // console.log('BTC Price:', baseAssetAmountLimit.toString());
+    // console.log('Leverage:', leverage.toString());
+    // console.log('Side:', side.toString());
 
     try {
       const txString = await clearingHouse.methods

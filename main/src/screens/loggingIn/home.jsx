@@ -14,7 +14,7 @@ import {
 import {Text} from '@rneui/themed';
 import BouncyIcon from './BouncyIcon';
 import {Icon} from 'react-native-elements';
-const Web3 = require('web3');
+// const Web3 = require('web3');
 import {PNAccount} from '../../Models/PNAccount';
 import FastImage from 'react-native-fast-image';
 import {

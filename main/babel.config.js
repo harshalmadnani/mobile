@@ -19,16 +19,17 @@ module.exports = {
             verbose: false,
           },
         ],
-        [
-          'react-native-reanimated/plugin',
-          {
-            relativeSourceLocation: true,
-          },
-        ],
+
         [
           'babel-plugin-inline-import',
           {
             extensions: ['.svg'],
+          },
+        ],
+        [
+          'react-native-reanimated/plugin',
+          {
+            relativeSourceLocation: true,
           },
         ],
       ],
@@ -49,12 +50,7 @@ module.exports = {
             verbose: false,
           },
         ],
-        [
-          'react-native-reanimated/plugin',
-          {
-            relativeSourceLocation: true,
-          },
-        ],
+
         [
           'babel-plugin-inline-import',
           {
@@ -62,9 +58,16 @@ module.exports = {
           },
         ],
         ['transform-remove-console'],
+        [
+          'react-native-reanimated/plugin',
+          {
+            relativeSourceLocation: true,
+          },
+        ],
       ],
     },
   },
+  plugins: [],
   overrides: [
     {
       test: './node_modules/ethers',

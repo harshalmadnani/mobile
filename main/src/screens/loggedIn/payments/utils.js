@@ -10,7 +10,7 @@ import USDC_ABI from './USDC';
 import {SABEX_LP} from '@env';
 import {BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI, POLYGON_API_KEY} from '@env';
 import transferXUSD from './remmitexv1';
-const Web3 = require('web3');
+// const Web3 = require('web3');
 import {Alert} from 'react-native';
 
 import 'react-native-get-random-values';

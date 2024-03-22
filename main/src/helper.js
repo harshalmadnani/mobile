@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import {Buffer} from 'buffer';
 import {EvmService} from './NetService/EvmService';
 
-const Web3 = require('web3');
+// const Web3 = require('web3');
 
 export async function getEvmTokenTransaction(sender, receiver, amount) {
   const mainnetJSON = await AsyncStorage.getItem('mainnet');
@@ -13,7 +13,7 @@ export async function getEvmTokenTransaction(sender, receiver, amount) {
     : '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 
   if (mainnet) {
-    amount = String(parseFloat(Web3.utils.fromWei(amount)) * 10 ** 6);
+    amount = String(0);
 
     const data = await EvmService.erc20Transfer(
       contractAddress,

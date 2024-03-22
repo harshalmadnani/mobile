@@ -10,7 +10,7 @@ import {PROJECT_ID, CLIENT_KEY} from 'react-native-dotenv';
 // import createProvider from '../../../../particle-auth';
 // import createConnectProvider from '../../../../particle-connect';
 
-const Web3 = require('web3');
+// const Web3 = require('web3');
 import Video from 'react-native-video';
 
 const successVideo = require('./pending.mov');

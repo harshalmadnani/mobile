@@ -18,13 +18,13 @@ import createConnectProvider from '../../../particle-connect';
 
 import {
   transferUSDC,
-  transferUSDCV2,
+  // transferUSDCV2,
   transferUSDCWithParticleAAGasless,
-  transferXUSD,
-  transferXUSDV2,
+  // transferXUSD,
+  // transferXUSDV2,
 } from '../../loggedIn/payments/remmitexv1';
 
-const Web3 = require('web3');
+// const Web3 = require('web3');
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {REMMITEX_TESTNET_CONTRACT} from '@env';
@@ -42,7 +42,7 @@ const Component = ({route, navigation}) => {
 
   console.log('Params:', route.params);
 
-  const weiVal = Web3.utils.toWei(amount.toString(), 'ether');
+  // const weiVal = Web3.utils.toWei(amount.toString(), 'ether');
 
   useEffect(() => {
     if (global.withAuth) {
@@ -95,87 +95,86 @@ const Component = ({route, navigation}) => {
             console.log(err);
           }
         } else {
-          status = await transferXUSD(
-            global.smartAccount,
-            provider,
-            amount,
-            walletAddress,
-          );
-          console.log('TX1:', status);
-
-          if (status == true)
-            navigation.push('Successful', {
-              status,
-              type,
-              emailAddress,
-              walletAddress,
-              amount,
-              fees: 0,
-            });
-          else navigation.push('Unsuccessful');
+          // status = await transferXUSD(
+          //   global.smartAccount,
+          //   provider,
+          //   amount,
+          //   walletAddress,
+          // );
+          // console.log('TX1:', status);
+          // if (status == true)
+          //   navigation.push('Successful', {
+          //     status,
+          //     type,
+          //     emailAddress,
+          //     walletAddress,
+          //     amount,
+          //     fees: 0,
+          //   });
+          // else navigation.push('Unsuccessful');
         }
       } else {
         console.log('V2 being nicely executed');
 
-        if (mainnet == false) {
-          console.log('this part fine also');
-          if (global.withAuth) {
-            authAddress = global.loginAccount.publicAddress;
-            console.log('Global Account:', global.loginAccount);
-            status = await transferXUSDV2(
-              global.smartAccount,
-              provider,
-              amount,
-              REMMITEX_TESTNET_CONTRACT,
-            );
-            console.log('TX1:', status);
-          } else {
-            console.log('connecting');
-            authAddress = global.connectAccount.publicAddress;
-            console.log('Global Account:', global.connectAccount);
-            status = await this.signAndSendTransactionConnect(
-              REMMITEX_TESTNET_CONTRACT,
-              weiVal,
-            );
-          }
-          if (status !== false) {
-            navigation.push('Successful', {
-              status,
-              type,
-              emailAddress,
-              walletAddress,
-              amount,
-              fees: 0,
-            });
-          }
-        } else {
-          try {
-            console.log(
-              'Reaching to state of calling function',
-              global.smartAccount,
-            );
-            const {status, fees} = await transferUSDCV2(
-              global.smartAccount,
-              provider,
-              amount,
-              walletAddress,
-              setStatus,
-            );
-            console.log(fees);
-            if (status)
-              navigation.push('Successful', {
-                status,
-                type,
-                emailAddress,
-                walletAddress,
-                amount,
-                fees,
-              });
-            else navigation.push('Unsuccessful', {error: fees});
-          } catch (e) {
-            console.log(e);
-          }
-        }
+        // if (mainnet == false) {
+        //   console.log('this part fine also');
+        //   if (global.withAuth) {
+        //     authAddress = global.loginAccount.publicAddress;
+        //     console.log('Global Account:', global.loginAccount);
+        //     status = await transferXUSDV2(
+        //       global.smartAccount,
+        //       provider,
+        //       amount,
+        //       REMMITEX_TESTNET_CONTRACT,
+        //     );
+        //     console.log('TX1:', status);
+        //   } else {
+        //     console.log('connecting');
+        //     authAddress = global.connectAccount.publicAddress;
+        //     console.log('Global Account:', global.connectAccount);
+        //     status = await this.signAndSendTransactionConnect(
+        //       REMMITEX_TESTNET_CONTRACT,
+        //       weiVal,
+        //     );
+        //   }
+        //   if (status !== false) {
+        //     navigation.push('Successful', {
+        //       status,
+        //       type,
+        //       emailAddress,
+        //       walletAddress,
+        //       amount,
+        //       fees: 0,
+        //     });
+        //   }
+        // } else {
+        //   try {
+        //     console.log(
+        //       'Reaching to state of calling function',
+        //       global.smartAccount,
+        //     );
+        //     const {status, fees} = await transferUSDCV2(
+        //       global.smartAccount,
+        //       provider,
+        //       amount,
+        //       walletAddress,
+        //       setStatus,
+        //     );
+        //     console.log(fees);
+        //     if (status)
+        //       navigation.push('Successful', {
+        //         status,
+        //         type,
+        //         emailAddress,
+        //         walletAddress,
+        //         amount,
+        //         fees,
+        //       });
+        //     else navigation.push('Unsuccessful', {error: fees});
+        //   } catch (e) {
+        //     console.log(e);
+        //   }
+        // }
       }
     };
 

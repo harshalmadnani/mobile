@@ -40,9 +40,7 @@ import {
   SECRET_KEY_REMMITEX,
 } from '@env';
 import {paymentsLoad, addXUSD, txHistoryLoad} from './utils';
-const Web3 = require('web3');
-
-
+// const Web3 = require('web3');
 
 import 'react-native-get-random-values';
 
@@ -55,7 +53,7 @@ import {transferUSDC} from './remmitexv1';
 import images from './img/images';
 import breakdowns from './breakdown/breakdown';
 
-let web3;
+// let web3;
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 const windowHeight = Dimensions.get('window').height;
 import {POLYGON_API_KEY} from '@env';
@@ -105,112 +103,103 @@ const PaymentsComponent = ({navigation}) => {
     setShowTxnReceiptModal(false);
   };
   const call = async () => {
-  //   console.log('Auth Type....', address, global.withAuth);
-  //   // dispatch(getCryptoHoldingForAddressFromMobula());
-  //   const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
-  //   dispatch(marketsAction.setTokenUsdcBalance(tokenBalance));
-  //   console.log('token balance.....', tokenBalance);
-  //   setBalance(tokenBalance || '0.00');
-  //   const {txDates, txs} = await txHistoryLoad(address);
-  //   console.log('txdatess balance.....', txs, txDates);
-  //   setDates(txDates);
-  //   setState(txs);
-  //   console.log('Request being sent for registration');
-  //   await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
-  //   console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
+    //   console.log('Auth Type....', address, global.withAuth);
+    //   // dispatch(getCryptoHoldingForAddressFromMobula());
+    //   const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
+    //   dispatch(marketsAction.setTokenUsdcBalance(tokenBalance));
+    //   console.log('token balance.....', tokenBalance);
+    //   setBalance(tokenBalance || '0.00');
+    //   const {txDates, txs} = await txHistoryLoad(address);
+    //   console.log('txdatess balance.....', txs, txDates);
+    //   setDates(txDates);
+    //   setState(txs);
+    //   console.log('Request being sent for registration');
+    //   await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
+    //   console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
 
-  //   if (global.withAuth) {
-  //     if (!global.smartAccount) {
-  //       let options = {
-  //         activeNetworkId: mainnet
-  //           ? ChainId.POLYGON_MAINNET
-  //           : ChainId.POLYGON_MUMBAI,
-  //         supportedNetworksIds: [
-  //           ChainId.POLYGON_MAINNET,
-  //           ChainId.POLYGON_MUMBAI,
-  //         ],
+    //   if (global.withAuth) {
+    //     if (!global.smartAccount) {
+    //       let options = {
+    //         activeNetworkId: mainnet
+    //           ? ChainId.POLYGON_MAINNET
+    //           : ChainId.POLYGON_MUMBAI,
+    //         supportedNetworksIds: [
+    //           ChainId.POLYGON_MAINNET,
+    //           ChainId.POLYGON_MUMBAI,
+    //         ],
 
-  //         networkConfig: [
-  //           {
-  //             chainId: ChainId.POLYGON_MAINNET,
-  //             dappAPIKey: BICONOMY_API_KEY,
-  //           },
-  //           {
-  //             chainId: ChainId.POLYGON_MUMBAI,
-  //             dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-  //           },
-  //         ],
-  //       };
-  //       // const particleProvider = this.getOnlyProvider();
-  //       // const provider = new ethers.providers.Web3Provider(
-  //       //   particleProvider,
-  //       //   'any',
-  //       // );
+    //         networkConfig: [
+    //           {
+    //             chainId: ChainId.POLYGON_MAINNET,
+    //             dappAPIKey: BICONOMY_API_KEY,
+    //           },
+    //           {
+    //             chainId: ChainId.POLYGON_MUMBAI,
+    //             dappAPIKey: BICONOMY_API_KEY_MUMBAI,
+    //           },
+    //         ],
+    //       };
+    //       // const particleProvider = this.getOnlyProvider();
+    //       // const provider = new ethers.providers.Web3Provider(
+    //       //   particleProvider,
+    //       //   'any',
+    //       // );
 
-  //       // let smartAccount = new SmartAccount(provider, options);
-  //       // smartAccount = await smartAccount.init();
-  //       // global.smartAccount = smartAccount;
-  //     }
-  //   }
-  // };
-  // useFocusEffect(async () => {
-  //   console.log('Is Auth:', global.withAuth);
-  //   await call();
-  // }, []);
-  useFocusEffect(
-    React.useCallback(() => {
-      call();
-      // Cleanup function (optional)
-      return () => {
-        // You can perform cleanup tasks here if needed
-      };
-    }, []),
-  );
-  console.log('NFTS heree....', nfts);
-  const t = true;
-  return (
-    <SafeAreaView
-      style={{
-        width: '100%',
-        height: '100%',
-        alignSelf: 'flex-start',
-      }}>
-      <View
+    //       // let smartAccount = new SmartAccount(provider, options);
+    //       // smartAccount = await smartAccount.init();
+    //       // global.smartAccount = smartAccount;
+    //     }
+    //   }
+    // };
+    // useFocusEffect(async () => {
+    //   console.log('Is Auth:', global.withAuth);
+    //   await call();
+    // }, []);
+    useFocusEffect(
+      React.useCallback(() => {
+        call();
+        // Cleanup function (optional)
+        return () => {
+          // You can perform cleanup tasks here if needed
+        };
+      }, []),
+    );
+    console.log('NFTS heree....', nfts);
+    const t = true;
+    return (
+      <SafeAreaView
         style={{
-          marginHorizontal: 20,
-          marginTop: 32,
+          width: '100%',
+          height: '100%',
+          alignSelf: 'flex-start',
         }}>
-        <Text
+        <View
           style={{
-            fontFamily: 'Satoshi-Bold',
-            fontSize: 20,
-            color: '#fff',
-            fontWeight: '700',
+            marginHorizontal: 20,
+            marginTop: 32,
           }}>
-          Accounts
-        </Text>
-      </View>
-      <View style={styles.balanceContainer}>
-        <View>
           <Text
             style={{
-              fontSize: 15,
-              fontWeight: 400,
-              fontFamily: 'Satoshi-Regular',
-              color: '#a1a1a1',
+              fontFamily: 'Satoshi-Bold',
+              fontSize: 20,
+              color: '#fff',
+              fontWeight: '700',
             }}>
-            Checkings
+            Accounts
           </Text>
-          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+        </View>
+        <View style={styles.balanceContainer}>
+          <View>
             <Text
               style={{
-                color: '#fff',
+                fontSize: 15,
+                fontWeight: 400,
                 fontFamily: 'Satoshi-Regular',
-                fontSize: 24,
-                fontWeight: '700',
-                marginTop: '1%',
+                color: '#a1a1a1',
               }}>
-              ${balance?.split('.')[0]}
+              Checkings
+            </Text>
+            <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
               <Text
                 style={{
                   color: '#fff',
@@ -219,14 +208,23 @@ const PaymentsComponent = ({navigation}) => {
                   fontWeight: '700',
                   marginTop: '1%',
                 }}>
-                {'.'}
-                {balance?.split('.')[1] ? balance?.split('.')[1] : '00'}
+                ${balance?.split('.')[0]}
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontFamily: 'Satoshi-Regular',
+                    fontSize: 24,
+                    fontWeight: '700',
+                    marginTop: '1%',
+                  }}>
+                  {'.'}
+                  {balance?.split('.')[1] ? balance?.split('.')[1] : '00'}
+                </Text>
               </Text>
-            </Text>
+            </View>
           </View>
-        </View>
 
-        {/* <View style={{
+          {/* <View style={{
           borderRadius: 50,
           backgroundColor: '#5038E1',
           height: 50,
@@ -235,84 +233,84 @@ const PaymentsComponent = ({navigation}) => {
           alignItems: 'center',
           // padding:10
         }}> */}
-        <FastImage
-          source={require('./icon/commodities.png')}
-          // resizeMode="cover"
+          <FastImage
+            source={require('./icon/commodities.png')}
+            // resizeMode="cover"
+            style={{
+              width: 52,
+              height: 52,
+              // borderRadius: 10,
+              // margin: 5
+            }}
+          />
+          {/* </View> */}
+        </View>
+
+        <View
           style={{
-            width: 52,
-            height: 52,
-            // borderRadius: 10,
-            // margin: 5
-          }}
-        />
-        {/* </View> */}
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          // width: '80%',
-          height: 50,
-          justifyContent: 'space-evenly',
-          flexDirection: 'row',
-          marginTop: '1%',
-          marginHorizontal: 10,
-        }}>
-        <TouchableOpacity
-          style={styles.depWith}
-          onPress={() => {
-            navigation.push('Ramper');
+            flexDirection: 'row',
+            // width: '80%',
+            height: 50,
+            justifyContent: 'space-evenly',
+            flexDirection: 'row',
+            marginTop: '1%',
+            marginHorizontal: 10,
           }}>
-          <View style={[styles.innerDep, styles.innerDepColored]}>
-            <Icon
-              // style={styles.tup}
-              name={'arrow-down-circle'}
-              color={'#fff'}
-              size={24}
-              // color={t?'green': 'red'}
-              type="feather"
-            />
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: 14,
-                paddingLeft: '5%',
-                fontFamily: 'Satoshi-Regular',
-                fontWeight: '700',
-              }}>
-              Add cash
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.depWith}
-          onPress={() => {
-            navigation.push('SendEmail');
-          }}>
-          <View style={styles.innerDep}>
-            <Icon
-              // style={styles.tup}
-              name={'arrow-right-circle'}
-              size={24}
-              color={'#fff'}
-              type="feather"
-            />
-            <Text
-              style={{
-                color: '#fff',
-                fontSize: 14,
-                paddingLeft: '5%',
-                fontFamily: 'Satoshi-Regular',
-                fontWeight: '700',
-              }}>
-              Transfer
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              navigation.push('Ramper');
+            }}>
+            <View style={[styles.innerDep, styles.innerDepColored]}>
+              <Icon
+                // style={styles.tup}
+                name={'arrow-down-circle'}
+                color={'#fff'}
+                size={24}
+                // color={t?'green': 'red'}
+                type="feather"
+              />
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 14,
+                  paddingLeft: '5%',
+                  fontFamily: 'Satoshi-Regular',
+                  fontWeight: '700',
+                }}>
+                Add cash
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              navigation.push('SendEmail');
+            }}>
+            <View style={styles.innerDep}>
+              <Icon
+                // style={styles.tup}
+                name={'arrow-right-circle'}
+                size={24}
+                color={'#fff'}
+                type="feather"
+              />
+              <Text
+                style={{
+                  color: '#fff',
+                  fontSize: 14,
+                  paddingLeft: '5%',
+                  fontFamily: 'Satoshi-Regular',
+                  fontWeight: '700',
+                }}>
+                Transfer
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.exploreContainer}>
-        {/* <EventsCarousel
+        <View style={styles.exploreContainer}>
+          {/* <EventsCarousel
           images={images}
           navigation={navigation}
           address={
@@ -323,16 +321,17 @@ const PaymentsComponent = ({navigation}) => {
           }
           key={images}
         /> */}
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-          // marginHorizontal:10
-        }}>
-        <TradeCollection navigation={navigation} />
-      </View>
-    </SafeAreaView>
-  );
+        </View>
+        <View
+          style={{
+            marginTop: 10,
+            // marginHorizontal:10
+          }}>
+          <TradeCollection navigation={navigation} />
+        </View>
+      </SafeAreaView>
+    );
+  };
 };
 
 export default PaymentsComponent;

@@ -1,7 +1,7 @@
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Web3 from 'web3';
+// import Web3 from 'web3';
 // import {ParticleProvider} from 'react-native-particle-auth';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
 import {BICONOMY_API_KEY} from '@env';
@@ -18,8 +18,8 @@ const clientKey = CLIENT_KEY;
 createProvider = () => {
   // const provider = new ParticleProvider({projectId, clientKey});
   const provider = true;
-  const web3 = new Web3(provider);
-  return web3;
+  // const web3 = new Web3(provider);
+  return null;
 };
 
 getOnlyProvider = () => {
@@ -48,7 +48,7 @@ async function createSCW() {
 }
 
 web3_getAccounts = async () => {
-  const accounts = await web3.eth.getAccounts();
+  // const accounts = await web3.eth.getAccounts();
 };
 
 init = async () => {

@@ -30,7 +30,7 @@ import {
   BICONOMY_API_KEY_MUMBAI,
   SECRET_KEY_REMMITEX,
 } from '@env';
-const Web3 = require('web3');
+//const Web3 = require('web3');
 
 import 'react-native-get-random-values';
 
