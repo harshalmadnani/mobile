@@ -22,9 +22,7 @@ export const getWalletTransactionForAddressFromMobula = page => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
     const data = await getTransactionsByWallet(evmInfo.smartAccount, page);
-    console.log('tx info data.....', data);
     dispatch(portfolioAction.setEvmTxList(data));
-    return data;
   };
 };
 export const getWalletTransactionForAddressFromDLN = page => {

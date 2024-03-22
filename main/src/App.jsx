@@ -383,7 +383,7 @@ function EnterSavingsAmount({navigation, route}) {
 function MarketInfoScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-        <MarketInfo navigation={navigation} item={route.params.item} />
+      <MarketInfo navigation={navigation} item={route.params.item} />
     </SafeAreaView>
   );
 }
@@ -534,13 +534,13 @@ function ViewTransaction({navigation, route}) {
 function TransactionHistory({navigation, route}) {
   return (
     <View style={styles.black}>
-      <SafeAreaView>
-        <ScrollView>
-          <View>
-            <TransactionList navigation={navigation} route={route} />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+      {/* <SafeAreaView>
+        <ScrollView> */}
+      <View>
+        <TransactionList navigation={navigation} route={route} />
+      </View>
+      {/* </ScrollView>
+      </SafeAreaView> */}
       <BottomNavbar navigation={navigation} selected="TransactionHistory" />
     </View>
   );

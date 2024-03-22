@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   SectionList,
+  Pressable,
 } from 'react-native';
 import {Icon, Text} from 'react-native-elements';
 import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
@@ -17,9 +18,35 @@ import {
 } from '../../../store/actions/portfolio';
 
 const width = Dimensions.get('window').width;
+const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
+  return (
+    <Pressable
+      onPress={() => onFilterPressed()}
+      style={{
+        width: '48%',
+        paddingVertical: 12,
+        paddingHorizontal: 6,
+        borderRadius: 100,
+        borderColor: 'white',
+        borderWidth: isActive ? 1 : 0,
+        backgroundColor: isActive ? '#000' : '#1F1C25',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Text
+        style={{
+          color: isActive ? '#fff' : '#776F94',
+          fontFamily: 'Montreal-Bold',
+          fontSize: 14,
+        }}>
+        {title}
+      </Text>
+    </Pressable>
+  );
+};
 
 const TransactionList = ({navigation, route}) => {
-  const [txType, setTxType] = useState('dln');
+  const [txType, setTxType] = useState('transfers');
   const [page, setPage] = useState(0);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const dispatch = useDispatch();
@@ -29,19 +56,27 @@ const TransactionList = ({navigation, route}) => {
   const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
   const getAllTxHistory = async () => {
     dispatch(getWalletTransactionForAddressFromMobula(page));
+    // setPage(page + 1);
   };
   const getAllDLNTradeHistory = async () => {
     dispatch(getWalletTransactionForAddressFromDLN(page));
+    // setPage(page + 1);
   };
   const onEndReachedFetch = async () => {
-    // dispatch(getWalletTransactionForAddressFromDLN(page));
+    // if (txType === 'dln') {
+    //   getAllDLNTradeHistory();
+    // } else {
+    //   getAllTxHistory();
+    // }
   };
   useEffect(() => {
-    // if (txType !== 'dln') {
-    getAllDLNTradeHistory();
-    // } else {
-    getAllTxHistory();
-    // }
+    if (txType === 'dln') {
+      // setPage(0);
+      getAllDLNTradeHistory();
+    } else {
+      // setPage(0);
+      getAllTxHistory();
+    }
   }, [txType, evmInfo]);
 
   return (
@@ -52,16 +87,68 @@ const TransactionList = ({navigation, route}) => {
         justifyContent: 'flex-start',
         alignItems: 'center',
       }}>
-      {evmTxListInfo?.transactions?.length > 0 &&
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          width: '100%',
+          paddingVertical: 16,
+          marginBottom: '0%',
+        }}>
+        <Icon
+          name={'navigate-before'}
+          size={30}
+          color={'#f0f0f0'}
+          type="materialicons"
+          onPress={() => navigation.goBack()}
+        />
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              color: '#F0F0F0',
+              fontFamily: 'Unbounded-Regular',
+              fontSize: 16,
+              right: 30,
+            }}>
+            Transaction History
+          </Text>
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          paddingHorizontal: '4%',
+          width: '100%',
+        }}>
+        <TransactionFilterButton
+          title={'Transfers'}
+          isActive={txType === 'transfers'}
+          onFilterPressed={() => setTxType('transfers')}
+        />
+        <TransactionFilterButton
+          title={'Trade'}
+          isActive={txType === 'dln'}
+          onFilterPressed={() => setTxType('dln')}
+        />
+      </View>
+      {evmTxListInfo?.transactions?.length > 0 ||
       evmDLNTradesTxListInfo?.orders.length > 0 ? (
         <FlatList
           style={{width: '100%', marginBottom: 64}}
-          data={[
-            ...evmDLNTradesTxListInfo?.orders,
-            ...evmTxListInfo?.transactions,
-          ]}
+          data={
+            txType === 'dln'
+              ? evmDLNTradesTxListInfo?.orders
+              : evmTxListInfo?.transactions
+          }
           renderItem={({item}) =>
-            item?.type ? (
+            txType === 'transfers' ? (
               <WalletTransactionTransferCard item={item} />
             ) : (
               <WalletTransactionTradeCard item={item} />
@@ -69,44 +156,6 @@ const TransactionList = ({navigation, route}) => {
           }
           onEndReached={async () => await onEndReachedFetch()}
           keyExtractor={(item, i) => i.toString()}
-          stickySectionHeadersEnabled={true}
-          ListHeaderComponent={() => {
-            return (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                  width: '100%',
-                  paddingVertical: 16,
-                  marginBottom: '0%',
-                }}>
-                <Icon
-                  name={'navigate-before'}
-                  size={30}
-                  color={'#f0f0f0'}
-                  type="materialicons"
-                  onPress={() => navigation.goBack()}
-                />
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: '#F0F0F0',
-                      fontFamily: 'Unbounded-Regular',
-                      fontSize: 16,
-                      right: 30,
-                    }}>
-                    Transaction History
-                  </Text>
-                </View>
-              </View>
-            );
-          }}
         />
       ) : null}
     </SafeAreaView>

@@ -53,8 +53,8 @@ const WalletTransactionTradeCard = ({ item }) => {
           }}>
           <Text style={styles.primaryTitle}>
             {`${item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
-                ? 'Bought'
-                : 'Sold'
+              ? 'Bought'
+              : 'Sold'
               } ${mainSwapToken?.metadata?.symbol}`}
           </Text>
           <Text style={styles.secondaryTitle}>
