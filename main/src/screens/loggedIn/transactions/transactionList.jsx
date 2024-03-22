@@ -56,17 +56,25 @@ const TransactionList = ({navigation, route}) => {
   const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
   const getAllTxHistory = async () => {
     dispatch(getWalletTransactionForAddressFromMobula(page));
+    // setPage(page + 1);
   };
   const getAllDLNTradeHistory = async () => {
     dispatch(getWalletTransactionForAddressFromDLN(page));
+    // setPage(page + 1);
   };
   const onEndReachedFetch = async () => {
-    // dispatch(getWalletTransactionForAddressFromDLN(page));
+    // if (txType === 'dln') {
+    //   getAllDLNTradeHistory();
+    // } else {
+    //   getAllTxHistory();
+    // }
   };
   useEffect(() => {
     if (txType === 'dln') {
+      // setPage(0);
       getAllDLNTradeHistory();
     } else {
+      // setPage(0);
       getAllTxHistory();
     }
   }, [txType, evmInfo]);
