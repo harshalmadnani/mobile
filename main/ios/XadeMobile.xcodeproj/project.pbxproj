@@ -686,7 +686,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = XadeMobile/XadeMobile.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H4943PA2KJ;
+				DEVELOPMENT_TEAM = 85KPK5A6SK;
 				INFOPLIST_FILE = XadeMobile/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Xade Finance";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";

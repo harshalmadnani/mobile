@@ -10,7 +10,7 @@ PODS:
     - BigInt
   - BigInt (5.2.0)
   - boost (1.76.0)
-  - BVLinearGradient (2.8.3):
+  - BVLinearGradient (2.8.2):
     - React-Core
   - ConnectCommon (0.2.18):
     - BigInt (~> 5.2.0)
@@ -365,11 +365,11 @@ PODS:
     - react-native-config/App (= 1.5.1)
   - react-native-config/App (1.5.1):
     - React-Core
-  - react-native-floating-label-input (1.4.3):
+  - react-native-floating-label-input (1.4.2):
     - React-Core
-  - react-native-get-random-values (1.11.0):
+  - react-native-get-random-values (1.9.0):
     - React-Core
-  - react-native-netinfo (9.5.0):
+  - react-native-netinfo (9.4.1):
     - React-Core
   - react-native-network-info (5.2.1):
     - React
@@ -402,7 +402,7 @@ PODS:
     - react-native-video/Video (= 5.2.1)
   - react-native-video/Video (5.2.1):
     - React-Core
-  - react-native-webview (13.8.2):
+  - react-native-webview (13.8.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - React-perflogger (0.71.10)
@@ -490,15 +490,15 @@ PODS:
     - React-Core
   - rn-fetch-blob (0.12.0):
     - React-Core
-  - RNCAsyncStorage (1.23.1):
+  - RNCAsyncStorage (1.22.0):
     - React-Core
-  - RNCClipboard (1.13.2):
+  - RNCClipboard (1.11.2):
     - React-Core
   - RNCMaskedView (0.2.9):
     - React-Core
-  - RNCPicker (2.6.1):
+  - RNCPicker (2.4.10):
     - React-Core
-  - RNDeviceInfo (10.13.1):
+  - RNDeviceInfo (10.8.0):
     - React-Core
   - RNFastImage (8.6.3):
     - React-Core
@@ -526,7 +526,7 @@ PODS:
     - React
   - RNReactNativeHapticFeedback (2.2.0):
     - React-Core
-  - RNReanimated (3.8.1):
+  - RNReanimated (3.8.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
@@ -537,7 +537,7 @@ PODS:
     - React-Core
   - RNSnackbar (2.6.2):
     - React-Core
-  - RNSVG (15.1.0):
+  - RNSVG (15.0.0):
     - React-Core
   - RNTextGradientView (0.1.7):
     - React
@@ -854,7 +854,7 @@ SPEC CHECKSUMS:
   Base58.swift: e0e16655f9db843b8cd367593ed6f7d90d136b7f
   BigInt: f668a80089607f521586bbe29513d708491ef2f7
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
-  BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
+  BVLinearGradient: 916632041121a658c704df89d99f04acb038de0f
   ConnectCommon: b611c5e9e91c529295b77719319776f482703aa6
   CryptoSwift: b9c701d6f5011df23794dbf7f2e480a77835d83d
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
@@ -893,9 +893,9 @@ SPEC CHECKSUMS:
   React-jsinspector: cdc854f8b13abd202afa54bc12578e5afb9cfae1
   React-logger: ef2269b3afa6ba868da90496c3e17a4ec4f4cee0
   react-native-config: 86038147314e2e6d10ea9972022aa171e6b1d4d8
-  react-native-floating-label-input: 87443ecddba939a8d37b1917573a958cbef28162
-  react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
-  react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
+  react-native-floating-label-input: 70b2864337fa690c6d71d75dad66d8ec1d6bf162
+  react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
+  react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
   react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-notifications: 504143d59f9628c3b0c22fd0ccf34b65b9182d01
   react-native-pager-view: e26d35e382d86950c936f8917e3beb9188115ccc
@@ -906,7 +906,7 @@ SPEC CHECKSUMS:
   react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   react-native-udp: ff9d13e523f2b58e6bc5d4d32321ac60671b5dc9
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
-  react-native-webview: 19aba9db98e183484969202c1181a00159b7724b
+  react-native-webview: bdc091de8cf7f8397653e30182efcd9f772e03b3
   React-perflogger: 217095464d5c4bb70df0742fa86bf2a363693468
   React-RCTActionSheet: 8deae9b85a4cbc6a2243618ea62a374880a2c614
   React-RCTAnimation: 59c62353a8b59ce206044786c5d30e4754bffa64
@@ -922,11 +922,11 @@ SPEC CHECKSUMS:
   ReactCommon: bf28ee5aa027ee426a0610ff5eaaec41e171f1c7
   ReactNativeCameraKit: 9d46a5d7dd544ca64aa9c03c150d2348faf437eb
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
-  RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
-  RNCClipboard: 60fed4b71560d7bfe40e9d35dea9762b024da86d
+  RNCAsyncStorage: c43e6d71e13bb4748503797784839e0fbbf89d56
+  RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
-  RNCPicker: b18aaf30df596e9b1738e7c1f9ee55402a229dca
-  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
+  RNCPicker: 0bc2f0a29abcca7b7ed44a2d036aac9ab6d25700
+  RNDeviceInfo: 5795b418ed3451ebcaf39384e6cf51f60cb931c9
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
   RNFBApp: d59efa0872fff4e27de03cca3c528c203a436ae5
   RNFBMessaging: 216693dd5ba4f18ba65fb39fc73a44a23c26190f
@@ -935,11 +935,11 @@ SPEC CHECKSUMS:
   RNNotifee: 8e2d3df3f0e9ce8f5d1fe4c967431138190b6175
   RNOS: 6f2f9a70895bbbfbdad7196abd952e7b01d45027
   RNReactNativeHapticFeedback: ec56a5f81c3941206fd85625fa669ffc7b4545f9
-  RNReanimated: 4943d1e286130877c0539f053c3f36a22d8c66f5
+  RNReanimated: 55b0004deb4647b79233b579403e00846db605f5
   RNScreens: 3c5b9f4a9dcde752466854b6109b79c0e205dad3
   RNShare: d82e10f6b7677f4b0048c23709bd04098d5aee6c
   RNSnackbar: 3727b42bf6c4314a53c18185b5203e915a4ab020
-  RNSVG: 50cf2c7018e57cf5d3522d98d0a3a4dd6bf9d093
+  RNSVG: 3f65a03e0c61a8495dee92bf82545ed9041cbf3b
   RNTextGradientView: 3eb4744303f801546fad35ac47a53cc82257cb25
   RxAlamofire: beb75a1c452d0de225651db4903f5d29d034a620
   RxCocoa: 44a80de90e25b739b5aeaae3c8c371a32e3343cc
