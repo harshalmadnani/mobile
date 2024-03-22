@@ -1,7 +1,7 @@
-import { StyleSheet, View, Text, Image } from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import moment from 'moment';
 
-const WalletTransactionTradeCard = ({ item }) => {
+const WalletTransactionTradeCard = ({item}) => {
   const mainSwapToken =
     item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
       ? item?.takeOfferWithMetadata
@@ -42,9 +42,9 @@ const WalletTransactionTradeCard = ({ item }) => {
           flexDirection: 'row',
         }}>
         <Image
-          style={{ width: 50, height: 50 }}
+          style={{width: 50, height: 50}}
           source={{
-            uri: `${mainSwapToken.logoURI}`,
+            uri: `${mainSwapToken?.logoURI}`,
           }}
         />
         <View
@@ -52,10 +52,11 @@ const WalletTransactionTradeCard = ({ item }) => {
             marginLeft: 8,
           }}>
           <Text style={styles.primaryTitle}>
-            {`${item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
-              ? 'Bought'
-              : 'Sold'
-              } ${mainSwapToken?.metadata?.symbol}`}
+            {`${
+              item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
+                ? 'Bought'
+                : 'Sold'
+            } ${mainSwapToken?.metadata?.symbol}`}
           </Text>
           <Text style={styles.secondaryTitle}>
             {moment.unix(item?.creationTimestamp).format('MMM Do YY')}
@@ -63,17 +64,17 @@ const WalletTransactionTradeCard = ({ item }) => {
         </View>
       </View>
 
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[styles.secondaryTitle, { color: '#07F70F', opacity: 1 }]}>
+      <View style={{alignItems: 'flex-end'}}>
+        <Text style={[styles.secondaryTitle, {color: '#07F70F', opacity: 1}]}>
           {'+ '}
 
           {` ${mainSwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>
-        <Text style={[styles.secondaryTitle, { opacity: 1 }]}>
+        <Text style={[styles.secondaryTitle, {opacity: 1}]}>
           {'- '}
           {formatCompactNumber(
             secondarySwapToken?.amount?.stringValue /
-            Math.pow(10, secondarySwapToken?.decimals),
+              Math.pow(10, secondarySwapToken?.decimals),
           )?.toFixed(2)}
           {` ${secondarySwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>
