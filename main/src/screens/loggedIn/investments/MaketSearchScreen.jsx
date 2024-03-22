@@ -1,8 +1,8 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {FlatList, KeyboardAvoidingView, Text} from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { FlatList, KeyboardAvoidingView, Text } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import TradeItemCard from './TradeItemCard';
-import {Icon} from '@rneui/themed';
+import { Icon } from '@rneui/themed';
 import {
   Dimensions,
   SafeAreaView,
@@ -12,14 +12,14 @@ import {
   Image,
   TextInput,
 } from 'react-native';
-import {searchCryptoByName} from '../../../utils/cryptoMarketsApi';
-import {useDispatch, useSelector} from 'react-redux';
+import { searchCryptoByName } from '../../../utils/cryptoMarketsApi';
+import { useDispatch, useSelector } from 'react-redux';
 
-const MarketSearchScreen = ({route, navigation}) => {
+const MarketSearchScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
-  const {width, height} = Dimensions.get('window');
+  const { width, height } = Dimensions.get('window');
   const [searchTerm, setSearchTerm] = useState('');
-  const {cryptoData} = route.params;
+  const { cryptoData } = route.params;
   const [textInputStyleObj, setTextInputStyleObj] = useState({
     placeholderTextColor: 'white',
     textColor: 'white',
@@ -64,7 +64,7 @@ const MarketSearchScreen = ({route, navigation}) => {
                 marginBottom: 64,
                 width: '100%',
               }}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               keyExtractor={(item, i) => i.toString()}
@@ -79,7 +79,7 @@ const MarketSearchScreen = ({route, navigation}) => {
                   marginBottom: 64,
                   width: '100%',
                 }}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                   <TradeItemCard
                     onlyMeta={true}
                     navigation={navigation}

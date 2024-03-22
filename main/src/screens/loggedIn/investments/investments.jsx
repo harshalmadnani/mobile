@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
   TouchableOpacity,
@@ -12,20 +12,20 @@ import {
   FlatList,
   Pressable,
 } from 'react-native';
-import {ImageAssets} from '../../../../assets';
+import { ImageAssets } from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getListOfCommoditiesFromMobulaApi,
   getListOfCryptoFromMobulaApi,
   getListOfForexFromMobulaApi,
   getListOfStocksFromMobulaApi,
 } from '../../../store/actions/market';
-import {useFocusEffect} from '@react-navigation/native';
-import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
-import {marketsAction} from '../../../store/reducers/market';
+import { useFocusEffect } from '@react-navigation/native';
+import { getForexListData, getMarketData } from '../../../utils/cryptoMarketsApi';
+import { marketsAction } from '../../../store/reducers/market';
 
-const Investments = ({navigation}) => {
+const Investments = ({ navigation }) => {
   const [marketData, setMarketData] = useState(null);
 
   const width = Dimensions.get('window').width;
@@ -51,7 +51,7 @@ const Investments = ({navigation}) => {
     }, []),
   );
 
-  const onEndReachedFetch = async () => {};
+  const onEndReachedFetch = async () => { };
 
   return (
     <SafeAreaView
@@ -71,7 +71,7 @@ const Investments = ({navigation}) => {
           justifyContent: 'space-between',
         }}>
         <Text
-          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
+          style={{ fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20 }}>
           MARKETS
         </Text>
         <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
@@ -193,10 +193,10 @@ const Investments = ({navigation}) => {
       </View>
 
       {isLoading && (
-        <View style={{height: '100%'}}>
+        <View style={{ height: '100%' }}>
           <ActivityIndicator
             size={30}
-            style={{marginTop: '40%'}}
+            style={{ marginTop: '40%' }}
             color="#fff"
           />
         </View>
@@ -211,8 +211,8 @@ const Investments = ({navigation}) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{marginBottom: 64}}
-              renderItem={({item}) => (
+              style={{ marginBottom: 64 }}
+              renderItem={({ item }) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -230,8 +230,8 @@ const Investments = ({navigation}) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{marginBottom: 64}}
-              renderItem={({item}) => (
+              style={{ marginBottom: 64 }}
+              renderItem={({ item }) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -249,8 +249,8 @@ const Investments = ({navigation}) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{marginBottom: 64}}
-              renderItem={({item}) => (
+              style={{ marginBottom: 64 }}
+              renderItem={({ item }) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -268,8 +268,8 @@ const Investments = ({navigation}) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{marginBottom: 64}}
-              renderItem={({item}) => (
+              style={{ marginBottom: 64 }}
+              renderItem={({ item }) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -281,14 +281,14 @@ const Investments = ({navigation}) => {
       <Pressable
         onPress={() => {
           console.log(cryptoData.length);
-          navigation.navigate('MarketSearch', {cryptoData});
+          navigation.navigate('MarketSearch', { cryptoData });
         }}
         style={{
           height: 60,
           width: '95%',
           backgroundColor: '#1d1d1d',
           position: 'absolute',
-          top: height * 0.83,
+          bottom: 90,
           alignSelf: 'center',
           alignItems: 'center',
           borderRadius: 32,

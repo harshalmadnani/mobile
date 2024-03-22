@@ -53,17 +53,17 @@ class LoginCarousel extends React.Component {
 
     // Divide the horizontal offset by the width of the view to see which page is visible
     const selectedIndex = Math.floor(contentOffset.x / viewSize.width);
-    this.setState({selectedIndex});
+    this.setState({ selectedIndex });
   };
 
   render(navigation) {
-    const {images} = this.props;
-    const {selectedIndex} = this.state;
+    const { images } = this.props;
+    const { selectedIndex } = this.state;
     return (
       <ScrollView horizontal pagingEnabled ref={this.scrollRef}>
         {images.map(image => (
           <View style={styles.depWith} key={image.name}>
-             <Text style={styles.xade}>XADE</Text>
+            <Text style={styles.xade}>XADE</Text>
             <Text style={styles.header}>{image.name}</Text>
             <Text style={styles.subheader}>{image.details}</Text>
             <FastImage
@@ -72,7 +72,7 @@ class LoginCarousel extends React.Component {
               }}
               resizeMode="cover"
               style={{
-                width:'100%',
+                width: '100%',
                 height: 300,
                 borderRadius: 50,
               }}
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontFamily: `Unbounded-Bold`,
     textAlign: 'center',
     fontSize: 32,
-    marginTop:"2%"
+    marginTop: "2%"
   },
   xade: {
     color: '#fff',
@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginTop: '4%',
-    marginBottom:'10%'
+    marginBottom: '10%'
   },
 });
 
-export {LoginCarousel};
+export { LoginCarousel };

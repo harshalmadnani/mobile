@@ -53,8 +53,8 @@ const WalletTransactionTradeCard = ({ item }) => {
           }}>
           <Text style={styles.primaryTitle}>
             {`${item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
-              ? 'Bought'
-              : 'Sold'
+                ? 'Bought'
+                : 'Sold'
               } ${mainSwapToken?.metadata?.symbol}`}
           </Text>
           <Text style={styles.secondaryTitle}>
@@ -66,7 +66,10 @@ const WalletTransactionTradeCard = ({ item }) => {
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[styles.secondaryTitle, { color: '#07F70F', opacity: 1 }]}>
           {'+ '}
-
+          {formatCompactNumber(
+            mainSwapToken?.amount?.stringValue /
+            Math.pow(10, mainSwapToken?.decimals),
+          )?.toFixed(2)}
           {` ${mainSwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>
         <Text style={[styles.secondaryTitle, { opacity: 1 }]}>

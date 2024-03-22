@@ -1,4 +1,4 @@
-import React, {useState, Component, useEffect} from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import {
   SafeAreaView,
   Text,
@@ -10,8 +10,8 @@ import {
   Button,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import {Icon, Image} from '@rneui/themed';
-const MyInvestmentItemCard = ({navigation, item}) => {
+import { Icon, Image } from '@rneui/themed';
+const MyInvestmentItemCard = ({ navigation, item }) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <TouchableOpacity
@@ -39,27 +39,27 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             alignItems: 'center',
             // backgroundColor: 'red',
           }}>
-          <View style={{paddingHorizontal: 5}}>
+          <View style={{ paddingHorizontal: 5 }}>
             <FastImage
-              style={{width: 42, height: 42}}
+              style={{ width: 42, height: 42 }}
               source={{
                 uri: `${item.image}`,
               }}
             />
           </View>
 
-          <View style={{paddingHorizontal: 10}}>
+          <View style={{ paddingHorizontal: 10 }}>
             <View>
               <Text style={styles.text1}>{item.symbol.toUpperCase()}</Text>
             </View>
-            <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-              <View style={{paddingRight: 10}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+              <View style={{ paddingRight: 10 }}>
                 <Text style={styles.text5}>{item.balance}</Text>
               </View>
             </View>
           </View>
         </View>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <View
             style={{
               paddingHorizontal: 10,
@@ -95,7 +95,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
               )}
             </View>
           </View>
-          <View style={{alignSelf: 'center'}}>
+          <View style={{ alignSelf: 'center' }}>
             <Icon
               name={'expand-more'}
               size={24}
@@ -125,7 +125,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   paddingTop: 60, // Add more padding at the top for the icon
                   alignItems: 'center',
                   shadowColor: '#000',
-                  shadowOffset: {width: 0, height: 2},
+                  shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.25,
                   shadowRadius: 4,
                   elevation: 5,
@@ -147,8 +147,8 @@ const MyInvestmentItemCard = ({navigation, item}) => {
 
                 {/* Image */}
                 <Image
-                  source={{uri: item.image}}
-                  style={{width: 48, height: 48}}
+                  source={{ uri: item.image }}
+                  style={{ width: 48, height: 48 }}
                   resizeMode="contain"
                 />
 

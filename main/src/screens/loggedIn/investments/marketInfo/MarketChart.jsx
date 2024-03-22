@@ -1,4 +1,4 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   Linking,
   ActivityIndicator,
@@ -8,14 +8,14 @@ import {
   Dimensions,
   FlatList,
 } from 'react-native';
-import {Text, Icon, Image} from '@rneui/themed';
+import { Text, Icon, Image } from '@rneui/themed';
 import styles from '../investment-styles';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import InvestmentChart from '../../../../component/charts/InvestmentChart';
-import {useDispatch, useSelector} from 'react-redux';
-import {setAssetMetadata} from '../../../../store/actions/market';
-import {WebView} from 'react-native-webview';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAssetMetadata } from '../../../../store/actions/market';
+import { WebView } from 'react-native-webview';
 const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -85,7 +85,7 @@ const MarketChart = props => {
   );
   console.log('current holdings', JSON.stringify(currentAsset));
   console.log('Metdata', selectedAssetMetaData);
-  const {width, height} = Dimensions.get('window');
+  const { width, height } = Dimensions.get('window');
   const formatNumber = numString => {
     const num = parseFloat(numString);
     if (!isNaN(num)) {
@@ -126,9 +126,9 @@ const MarketChart = props => {
 
   if (selectedAssetMetaData) {
     selectedAssetMetaData.market_cap &&
-      data.push({label: 'Market Cap', value: selectedAssetMetaData.market_cap});
+      data.push({ label: 'Market Cap', value: selectedAssetMetaData.market_cap });
     selectedAssetMetaData.volume &&
-      data.push({label: 'Volume', value: selectedAssetMetaData.volume});
+      data.push({ label: 'Volume', value: selectedAssetMetaData.volume });
     selectedAssetMetaData.total_supply &&
       data.push({
         label: 'Circulating Supply',
@@ -147,8 +147,8 @@ const MarketChart = props => {
   }
 
   return (
-    <View style={{flex: 1}}>
-      <ScrollView contentContainerStyle={{minHeight: height, minWidth: width}}>
+    <View style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={{ minHeight: height, minWidth: width }}>
         <View
           style={{
             flexDirection: 'row',
@@ -162,7 +162,7 @@ const MarketChart = props => {
             color={'#f0f0f0'}
             type="materialicons"
             onPress={() => navigation.goBack()}
-            style={{marginLeft: 20}}
+            style={{ marginLeft: 20 }}
           />
           <View
             style={{
@@ -199,7 +199,7 @@ const MarketChart = props => {
               paddingEnd: 20,
             }}>
             {data.map((item, index) => (
-              <View key={index} style={{alignItems: 'center', marginRight: 40}}>
+              <View key={index} style={{ alignItems: 'center', marginRight: 40 }}>
                 <Text
                   style={{
                     color: 'white',
@@ -208,7 +208,7 @@ const MarketChart = props => {
                   }}>
                   {item.label}
                 </Text>
-                <Text style={{color: 'grey', fontFamily: 'Montreal-Medium'}}>
+                <Text style={{ color: 'grey', fontFamily: 'Montreal-Medium' }}>
                   {item.label === 'Market Cap' || item.label === 'Volume'
                     ? '$'
                     : ''}
@@ -294,7 +294,7 @@ const MarketChart = props => {
                 <FlatList
                   data={newsData}
                   keyExtractor={item => item.id.toString()}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <View
                       style={{
                         marginVertical: '5%',
@@ -317,7 +317,7 @@ const MarketChart = props => {
                             }}>
                             {new Date(item.published_at).toLocaleTimeString()}
                           </Text>
-                          <Text style={{marginHorizontal: 5, color: 'gray'}}>
+                          <Text style={{ marginHorizontal: 5, color: 'gray' }}>
                             ·
                           </Text>
                           <Text
@@ -328,10 +328,10 @@ const MarketChart = props => {
                             }}>
                             {new Date(item.published_at).toLocaleDateString()}
                           </Text>
-                          <Text style={{marginHorizontal: 5, color: 'gray'}}>
+                          <Text style={{ marginHorizontal: 5, color: 'gray' }}>
                             ·
                           </Text>
-                          <Text style={{fontSize: 13, color: 'gray'}}>
+                          <Text style={{ fontSize: 13, color: 'gray' }}>
                             {item.source.title}
                           </Text>
                         </View>
@@ -357,7 +357,7 @@ const MarketChart = props => {
                 source={{
                   uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710949855/lv9al2binq8dw6qpjrm0.png',
                 }}
-                style={{width: 300, height: 300}} // Adjust size as needed
+                style={{ width: 300, height: 300 }} // Adjust size as needed
               />
               <Text
                 style={{
@@ -396,7 +396,7 @@ const MarketChart = props => {
                 </style>
                 ${tradingViewWidgetHTML}`,
                 }}
-                style={{width: width, height: 400}}
+                style={{ width: width, height: 400 }}
                 onLoadStart={() => setLoading(true)}
                 onLoad={() => {
                   console.log('WebView loaded.');
@@ -411,13 +411,13 @@ const MarketChart = props => {
   );
 };
 
-const ReadMoreLess = ({text, maxChars}) => {
+const ReadMoreLess = ({ text, maxChars }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   const displayText = isExpanded ? text : `${text.slice(0, maxChars)}`;
 
   return (
     <View>
-      <Text style={{margin: 0, marginTop: 10, marginBottom: 8, color: 'white'}}>
+      <Text style={{ margin: 0, marginTop: 10, marginBottom: 8, color: 'white' }}>
         {displayText}
       </Text>
       {text.length > maxChars && (

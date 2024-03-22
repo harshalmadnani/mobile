@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions, Platform} from 'react-native';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
 const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
@@ -34,12 +34,12 @@ const styles = StyleSheet.create({
   nameSettings: {
     width: '90%',
     marginTop: '5%',
-    backgroundColor:'transparent',
+    backgroundColor: 'transparent',
     padding: 20,
     justifyContent: 'space-between',
     borderRadius: 10,
     alignItems: 'center',
-    alignSelf:'center'
+    alignSelf: 'center'
   },
 
   otherSettings: {
@@ -49,17 +49,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#101010',
     paddingTop: 30,
     paddingBottom: 30,
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     // justifyContent: 'space-between',
     borderRadius: 20,
     alignItems: 'center',
-    alignSelf:'center'
+    alignSelf: 'center'
   },
 
   innerSettings: {
     paddingLeft: 10,
 
-    paddingBottom:10,
+    paddingBottom: 10,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     fontFamily: "Montreal-Bold",
-    alignSelf:'center'
+    alignSelf: 'center'
   },
 
   events: {
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: '5%',
-    alignSelf:'center'
+    alignSelf: 'center'
   },
 
   innerMedia: {

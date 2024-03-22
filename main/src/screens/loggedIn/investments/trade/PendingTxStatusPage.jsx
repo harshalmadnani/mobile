@@ -1,12 +1,12 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, SafeAreaView, TouchableOpacity} from 'react-native';
-import {Text, View, Image} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+import { Text, View, Image } from 'react-native';
 // import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
-import {Svg, Circle, Text as SvgText} from 'react-native-svg';
+import { Svg, Circle, Text as SvgText } from 'react-native-svg';
 // import { View } from 'react-native-reanimated/lib/typescript/Animated';
-const {BigNumber} = require('bignumber.js');
+const { BigNumber } = require('bignumber.js');
 const PendingTxComponent = ({
   txQuoteInfo,
   formattedPercent,
@@ -15,7 +15,7 @@ const PendingTxComponent = ({
   calculatePercentage,
 }) => {
   return (
-    <View style={{justifyContent: 'center'}}>
+    <View style={{ justifyContent: 'center' }}>
       <Svg height="300" width="300">
         <Circle
           cx="150"
@@ -62,7 +62,7 @@ const PendingTxComponent = ({
           {formattedPercent}
         </SvgText>
       </Svg>
-      <View style={{justifyContent: 'center', marginTop: '10%'}}>
+      <View style={{ justifyContent: 'center', marginTop: '10%' }}>
         <Text
           style={{
             fontFamily: 'Unbounded-Medium',
@@ -100,11 +100,11 @@ const PendingTxComponent = ({
     </View>
   );
 };
-const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
+const SuccessTxComponent = ({ txQuoteInfo, tradeType, normalAmount }) => {
   const navigation = useNavigation();
   return (
-    <View style={{width: '100%'}}>
-      <View style={{justifyContent: 'flex-start'}}>
+    <View style={{ width: '100%' }}>
+      <View style={{ justifyContent: 'flex-start' }}>
         <View
           style={{
             justifyContent: 'center',
@@ -115,8 +115,8 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
             source={{
               uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710094353/ucvuadhlnkmbfn44aroo.png',
             }}
-            style={{width: 200, height: 200}}
-            // Replace with the URL of your image
+            style={{ width: 200, height: 200 }}
+          // Replace with the URL of your image
           />
         </View>
         <Text
@@ -142,7 +142,7 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
             txQuoteInfo?.tokenOut?.name}
         </Text>
       </View>
-      <View style={{marginTop: '15%'}}>
+      <View style={{ marginTop: '15%' }}>
         <View
           style={{
             // flex: 1,
@@ -151,9 +151,9 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
           }}>
           <LinearGradient
             colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ height: 2, width: '80%' }} // Adjust the height and width as needed
           />
         </View>
         <View
@@ -188,38 +188,38 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
               $
               {tradeType === 'sell'
                 ? (
-                    txQuoteInfo?.tokenOut?.amount /
-                      Math.pow(10, txQuoteInfo?.tokenOut?.decimals) /
-                      (txQuoteInfo?.tokenIn?.amount /
-                        Math.pow(10, txQuoteInfo?.tokenIn?.decimals)) ||
-                    txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      ) /
-                      (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                        ))
-                  ).toFixed(6)
+                  txQuoteInfo?.tokenOut?.amount /
+                  Math.pow(10, txQuoteInfo?.tokenOut?.decimals) /
+                  (txQuoteInfo?.tokenIn?.amount /
+                    Math.pow(10, txQuoteInfo?.tokenIn?.decimals)) ||
+                  txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                  Math.pow(
+                    10,
+                    txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                  ) /
+                  (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                    Math.pow(
+                      10,
+                      txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                    ))
+                ).toFixed(6)
                 : //when same chain
-                  (
-                    txQuoteInfo?.tokenIn?.amount /
-                      Math.pow(10, txQuoteInfo?.tokenIn?.decimals) /
-                      (txQuoteInfo?.tokenOut?.amount /
-                        Math.pow(10, txQuoteInfo?.tokenOut?.decimals)) || //when cross chain
-                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                      ) /
-                      (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                        ))
-                  ).toFixed(6)}
+                (
+                  txQuoteInfo?.tokenIn?.amount /
+                  Math.pow(10, txQuoteInfo?.tokenIn?.decimals) /
+                  (txQuoteInfo?.tokenOut?.amount /
+                    Math.pow(10, txQuoteInfo?.tokenOut?.decimals)) || //when cross chain
+                  txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                  Math.pow(
+                    10,
+                    txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                  ) /
+                  (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                    Math.pow(
+                      10,
+                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                    ))
+                ).toFixed(6)}
             </Text>
           </View>
 
@@ -250,21 +250,21 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
               {txQuoteInfo?.estimation?.costsDetails
                 ? tradeType === 'sell'
                   ? (
-                      txQuoteInfo?.estimation?.costsDetails?.filter(
-                        x => x.type === 'DlnProtocolFee',
-                      )[0]?.payload?.feeAmount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                      )
-                    ).toFixed(2)
-                  : txQuoteInfo?.estimation?.costsDetails?.filter(
+                    txQuoteInfo?.estimation?.costsDetails?.filter(
                       x => x.type === 'DlnProtocolFee',
                     )[0]?.payload?.feeAmount /
                     Math.pow(
                       10,
-                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                      txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
                     )
+                  ).toFixed(2)
+                  : txQuoteInfo?.estimation?.costsDetails?.filter(
+                    x => x.type === 'DlnProtocolFee',
+                  )[0]?.payload?.feeAmount /
+                  Math.pow(
+                    10,
+                    txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                  )
                 : '0.01'}
             </Text>
           </View>
@@ -304,9 +304,9 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
           }}>
           <LinearGradient
             colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ height: 2, width: '80%' }} // Adjust the height and width as needed
           />
         </View>
       </View>
@@ -337,8 +337,8 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
     </View>
   );
 };
-const PendingTxStatusPage = ({route, navigation}) => {
-  const {state, tradeType, signature} = route.params;
+const PendingTxStatusPage = ({ route, navigation }) => {
+  const { state, tradeType, signature } = route.params;
   const txQuoteInfo = state;
 
   const [countdown, setCountdown] = useState(
@@ -361,7 +361,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
     const circumference = 2 * Math.PI * 40; // 40 is the radius of the circle
     return (countdown / totalDuration) * circumference;
   };
-  const {width, height} = Dimensions.get('window');
+  const { width, height } = Dimensions.get('window');
   const formatTime = seconds => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -369,7 +369,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
   };
   const weiAmount = new BigNumber(
     txQuoteInfo?.estimation?.dstChainTokenOut?.amount ||
-      txQuoteInfo?.tokenOut?.amount,
+    txQuoteInfo?.tokenOut?.amount,
   );
   const percent =
     (((txQuoteInfo?.order?.approximateFulfillmentDelay || 15) - countdown) /
@@ -379,15 +379,15 @@ const PendingTxStatusPage = ({route, navigation}) => {
   const normalAmount = weiAmount
     .div(
       10 **
-        (txQuoteInfo?.estimation?.dstChainTokenOut.decimals ||
-          txQuoteInfo?.tokenOut.decimals),
+      (txQuoteInfo?.estimation?.dstChainTokenOut.decimals ||
+        txQuoteInfo?.tokenOut.decimals),
     )
     .toNumber();
   // {
   console.log(
     'trade info',
     txQuoteInfo?.tokenOut?.amount /
-      Math.pow(10, txQuoteInfo?.tokenOut?.decimals),
+    Math.pow(10, txQuoteInfo?.tokenOut?.decimals),
   );
   // }
   return (
