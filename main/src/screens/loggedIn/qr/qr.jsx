@@ -17,7 +17,7 @@ import {
 import {CameraScreen} from 'react-native-camera-kit';
 
 // import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleConnect from 'react-native-particle-connect';
 
 import QR from '../../../qr-generator';
 import {logout} from '../../../particle-auth';
@@ -165,23 +165,20 @@ class QRPage extends Component {
 
   render(navigation) {
     return (
-      
-        <SafeAreaView>
-          <ScrollView>
-            <View style={styles.container}>
-              <View style={styles.topbar}>
-              </View>
-              <View style={styles.mainContent}>
-                {this.state.status ? (
-                  <QRCode />
-                ) : (
-                  <QRScanner navigation={this.props.navigation} />
-                )}
-              </View>
+      <SafeAreaView>
+        <ScrollView>
+          <View style={styles.container}>
+            <View style={styles.topbar}></View>
+            <View style={styles.mainContent}>
+              {this.state.status ? (
+                <QRCode />
+              ) : (
+                <QRScanner navigation={this.props.navigation} />
+              )}
             </View>
-          </ScrollView>
-        </SafeAreaView>
-
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }

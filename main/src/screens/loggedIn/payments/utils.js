@@ -1,8 +1,8 @@
 // import * as particleAuth from 'react-native-particle-auth';
 // import * as particleConnect from 'react-native-particle-connect';
-import createProvider from '../../../particle-auth';
-import getOnlyProvider from '../../../particle-auth';
-import createConnectProvider from '../../../particle-connect';
+// import createProvider from '../../../particle-auth';
+// import getOnlyProvider from '../../../particle-auth';
+// import createConnectProvider from '../../../particle-connect';
 import {EventsCarousel} from './eventsCarousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
@@ -12,9 +12,6 @@ import {BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI, POLYGON_API_KEY} from '@env';
 import transferXUSD from './remmitexv1';
 const Web3 = require('web3');
 import {Alert} from 'react-native';
-
-import {IPaymaster, ChainId} from '@biconomy/core-types';
-import SmartAccount from '@biconomy/smart-account';
 
 import 'react-native-get-random-values';
 import '@ethersproject/shims';

@@ -7,7 +7,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {REMMITEX_MAINNET_CONTRACT, REMMITEX_TESTNET_CONTRACT} from '@env';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleConnect from 'react-native-particle-connect';
 import {Buffer} from 'buffer';
 import {EvmService} from '../../../NetService/EvmService';
 import BigNumber from 'bignumber.js';
@@ -183,11 +183,11 @@ export async function transferUSDC(
       const json = JSON.stringify(transferTx);
       const serialized = '0x' + Buffer.from(json).toString('hex');
 
-      const tx = await particleConnect.signAndSendTransaction(
-        global.walletType,
-        global.connectAccount.publicAddress,
-        serialized,
-      );
+      // const tx = await particleConnect.signAndSendTransaction(
+      //   global.walletType,
+      //   global.connectAccount.publicAddress,
+      //   serialized,
+      // );
 
       if (tx.status) {
         return {

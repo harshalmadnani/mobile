@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import {Text} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
-import onClickConnect from '../../particle-connect';
-// import {WalletType} from 'react-native-particle-connect';
 
 const bg = require('../../../assets/choose.png');
 const windowHeight = Dimensions.get('window').height;
@@ -34,39 +32,19 @@ const ChooseConnect = ({navigation}) => {
             <View style={styles.mainContent}>
               <Text style={styles.mainText}>Choose Wallet Provider:</Text>
               <View style={styles.buttonContent}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: metamask})
-                  }>
+                <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>Connect With MetaMask</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonAlt}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: alpha})
-                  }>
+                <TouchableOpacity style={styles.buttonAlt}>
                   <Text style={styles.buttonTextAlt}>Connect With Alpha</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: trust})
-                  }>
+                <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>Connect With Trust</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonAlt}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: rainbow})
-                  }>
+                <TouchableOpacity style={styles.buttonAlt}>
                   <Text style={styles.buttonTextAlt}>Connect With Rainbow</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: walletconnect})
-                  }>
+                <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText}>Others</Text>
                 </TouchableOpacity>
               </View>

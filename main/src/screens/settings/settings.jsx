@@ -1,4 +1,4 @@
-import React, {useState,} from 'react';
+import React, {useState} from 'react';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -19,9 +19,7 @@ import {
   Switch,
 } from 'react-native';
 // import {Icon} from 'react-native-elements';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
-import {ChainId} from '@biconomy/core-types';
+// import * as particleConnect from 'react-native-particle-connect';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import Snackbar from 'react-native-snackbar';
 const bg = require('../../../assets/choose.png');
@@ -63,15 +61,15 @@ Download Now: https://bit.ly/xadefinance
 `,
   );
 
-  Snackbar.show({'text': 'Referral link copied'});
+  Snackbar.show({text: 'Referral link copied'});
 
   // Alert.alert('Referral link copied');
 };
 this.state = {
   selectedIndex: 0,
-  externalLinkHeading : '',
-  externalLinkUri : '',
-  showExternalLinkModal : false
+  externalLinkHeading: '',
+  externalLinkUri: '',
+  showExternalLinkModal: false,
 };
 // import {signAndSendTransactionConnect} from '../../particle-connect';
 let address;
@@ -98,40 +96,42 @@ const Component = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={{flex:1, paddingBottom:'10%' }}>
-         <View style={{
-    marginTop: '8%',
-    marginBottom: '2%',
-    marginLeft: '5%',
-    marginRight: '5%', // Added marginRight to ensure space is maintained from the right edge
-    flexDirection: 'row',
-    justifyContent: 'space-between', // This line positions items on opposite ends
-  }}>
-    <Text style={{fontFamily:'Unbounded-Medium', color:'#fff', fontSize: 20}}>
-PROFILE
-    </Text>
-    <TouchableOpacity 
-         onPress={() => navigation.push('TransactionHistory')}>
-      <Image
-        source={{ uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png' }} // Replace with your image URI
+    <SafeAreaView style={{flex: 1, paddingBottom: '10%'}}>
+      <View
         style={{
-          width: 40,
-          height: 40,
-          bottom: 3
-        }}
-      />
-    </TouchableOpacity>
-  </View>
-      <ScrollView
-       >
+          marginTop: '8%',
+          marginBottom: '2%',
+          marginLeft: '5%',
+          marginRight: '5%', // Added marginRight to ensure space is maintained from the right edge
+          flexDirection: 'row',
+          justifyContent: 'space-between', // This line positions items on opposite ends
+        }}>
+        <Text
+          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
+          PROFILE
+        </Text>
+        <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
+          <Image
+            source={{
+              uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png',
+            }} // Replace with your image URI
+            style={{
+              width: 40,
+              height: 40,
+              bottom: 3,
+            }}
+          />
+        </TouchableOpacity>
+      </View>
+      <ScrollView>
         <View style={styles.nameSettings}>
-          <View style={{marginBottom:'5%'}}>
+          <View style={{marginBottom: '5%'}}>
             <Text
               style={{
                 color: 'white',
                 fontSize: 23,
                 fontFamily: `Unbounded-Medium`,
-                textAlign:'center',
+                textAlign: 'center',
               }}>
               {info.toUpperCase()}
             </Text>
@@ -140,7 +140,7 @@ PROFILE
                 color: 'grey',
                 fontFamily: `Montreal-Medium`,
                 fontSize: 15,
-                textAlign:'center',
+                textAlign: 'center',
               }}>
               {global.withAuth
                 ? global.loginAccount.phoneEmail.includes('@')
@@ -151,47 +151,87 @@ PROFILE
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity 
-  onPress={() => {
-    Linking.openURL('https://zealy.io/cw/xadefinance/questboard');
-  }}
-  style={{
-    justifyContent: 'center',
-    borderRadius:30,
-    padding:20,
-    backgroundColor:'#1a1a1a',
-    marginLeft:'3%',
-    width:'45%'
-  }}
->
-  <Image source={{uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402529/du6fpp6plx9fhp6qdv1l.png'}} style={{ height: 60, width: 60 }} />
-  <Text style={{ fontSize: 16, fontFamily:'Unbounded-Medium',color:'#fff',marginVertical:'5%',textAlign:"left" }}>QUESTS</Text>
-  <Text style={{ fontSize: 12 , fontFamily:'Montreal-Medium',color:'#949494',marginBottom: '10%'}}>Get exclusive rewards such as Xade Shards & more</Text>
-</TouchableOpacity>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://zealy.io/cw/xadefinance/questboard');
+            }}
+            style={{
+              justifyContent: 'center',
+              borderRadius: 30,
+              padding: 20,
+              backgroundColor: '#1a1a1a',
+              marginLeft: '3%',
+              width: '45%',
+            }}>
+            <Image
+              source={{
+                uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402529/du6fpp6plx9fhp6qdv1l.png',
+              }}
+              style={{height: 60, width: 60}}
+            />
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: 'Unbounded-Medium',
+                color: '#fff',
+                marginVertical: '5%',
+                textAlign: 'left',
+              }}>
+              QUESTS
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: 'Montreal-Medium',
+                color: '#949494',
+                marginBottom: '10%',
+              }}>
+              Get exclusive rewards such as Xade Shards & more
+            </Text>
+          </TouchableOpacity>
 
-<TouchableOpacity 
-  onPress={() => {
-    Linking.openURL('https://app.komet.me/nfts/Xade_Explorers/346');
-  }}
-  style={{
-    justifyContent: 'center',
-    borderRadius:30,
-    padding:20,
-    backgroundColor:'#1a1a1a',
-    width:'45%',
-    marginRight:'3%',
-  }}
->
-  <Image source={{uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402530/eyybhybbljzq9tvnfxqn.png'}} style={{ height: 60, width: 60 }} />
-  <Text style={{ fontSize: 16, fontFamily:'Unbounded-Medium',color:'#fff',marginVertical:'5%'}}>EXPLORERS</Text>
-  <Text style={{ fontSize: 12 , fontFamily:'Montreal-Medium',color:'#949494',marginBottom: '10%' }}>Become a Xade Explorer to get the best that we have</Text>
-</TouchableOpacity>
-
-    </View>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL('https://app.komet.me/nfts/Xade_Explorers/346');
+            }}
+            style={{
+              justifyContent: 'center',
+              borderRadius: 30,
+              padding: 20,
+              backgroundColor: '#1a1a1a',
+              width: '45%',
+              marginRight: '3%',
+            }}>
+            <Image
+              source={{
+                uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402530/eyybhybbljzq9tvnfxqn.png',
+              }}
+              style={{height: 60, width: 60}}
+            />
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: 'Unbounded-Medium',
+                color: '#fff',
+                marginVertical: '5%',
+              }}>
+              EXPLORERS
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: 'Montreal-Medium',
+                color: '#949494',
+                marginBottom: '10%',
+              }}>
+              Become a Xade Explorer to get the best that we have
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         <View style={[styles.otherSettings, {marginTop: 20, marginBottom: 10}]}>
-        <TouchableOpacity
+          <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => Linking.openURL('mailto:support@xade.finance')}>
             <FastImage
@@ -301,24 +341,23 @@ PROFILE
           </TouchableOpacity>
           <HorizontalRule />
           <TouchableOpacity
-          style={styles.innerSettings}
-          onPress={async () => {
-            global.withAuth
-              ? particleAuth.fastLogout()
-              : particleConnect.disconnect();
-            await AsyncStorage.setItem('isConnected', JSON.stringify(false));
-            navigation.push('LoggedOutHome');
-            console.log('Logged Out/Disconnected Successfully');
-          }}>
-                      <FastImage
+            style={styles.innerSettings}
+            onPress={async () => {
+              // global.withAuth
+              //   ? particleAuth.fastLogout()
+              //   : particleConnect.disconnect();
+              // await AsyncStorage.setItem('isConnected', JSON.stringify(false));
+              // navigation.push('LoggedOutHome');
+              // console.log('Logged Out/Disconnected Successfully');
+            }}>
+            <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./logout.png')}
             />
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>Logout</Text>
-       
             </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
           <Modal
             animationType="slide"
             visible={networksVisible}
@@ -357,25 +396,24 @@ PROFILE
                             );
                             console.log('Switching To Mainnet');
                             if (global.withAuth) {
-                              console.log(
-                                await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMainnet,
-                                ),
-                                await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMainnet,
-                                ),
-                                await global.smartAccount.setActiveChain(
-                                  ChainId.POLYGON_MAINNET,
-                                ),
-                              );
+                              // console.log(
+                              //   await particleAuth.setChainInfoAsync(
+                              //     particleAuth.ChainInfo.PolygonMainnet,
+                              //   ),
+                              //   await particleAuth.setChainInfoAsync(
+                              //     particleAuth.ChainInfo.PolygonMainnet,
+                              //   ),
+                              //   await global.smartAccount.setActiveChain(
+                              //     ChainId.POLYGON_MAINNET,
+                              //   ),
+                              // );
                             } else {
-                              console.log(
-                                await particleConnect.switchEthereumChain(
-                                  global.walletType,
-                                  global.connectAccount.publicAddress,
-                                  particleConnect.ChainInfo.PolygonMainnet,
-                                ),
-                              );
+                              console.log();
+                              // await particleConnect.switchEthereumChain(
+                              //   global.walletType,
+                              //   global.connectAccount.publicAddress,
+                              //   particleConnect.ChainInfo.PolygonMainnet,
+                              // ),
                             }
                             setNetworksVisible(!networksVisible);
                             navigation.push('Home');
@@ -394,25 +432,14 @@ PROFILE
                             );
                             console.log('Switching To Testnet');
                             if (global.withAuth) {
-                              console.log(
-                                await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMumbai,
-                                ),
-                                await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMumbai,
-                                ),
-                                await global.smartAccount.setActiveChain(
-                                  ChainId.POLYGON_MUMBAI,
-                                ),
-                              );
                             } else {
-                              console.log(
-                                await particleConnect.switchEthereumChain(
-                                  global.walletType,
-                                  global.connectAccount.publicAddress,
-                                  particleConnect.ChainInfo.PolygonMumbai,
-                                ),
-                              );
+                              // console.log(
+                              //   await particleConnect.switchEthereumChain(
+                              //     global.walletType,
+                              //     global.connectAccount.publicAddress,
+                              //     particleConnect.ChainInfo.PolygonMumbai,
+                              //   ),
+                              // );
                             }
                             setNetworksVisible(!networksVisible);
                             navigation.push('Home');
@@ -501,33 +528,32 @@ PROFILE
           v1.1.3 (5) - beta
         </Text>
       </ScrollView>
-<TouchableOpacity
-  style={{
-    flexDirection: 'row',
-    height: 52,
-    width: '95%',
-    borderRadius: 30,
-    backgroundColor: '#fff', // Set background color to white
-    position: 'absolute',
-    bottom: 60, // Adjust the bottom spacing as needed
-    left: 0,
-    right: 0,
-    alignItems: 'center', // Center the text vertically
-    justifyContent: 'center', // Center the text horizontally
-  }}
-  onPress={() => {
-    navigation.push('SendEmail');
-  }}>
-  <Text
-    style={{
-      color: '#000', // Set text color to black
-      fontSize: 14,
-      fontFamily: 'Unbounded-ExtraBold',
-    }}>
-    TRANSFER FUNDS
-  </Text>
-</TouchableOpacity>
-
+      <TouchableOpacity
+        style={{
+          flexDirection: 'row',
+          height: 52,
+          width: '95%',
+          borderRadius: 30,
+          backgroundColor: '#fff', // Set background color to white
+          position: 'absolute',
+          bottom: 60, // Adjust the bottom spacing as needed
+          left: 0,
+          right: 0,
+          alignItems: 'center', // Center the text vertically
+          justifyContent: 'center', // Center the text horizontally
+        }}
+        onPress={() => {
+          navigation.push('SendEmail');
+        }}>
+        <Text
+          style={{
+            color: '#000', // Set text color to black
+            fontSize: 14,
+            fontFamily: 'Unbounded-ExtraBold',
+          }}>
+          TRANSFER FUNDS
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

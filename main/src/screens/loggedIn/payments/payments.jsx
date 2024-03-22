@@ -42,8 +42,7 @@ import {
 import {paymentsLoad, addXUSD, txHistoryLoad} from './utils';
 const Web3 = require('web3');
 
-import {IPaymaster, ChainId} from '@biconomy/core-types';
-import SmartAccount from '@biconomy/smart-account';
+
 
 import 'react-native-get-random-values';
 
@@ -106,54 +105,54 @@ const PaymentsComponent = ({navigation}) => {
     setShowTxnReceiptModal(false);
   };
   const call = async () => {
-    console.log('Auth Type....', address, global.withAuth);
-    // dispatch(getCryptoHoldingForAddressFromMobula());
-    const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
-    dispatch(marketsAction.setTokenUsdcBalance(tokenBalance));
-    console.log('token balance.....', tokenBalance);
-    setBalance(tokenBalance || '0.00');
-    const {txDates, txs} = await txHistoryLoad(address);
-    console.log('txdatess balance.....', txs, txDates);
-    setDates(txDates);
-    setState(txs);
-    console.log('Request being sent for registration');
-    await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
-    console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
+  //   console.log('Auth Type....', address, global.withAuth);
+  //   // dispatch(getCryptoHoldingForAddressFromMobula());
+  //   const {tokenBalance} = await paymentsLoad(web3, mainnet, address);
+  //   dispatch(marketsAction.setTokenUsdcBalance(tokenBalance));
+  //   console.log('token balance.....', tokenBalance);
+  //   setBalance(tokenBalance || '0.00');
+  //   const {txDates, txs} = await txHistoryLoad(address);
+  //   console.log('txdatess balance.....', txs, txDates);
+  //   setDates(txDates);
+  //   setState(txs);
+  //   console.log('Request being sent for registration');
+  //   await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
+  //   console.log('Smart Account Needs To Be Loaded:', !global.smartAccount);
 
-    if (global.withAuth) {
-      if (!global.smartAccount) {
-        let options = {
-          activeNetworkId: mainnet
-            ? ChainId.POLYGON_MAINNET
-            : ChainId.POLYGON_MUMBAI,
-          supportedNetworksIds: [
-            ChainId.POLYGON_MAINNET,
-            ChainId.POLYGON_MUMBAI,
-          ],
+  //   if (global.withAuth) {
+  //     if (!global.smartAccount) {
+  //       let options = {
+  //         activeNetworkId: mainnet
+  //           ? ChainId.POLYGON_MAINNET
+  //           : ChainId.POLYGON_MUMBAI,
+  //         supportedNetworksIds: [
+  //           ChainId.POLYGON_MAINNET,
+  //           ChainId.POLYGON_MUMBAI,
+  //         ],
 
-          networkConfig: [
-            {
-              chainId: ChainId.POLYGON_MAINNET,
-              dappAPIKey: BICONOMY_API_KEY,
-            },
-            {
-              chainId: ChainId.POLYGON_MUMBAI,
-              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-            },
-          ],
-        };
-        // const particleProvider = this.getOnlyProvider();
-        // const provider = new ethers.providers.Web3Provider(
-        //   particleProvider,
-        //   'any',
-        // );
+  //         networkConfig: [
+  //           {
+  //             chainId: ChainId.POLYGON_MAINNET,
+  //             dappAPIKey: BICONOMY_API_KEY,
+  //           },
+  //           {
+  //             chainId: ChainId.POLYGON_MUMBAI,
+  //             dappAPIKey: BICONOMY_API_KEY_MUMBAI,
+  //           },
+  //         ],
+  //       };
+  //       // const particleProvider = this.getOnlyProvider();
+  //       // const provider = new ethers.providers.Web3Provider(
+  //       //   particleProvider,
+  //       //   'any',
+  //       // );
 
-        // let smartAccount = new SmartAccount(provider, options);
-        // smartAccount = await smartAccount.init();
-        // global.smartAccount = smartAccount;
-      }
-    }
-  };
+  //       // let smartAccount = new SmartAccount(provider, options);
+  //       // smartAccount = await smartAccount.init();
+  //       // global.smartAccount = smartAccount;
+  //     }
+  //   }
+  // };
   // useFocusEffect(async () => {
   //   console.log('Is Auth:', global.withAuth);
   //   await call();

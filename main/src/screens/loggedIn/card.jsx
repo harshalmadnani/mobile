@@ -39,7 +39,7 @@ import Snackbar from 'react-native-snackbar';
 // import * as particleAuth from 'react-native-particle-auth';
 // import * as particleConnect from 'react-native-particle-connect';
 
-import {WalletType, ChainInfo, Env} from 'react-native-particle-connect';
+// import {WalletType, ChainInfo, Env} from 'react-native-particle-connect';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {Picker} from '@react-native-picker/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';

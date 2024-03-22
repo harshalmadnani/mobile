@@ -6,9 +6,6 @@ import Web3 from 'web3';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
 import {BICONOMY_API_KEY} from '@env';
 
-import {IPaymaster, ChainId} from '@biconomy/core-types';
-import SmartAccount from '@biconomy/smart-account';
-
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
@@ -32,23 +29,22 @@ getOnlyProvider = () => {
 };
 
 async function createSCW() {
-  let options = {
-    activeNetworkId: ChainId.POLYGON_MAINNET,
-    supportedNetworksIds: [ChainId.POLYGON_MAINNET],
-
-    networkConfig: [
-      {
-        chainId: ChainId.POLYGON_MAINNET,
-        dappAPIKey: BICONOMY_API_KEY,
-      },
-    ],
-  };
-  const particleProvider = this.getOnlyProvider();
-  const provider = new ethers.providers.Web3Provider(particleProvider, 'any');
-  let smartAccount = new SmartAccount(provider, options);
-  smartAccount = await smartAccount.init();
-  global.smartAccount = smartAccount;
-  return global.smartAccount.address;
+  // let options = {
+  //   activeNetworkId: ChainId.POLYGON_MAINNET,
+  //   supportedNetworksIds: [ChainId.POLYGON_MAINNET],
+  //   networkConfig: [
+  //     {
+  //       chainId: ChainId.POLYGON_MAINNET,
+  //       dappAPIKey: BICONOMY_API_KEY,
+  //     },
+  //   ],
+  // };
+  // const particleProvider = this.getOnlyProvider();
+  // const provider = new ethers.providers.Web3Provider(particleProvider, 'any');
+  // let smartAccount = new SmartAccount(provider, options);
+  // smartAccount = await smartAccount.init();
+  // global.smartAccount = smartAccount;
+  // return global.smartAccount.address;
 }
 
 web3_getAccounts = async () => {

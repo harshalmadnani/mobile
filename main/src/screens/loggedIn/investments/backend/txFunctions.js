@@ -11,8 +11,8 @@ import {
   signAndSendTransactionConnect,
 } from '../../../../particle-connect';
 import axios from 'axios';
-import * as particleAuth from 'react-native-particle-auth';
-import * as particleConnect from 'react-native-particle-connect';
+// import * as particleAuth from 'react-native-particle-auth';
+// import * as particleConnect from 'react-native-particle-connect';
 import {PARTICLE_USERNAME, PARTICLE_PASSWORD} from '@env';
 
 import {EvmService} from '../../../../NetService/EvmService';
@@ -198,46 +198,46 @@ const transactions = () => {
    * @param slippage  max variance from expected amount, Default: 0.5%
    */
   const closePosition = async (amm, slippage = 0.5) => {
-    getPositionDetails(amm).then(async position => {
-      const Amm = getAmmAddress(amm);
-      const margin = web3.utils.toBN(position.margin);
-      const _slippage = margin.mulUnsafe(
-        web3.utils.toBN(slippage).divUnsafe(100),
-      );
-      const quoteAssetAmountLimit = margin.subUnsafe(_slippage);
+    // getPositionDetails(amm).then(async position => {
+    //   const Amm = getAmmAddress(amm);
+    //   const margin = web3.utils.toBN(position.margin);
+    //   const _slippage = margin.mulUnsafe(
+    //     web3.utils.toBN(slippage).divUnsafe(100),
+    //   );
+    //   const quoteAssetAmountLimit = margin.subUnsafe(_slippage);
 
-      const response = await axios.post(
-        'https://rpc.particle.network/evm-chain',
-        {
-          chainId: 80001,
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'particle_abi_encodeFunctionCall',
-          params: [
-            clearingHouseAddress,
-            'custom_closePosition',
-            [Amm, quoteAssetAmountLimit],
-          ],
-        },
-        {
-          auth: {
-            username: username,
-            password: password,
-          },
-        },
-      );
-      const txString = response.data.result;
-      try {
-        const txResult = global.withAuth
-          ? await particleAuth.signAndSendTransaction(txString)
-          : await particleConnect.signAndSendTransaction(txString);
-        console.log(txResult);
-        return txResult;
-      } catch (error) {
-        console.log(error);
-        return 0;
-      }
-    });
+    //   const response = await axios.post(
+    //     'https://rpc.particle.network/evm-chain',
+    //     {
+    //       chainId: 80001,
+    //       jsonrpc: '2.0',
+    //       id: 1,
+    //       method: 'particle_abi_encodeFunctionCall',
+    //       params: [
+    //         clearingHouseAddress,
+    //         'custom_closePosition',
+    //         [Amm, quoteAssetAmountLimit],
+    //       ],
+    //     },
+    //     {
+    //       auth: {
+    //         username: username,
+    //         password: password,
+    //       },
+    //     },
+    //   );
+    //   const txString = response.data.result;
+    //   try {
+    //     const txResult = global.withAuth
+    //       ? await particleAuth.signAndSendTransaction(txString)
+    //       : await particleConnect.signAndSendTransaction(txString);
+    //     console.log(txResult);
+    //     return txResult;
+    //   } catch (error) {
+    //     console.log(error);
+    //     return 0;
+    //   }
+    // });
     const Amm = getAmmAddress(amm);
     displayPositions(Amm);
   };
@@ -252,44 +252,43 @@ const transactions = () => {
     */
   const adjustMargin = async (amm, amount, dir) => {
     getPositionDetails(amm).then(async position => {
-      const margin = web3.utils.toBN(position.margin).addUnsafe(amount);
-      const leverage = web3.utils.toBN(position.size).divUnsafe(margin);
-      const _amount = web3.utils.toBN(amount);
-      const Amm = getAmmAddress(amm);
-      let method;
-      if (dir) {
-        method = 'addMargin';
-      } else {
-        method = 'removeMargin';
-      }
-
-      const response = await axios.post(
-        'https://rpc.particle.network/evm-chain',
-        {
-          chainId: 80001,
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'particle_abi_encodeFunctionCall',
-          params: [clearingHouseAddress, `custom_${method}`, [Amm, amount]],
-        },
-        {
-          auth: {
-            username: username,
-            password: password,
-          },
-        },
-      );
-      const txString = response.data.result;
-      try {
-        const txResult = global.withAuth
-          ? await particleAuth.signAndSendTransaction(txString)
-          : await particleConnect.signAndSendTransaction(txString);
-        console.log(txResult);
-        return txResult;
-      } catch (error) {
-        console.log(error);
-        return 0;
-      }
+      // const margin = web3.utils.toBN(position.margin).addUnsafe(amount);
+      // const leverage = web3.utils.toBN(position.size).divUnsafe(margin);
+      // const _amount = web3.utils.toBN(amount);
+      // const Amm = getAmmAddress(amm);
+      // let method;
+      // if (dir) {
+      //   method = 'addMargin';
+      // } else {
+      //   method = 'removeMargin';
+      // }
+      // const response = await axios.post(
+      //   'https://rpc.particle.network/evm-chain',
+      //   {
+      //     chainId: 80001,
+      //     jsonrpc: '2.0',
+      //     id: 1,
+      //     method: 'particle_abi_encodeFunctionCall',
+      //     params: [clearingHouseAddress, `custom_${method}`, [Amm, amount]],
+      //   },
+      //   {
+      //     auth: {
+      //       username: username,
+      //       password: password,
+      //     },
+      //   },
+      // );
+      // const txString = response.data.result;
+      // try {
+      //   const txResult = global.withAuth
+      //     ? await particleAuth.signAndSendTransaction(txString)
+      //     : await particleConnect.signAndSendTransaction(txString);
+      //   console.log(txResult);
+      //   return txResult;
+      // } catch (error) {
+      //   console.log(error);
+      //   return 0;
+      // }
     });
     const Amm = getAmmAddress(amm);
     displayPositions(Amm);
