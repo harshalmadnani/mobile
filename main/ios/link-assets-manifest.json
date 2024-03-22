@@ -34,44 +34,40 @@
       "sha1": "1f660845f7fe40ee482aa7ccda7d101d20d870fa"
     },
     {
-      "path": "assets/fonts/Montreal-Bold.otf",
-      "sha1": "8a9ff2b61316994234dae5eaaaa2b99de1b29205"
-    },
-    {
-      "path": "assets/fonts/Montreal-BoldItalic.otf",
-      "sha1": "bb95301f855b9b4231c5e6f2b047a5964fbcb6a0"
-    },
-    {
-      "path": "assets/fonts/Montreal-Italic.otf",
-      "sha1": "ae05937234562ca37a1f4a50f0cc68a9bd9d5913"
-    },
-    {
-      "path": "assets/fonts/Montreal-Light.otf",
-      "sha1": "5177d0022e6ebb29eeb5afa31a81e10916f42c82"
-    },
-    {
-      "path": "assets/fonts/Montreal-LightItalic.otf",
-      "sha1": "069c0ff2b5dda0fb56c78e18bc7d0ba46e9e0190"
-    },
-    {
-      "path": "assets/fonts/Montreal-Medium.otf",
-      "sha1": "a1fde8e729ce0e78511dc692c8390836db6b8d92"
-    },
-    {
-      "path": "assets/fonts/Montreal-MediumItalic.otf",
-      "sha1": "4ae5cf9fc43e6e1c22bd52a91dcb8f643b57bfbb"
-    },
-    {
-      "path": "assets/fonts/Montreal-Regular.otf",
-      "sha1": "864b3c35552d8c45b0a4467d8262a111f103f015"
-    },
-    {
       "path": "assets/fonts/NeueMachina-UltraBold.otf",
       "sha1": "c155e76c72de772a8b166edc9d814bf734e38054"
     },
     {
       "path": "assets/fonts/NeueMontreal-Bold.otf",
       "sha1": "8a9ff2b61316994234dae5eaaaa2b99de1b29205"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-BoldItalic.otf",
+      "sha1": "bb95301f855b9b4231c5e6f2b047a5964fbcb6a0"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-Italic.otf",
+      "sha1": "ae05937234562ca37a1f4a50f0cc68a9bd9d5913"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-Light.otf",
+      "sha1": "5177d0022e6ebb29eeb5afa31a81e10916f42c82"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-LightItalic.otf",
+      "sha1": "069c0ff2b5dda0fb56c78e18bc7d0ba46e9e0190"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-Medium.otf",
+      "sha1": "a1fde8e729ce0e78511dc692c8390836db6b8d92"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-MediumItalic.otf",
+      "sha1": "4ae5cf9fc43e6e1c22bd52a91dcb8f643b57bfbb"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-Regular.otf",
+      "sha1": "864b3c35552d8c45b0a4467d8262a111f103f015"
     },
     {
       "path": "assets/fonts/Sarala-Regular.otf",

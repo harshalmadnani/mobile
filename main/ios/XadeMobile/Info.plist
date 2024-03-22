@@ -98,6 +98,7 @@
 		<string>EuclidCircularA-Regular.otf</string>
 		<string>Inter-Regular.otf</string>
 		<string>LemonMilk-Bold.otf</string>
+		<string>NeueMontreal-Bold.otf</string>
 		<string>Sarala-Regular.otf</string>
 		<string>Satoshi-Black.otf</string>
 		<string>Satoshi-BlackItalic.otf</string>
@@ -115,15 +116,13 @@
 		<string>Unbounded-Regular.otf</string>
 		<string>Unbounded-SemiBold.otf</string>
 		<string>UnicaOne-Regular.ttf</string>
-		<string>Montreal-Bold.otf</string>
-		<string>Montreal-BoldItalic.otf</string>
-		<string>Montreal-Italic.otf</string>
-		<string>Montreal-Light.otf</string>
-		<string>Montreal-LightItalic.otf</string>
-		<string>Montreal-Medium.otf</string>
-		<string>Montreal-MediumItalic.otf</string>
-		<string>Montreal-Regular.otf</string>
-		<string>NeueMontreal-Bold.otf</string>
+		<string>NeueMontreal-BoldItalic.otf</string>
+		<string>NeueMontreal-Italic.otf</string>
+		<string>NeueMontreal-Light.otf</string>
+		<string>NeueMontreal-LightItalic.otf</string>
+		<string>NeueMontreal-Medium.otf</string>
+		<string>NeueMontreal-MediumItalic.otf</string>
+		<string>NeueMontreal-Regular.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
