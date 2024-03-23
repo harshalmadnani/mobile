@@ -116,7 +116,7 @@ const Investments = ({ navigation }) => {
             }}>
             <Text
               style={{
-                fontFamily: `Montreal-Medium`,
+                fontFamily: `NeueMontreal-Medium`,
                 fontSize: 12,
                 color: section === 'crypto' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -138,7 +138,7 @@ const Investments = ({ navigation }) => {
             }}>
             <Text
               style={{
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 fontSize: 12,
                 color: section === 'forex' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -159,7 +159,7 @@ const Investments = ({ navigation }) => {
             }}>
             <Text
               style={{
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 fontSize: 12,
                 color: section === 'stocks' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -181,7 +181,7 @@ const Investments = ({ navigation }) => {
             }}>
             <Text
               style={{
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 fontSize: 12,
                 color: section === 'commodities' ? '#ffffff' : '#717171',
                 fontWeight: '500',
@@ -299,7 +299,7 @@ const Investments = ({ navigation }) => {
         <AntDesign name="search1" size={16} color={'#999'} />
         <Text
           style={{
-            fontFamily: 'Unbounded-Thin',
+            fontFamily: 'NeueMontreal-Medium',
             color: '#999',
             fontSize: 14,
             marginLeft: 16,
@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     color: '#ffffff',
-    fontFamily: `Montreal-Medium`,
+    fontFamily: `NeueMontreal-Medium`,
     fontWeight: '500',
     marginLeft: 30,
   },

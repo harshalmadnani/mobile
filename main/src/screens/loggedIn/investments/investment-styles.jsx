@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   portfolioHead: {
     color: '#989898',
-    fontFamily: 'Montreal-Medium',
+    fontFamily: 'NeueMontreal-Medium',
     fontSize: 16,
     alignSelf: 'center',
   },

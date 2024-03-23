@@ -74,8 +74,13 @@ const styles = StyleSheet.create({
   settingsText: {
     fontSize: 16,
     color: 'white',
+<<<<<<< HEAD
     fontFamily: 'NeueMontreal-Bold',
     alignSelf: 'center',
+=======
+    fontFamily: "NeueMontreal-Bold",
+    alignSelf: 'center'
+>>>>>>> 4eb7d7370919ed3e7a324bf01e40594abbbd9f9d
   },
 
   events: {

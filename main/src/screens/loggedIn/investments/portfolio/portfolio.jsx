@@ -297,7 +297,7 @@ const Portfolio = ({navigation}) => {
                     color: '#ADADAD',
                     textAlign: 'left',
                     flex: 1,
-                    fontFamily: 'Montreal-Medium',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
                   Total Invested:
                 </Text>
@@ -330,7 +330,7 @@ const Portfolio = ({navigation}) => {
                     color: '#ADADAD',
                     textAlign: 'left',
                     flex: 1,
-                    fontFamily: 'Montreal-Medium',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
                   Unrealized PnL:
                 </Text>
@@ -358,7 +358,7 @@ const Portfolio = ({navigation}) => {
                     color: '#ADADAD',
                     textAlign: 'left',
                     flex: 1,
-                    fontFamily: 'Montreal-Medium',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
                   Realized PnL:
                 </Text>
@@ -408,7 +408,7 @@ const Portfolio = ({navigation}) => {
             }}>
             <Text
               style={{
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 color: '#fff',
                 fontSize: 16,
               }}>
@@ -461,7 +461,7 @@ const Portfolio = ({navigation}) => {
                   style={{
                     fontSize: 16,
                     color: '#fff',
-                    fontFamily: 'Montreal-Medium',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
                   You have{' '}
                 </Text>
@@ -482,7 +482,7 @@ const Portfolio = ({navigation}) => {
                 style={{
                   fontSize: 14,
                   color: '#9C9C9C',
-                  fontFamily: 'Montreal-Medium',
+                  fontFamily: 'NeueMontreal-Medium',
                 }}>
                 Xade Coins can be redeemed{' '}
               </Text>

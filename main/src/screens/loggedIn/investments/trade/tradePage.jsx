@@ -821,7 +821,7 @@ const TradePage = ({route}) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                       alignSelf: 'flex-start',
                       color: '#fff',
                     }}>
@@ -908,7 +908,7 @@ const TradePage = ({route}) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                       alignSelf: 'flex-start',
                       color: '#fff',
                     }}>
@@ -956,7 +956,7 @@ const TradePage = ({route}) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                       alignSelf: 'flex-start',
                       color: '#fff',
                     }}>
@@ -1070,6 +1070,7 @@ const TradePage = ({route}) => {
                   paddingVertical: 22,
                   paddingHorizontal: '30%',
                   justifyContent: 'center',
+                  alignSelf:'centerszzzz'
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}

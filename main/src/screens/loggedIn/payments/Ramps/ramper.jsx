@@ -106,7 +106,7 @@ const Ramper = ({ navigation }) => {
                             color={'#f0f0f0'}
                             type="materialicons"
                             onPress={() => navigation.goBack()}
-                            style={{ marginLeft: 120 }}
+                            style={{ marginLeft: '10%' }}
                         />
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginRight: 30 }}>
                             <Text style={{
@@ -179,7 +179,7 @@ const Ramper = ({ navigation }) => {
 
 
                     <View style={{ marginTop: '9%' }}>
-                        <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'Satoshi-Medium' }}>Choose your preffered deposit method</Text>
+                        <Text style={{ fontSize: 16, color: "#7e7e7e", textAlign: "center", fontFamily: 'NeueMontreal-Medium' }}>Choose your preffered deposit method</Text>
                         <Text style={{ fontSize: 16, color: "#fff", textAlign: "center", fontFamily: 'Satoshi-Bold' }}>to enter a new era of finance</Text>
                     </View>
                     <View style={styles.wrapContainer}>
@@ -270,13 +270,13 @@ const Ramper = ({ navigation }) => {
                                 onPress={() => {
                                     navigation.push('LiFi', { value: value });
                                 }}>
-                                <Text style={{ color: '#000' }}>I don't have USDC on Polygon</Text>
+                                <Text style={{ color: '#000',fontFamily:'NeueMontreal-Medium' }}>Deposit from wallet</Text>
                             </TouchableOpacity>
                             {/* Button 2 */}
                             <TouchableOpacity
-                                style={[styles.button, styles.buttonOpen, padding = '5%']}
+                                style={[styles.button, styles.buttonOpen, padding = '1%']}
                                 onPress={() => navigation.push('QRScreen')}>
-                                <Text style={{ fontFamily: 'Satoshi-Regular' }}>I have USDC on Polygon</Text>
+                                <Text style={{ fontFamily: 'NeueMontreal-Medium',color:'#fff' }}>Deposit via QR code</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

@@ -172,7 +172,7 @@ const SuccessTxComponent = ({ txQuoteInfo, tradeType, normalAmount }) => {
             <Text
               style={{
                 fontSize: 16,
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 alignSelf: 'flex-start',
                 color: '#fff',
               }}>
@@ -233,7 +233,7 @@ const SuccessTxComponent = ({ txQuoteInfo, tradeType, normalAmount }) => {
             <Text
               style={{
                 fontSize: 16,
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 alignSelf: 'flex-start',
                 color: '#fff',
               }}>
@@ -279,7 +279,7 @@ const SuccessTxComponent = ({ txQuoteInfo, tradeType, normalAmount }) => {
             <Text
               style={{
                 fontSize: 16,
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 alignSelf: 'flex-start',
                 color: '#fff',
               }}>
