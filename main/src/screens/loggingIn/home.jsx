@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
 
   subText: {
     color: '#979797',
-    fontFamily: 'Montreal-Medium',
+    fontFamily: 'NeueMontreal-Medium',
     fontSize: 16,
     width: '100%',
     marginLeft: '10%',

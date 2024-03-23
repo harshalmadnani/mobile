@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
 
   subheader: {
     color: '#817C89',
-    fontFamily: `Montreal-Medium`,
+    fontFamily: `NeueMontreal-Medium`,
     textAlign: 'center',
     fontSize: 20,
     marginTop: '4%',

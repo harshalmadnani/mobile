@@ -137,7 +137,7 @@ const Component = ({ navigation }) => {
             <Text
               style={{
                 color: 'grey',
-                fontFamily: `Montreal-Medium`,
+                fontFamily: `NeueMontreal-Medium`,
                 fontSize: 15,
                 textAlign: 'center',
               }}>
@@ -182,7 +182,7 @@ const Component = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 12,
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 color: '#949494',
                 marginBottom: '10%',
               }}>
@@ -220,7 +220,7 @@ const Component = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 12,
-                fontFamily: 'Montreal-Medium',
+                fontFamily: 'NeueMontreal-Medium',
                 color: '#949494',
                 marginBottom: '10%',
               }}>
@@ -523,7 +523,7 @@ const Component = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={{ color: '#898989', marginBottom: '15%' }}>
+        <Text style={{ color: '#898989', marginBottom: '15%',alignItems:'center',alignSelf:'center' }}>
           v1.1.3 (5) - beta
         </Text>
       </ScrollView>

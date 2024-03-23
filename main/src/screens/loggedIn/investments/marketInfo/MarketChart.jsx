@@ -204,11 +204,11 @@ const MarketChart = props => {
                   style={{
                     color: 'white',
                     marginBottom: 5,
-                    fontFamily: 'Montreal-Bold',
+                    fontFamily: 'NeueMontreal-Bold',
                   }}>
                   {item.label}
                 </Text>
-                <Text style={{ color: 'grey', fontFamily: 'Montreal-Medium' }}>
+                <Text style={{ color: 'grey', fontFamily: 'NeueMontreal-Medium' }}>
                   {item.label === 'Market Cap' || item.label === 'Volume'
                     ? '$'
                     : ''}
@@ -231,7 +231,7 @@ const MarketChart = props => {
             <Text
               style={{
                 color: '#747474',
-                fontFamily: 'Montreal-Bold',
+                fontFamily: 'NeueMontreal-Bold',
                 fontSize: 16,
               }}>
               Amount owned
@@ -261,7 +261,7 @@ const MarketChart = props => {
             <Text style={{color:'#fff',fontFamily:'Unbounded-Medium',fontSize:20}}>
               About
             </Text>
-            <Text  style={{color:'#777',fontFamily:'Montreal-Medium',fontSize:14,marginTop:'5%'}}>
+            <Text  style={{color:'#777',fontFamily:'NeueMontreal-Medium',fontSize:14,marginTop:'5%'}}>
              {selectedAssetMetaData.description}
             </Text>
           </View> */}

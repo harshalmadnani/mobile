@@ -166,7 +166,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                   style={{
                     color: '#A4A4A4',
                     fontSize: 16,
-                    fontFamily: 'Montreal-Medium',
+                    fontFamily: 'NeueMontreal-Medium',
                     marginTop: '0.5%',
                   }}>
                   {item.name} ({item.symbol})
@@ -196,7 +196,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                         fontSize: 12,
                         color: '#fff',
                         marginBottom: 5,
-                        fontFamily: 'Montreal-Bold',
+                        fontFamily: 'NeueMontreal-Bold',
                       }}>
                       Current Value
                     </Text>
@@ -226,7 +226,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                         fontSize: 12,
                         color: '#fff',
                         marginBottom: 5,
-                        fontFamily: 'Montreal-Bold',
+                        fontFamily: 'NeueMontreal-Bold',
                       }}>
                       Total Returns
                     </Text>
@@ -259,7 +259,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                       color: '#ADADAD',
                       textAlign: 'left',
                       flex: 1,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Total Invested:
                   </Text>
@@ -292,7 +292,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                       color: '#ADADAD',
                       textAlign: 'left',
                       flex: 1,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Entry Price:
                   </Text>
@@ -319,7 +319,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                       color: '#ADADAD',
                       textAlign: 'left',
                       flex: 1,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Unrealized PnL:
                   </Text>
@@ -346,7 +346,7 @@ const MyInvestmentItemCard = ({ navigation, item }) => {
                       color: '#ADADAD',
                       textAlign: 'left',
                       flex: 1,
-                      fontFamily: 'Montreal-Medium',
+                      fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Realized PnL:
                   </Text>
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
   text1: {
     fontSize: 16,
     fontWeight: '500',
-    fontFamily: 'Montreal-Bold',
+    fontFamily: 'NeueMontreal-Bold',
     color: '#ffffff',
   },
   text2: {
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   text5: {
     fontSize: 14,
     fontWeight: '500',
-    fontFamily: 'Montreal-Medium',
+    fontFamily: 'NeueMontreal-Medium',
     color: '#787878',
   },
 });

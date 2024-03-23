@@ -113,7 +113,7 @@ const MarketSearchScreen = ({ route, navigation }) => {
               flex: 1,
               height: '100%',
               width: '100%',
-              fontFamily: 'Unbounded-Thin',
+              fontFamily: 'NeueMontreal-Medium',
               fontSize: 14,
               color: textInputStyleObj.textColor,
               marginLeft: 16,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   headerTitle: {
-    fontFamily: 'Montreal-Medium',
+    fontFamily: 'NeueMontreal-Medium',
     color: '#fff',
     fontSize: 16,
     alignSelf: 'center',
