@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
-import { POINTS_KEY } from '@env';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCryptoHoldingForAddressFromMobula } from '../../../../store/actions/portfolio';
+import {POINTS_KEY} from '@env';
+import {useDispatch, useSelector} from 'react-redux';
+import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/portfolio';
 
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 
-import { Icon } from '@rneui/base';
-const Portfolio = ({ navigation }) => {
+import {Icon} from '@rneui/base';
+const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
 
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -84,7 +84,7 @@ const Portfolio = ({ navigation }) => {
         asset.asset.symbol === 'USDC' &&
         asset.cross_chain_balances.Polygon &&
         asset.cross_chain_balances.Polygon.address.toLowerCase() ===
-        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
+          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
     );
 
     // Check if the USDC asset on Polygon was found
@@ -99,7 +99,7 @@ const Portfolio = ({ navigation }) => {
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#000', flex: 1 }}>
+    <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
       <View
         style={{
           marginTop: '8%',
@@ -110,7 +110,7 @@ const Portfolio = ({ navigation }) => {
           justifyContent: 'space-between', // This line positions items on opposite ends
         }}>
         <Text
-          style={{ fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20 }}>
+          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
           PORTFOLIO
         </Text>
         <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
@@ -168,7 +168,7 @@ const Portfolio = ({ navigation }) => {
                 paddingTop: 60,
                 alignItems: 'center',
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
+                shadowOffset: {width: 0, height: 2},
                 shadowOpacity: 0.25,
                 shadowRadius: 4,
                 elevation: 5,
@@ -190,8 +190,8 @@ const Portfolio = ({ navigation }) => {
 
               {/* Image */}
               <Image
-                source={{ uri: imageUrl }} // Dummy image source
-                style={{ width: 48, height: 48 }}
+                source={{uri: imageUrl}} // Dummy image source
+                style={{width: 48, height: 48}}
                 resizeMode="contain"
               />
 
@@ -231,7 +231,7 @@ const Portfolio = ({ navigation }) => {
                       fontSize: 12,
                       color: '#fff',
                       marginBottom: 5,
-                      fontFamily: 'Montreal-Bold',
+                      fontFamily: 'NeueMontreal-Bold',
                     }}>
                     Current Value
                   </Text>
@@ -261,7 +261,7 @@ const Portfolio = ({ navigation }) => {
                       fontSize: 12,
                       color: '#fff',
                       marginBottom: 5,
-                      fontFamily: 'Montreal-Bold',
+                      fontFamily: 'NeueMontreal-Bold',
                     }}>
                     Total Returns
                   </Text>
@@ -378,7 +378,7 @@ const Portfolio = ({ navigation }) => {
           </View>
         </Modal>
 
-        <View style={{ alignItems: 'center' }}>
+        <View style={{alignItems: 'center'}}>
           <InteractiveChart />
           <View
             style={{
@@ -469,14 +469,14 @@ const Portfolio = ({ navigation }) => {
                   style={{
                     fontSize: 16,
                     color: '#fff',
-                    fontFamily: 'Montreal-Bold',
+                    fontFamily: 'NeueMontreal-Bold',
                     textShadowColor: '#C68DFF',
-                    textShadowOffset: { width: -1, height: 1 },
+                    textShadowOffset: {width: -1, height: 1},
                     textShadowRadius: 10,
                   }}>
                   {points}{' '}
                 </Text>
-                <Text style={{ fontSize: 16, color: '#fff' }}>coins</Text>
+                <Text style={{fontSize: 16, color: '#fff'}}>coins</Text>
               </View>
               <Text
                 style={{
@@ -531,7 +531,7 @@ const Portfolio = ({ navigation }) => {
               <FlatList
                 data={holdings?.assets.filter(item => item.token_balance > 0)}
                 keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                   <MyInvestmentItemCard
                     navigation={navigation}
                     item={{
@@ -574,7 +574,7 @@ const Portfolio = ({ navigation }) => {
         }}>
         {/* Add Icon or Text inside the TouchableOpacity as needed */}
         <Text
-          style={{ color: '#000', fontSize: 16, fontFamily: 'Unbounded-Medium' }}>
+          style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Medium'}}>
           ADD FUNDS
         </Text>
       </TouchableOpacity>

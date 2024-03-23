@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -10,25 +10,25 @@ import {
   ScrollView,
   Keyboard,
 } from 'react-native';
-import { ImageAssets } from '../../../../../assets';
-import { Icon } from 'react-native-elements';
+import {ImageAssets} from '../../../../../assets';
+import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import '@ethersproject/shims';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   getBestDLNCrossSwapRateBuy,
   getBestDLNCrossSwapRateSell,
 } from '../../../../store/actions/market';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 import {
   confirmDLNTransaction,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
-import { switchAuthCoreChain } from '../../../../utils/particleCoreSDK';
+import {switchAuthCoreChain} from '../../../../utils/particleCoreSDK';
 
-const TradePage = ({ route }) => {
+const TradePage = ({route}) => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
   const openBottomSheet = () => {
@@ -57,11 +57,11 @@ const TradePage = ({ route }) => {
     x => x.market.selectedAssetMetaData,
   );
   const items = [
-    { left: 'SPOT MARKET', right: ' ' },
-    { left: 'SPOT LIMIT', right: 'COMING SOON' },
-    { left: 'FUTURES MARKET', right: 'COMING SOON' },
-    { left: 'FUTURES LIMIT', right: 'COMING SOON' },
-    { left: 'BOTS', right: 'COMING SOON' },
+    {left: 'SPOT MARKET', right: ' '},
+    {left: 'SPOT LIMIT', right: 'COMING SOON'},
+    {left: 'FUTURES MARKET', right: 'COMING SOON'},
+    {left: 'FUTURES LIMIT', right: 'COMING SOON'},
+    {left: 'BOTS', right: 'COMING SOON'},
   ];
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
@@ -101,18 +101,18 @@ const TradePage = ({ route }) => {
       const res = await getDLNTradeCreateBuyOrderTxn(
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
-        bestSwappingBuyTrades?.estimation?.tokenIn?.address,
+          bestSwappingBuyTrades?.estimation?.tokenIn?.address,
         value *
-        Math.pow(
-          10,
-          bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
-          bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals,
-        ),
+          Math.pow(
+            10,
+            bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
+              bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals,
+          ),
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address ??
-        bestSwappingBuyTrades?.estimation?.tokenOut?.address,
+          bestSwappingBuyTrades?.estimation?.tokenOut?.address,
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
-        bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
+          bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
         evmInfo?.smartAccount,
       );
       return res;
@@ -135,7 +135,7 @@ const TradePage = ({ route }) => {
   useFocusEffect(
     useCallback(() => {
       getBestPrice();
-      return () => { };
+      return () => {};
     }, []),
   );
   // Log when component mounts
@@ -170,7 +170,7 @@ const TradePage = ({ route }) => {
             paddingLeft: '5%',
             width: width * 0.9,
           }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon
               name={'navigate-before'}
               size={30}
@@ -290,7 +290,7 @@ const TradePage = ({ route }) => {
         </View>
       </View>
       {commingSoon ? (
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
           {/* Market, Limit, Stop */}
           <View
             style={{
@@ -304,7 +304,7 @@ const TradePage = ({ route }) => {
               padding: 6,
             }}>
             <TouchableOpacity
-              style={{ width: '30%' }}
+              style={{width: '30%'}}
               onPress={() => setOrderType('market')}>
               {orderType === 'market' ? (
                 <LinearGradient
@@ -332,7 +332,7 @@ const TradePage = ({ route }) => {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ width: '30%' }}
+              style={{width: '30%'}}
               onPress={() => setOrderType('limit')}>
               {orderType === 'limit' ? (
                 <LinearGradient
@@ -371,7 +371,7 @@ const TradePage = ({ route }) => {
               )}
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ width: '30%' }}
+              style={{width: '30%'}}
               onPress={() => setOrderType('stop')}>
               {orderType === 'stop' ? (
                 <LinearGradient
@@ -415,12 +415,12 @@ const TradePage = ({ route }) => {
               selectedDropDownValue === 'Margin'
                 ? ImageAssets.commingSoonImg
                 : selectedDropDownValue === 'Algo'
-                  ? ImageAssets.commingSoonImg
-                  : orderType === 'limit'
-                    ? ImageAssets.commingSoonImg
-                    : ImageAssets.commingSoonImg
+                ? ImageAssets.commingSoonImg
+                : orderType === 'limit'
+                ? ImageAssets.commingSoonImg
+                : ImageAssets.commingSoonImg
             }
-            style={{ width: 300, height: 300 }}
+            style={{width: 300, height: 300}}
           />
           <Text
             style={{
@@ -436,7 +436,7 @@ const TradePage = ({ route }) => {
         <>
           <ScrollView
             scrollEnabled
-            contentContainerStyle={{ flexGrow: 1 }} // Add this line to allow scrolling
+            contentContainerStyle={{flexGrow: 1}} // Add this line to allow scrolling
           >
             {/* Market, Limit, Stop */}
 
@@ -453,7 +453,7 @@ const TradePage = ({ route }) => {
                 padding: 6,
               }}>
               <TouchableOpacity
-                style={{ width: '50%' }}
+                style={{width: '50%'}}
                 onPress={() => {
                   setTradeType('buy');
                   setConvertedValue('token');
@@ -495,7 +495,7 @@ const TradePage = ({ route }) => {
                 )}
               </TouchableOpacity>
               <TouchableOpacity
-                style={{ width: '50%' }}
+                style={{width: '50%'}}
                 onPress={() => setTradeType('sell')}>
                 {tradeType === 'sell' ? (
                   <LinearGradient
@@ -690,28 +690,28 @@ const TradePage = ({ route }) => {
                   {isNaN(
                     bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                       ?.amount /
-                    Math.pow(
-                      10,
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.decimals,
-                    ),
-                  )
-                    ? (
-                      bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.tokenOut?.decimals,
-                      )
-                    ).toFixed(5)
-                    : (
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
                       Math.pow(
                         10,
                         bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                           ?.decimals,
-                      )
-                    ).toFixed(5)}
+                      ),
+                  )
+                    ? (
+                        bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.tokenOut?.decimals,
+                        )
+                      ).toFixed(5)
+                    : (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )
+                      ).toFixed(5)}
                   {' ' + state?.symbol.toUpperCase()}
                 </Text>
 
@@ -745,28 +745,28 @@ const TradePage = ({ route }) => {
                   {isNaN(
                     bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                       ?.amount /
-                    Math.pow(
-                      10,
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.decimals,
-                    ),
-                  )
-                    ? (
-                      bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.tokenOut?.decimals,
-                      )
-                    ).toFixed(5)
-                    : (
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
                       Math.pow(
                         10,
                         bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                           ?.decimals,
-                      )
-                    ).toFixed(5)}
+                      ),
+                  )
+                    ? (
+                        bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.tokenOut?.decimals,
+                        )
+                      ).toFixed(5)
+                    : (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )
+                      ).toFixed(5)}
                 </Text>
                 {/* image to allow btc input */}
                 {/* <Image source={ImageAssets.arrowImg} /> */}
@@ -774,7 +774,7 @@ const TradePage = ({ route }) => {
             )}
 
             {/*order summary */}
-            <View style={{ marginTop: '25%' }}>
+            <View style={{marginTop: '25%'}}>
               <View
                 style={{
                   flex: 1,
@@ -783,9 +783,9 @@ const TradePage = ({ route }) => {
                 }}>
                 <LinearGradient
                   colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ height: 2, width: '80%' }} // Adjust the height and width as needed
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  style={{height: 2, width: '80%'}} // Adjust the height and width as needed
                 />
               </View>
               {/* ? (
@@ -837,64 +837,64 @@ const TradePage = ({ route }) => {
                     $
                     {tradeType === 'sell'
                       ? (
-                        bestSwappingBuyTrades?.estimation?.tokenOut?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.tokenOut
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.tokenIn
-                          ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation?.tokenIn
-                              ?.decimals,
-                          )) ||
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation
-                            ?.dstChainTokenOut?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation
-                              ?.srcChainTokenIn?.decimals,
-                          ))
-                      ).toFixed(6)
+                          bestSwappingBuyTrades?.estimation?.tokenOut?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.tokenOut
+                                ?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.tokenIn
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation?.tokenIn
+                                  ?.decimals,
+                              )) ||
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.srcChainTokenIn?.decimals,
+                              ))
+                        ).toFixed(6)
                       : //when same chain
-                      (
-                        bestSwappingBuyTrades?.estimation?.tokenIn?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.tokenIn
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.tokenOut
-                          ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation?.tokenOut
-                              ?.decimals,
-                          )) || //when cross chain
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.amount /
-                        Math.pow(
-                          10,
+                        (
+                          bestSwappingBuyTrades?.estimation?.tokenIn?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.tokenIn
+                                ?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.tokenOut
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation?.tokenOut
+                                  ?.decimals,
+                              )) || //when cross chain
                           bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation
-                              ?.dstChainTokenOut?.decimals,
-                          ))
-                      ).toFixed(6)}
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
+                              ))
+                        ).toFixed(6)}
                   </Text>
                 </View>
 
@@ -925,23 +925,23 @@ const TradePage = ({ route }) => {
                     {bestSwappingBuyTrades?.estimation?.costsDetails
                       ? tradeType === 'sell'
                         ? (
-                          bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                            bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                              x => x.type === 'DlnProtocolFee',
+                            )[0]?.payload?.feeAmount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            )
+                          ).toFixed(2)
+                        : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
                             x => x.type === 'DlnProtocolFee',
                           )[0]?.payload?.feeAmount /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.decimals,
                           )
-                        ).toFixed(2)
-                        : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
-                          x => x.type === 'DlnProtocolFee',
-                        )[0]?.payload?.feeAmount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        )
                       : '0.01'}
                   </Text>
                 </View>
@@ -984,14 +984,14 @@ const TradePage = ({ route }) => {
                 }}>
                 <LinearGradient
                   colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ height: 2, width: '80%' }} // Adjust the height and width as needed
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  style={{height: 2, width: '80%'}} // Adjust the height and width as needed
                 />
               </View>
             </View>
           </ScrollView>
-          <View style={{ marginTop: '10%', alignSelf: 'center' }}>
+          <View style={{marginTop: '10%', alignSelf: 'center'}}>
             <TouchableOpacity
               onPress={async () => {
                 if (!loading && bestSwappingBuyTrades && !preparingTx) {
@@ -1005,10 +1005,12 @@ const TradePage = ({ route }) => {
                       tradeType,
                       res,
                       res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.tokenIn?.amount,
+                        res?.tokenIn?.amount,
                       res?.estimation?.srcChainTokenIn?.address ||
-                      res?.tokenIn?.address,
+                        res?.tokenIn?.address,
                       res?.tx,
+                      evmInfo?.smartAccount,
+                      evmInfo?.address,
                     );
                     setPreparingTx(false);
                     if (signature) {
@@ -1038,10 +1040,12 @@ const TradePage = ({ route }) => {
                       tradeType,
                       res,
                       res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.tokenIn?.amount,
+                        res?.tokenIn?.amount,
                       res?.estimation?.srcChainTokenIn?.address ||
-                      res?.tokenIn?.address,
+                        res?.tokenIn?.address,
                       res?.tx,
+                      evmInfo?.smartAccount,
+                      evmInfo?.address,
                     );
                     setPreparingTx(false);
                     if (signature) {
@@ -1082,10 +1086,10 @@ const TradePage = ({ route }) => {
                   {!bestSwappingBuyTrades || loading
                     ? 'Calculating....'
                     : bestSwappingBuyTrades.length === 0
-                      ? 'Try Again'
-                      : preparingTx
-                        ? 'CONFIRMING....'
-                        : 'CONFIRM'}
+                    ? 'Try Again'
+                    : preparingTx
+                    ? 'CONFIRMING....'
+                    : 'CONFIRM'}
                 </Text>
               </LinearGradient>
             </TouchableOpacity>

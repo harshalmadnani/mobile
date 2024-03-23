@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, Platform } from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   },
 
   logo: {
-    fontFamily: 'Montreal-Bold',
+    fontFamily: 'NeueMontreal-Bold',
     color: '#fff',
     fontSize: 25,
     marginLeft: '8%',
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 10,
     alignItems: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
 
   otherSettings: {
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     borderRadius: 20,
     alignItems: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
 
   innerSettings: {
@@ -74,8 +74,8 @@ const styles = StyleSheet.create({
   settingsText: {
     fontSize: 16,
     color: 'white',
-    fontFamily: "Montreal-Bold",
-    alignSelf: 'center'
+    fontFamily: 'NeueMontreal-Bold',
+    alignSelf: 'center',
   },
 
   events: {
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: '5%',
-    alignSelf: 'center'
+    alignSelf: 'center',
   },
 
   innerMedia: {

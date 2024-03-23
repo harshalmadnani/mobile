@@ -36,7 +36,7 @@ const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
       <Text
         style={{
           color: isActive ? '#fff' : '#776F94',
-          fontFamily: 'Montreal-Bold',
+          fontFamily: 'NeueMontreal-Bold',
           fontSize: 14,
         }}>
         {title}

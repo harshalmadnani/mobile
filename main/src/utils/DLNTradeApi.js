@@ -242,9 +242,10 @@ export const confirmDLNTransaction = async (
   tokenAddress,
   txData,
   smartAccount,
+  eoaAddress,
 ) => {
   let txs = [];
-  console.log(quoteTxReciept);
+  // console.log(quoteTxReciept);
   if (
     tradeType === 'buy' &&
     quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
