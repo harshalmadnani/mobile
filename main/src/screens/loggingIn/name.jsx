@@ -198,7 +198,7 @@ const Name = ({navigation}) => {
         <TouchableOpacity
           style={styles.continue}
           onPress={async () => {
-            // navigation.navigate('Payments');
+            navigation.navigate('Portfolio');
             await registerDB({navigation, name});
           }}>
           <Text style={styles.continueText}>Let's go!</Text>
