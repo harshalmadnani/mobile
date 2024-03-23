@@ -971,7 +971,7 @@ const TradePage = ({route}) => {
                     }}>
                     {' '}
                     {bestSwappingBuyTrades?.order
-                      ?.approximateFulfillmentDelay ?? '15 '}
+                      ?.approximateFulfillmentDelay ?? '6 '}
                     s
                   </Text>
                 </View>
@@ -1070,7 +1070,7 @@ const TradePage = ({route}) => {
                   paddingVertical: 22,
                   paddingHorizontal: '30%',
                   justifyContent: 'center',
-                  alignSelf:'center'
+                  alignSelf: 'center',
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
