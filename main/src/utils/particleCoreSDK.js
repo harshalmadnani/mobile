@@ -98,6 +98,13 @@ export const isLoggedIn = async () => {
     return 0;
   }
 };
+export const particleAuthCoreLogout = async () => {
+  try {
+    await particleAuthCore.disconnect();
+  } catch (error) {
+    return 0;
+  }
+};
 export const getUserInfoFromAuthCore = async () => {
   try {
     const result = await particleAuthCore.getUserInfo();

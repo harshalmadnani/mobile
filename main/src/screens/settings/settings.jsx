@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -25,15 +25,17 @@ import Snackbar from 'react-native-snackbar';
 const bg = require('../../../assets/choose.png');
 const windowHeight = Dimensions.get('window').height;
 
-import { Text } from '@rneui/themed';
+import {Text} from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import styles from './settings-styles';
-import { Icon } from 'react-native-elements';
-import { useEffect } from 'react';
+import {Icon} from 'react-native-elements';
+import {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-const { height, width } = Dimensions.get('window');
-
+import {particleAuthCoreLogout} from '../../utils/particleCoreSDK';
+import {useDispatch} from 'react-redux';
+const {height, width} = Dimensions.get('window');
+import {logoutRefresh} from '../../store/actions/auth';
 // import {EventsCarousel} from './eventsCarousel';
 const HorizontalRule = () => {
   return <View style={ruleStyles.hr} />;
@@ -51,16 +53,17 @@ const ruleStyles = StyleSheet.create({
 func = () => {
   Clipboard.setString(
     `
-Xade is reshaping finance with its super decentralised bank powered by DeFi where you can help us both earn Xade Coins by joining Xade using my refer code: ${global.withAuth
-      ? global.loginAccount.scw
-      : global.connectAccount.publicAddress
+Xade is reshaping finance with its super decentralised bank powered by DeFi where you can help us both earn Xade Coins by joining Xade using my refer code: ${
+      global.withAuth
+        ? global.loginAccount.scw
+        : global.connectAccount.publicAddress
     }
 
 Download Now: https://bit.ly/xadefinance
 `,
   );
 
-  Snackbar.show({ text: 'Referral link copied' });
+  Snackbar.show({text: 'Referral link copied'});
 
   // Alert.alert('Referral link copied');
 };
@@ -74,7 +77,8 @@ this.state = {
 let address;
 let info;
 let imageUrl;
-const Component = ({ navigation }) => {
+const Component = ({navigation}) => {
+  const dispatch = useDispatch();
   if (global.withAuth) {
     address = global.loginAccount.scw;
     info = global.loginAccount.name;
@@ -95,7 +99,7 @@ const Component = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, paddingBottom: '10%' }}>
+    <SafeAreaView style={{flex: 1, paddingBottom: '10%'}}>
       <View
         style={{
           marginTop: '8%',
@@ -106,7 +110,7 @@ const Component = ({ navigation }) => {
           justifyContent: 'space-between', // This line positions items on opposite ends
         }}>
         <Text
-          style={{ fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20 }}>
+          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
           PROFILE
         </Text>
         <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
@@ -124,7 +128,7 @@ const Component = ({ navigation }) => {
       </View>
       <ScrollView>
         <View style={styles.nameSettings}>
-          <View style={{ marginBottom: '5%' }}>
+          <View style={{marginBottom: '5%'}}>
             <Text
               style={{
                 color: 'white',
@@ -150,7 +154,7 @@ const Component = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity
             onPress={() => {
               Linking.openURL('https://zealy.io/cw/xadefinance/questboard');
@@ -167,7 +171,7 @@ const Component = ({ navigation }) => {
               source={{
                 uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402529/du6fpp6plx9fhp6qdv1l.png',
               }}
-              style={{ height: 60, width: 60 }}
+              style={{height: 60, width: 60}}
             />
             <Text
               style={{
@@ -206,7 +210,7 @@ const Component = ({ navigation }) => {
               source={{
                 uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402530/eyybhybbljzq9tvnfxqn.png',
               }}
-              style={{ height: 60, width: 60 }}
+              style={{height: 60, width: 60}}
             />
             <Text
               style={{
@@ -229,18 +233,18 @@ const Component = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.otherSettings, { marginTop: 20, marginBottom: 10 }]}>
+        <View style={[styles.otherSettings, {marginTop: 20, marginBottom: 10}]}>
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => Linking.openURL('mailto:support@xade.finance')}>
             <FastImage
-              style={{ width: 28, height: 28, borderRadius: 10 }}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./face-id.png')}
             />
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>FaceID</Text>
               <Switch
-                trackColor={{ false: '#767577', true: '#fff' }}
+                trackColor={{false: '#767577', true: '#fff'}}
                 thumbColor={'#fff'}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={toggleSwitch}
@@ -256,7 +260,7 @@ const Component = ({ navigation }) => {
               Linking.openURL('https://docs.xade.finance/');
             }}>
             <FastImage
-              style={{ width: 28, height: 28, borderRadius: 10 }}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./wallet.png')}
             />
             <View style={styles.actualSetting}>
@@ -277,7 +281,7 @@ const Component = ({ navigation }) => {
               Linking.openURL('https://docs.xade.finance/');
             }}>
             <FastImage
-              style={{ width: 28, height: 28, borderRadius: 10 }}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./book-open.png')}
             />
             <View style={styles.actualSetting}>
@@ -288,20 +292,20 @@ const Component = ({ navigation }) => {
                 size={20}
                 color={'#86969A'}
                 type="font-awesome"
-              // style = {{marginRight: '1%'}}
+                // style = {{marginRight: '1%'}}
               />
             </View>
           </TouchableOpacity>
           {/* <HorizontalRule /> */}
         </View>
-        <View style={[styles.otherSettings, { marginBottom: 20 }]}>
+        <View style={[styles.otherSettings, {marginBottom: 20}]}>
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
               Linking.openURL('https://xade.finance/privacy-policy');
             }}>
             <FastImage
-              style={{ width: 28, height: 28, borderRadius: 10 }}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./lock.png')}
             />
             <View style={styles.actualSetting}>
@@ -312,7 +316,7 @@ const Component = ({ navigation }) => {
                 size={20}
                 color={'#86969A'}
                 type="font-awesome"
-              // style = {{marginRight: '1%'}}
+                // style = {{marginRight: '1%'}}
               />
             </View>
           </TouchableOpacity>
@@ -323,7 +327,7 @@ const Component = ({ navigation }) => {
               Linking.openURL('https://xade.finance/terms-of-service');
             }}>
             <FastImage
-              style={{ width: 28, height: 28, borderRadius: 10 }}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./document-duplicate.png')}
             />
             <View style={styles.actualSetting}>
@@ -334,7 +338,7 @@ const Component = ({ navigation }) => {
                 size={20}
                 color={'#86969A'}
                 type="font-awesome"
-              // style = {{marginRight: '1%'}}
+                // style = {{marginRight: '1%'}}
               />
             </View>
           </TouchableOpacity>
@@ -342,15 +346,12 @@ const Component = ({ navigation }) => {
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={async () => {
-              // global.withAuth
-              //   ? particleAuth.fastLogout()
-              //   : particleConnect.disconnect();
-              // await AsyncStorage.setItem('isConnected', JSON.stringify(false));
-              // navigation.push('LoggedOutHome');
-              // console.log('Logged Out/Disconnected Successfully');
+              dispatch(logoutRefresh());
+              await AsyncStorage.setItem('isConnected', JSON.stringify(false));
+              navigation.navigate('LoggedOutHome');
             }}>
             <FastImage
-              style={{ width: 28, height: 28, borderRadius: 10 }}
+              style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./logout.png')}
             />
             <View style={styles.actualSetting}>
@@ -371,7 +372,7 @@ const Component = ({ navigation }) => {
                     <View style={modalStyles.topbar}>
                       <Text style={modalStyles.logo}>XADE</Text>
                       <TouchableOpacity
-                        style={{ marginTop: '1%' }}
+                        style={{marginTop: '1%'}}
                         onPress={() => setNetworksVisible(!networksVisible)}>
                         <Icon
                           name={'close'}
@@ -523,7 +524,13 @@ const Component = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={{ color: '#898989', marginBottom: '15%',alignItems:'center',alignSelf:'center' }}>
+        <Text
+          style={{
+            color: '#898989',
+            marginBottom: '15%',
+            alignItems: 'center',
+            alignSelf: 'center',
+          }}>
           v1.1.3 (5) - beta
         </Text>
       </ScrollView>

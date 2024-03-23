@@ -6,6 +6,7 @@ import {
   getUserInfoFromAuthCore,
   initializedAuthCore,
   isLoggedIn,
+  particleAuthCoreLogout,
 } from '../../utils/particleCoreSDK';
 import {globalActions} from '../reducers/global';
 import {PNAccount} from '../../Models/PNAccount';
@@ -261,5 +262,14 @@ export const onIsLoginCheckAuthCore = (
       navigation.push('LoggedOutHome');
       console.log('Navigating To Home');
     }
+  };
+};
+export const logoutRefresh = () => {
+  return async dispatch => {
+    await particleAuthCoreLogout();
+    dispatch(authActions.setMainnet(true));
+    dispatch(authActions.setFaceID(false));
+    dispatch(authActions.setIsConnected(true));
+    dispatch(authActions.setEOAAddress(null));
   };
 };
