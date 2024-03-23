@@ -105,7 +105,7 @@ const Ramper = ({ navigation }) => {
                             size={30}
                             color={'#f0f0f0'}
                             type="materialicons"
-                            onPress={() => navigation.goBack()}
+                            onPress={() => navigation.push('Portfolio')}
                             style={{ marginLeft: '10%' }}
                         />
                         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginRight: 30 }}>
@@ -264,6 +264,16 @@ const Ramper = ({ navigation }) => {
                     }}>
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
+                        <View>
+                        <TouchableOpacity
+                style={{
+           alignSelf:'flex-start',
+           
+                }}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Icon name="expand-more" size={35} color="#999" />
+              </TouchableOpacity>
+                        </View>
                             {/* Button 1 */}
                             <TouchableOpacity
                                 style={[styles.button1, styles.buttonClose,]}

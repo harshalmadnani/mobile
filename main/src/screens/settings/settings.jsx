@@ -523,28 +523,32 @@ const Component = ({navigation}) => {
         </Text>
       </ScrollView>
       <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          height: 52,
-          width: '95%',
-          borderRadius: 30,
-          backgroundColor: '#fff', // Set background color to white
-          position: 'absolute',
-          bottom: 30, // Adjust the bottom spacing as needed
-          left: 0,
-          right: 0,
-          alignItems: 'center', // Center the text vertically
-          justifyContent: 'center', // Center the text horizontally
-        }}
         onPress={() => {
           navigation.push('SendEmail');
+        }}
+        style={{
+          position: 'absolute', // Positions the button over the content
+          bottom: '8%', // Distance from the bottom of the screen
+          width: '95%',
+
+          height: 56, // Button height
+          borderRadius: 28, // Circular button
+          backgroundColor: '#FFF', // Button color
+          justifyContent: 'center', // Center the icon or text inside the button
+          alignItems: 'center', // Center the icon or text inside the button
+          shadowColor: '#FFF', // Shadow for the button
+
+          shadowOffset: {
+            width: 2,
+            height: 5,
+          },
+          shadowOpacity: 0.5,
+          shadowRadius: 10,
+          elevation: 5, // Elevation for Android
         }}>
+        {/* Add Icon or Text inside the TouchableOpacity as needed */}
         <Text
-          style={{
-            color: '#000', // Set text color to black
-            fontSize: 14,
-            fontFamily: 'Unbounded-ExtraBold',
-          }}>
+          style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Bold'}}>
           TRANSFER FUNDS
         </Text>
       </TouchableOpacity>

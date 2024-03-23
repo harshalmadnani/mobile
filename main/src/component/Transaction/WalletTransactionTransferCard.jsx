@@ -30,13 +30,16 @@ const WalletTransactionTransferCard = ({item}) => {
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#161B22',
+        backgroundColor: '#121212',
         width: '98%',
         borderRadius: 12,
         marginVertical: '2%',
         paddingHorizontal: 8,
         paddingVertical: 18,
         marginBottom: '0%',
+        marginVertical:'5%',
+        alignSelf:'center',
+        marginHorizontal:"2%"
       }}>
       <View
         style={{
@@ -80,17 +83,20 @@ const WalletTransactionTransferCard = ({item}) => {
 
 const styles = StyleSheet.create({
   primaryTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     fontFamily: 'Unbounded-Bold',
     color: '#ffffff',
   },
   secondaryTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     opacity: 0.5,
     fontFamily: 'Unbounded-Regular',
     color: '#ffffff',
+    alignSelf:'center',
+    alignContent:'center',
+    alignItems:'center'
   },
 });
 

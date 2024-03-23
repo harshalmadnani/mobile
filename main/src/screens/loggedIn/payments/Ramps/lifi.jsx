@@ -24,7 +24,7 @@ const LiFi = ({ route, navigation }) => {
       {/* Overlay View */}
       <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.push('Portfolio')}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>

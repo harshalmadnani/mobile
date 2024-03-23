@@ -30,13 +30,16 @@ const WalletTransactionTradeCard = ({ item }) => {
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#161B22',
-        width: '98%',
+        backgroundColor: '#121212',
+        width: '95%',
         borderRadius: 12,
         marginVertical: '2%',
         paddingHorizontal: 8,
         paddingVertical: 18,
         marginBottom: '0%',
+        marginVertical:'5%',
+        alignSelf:'center',
+        marginHorizontal:"2%"
       }}>
       <View
         style={{
@@ -88,13 +91,13 @@ const WalletTransactionTradeCard = ({ item }) => {
 
 const styles = StyleSheet.create({
   primaryTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     fontFamily: 'Unbounded-Bold',
     color: '#ffffff',
   },
   secondaryTitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     opacity: 0.5,
     fontFamily: 'Unbounded-Regular',

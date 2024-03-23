@@ -13,6 +13,7 @@ import styles from '../../screens/loggedIn/investments/investment-styles';
 import {getHistoricalData} from '../../utils/cryptoMarketsApi';
 import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 export default InteractiveChart;
 
 function CustomPriceText() {
@@ -53,7 +54,6 @@ function InteractiveChart({assetName}) {
   );
   const oneMinuteAgo = new Date(now.getTime() - 1 * 60 * 1000);
   const timeframes = [
-    {label: 'LIVE', value: '1M', timestamp: oneMinuteAgo.getTime()},
     {label: '1H', value: '1H', timestamp: oneHourAgo.getTime()},
     {label: '1D', value: '1D', timestamp: oneDayAgo.getTime()},
     {label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime()},
@@ -206,6 +206,11 @@ function InteractiveChart({assetName}) {
                 <LineChart.CursorCrosshair
                   color="white"
                   onActivated={() => {
+                    const options = {
+                      enableVibrateFallback: true,
+                      ignoreAndroidSystemSettings: false,
+                    };
+                    ReactNativeHapticFeedback.trigger('impactHeavy', options);
                     setTouchActive(true);
                   }}
                   onEnded={() => {
@@ -238,7 +243,7 @@ function InteractiveChart({assetName}) {
                   enableVibrateFallback: true,
                   ignoreAndroidSystemSettings: false,
                 };
-                // ReactNativeHapticFeedback.trigger('impactHeavy', options);
+                ReactNativeHapticFeedback.trigger('impactHeavy', options);
                 setSelectedTimeframe(timeframe.value);
               }}>
               <Text

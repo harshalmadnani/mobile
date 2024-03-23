@@ -556,17 +556,19 @@ const Portfolio = ({navigation}) => {
         }}
         style={{
           position: 'absolute', // Positions the button over the content
-          bottom: 30, // Distance from the bottom of the screen
+          bottom: '8%', // Distance from the bottom of the screen
           width: '95%',
+
           height: 56, // Button height
           borderRadius: 28, // Circular button
           backgroundColor: '#FFF', // Button color
           justifyContent: 'center', // Center the icon or text inside the button
           alignItems: 'center', // Center the icon or text inside the button
-          shadowColor: '#fff', // Shadow for the button
+          shadowColor: '#FFF', // Shadow for the button
+
           shadowOffset: {
-            width: 0,
-            height: 2,
+            width: 2,
+            height: 5,
           },
           shadowOpacity: 0.5,
           shadowRadius: 10,
