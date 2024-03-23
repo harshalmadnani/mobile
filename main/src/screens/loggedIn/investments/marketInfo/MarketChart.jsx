@@ -103,7 +103,7 @@ const MarketChart = props => {
     }
     return 'Invalid Number'; // Return this or handle it as per your requirement
   };
-
+  const [newsData, setNewsData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -115,7 +115,7 @@ const MarketChart = props => {
       } catch (error) {
         console.error(error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
