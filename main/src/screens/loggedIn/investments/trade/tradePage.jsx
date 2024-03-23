@@ -1070,7 +1070,7 @@ const TradePage = ({route}) => {
                   paddingVertical: 22,
                   paddingHorizontal: '30%',
                   justifyContent: 'center',
-                  alignSelf:'centerszzzz'
+                  alignSelf:'center'
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
