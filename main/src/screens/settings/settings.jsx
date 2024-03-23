@@ -3,38 +3,26 @@ import {
   TouchableOpacity,
   SafeAreaView,
   View,
-  Button,
   Image,
-  Animated,
   ScrollView,
   Clipboard,
   Dimensions,
   Alert,
-  Easing,
   StyleSheet,
   Linking,
   Modal,
   ImageBackground,
-  Platform,
   Switch,
 } from 'react-native';
-// import {Icon} from 'react-native-elements';
-// import * as particleConnect from 'react-native-particle-connect';
-// import Clipboard from '@react-native-clipboard/clipboard';
 import Snackbar from 'react-native-snackbar';
 const bg = require('../../../assets/choose.png');
 const windowHeight = Dimensions.get('window').height;
-
 import {Text} from '@rneui/themed';
-import LinearGradient from 'react-native-linear-gradient';
 import styles from './settings-styles';
 import {Icon} from 'react-native-elements';
-import {useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-import {particleAuthCoreLogout} from '../../utils/particleCoreSDK';
 import {useDispatch} from 'react-redux';
-const {height, width} = Dimensions.get('window');
 import {logoutRefresh} from '../../store/actions/auth';
 // import {EventsCarousel} from './eventsCarousel';
 const HorizontalRule = () => {
