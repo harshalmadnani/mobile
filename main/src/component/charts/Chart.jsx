@@ -48,7 +48,7 @@ function InteractiveChart() {
   );
   const oneMinuteAgo = new Date(now.getTime() - 5 * 60 * 1000);
   const timeframes = [
-    {label: '1M', value: '1M', timestamp: oneMinuteAgo.getTime()},
+
     {label: '1H', value: '1H', timestamp: oneHourAgo.getTime()},
     {label: '1D', value: '1D', timestamp: oneDayAgo.getTime()},
     {label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime()},
@@ -161,11 +161,16 @@ function InteractiveChart() {
               <LineChart width={apx(750)} height={apx(350)}>
                 <LineChart.Path color="white">
                   <LineChart.Gradient />
-                </LineChart.Path>
+                </LineChart.Path>   
                 <LineChart.CursorCrosshair
                   color="white"
                   onActivated={() => {
                     setTouchActive(true);
+                    const options = {
+                      enableVibrateFallback: true,
+                      ignoreAndroidSystemSettings: false,
+                    };
+                    ReactNativeHapticFeedback.trigger('impactHeavy', options);
                   }}
                   onEnded={() => {
                     setTouchActive(false);

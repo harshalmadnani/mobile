@@ -24,6 +24,7 @@ const WalletTransactionTradeCard = ({ item }) => {
       return (number / 1000000000000).toFixed(1) + 'T';
     }
   }
+  console.log( mainSwapToken?.amount?.stringValue ,'main swap token');
   return (
     <View
       style={{
@@ -66,10 +67,10 @@ const WalletTransactionTradeCard = ({ item }) => {
       <View style={{ alignItems: 'flex-end' }}>
         <Text style={[styles.secondaryTitle, { color: '#07F70F', opacity: 1 }]}>
           {'+ '}
-          {formatCompactNumber(
-            mainSwapToken?.amount?.stringValue /
-            Math.pow(10, mainSwapToken?.decimals),
-          )?.toFixed(2)}
+          {
+            (mainSwapToken?.amount?.stringValue /
+            Math.pow(10, mainSwapToken?.decimals)).toFixed(2)
+         }
           {` ${mainSwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>
         <Text style={[styles.secondaryTitle, { opacity: 1 }]}>
