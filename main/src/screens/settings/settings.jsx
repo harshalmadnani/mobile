@@ -528,7 +528,7 @@ const Component = ({navigation}) => {
         }}
         style={{
           position: 'absolute', // Positions the button over the content
-          bottom: '8%', // Distance from the bottom of the screen
+          bottom: '10%', // Distance from the bottom of the screen
           width: '95%',
 
           height: 56, // Button height

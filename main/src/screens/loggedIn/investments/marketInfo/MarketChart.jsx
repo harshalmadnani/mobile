@@ -121,7 +121,7 @@ const MarketChart = props => {
 
     fetchData();
   }, []);
-  // Assuming selectedAssetMetaData is defined and not null
+
   const data = [];
 
   if (selectedAssetMetaData) {
