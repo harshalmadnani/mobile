@@ -26,22 +26,34 @@ export const checkNameOnSCWAddress = async (navigation, scwAddress, email) => {
       // const scwAddress = response?.data?.toLowerCase();
       console.log('name look up data......', scwAddress);
       const nameResponse = await axios.get(
-        `https://user.api.xade.finance/polygon?address=${scwAddress}`,
+        `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?evmSmartAccount=eq.${scwAddress}`,
+        {
+          headers: {
+            apiKey:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+          },
+        },
       );
       const userResponse = await nameResponse?.data;
-      console.log('name look up data......', userResponse);
+      console.log(
+        'name look up data...... scw name...',
+        nameResponse?.data,
+        userResponse[0]?.name,
+      );
       if (
-        userResponse === '' ||
-        userResponse.length === 0 ||
-        userResponse.toLowerCase() === email.toLowerCase() ||
-        userResponse === 'Not Set'
+        // userResponse === '' ||
+        // userResponse.length === 0 ||
+        // userResponse.toLowerCase() === email.toLowerCase() ||
+        userResponse[0]?.name
       ) {
+        global.loginAccount.name = userResponse[0]?.name;
+        return true;
+      } else {
         console.log('Here....', userResponse);
         navigation.push('EnterName');
         return;
-      } else {
-        global.loginAccount.name = userResponse;
-        return true;
       }
     } catch (error) {
       console.log('Here....Error', error?.response?.data);
@@ -77,37 +89,65 @@ export const onAuthCoreLogin = navigation => {
         if (email[0] === '+') {
           mobileLogin = true;
         }
-        console.log(
-          'user address......',
-          mobileLogin,
-          email,
-          name,
-          `https://email-lookup.api.xade.finance/polygon?email=${email}`,
-          address,
-        );
+
         try {
           const response = await axios.get(
-            `https://email-lookup.api.xade.finance/polygon?email=${email}`,
+            `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?email=eq.${email}`,
+            {
+              headers: {
+                apiKey:
+                  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+                Authorization:
+                  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+              },
+            },
           );
-          console.log('look up data......', response?.data);
-          if (response?.data) {
+          console.log('look up data......supa base', response?.data?.[0]);
+          if (response?.data?.length) {
             global.loginAccount = new PNAccount(
               email,
               name,
               address,
-              response?.data,
+              response?.data?.[0]?.evmSmartAccount,
               userInfo.wallets[0].uuid
                 ? userInfo.wallets[0].uuid
                 : userInfo.uuid,
             );
             const status = await checkNameOnSCWAddress(
               navigation,
-              response?.data,
+              response?.data?.[0]?.evmSmartAccount,
               email,
             );
+            console.log('look up data......supa base status', status);
             if (status) {
               dispatch(getEvmAddresses());
               navigation.navigate('Portfolio');
+            }
+          } else {
+            const scw = await depolyAAAndGetSCAddress();
+            console.log('scw address.....', scw);
+            if (scw) {
+              global.loginAccount = new PNAccount(
+                email,
+                name,
+                address,
+                scw,
+                userInfo.wallets[0].uuid
+                  ? userInfo.wallets[0].uuid
+                  : userInfo.uuid,
+              );
+
+              const status = await checkNameOnSCWAddress(
+                navigation,
+                scw,
+                email,
+              );
+              if (status) {
+                dispatch(getEvmAddresses());
+                navigation.navigate('Portfolio');
+              }
+            } else {
+              navigation.navigate('Error');
             }
           }
         } catch (error) {
@@ -198,27 +238,33 @@ export const onIsLoginCheckAuthCore = (
         setLoadingText('Fetching User Info...');
         if (email.includes('@')) {
           try {
-            const emailResponse = await axios.get(
-              `https://email-lookup.api.xade.finance/polygon?email=${email.toLowerCase()}`,
+            const response = await axios.get(
+              `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?email=eq.${email}`,
+              {
+                headers: {
+                  apiKey:
+                    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+                  Authorization:
+                    'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+                },
+              },
             );
-            if (emailResponse?.status === 200) {
-              console.log('here', emailResponse?.data);
-              if (emailResponse?.data === 0) {
-                navigation.push('LoggedOutHome');
-              }
-              const name = await axios.get(
-                `https://user.api.xade.finance/polygon?address=${emailResponse?.data.toLowerCase()}`,
-              );
-              if (name?.status === 200) {
-                console.log('here', name?.data);
-                if (name?.data === 0) {
-                  navigation.push('LoggedOutHome');
-                }
+            console.log('check user...', response?.data, response?.data.length);
+            if (response?.data.length) {
+              // console.log('here', emailResponse?.data);
+              // if (emailResponse?.data === 0) {
+              //   navigation.push('LoggedOutHome');
+              // }
+              // const name = await axios.get(
+              //   `https://user.api.xade.finance/polygon?address=${emailResponse?.data.toLowerCase()}`,
+              // );
+              if (response?.data?.[0]?.name) {
+                console.log('here', response?.data?.[0]?.name);
                 global.loginAccount = new PNAccount(
                   email,
-                  name?.data,
+                  response?.data?.[0]?.name,
                   address,
-                  emailResponse?.data,
+                  response?.data?.[0]?.evmSmartAccount,
                   uuid,
                 );
                 global.withAuth = true;
@@ -235,25 +281,6 @@ export const onIsLoginCheckAuthCore = (
             navigation.push('LoggedOutHome');
           }
         } else {
-          // email = email.slice(1);
-          // await fetch(
-          //   `https://mobile.api.xade.finance/polygon?phone=${email.toLowerCase()}`,
-          //   {
-          //     method: 'GET',
-          //   },
-          // )
-          //   .then(response => {
-          //     if (response.status == 200) {
-          //       return response.text();
-          //     } else return 0;
-          //   })
-          //   .then(data => {
-          //     console.log('SCW:', data);
-          //     if (data == 0) {
-          //       navigation.push('LoggedOutHome');
-          //     }
-          //     scwAddress = data;
-          //   });
         }
       }
     } else {

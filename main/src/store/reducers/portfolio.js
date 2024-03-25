@@ -7,6 +7,7 @@ const initialState = {
   evmInfo: {address: null, smartAccount: null},
   evmTxListInfo: null,
   evmDLNTradesTxListInfo: null,
+  userInfo: null,
 };
 
 export const portfolioSlice = createSlice({
@@ -16,6 +17,9 @@ export const portfolioSlice = createSlice({
     // All the reducers go here
     setHoldings: (state, action) => {
       state.holdings = action.payload;
+    },
+    setUserInfo: (state, action) => {
+      state.userInfo = action.payload;
     },
     setEvmWalletInfo: (state, action) => {
       state.evmInfo = action.payload;

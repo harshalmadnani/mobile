@@ -14,9 +14,8 @@ import {
 } from 'react-native';
 import {useState, useMemo, useEffect} from 'react';
 import {Text} from '@rneui/themed';
-import {SECRET_KEY_REMMITEX, POINTS_KEY} from '@env';
+import {POINTS_KEY} from '@env';
 import {Icon} from 'react-native-elements';
-import FastImage from 'react-native-fast-image';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
 
 const width = Dimensions.get('window').width;
@@ -32,45 +31,45 @@ const ReferralCode = ({navigation}) => {
   };
 
   const handleSubmit = async () => {
-    setSubmitText('Processing...');
-
-    const validation = validateAddress(text);
-    if (!validation) {
-      setSubmitText('Invalid Code');
-      return;
-    }
-    await fetch('https://refer.xade.finance/referrals', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': POINTS_KEY,
-      },
-      body: JSON.stringify({
-        code: text.toLowerCase(),
-      }),
-    }).then(data => {
-      if (data.status == 200) {
-        setSubmitText('Referral Code Applied!');
-      } else if (data.status == 404) {
-        setSubmitText("Referral Code Doesn't Exist!");
-      } else {
-        setSubmitText('Error!');
-      }
-    });
+    // setSubmitText('Processing...');
+    navigation.navigate('EnterName', {code: text});
+    // const validation = validateAddress(text);
+    // if (!validation) {
+    //   setSubmitText('Invalid Code');
+    //   return;
+    // }
+    // await fetch('https://refer.xade.finance/referrals', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'api-key': POINTS_KEY,
+    //   },
+    //   body: JSON.stringify({
+    //     code: text.toLowerCase(),
+    //   }),
+    // }).then(data => {
+    //   if (data.status == 200) {
+    //     setSubmitText('Referral Code Applied!');
+    //   } else if (data.status == 404) {
+    //     setSubmitText("Referral Code Doesn't Exist!");
+    //   } else {
+    //     setSubmitText('Error!');
+    //   }
+    // });
   };
   return (
     <SafeAreaView
       style={{
         width: '100%',
         height: '100%',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         alignItems: 'center',
       }}>
       <View
         style={{
-          position: 'absolute',
-          top: '1%',
-          width: width * 0.8,
+          paddingHorizontal: 12,
+          paddingVertical: 12,
+          width: '100%',
           alignItems: 'center',
           flexDirection: 'row',
         }}>
@@ -164,7 +163,9 @@ const styles = StyleSheet.create({
 
   container: {
     width: '80%',
-    marginTop: '30%',
+    height: '80%',
+    marginTop: '10%',
+    justifyContent: 'space-between',
   },
 
   enterAmount: {
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
     alignItems: 'center',
-    marginTop: 390,
+    // marginTop: 390,
     height: 55,
     borderColor: 'white',
     borderWidth: 1,

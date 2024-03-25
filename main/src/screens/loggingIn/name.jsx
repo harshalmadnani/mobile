@@ -18,97 +18,126 @@ import {Icon} from 'react-native-elements';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
+import axios from 'axios';
+import {getEvmAddresses} from '../../store/actions/portfolio';
 
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 
-const registerDB = async ({navigation, name}) => {
-  console.log('Here set name', name);
-  console.log('Hereee', global.loginAccount);
-  if (global.withAuth) {
-    global.loginAccount.name = name;
-    const address = global.loginAccount.publicAddress;
-    const scwAddress = global.loginAccount.scw;
-    const email = global.loginAccount.phoneEmail;
-    const uuid = global.loginAccount.uiud;
+const Name = ({navigation, route}) => {
+  const [name, setName] = useState('');
+  let code = route.params?.code;
+  console.log('code.....', code);
+  const registerDB = async ({navigation, name, code}) => {
+    console.log('Here set name', name);
+    console.log('Hereee', global.loginAccount);
+    if (global.withAuth) {
+      global.loginAccount.name = name;
+      const address = global.loginAccount.publicAddress;
+      const scwAddress = global.loginAccount.scw;
+      const email = global.loginAccount.phoneEmail;
+      const uuid = global.loginAccount.uiud;
 
-    let object;
+      let object;
 
-    if (email.includes('@')) {
-      object = {
-        email: email.toLowerCase(),
-        phone: 'NULL',
-        name: name,
-        typeOfLogin: 'auth',
-        eoa: address.toLowerCase(),
-        scw: scwAddress.toLowerCase(),
-        id: uuid,
-      };
-    } else {
-      object = {
-        email: 'NULL',
-        phone: email.toLowerCase(),
-        name: name,
-        typeOfLogin: 'auth',
-        eoa: address.toLowerCase(),
-        scw: scwAddress.toLowerCase(),
-        id: uuid,
-      };
-    }
-    console.log('New OBJ', object);
-    const json = JSON.stringify(object || {}, null, 2);
-    console.log('Request Being Sent:', json);
-    try {
-      await fetch('https://mongo.api.xade.finance/polygon', {
-        method: 'POST',
-        body: json,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      dispatch(getEvmAddresses());
-      navigation.push('Portfolio');
-    } catch (error) {
-      console.log(error?.response?.data);
-    }
-  } else {
-    global.connectAccount.name = name;
-    const address = global.connectAccount.publicAddress;
-    const email = global.connectAccount.phoneEmail;
-    const uuid = global.connectAccount.uiud;
-
-    console.log(email);
-    try {
-      const object = {
-        email: email.toLowerCase(),
-        phone: 'NULL',
-        name: name,
-        typeOfLogin: 'connect',
-        eoa: address.toLowerCase(),
-        scw: address.toLowerCase(),
-        id: uuid,
-      };
+      if (email.includes('@')) {
+        object = {
+          email: email.toLowerCase(),
+          phone: 'NULL',
+          name: name,
+          typeOfLogin: 'auth',
+          eoa: address.toLowerCase(),
+          scw: scwAddress.toLowerCase(),
+          id: uuid,
+        };
+      } else {
+        object = {
+          email: 'NULL',
+          phone: email.toLowerCase(),
+          name: name,
+          typeOfLogin: 'auth',
+          eoa: address.toLowerCase(),
+          scw: scwAddress.toLowerCase(),
+          id: uuid,
+        };
+      }
+      console.log('New OBJ', object);
       const json = JSON.stringify(object || {}, null, 2);
       console.log('Request Being Sent:', json);
-
-      await fetch('https://mongo.api.xade.finance/polygon', {
-        method: 'POST',
-        body: json,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      console.log('New OBJ', {
+        email: email,
+        referalCode: code,
+        evmSmartAccount: scwAddress,
+        evmPublicAddress: address,
+        points: 0,
       });
-      dispatch(getEvmAddresses());
-      navigation.push('Portfolio');
-    } catch (err) {
-      console.log(err);
+
+      try {
+        await axios.post(
+          'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users',
+          {
+            email: email,
+            referalCode: code,
+            evmSmartAccount: scwAddress,
+            evmPublicAddress: address,
+            points: 0,
+            name: name,
+          },
+          {
+            headers: {
+              apiKey:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+              Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+            },
+          },
+        );
+        await fetch('https://mongo.api.xade.finance/polygon', {
+          method: 'POST',
+          body: json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        dispatch(getEvmAddresses());
+        navigation.push('Portfolio');
+      } catch (error) {
+        console.log(error?.response?.data);
+      }
+    } else {
+      global.connectAccount.name = name;
+      const address = global.connectAccount.publicAddress;
+      const email = global.connectAccount.phoneEmail;
+      const uuid = global.connectAccount.uiud;
+
+      console.log(email);
+      try {
+        const object = {
+          email: email.toLowerCase(),
+          phone: 'NULL',
+          name: name,
+          typeOfLogin: 'connect',
+          eoa: address.toLowerCase(),
+          scw: address.toLowerCase(),
+          id: uuid,
+        };
+        const json = JSON.stringify(object || {}, null, 2);
+        console.log('Request Being Sent:', json);
+
+        await fetch('https://mongo.api.xade.finance/polygon', {
+          method: 'POST',
+          body: json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        dispatch(getEvmAddresses());
+        navigation.push('Portfolio');
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }
-};
-
-const Name = ({navigation}) => {
-  const [name, setName] = useState('');
-
+  };
   return (
     <View style={styles.black}>
       <ScrollView>
@@ -171,8 +200,6 @@ const Name = ({navigation}) => {
               textAlign: 'center',
               fontSize: 20,
               paddingBottom: 10,
-              // textDecorationStyle: 'double',
-              // textDecorationLine: 'underline',
             }}>
             Have A Refer Code?
           </Text>
@@ -199,7 +226,7 @@ const Name = ({navigation}) => {
           style={styles.continue}
           onPress={async () => {
             navigation.navigate('Portfolio');
-            await registerDB({navigation, name});
+            await registerDB({navigation, name, code});
           }}>
           <Text style={styles.continueText}>Let's go!</Text>
         </TouchableOpacity>

@@ -94,10 +94,10 @@ function ChooseWallet({navigation}) {
   );
 }
 
-function EnterName({navigation}) {
+function EnterName({navigation, route}) {
   return (
     <View>
-      <Name navigation={navigation} />
+      <Name route={route} navigation={navigation} />
     </View>
   );
 }

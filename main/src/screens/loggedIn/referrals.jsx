@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TouchableHighlight, Alert} from 'react-native';
 import Clipboard from '@react-native-clipboard/clipboard';
 
-const ReferralPage = ({}) => {
+const ReferralPage = ({navigation}) => {
   const [numPoints, setNumPoints] = useState(0);
   const [address, setAddress] = useState('0x');
   // Fetch the number of referrals from the API

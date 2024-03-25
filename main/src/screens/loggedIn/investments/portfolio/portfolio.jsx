@@ -13,7 +13,10 @@ import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
 import {POINTS_KEY} from '@env';
 import {useDispatch, useSelector} from 'react-redux';
-import {getCryptoHoldingForAddressFromMobula} from '../../../../store/actions/portfolio';
+import {
+  getCryptoHoldingForAddressFromMobula,
+  getEvmAddresses,
+} from '../../../../store/actions/portfolio';
 
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 
@@ -23,7 +26,7 @@ const Portfolio = ({navigation}) => {
 
   const holdings = useSelector(x => x.portfolio.holdings);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
-
+  const userInfo = useSelector(x => x.portfolio.userInfo);
   const addPoints = async () => {
     try {
       const address = global.withAuth
@@ -72,6 +75,8 @@ const Portfolio = ({navigation}) => {
       dispatch(
         getCryptoHoldingForAddressFromMobula(evmInfo?.smartAccount, null),
       );
+    } else {
+      dispatch(getEvmAddresses());
     }
   }, [evmInfo]);
 
@@ -94,7 +99,7 @@ const Portfolio = ({navigation}) => {
     // Assuming the balance is directly available on usdcAsset (or adapt based on actual structure)
     return usdcAsset.cross_chain_balances.Polygon.balance || 0;
   };
-
+  console.log('userinfo....', evmInfo, userInfo);
   // Extract the USDC balance
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
 
@@ -474,9 +479,9 @@ const Portfolio = ({navigation}) => {
                     textShadowOffset: {width: -1, height: 1},
                     textShadowRadius: 10,
                   }}>
-                  {points}{' '}
+                  {userInfo?.[0]?.points}{' '}
                 </Text>
-                <Text style={{fontSize: 16, color: '#fff'}}>coins</Text>
+                <Text style={{fontSize: 16, color: '#fff'}}>Xade Shards</Text>
               </View>
               <Text
                 style={{
@@ -484,7 +489,7 @@ const Portfolio = ({navigation}) => {
                   color: '#9C9C9C',
                   fontFamily: 'NeueMontreal-Medium',
                 }}>
-                Xade Coins can be redeemed{' '}
+                Xade Shards can be redeemed{' '}
               </Text>
             </View>
           </View>
