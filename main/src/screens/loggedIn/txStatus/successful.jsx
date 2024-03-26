@@ -27,7 +27,7 @@ const addPoints = async (userId, transactionAmount) => {
   try {
     const address = global.withAuth
       ? global.loginAccount.scw
-      : global.connectAccount.publicAddress;
+      : global.connectAccount?.publicAddress;
     const response = await fetch('https://refer.xade.finance/updatePoints', {
       method: 'POST',
       headers: {

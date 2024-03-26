@@ -94,7 +94,7 @@ export default function EnterAmountComponent({navigation, route}) {
   useEffect(() => {
     if (route.params.type == 'email') {
       fetch(
-        `https://user.api.xade.finance/polygon?address=${route.params.walletAddress.toLowerCase()}`,
+        `https://user.api.xade.finance/polygon?address=${route.params.walletAddress?.toLowerCase()}`,
         {
           method: 'GET',
         },

@@ -45,7 +45,7 @@ const Transaction = ({navigation, route}) => {
 
   const address = global.withAuth
     ? global.loginAccount.scw
-    : global.connectAccount.publicAddress;
+    : global.connectAccount?.publicAddress;
   const name = global.withAuth
     ? global.loginAccount.name
     : global.connectAccount.name;

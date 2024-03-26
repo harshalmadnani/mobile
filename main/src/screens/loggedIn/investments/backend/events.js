@@ -14,7 +14,7 @@ if (global.withAuth) {
   web3 = this.createProvider();
   //  console.log(web3.eth.getAccounts());
 } else {
-  authAddress = global.connectAccount.publicAddress;
+  authAddress = global.connectAccount?.publicAddress;
   console.log('Global Account:', global.connectAccount);
   console.log('Global Wallet Type:', global.walletType);
   web3 = this.createConnectProvider();

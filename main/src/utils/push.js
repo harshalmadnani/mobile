@@ -13,7 +13,7 @@ export async function requestUserPermission() {
     getFcmToken();
     const address = global.withAuth
       ? global.loginAccount.scw
-      : global.connectAccount.publicAddress;
+      : global.connectAccount?.publicAddress;
     registerFcmToken(address);
   }
 }
@@ -50,7 +50,7 @@ export const registerFcmToken = async address => {
   const token = await AsyncStorage.getItem('token');
 
   const notifsdata = {
-    walletAddress: address.toLowerCase(),
+    walletAddress: address?.toLowerCase(),
     deviceToken: token,
     key: POINTS_KEY,
   };

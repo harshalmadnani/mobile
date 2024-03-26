@@ -20,14 +20,13 @@ import ExternalLinkModal from './externalLink/widget';
 const starIcon = require('./coins.png');
 // const scanIcon = require('./scan.png');
 
-
 const addPoints = async () => {
   try {
     const address = global.withAuth
       ? global.loginAccount.scw
-      : global.connectAccount.publicAddress;
+      : global.connectAccount?.publicAddress;
     // const address = ''
-    
+
     const inputValue = {
       userId: address,
       // userId: address.toLowerCase(),
@@ -62,14 +61,13 @@ function TopBar({navigation, headers}) {
     logic();
   });
 
-  
   const [externalLinkHeading, setExternalLinkHeading] = useState('');
   const [externalLinkUri, setExternalLinkUri] = useState('');
   const [showExternalLinkModal, setShowExternalLinkModal] = useState(false);
 
   const handleCloseExternalLinkModal = () => {
     setShowExternalLinkModal(false);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -117,24 +115,24 @@ function TopBar({navigation, headers}) {
           </View>
         </TouchableOpacity> */}
         {/* <View style={{margin: 5,padding: 10}}> */}
-          {/* <RedeemSvg width={25} height={25} /> */}
-          <TouchableOpacity
-            onPress={() => {
-              setExternalLinkHeading('Redeem Points');
-              setExternalLinkUri('https://tally.so/r/wA2aze');
-              setShowExternalLinkModal(true);
-              // Linking.openURL('https://tally.so/r/wA2aze')
-              // setInfoVisible(!infoVisible)       
-            }}
-            activeOpacity={0.8}
-            style={{marginRight: 15}}>
-            {/* <View style={[styles.pointsContainer, {marginBottom: 0}]}>
+        {/* <RedeemSvg width={25} height={25} /> */}
+        <TouchableOpacity
+          onPress={() => {
+            setExternalLinkHeading('Redeem Points');
+            setExternalLinkUri('https://tally.so/r/wA2aze');
+            setShowExternalLinkModal(true);
+            // Linking.openURL('https://tally.so/r/wA2aze')
+            // setInfoVisible(!infoVisible)
+          }}
+          activeOpacity={0.8}
+          style={{marginRight: 15}}>
+          {/* <View style={[styles.pointsContainer, {marginBottom: 0}]}>
               <FastImage source={starIcon} style={styles.pointsIcon} />
               <Text style={styles.pointsText}>{points}</Text>
             </View> */}
-          </TouchableOpacity>
+        </TouchableOpacity>
 
-          {/* <Icon
+        {/* <Icon
             onPress={() => navigation.navigate('Redeem')}
             name={'settings'}
             size={25}
@@ -142,7 +140,7 @@ function TopBar({navigation, headers}) {
             type="material"
           /> */}
         {/* </View> */}
-        <View style={{marginTop:5}}>
+        <View style={{marginTop: 5}}>
           <Icon
             onPress={() => navigation.navigate('Settings')}
             name={'settings'}
@@ -185,7 +183,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     paddingBottom: 10,
   },
-  container: { 
+  container: {
     backgroundColor: '#000',
     flexDirection: 'row',
     alignItems: 'center',
@@ -263,11 +261,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'white',
     fontFamily: 'Unbounded-Regular',
-
   },
   logo: {
-
-    fontFamily: "Unbounded-Medium",
+    fontFamily: 'Unbounded-Medium',
     color: '#fff',
     fontWeight: '700',
     fontSize: 20,

@@ -46,11 +46,11 @@ const Component = ({route, navigation}) => {
 
   useEffect(() => {
     if (global.withAuth) {
-      authAddress = global.loginAccount.publicAddress;
+      authAddress = global.loginAccount?.publicAddress;
       console.log('Global Account:', global.loginAccount);
       web3 = this.createProvider();
     } else {
-      authAddress = global.connectAccount.publicAddress;
+      authAddress = global.connectAccount?.publicAddress;
       console.log('Global Account:', global.connectAccount);
       console.log('Global Wallet Type:', global.walletType);
       web3 = this.createConnectProvider();

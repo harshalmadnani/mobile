@@ -31,7 +31,7 @@ function QRCode() {
     address = global.loginAccount.scw;
     info = global.loginAccount.name;
   } else {
-    address = global.connectAccount.publicAddress;
+    address = global.connectAccount?.publicAddress;
     info = global.connectAccount.name;
   }
 

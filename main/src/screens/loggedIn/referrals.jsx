@@ -73,7 +73,7 @@ const addPoints = async (userId, transactionAmount) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({userId: userId.toLowerCase(), transactionAmount}),
+      body: JSON.stringify({userId: userId?.toLowerCase(), transactionAmount}),
     });
 
     const data = await response.json();

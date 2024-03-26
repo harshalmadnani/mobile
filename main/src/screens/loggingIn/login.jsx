@@ -11,8 +11,6 @@ import {
 import {Text} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
 
-import onClickLogin from '../../particle-auth';
-
 const bg = require('../../../assets/particle.jpg');
 const windowHeight = Dimensions.get('window').height;
 
@@ -65,7 +63,6 @@ const Login = ({navigation}) => {
     </ImageBackground>
   );
 };
-
 
 const styles = StyleSheet.create({
   bg: {

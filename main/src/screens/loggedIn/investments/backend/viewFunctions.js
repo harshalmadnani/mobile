@@ -21,12 +21,12 @@ export async function displayPositions(amms) {
   let userAccount;
 
   if (global.withAuth) {
-    userAccount = global.loginAccount.publicAddress;
+    userAccount = global.loginAccount?.publicAddress;
     console.log('Global Account:', global.loginAccount);
     web3 = this.createProvider();
     //  console.log(web3.eth.getAccounts());
   } else {
-    userAccount = global.connectAccount.publicAddress;
+    userAccount = global.connectAccount?.publicAddress;
     console.log('Global Account:', global.connectAccount);
     console.log('Global Wallet Type:', global.walletType);
     web3 = this.createConnectProvider();

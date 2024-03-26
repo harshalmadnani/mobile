@@ -79,7 +79,7 @@ export const onAuthCoreLogin = navigation => {
       if (userInfo) {
         console.log('user info......', userInfo);
         let email = userInfo.email?.toLowerCase()
-          ? userInfo.email.toLowerCase()
+          ? userInfo.email?.toLowerCase()
           : userInfo.googleEmail
           ? userInfo.googleEmail
           : userInfo.phone;
@@ -225,10 +225,10 @@ export const onIsLoginCheckAuthCore = (
         userInfo = JSON.parse(userInfo);
         console.log('user...!', userInfo?.email);
         let email = userInfo?.email
-          ? userInfo.email.toLowerCase()
+          ? userInfo.email?.toLowerCase()
           : userInfo.phone
           ? userInfo.phone
-          : userInfo.googleEmail.toLowerCase();
+          : userInfo.googleEmail?.toLowerCase();
         console.log('Phone/Email:', email);
         const uuid = userInfo.wallets[0].uuid;
         const address = await getUserAddressFromAuthCoreSDK();

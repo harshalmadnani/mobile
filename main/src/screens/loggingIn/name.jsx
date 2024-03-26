@@ -33,7 +33,7 @@ const Name = ({navigation, route}) => {
     console.log('Hereee', global.loginAccount);
     if (global.withAuth) {
       global.loginAccount.name = name;
-      const address = global.loginAccount.publicAddress;
+      const address = global.loginAccount?.publicAddress;
       const scwAddress = global.loginAccount.scw;
       const email = global.loginAccount.phoneEmail;
       const uuid = global.loginAccount.uiud;
@@ -106,7 +106,7 @@ const Name = ({navigation, route}) => {
       }
     } else {
       global.connectAccount.name = name;
-      const address = global.connectAccount.publicAddress;
+      const address = global.connectAccount?.publicAddress;
       const email = global.connectAccount.phoneEmail;
       const uuid = global.connectAccount.uiud;
 

@@ -89,10 +89,10 @@ const Card = ({navigation}) => {
       const account = JSON.parse(account);
 
       let email = account.email
-        ? account.email.toLowerCase()
+        ? account?.email?.toLowerCase()
         : account.phone
         ? account.phone
-        : account.googleEmail.toLowerCase();
+        : account?.googleEmail?.toLowerCase();
 
       console.log('Phone/Email:', email);
       const user = await client.user.createUser({
@@ -106,7 +106,7 @@ const Card = ({navigation}) => {
       // call api to store spritz api key in the backend
       try {
         const name = global.loginAccount.name;
-        const address = global.loginAccount.publicAddress;
+        const address = global.loginAccount?.publicAddress;
         const email = global.loginAccount.phoneEmail;
         const uuid = global.loginAccount.uiud;
         const object = {

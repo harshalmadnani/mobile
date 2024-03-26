@@ -31,7 +31,7 @@ const Portfolio = ({navigation}) => {
     try {
       const address = global.withAuth
         ? global.loginAccount.scw
-        : global.connectAccount.publicAddress;
+        : global.connectAccount?.publicAddress;
       // const address = ''
 
       const inputValue = {
@@ -533,7 +533,27 @@ const Portfolio = ({navigation}) => {
                 backgroundColor: '#000',
                 paddingBottom: '30%',
               }}>
-              <FlatList
+              {holdings?.assets.filter(item => item.token_balance > 0).length >
+              0
+                ? holdings?.assets
+                    .filter(item => item.token_balance > 0)
+                    .map((item, i) => (
+                      <MyInvestmentItemCard
+                        key={i.toString()}
+                        navigation={navigation}
+                        item={{
+                          ...item.asset, // Assuming the structure matches what MyInvestmentItemCard expects
+                          balance: item.token_balance, // Adapt properties as needed
+                          current_price: item.price,
+                          unrealized_pnl: item.unrealized_pnl,
+                          realized_pnl: item.realized_pnl, // Example
+                          image: item.asset.logo,
+                          price_bought: item.price_bought,
+                        }}
+                      />
+                    ))
+                : null}
+              {/* <FlatList
                 data={holdings?.assets.filter(item => item.token_balance > 0)}
                 keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
                 renderItem={({item}) => (
@@ -550,7 +570,7 @@ const Portfolio = ({navigation}) => {
                     }}
                   />
                 )}
-              />
+              /> */}
             </View>
           )}
         </View>

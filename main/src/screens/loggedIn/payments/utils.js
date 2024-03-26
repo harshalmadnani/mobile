@@ -58,7 +58,7 @@ async function getTokenBalance(contract, mainnet, eoa) {
       .balanceOf(
         global.withAuth
           ? global.loginAccount.scw
-          : global.connectAccount.publicAddress,
+          : global.connectAccount?.publicAddress,
       )
       .call();
     const decimals = mainnet ? 6 : 18;
@@ -119,7 +119,7 @@ export async function txHistoryLoad(eoa) {
       }&address=${
         global.withAuth
           ? global.loginAccount.scw
-          : global.connectAccount.publicAddress
+          : global.connectAccount?.publicAddress
       }&sort=desc&apikey=${POLYGON_API_KEY}`,
       {
         method: 'GET',

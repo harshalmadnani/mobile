@@ -126,8 +126,8 @@ const AddFund = ({navigation}) => {
   const sendTransaction = async data => {
     try {
       const address = global.withAuth
-        ? global.loginAccount.publicAddress
-        : global.connectAccount.publicAddress;
+        ? global.loginAccount?.publicAddress
+        : global.connectAccount?.publicAddress;
       const web3 = global.withAuth
         ? this.createProvider()
         : this.createConnectProvider();

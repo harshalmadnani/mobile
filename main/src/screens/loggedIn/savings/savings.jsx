@@ -53,12 +53,12 @@ const Savings = ({navigation}) => {
   // const provider = Web3(ALCHEMY_URL)
   // web3 = this.createProvider(PROJECT_ID, CLIENT_KEY);
   if (global.withAuth) {
-    authAddress = global.loginAccount.publicAddress;
+    authAddress = global.loginAccount?.publicAddress;
     console.log('Global Account:', global.loginAccount);
     web3 = this.createProvider();
     //  console.log(web3.eth.getAccounts());
   } else {
-    authAddress = global.connectAccount.publicAddress;
+    authAddress = global.connectAccount?.publicAddress;
     console.log('Global Account:', global.connectAccount);
     console.log('Global Wallet Type:', global.walletType);
     web3 = this.createConnectProvider();
@@ -239,7 +239,7 @@ const Savings = ({navigation}) => {
               navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
-                        colors={['#101010', '#080808']}
+              colors={['#101010', '#080808']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -269,7 +269,7 @@ const Savings = ({navigation}) => {
           }}>
           <TouchableOpacity style={styles.depWith}>
             <LinearGradient
-                         colors={['#101010', '#080808']}
+              colors={['#101010', '#080808']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -286,7 +286,7 @@ const Savings = ({navigation}) => {
 
           <TouchableOpacity style={styles.depWith}>
             <LinearGradient
-                   colors={['#101010', '#080808']}
+              colors={['#101010', '#080808']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}

@@ -13,6 +13,7 @@ import {
   Modal,
   ImageBackground,
   Switch,
+  Share,
 } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 const bg = require('../../../assets/choose.png');
@@ -22,7 +23,7 @@ import styles from './settings-styles';
 import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {logoutRefresh} from '../../store/actions/auth';
 // import {EventsCarousel} from './eventsCarousel';
 const HorizontalRule = () => {
@@ -38,52 +39,62 @@ const ruleStyles = StyleSheet.create({
     // marginTop: '0%',
   },
 });
-func = () => {
-  Clipboard.setString(
-    `
-Xade is reshaping finance with its super decentralised bank powered by DeFi where you can help us both earn Xade Coins by joining Xade using my refer code: ${
-      global.withAuth
-        ? global.loginAccount.scw
-        : global.connectAccount.publicAddress
-    }
+// func = () => {
+//   Clipboard.setString(
+//     `
+// Xade is reshaping finance with its super decentralised bank powered by DeFi where you can help us both earn Xade Coins by joining Xade using my refer code: ${
+//       global.withAuth
+//         ? global.loginAccount.scw
+//         : global.connectAccount.publicAddress
+//     }
 
-Download Now: https://bit.ly/xadefinance
-`,
-  );
+// Download Now: https://bit.ly/xadefinance
+// `,
+//   );
 
-  Snackbar.show({text: 'Referral link copied'});
+//   Snackbar.show({text: 'Referral link copied'});
 
-  // Alert.alert('Referral link copied');
-};
-this.state = {
-  selectedIndex: 0,
-  externalLinkHeading: '',
-  externalLinkUri: '',
-  showExternalLinkModal: false,
-};
-// import {signAndSendTransactionConnect} from '../../particle-connect';
-let address;
+//   // Alert.alert('Referral link copied');
+// };
+// this.state = {
+//   selectedIndex: 0,
+//   externalLinkHeading: '',
+//   externalLinkUri: '',
+//   showExternalLinkModal: false,
+// };
+
 let info;
-let imageUrl;
+
 const Component = ({navigation}) => {
   const dispatch = useDispatch();
-  if (global.withAuth) {
-    address = global.loginAccount.scw;
-    info = global.loginAccount.name;
-    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
-  } else {
-    address = global.connectAccount.publicAddress;
-    info = global.connectAccount.name;
-    imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
-  }
-  const [amount, setAmount] = React.useState(0);
+  const userInfo = useSelector(x => x.portfolio.userInfo);
+  // const imageUrl = `https://ui-avatars.com/api/?name=${userInfo[0]?.name}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: `Download the ultimate trading app with my refer code: ${userInfo[0]?.name?.toUpperCase()}
+          to win 400 Xade Shards and other exclusive rewards!
+          Experience the new era of finance: bit.ly/xadefinance`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
+  };
   const [networksVisible, setNetworksVisible] = React.useState(false);
   const [faceID, setFaceID] = useState(global.faceID);
   const toggleSwitch = async () => {
     await AsyncStorage.setItem('faceID', JSON.stringify(!faceID));
     setFaceID(previousState => !previousState);
     const id = JSON.parse(await AsyncStorage.getItem('faceID'));
-    console.log('FaceID Enabled:', id);
   };
 
   return (
@@ -124,7 +135,7 @@ const Component = ({navigation}) => {
                 fontFamily: `Unbounded-Medium`,
                 textAlign: 'center',
               }}>
-              {info.toUpperCase()}
+              {userInfo[0]?.name?.toUpperCase()}
             </Text>
             <Text
               style={{
@@ -137,15 +148,15 @@ const Component = ({navigation}) => {
                 ? global.loginAccount.phoneEmail.includes('@')
                   ? '' + global.loginAccount.phoneEmail
                   : '+' + global.loginAccount.phoneEmail
-                : global.connectAccount.publicAddress.slice(0, 15) + '...'}
+                : global.connectAccount?.publicAddress.slice(0, 15) + '...'}
             </Text>
           </View>
         </View>
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <TouchableOpacity
-            onPress={() => {
-              Linking.openURL('https://zealy.io/cw/xadefinance/questboard');
+            onPress={async () => {
+              await onShare();
             }}
             style={{
               justifyContent: 'center',
@@ -169,7 +180,7 @@ const Component = ({navigation}) => {
                 marginVertical: '5%',
                 textAlign: 'left',
               }}>
-              QUESTS
+              REFERRALS
             </Text>
             <Text
               style={{
@@ -178,7 +189,7 @@ const Component = ({navigation}) => {
                 color: '#949494',
                 marginBottom: '10%',
               }}>
-              Get exclusive rewards such as Xade Shards & more
+              Refer Xade to your friends to win upto $1000 in rewards
             </Text>
           </TouchableOpacity>
 
@@ -245,14 +256,16 @@ const Component = ({navigation}) => {
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
-              Linking.openURL('https://docs.xade.finance/');
+              Linking.openURL('https://t.me/xadefi');
             }}>
             <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
-              source={require('./wallet.png')}
+              source={{
+                uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1711392026/x9hmluqjq2encdmrbbel.png',
+              }}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Wallets</Text>
+              <Text style={styles.settingsText}>Support</Text>
               <Icon
                 name={'angle-right'}
                 size={20}

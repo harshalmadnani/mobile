@@ -28,7 +28,7 @@ export default function Component({route, navigation}) {
       // web3 = this.createProvider(PROJECT_ID, CLIENT_KEY);
       const {withdrawAmount, provideLiquidityToContract, getUserPoolBalance} =
         ethProvider({web3});
-      const address = global.loginAccount.publicAddress;
+      const address = global.loginAccount?.publicAddress;
       console.log('Global Account:', global.loginAccount);
       console.log('IsWithdraw: ' + withdraw);
       if (withdraw) {
@@ -62,7 +62,7 @@ export default function Component({route, navigation}) {
       // web3 = this.createConnectProvider(PROJECT_ID, CLIENT_KEY);
       const {withdrawAmount, provideLiquidityToContract, getUserPoolBalance} =
         ethProvider({web3});
-      const address = global.connectAccount.publicAddress;
+      const address = global.connectAccount?.publicAddress;
       console.log(provideLiquidityToContract);
       console.log('Global Account:', global.connectAccount);
       console.log('IsWithdraw: ' + withdraw);

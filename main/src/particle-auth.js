@@ -203,7 +203,7 @@ onClickLogin = async navigation => {
   const result = await particleAuth.isLogin();
   console.log('Logged In:', result);
   if (result) {
-    const address = global.loginAccount.publicAddress;
+    const address = global.loginAccount?.publicAddress;
     const email = global.loginAccount.phoneEmail;
     const uuid = global.loginAccount.uiud;
     const scwAddress = global.loginAccount.scw;
