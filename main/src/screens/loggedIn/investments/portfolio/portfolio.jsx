@@ -489,7 +489,7 @@ const Portfolio = ({navigation}) => {
                   color: '#9C9C9C',
                   fontFamily: 'NeueMontreal-Medium',
                 }}>
-                Xade Shards can be redeemed{' '}
+                Distributed at the end of every week
               </Text>
             </View>
           </View>
@@ -581,14 +581,14 @@ const Portfolio = ({navigation}) => {
         }}
         style={{
           position: 'absolute', // Positions the button over the content
-          bottom: '10%', // Distance from the bottom of the screen
+          bottom: '5%', // Distance from the bottom of the screen
           width: '95%',
           height: 56, // Button height
           borderRadius: 28, // Circular button
           backgroundColor: '#FFF', // Button color
           justifyContent: 'center', // Center the icon or text inside the button
           alignItems: 'center', // Center the icon or text inside the button
-          shadowColor: '#FFF', // Shadow for the button
+          shadowColor: '#000', // Shadow for the button
 
           shadowOffset: {
             width: 2,

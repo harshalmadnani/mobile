@@ -168,7 +168,7 @@ const Component = ({navigation}) => {
             }}>
             <Image
               source={{
-                uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402529/du6fpp6plx9fhp6qdv1l.png',
+                uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1711467679/fpjgktyhw3zqa4r9qzfr.png',
               }}
               style={{height: 60, width: 60}}
             />
@@ -541,7 +541,7 @@ const Component = ({navigation}) => {
         }}
         style={{
           position: 'absolute', // Positions the button over the content
-          bottom: '10%', // Distance from the bottom of the screen
+          bottom: '5%', // Distance from the bottom of the screen
           width: '95%',
 
           height: 56, // Button height
@@ -549,7 +549,7 @@ const Component = ({navigation}) => {
           backgroundColor: '#FFF', // Button color
           justifyContent: 'center', // Center the icon or text inside the button
           alignItems: 'center', // Center the icon or text inside the button
-          shadowColor: '#FFF', // Shadow for the button
+          shadowColor: '#000', // Shadow for the button
 
           shadowOffset: {
             width: 2,

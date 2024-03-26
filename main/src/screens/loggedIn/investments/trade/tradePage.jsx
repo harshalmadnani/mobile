@@ -1090,7 +1090,7 @@ const TradePage = ({route}) => {
                     : bestSwappingBuyTrades.length === 0
                     ? 'Try Again'
                     : preparingTx
-                    ? 'CONFIRMING....'
+                    ? 'CONFIRMING..'
                     : 'CONFIRM'}
                 </Text>
               </LinearGradient>

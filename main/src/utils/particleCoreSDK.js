@@ -77,7 +77,7 @@ export const connectWithAuthCore = async () => {
     {
       projectName: 'Enter a new era of finance',
       imagePath:
-        'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709582736/adlu2jdpsgeaao3apqoz.png',
+        'https://res.cloudinary.com/xade-finance/image/upload/v1711467035/mxhgrkatrattznnzkuif.jpg',
     },
   );
   if (result.status) {
