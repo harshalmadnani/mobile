@@ -44,7 +44,7 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
           }}>
           <View style={{paddingHorizontal: 10}}>
             <FastImage
-              style={{width: 42, height: 42}}
+              style={{width: 42, height: 42, borderRadius: 250}}
               source={{
                 uri: `${item.image || item.logo}`,
               }}
