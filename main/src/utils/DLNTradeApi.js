@@ -120,6 +120,8 @@ const getChainIdOnChainName = chainName => {
     return 137;
   } else if (chainName === 'Avalanche C-Chain') {
     return 43114;
+  } else if (chainName === 'Arbitrum') {
+    return 42161;
   }
 };
 export const getBestCrossSwapRateBuy = async (
@@ -136,7 +138,8 @@ export const getBestCrossSwapRateBuy = async (
       x.blockchains === 'Ethereum' ||
       x.blockchains === 'BNB Smart Chain (BEP20)' ||
       x.blockchains === 'Polygon' ||
-      x.blockchains === 'Avalanche C-Chain',
+      x.blockchains === 'Avalanche C-Chain' ||
+      x.blockchains === 'Arbitrum',
   );
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
     const res = await getDLNTradeCreateBuyOrder(

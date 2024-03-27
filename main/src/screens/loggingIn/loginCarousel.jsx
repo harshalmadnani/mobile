@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-const DEVICE_WIDTH = Dimensions.get('window').width;
+const {width, height} = Dimensions.get('window');
 import Clipboard from '@react-native-clipboard/clipboard';
 import FastImage from 'react-native-fast-image';
 
@@ -39,7 +39,7 @@ class LoginCarousel extends React.Component {
         () => {
           this.scrollRef.current.scrollTo({
             animated: true,
-            x: DEVICE_WIDTH * this.state.selectedIndex,
+            x: width * this.state.selectedIndex,
             y: 0,
           });
         },
@@ -53,12 +53,12 @@ class LoginCarousel extends React.Component {
 
     // Divide the horizontal offset by the width of the view to see which page is visible
     const selectedIndex = Math.floor(contentOffset.x / viewSize.width);
-    this.setState({ selectedIndex });
+    this.setState({selectedIndex});
   };
 
   render(navigation) {
-    const { images } = this.props;
-    const { selectedIndex } = this.state;
+    const {images} = this.props;
+    const {selectedIndex} = this.state;
     return (
       <ScrollView horizontal pagingEnabled ref={this.scrollRef}>
         {images.map(image => (
@@ -87,8 +87,8 @@ class LoginCarousel extends React.Component {
 const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'column',
-    width: DEVICE_WIDTH,
-    height: 620,
+    width: width,
+    height: 625,
     alignItems: 'center',
   },
 
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontFamily: `Unbounded-Bold`,
     textAlign: 'center',
     fontSize: 32,
-    marginTop: "2%"
+    marginTop: '2%',
   },
   xade: {
     color: '#fff',
@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     marginTop: '4%',
-    marginBottom: '10%'
+    marginBottom: '10%',
   },
 });
 
-export { LoginCarousel };
+export {LoginCarousel};

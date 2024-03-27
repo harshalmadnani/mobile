@@ -33,29 +33,6 @@ const ReferralCode = ({navigation}) => {
   const handleSubmit = async () => {
     // setSubmitText('Processing...');
     navigation.navigate('EnterName', {code: text});
-    // const validation = validateAddress(text);
-    // if (!validation) {
-    //   setSubmitText('Invalid Code');
-    //   return;
-    // }
-    // await fetch('https://refer.xade.finance/referrals', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'api-key': POINTS_KEY,
-    //   },
-    //   body: JSON.stringify({
-    //     code: text.toLowerCase(),
-    //   }),
-    // }).then(data => {
-    //   if (data.status == 200) {
-    //     setSubmitText('Referral Code Applied!');
-    //   } else if (data.status == 404) {
-    //     setSubmitText("Referral Code Doesn't Exist!");
-    //   } else {
-    //     setSubmitText('Error!');
-    //   }
-    // });
   };
   return (
     <SafeAreaView
@@ -85,7 +62,7 @@ const ReferralCode = ({navigation}) => {
         <Text
           style={{
             fontSize: 30,
-            fontFamily: `EuclidCircularA-Regular`,
+            fontFamily: `Montreal-Medium`,
             color: 'white',
             letterSpacing: 0.5,
           }}>
@@ -96,7 +73,7 @@ const ReferralCode = ({navigation}) => {
             label="Referral Code"
             value={text}
             showCaret
-            onChangeText={newText => setText(newText.toLowerCase())}
+            onChangeText={newText => setText(newText.toUpperCase())}
             containerStyles={{
               borderWidth: 1,
               borderColor: '#3E3E3E',
@@ -114,14 +91,14 @@ const ReferralCode = ({navigation}) => {
               width: '100%',
             }}
             labelStyles={{
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Montreal-Medium`,
               color: '#fff',
               fontSize: 17,
               width: '100%',
               paddingBottom: 2,
             }}
             inputStyles={{
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Montreal-Medium`,
               width: '100%',
               color: 'white',
               fontSize: 25,
@@ -133,7 +110,7 @@ const ReferralCode = ({navigation}) => {
           <Text
             style={{
               color: '#000',
-              fontFamily: `EuclidCircularA-Medium`,
+              fontFamily: `Montreal-Medium`,
               fontSize: 18,
             }}>
             {submitText}
@@ -178,9 +155,9 @@ const styles = StyleSheet.create({
 
   confirmButton: {
     width: '100%',
-    marginBottom: 20,
+    marginBottom: '0%',
     alignItems: 'center',
-    // marginTop: 390,
+    marginTop: '100%',
     height: 55,
     borderColor: 'white',
     borderWidth: 1,

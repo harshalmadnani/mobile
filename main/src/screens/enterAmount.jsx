@@ -63,13 +63,13 @@ export default function EnterAmountComponent({navigation, route}) {
           const gasNeeded = Number('51975');
           const gasFees = 1.1 * 2 * gasNeeded * gasPrice;
           setGas(
-            Number(web3.utils.fromWei(gasFees.toString(), 'ether')).toFixed(3),
+            Number(web3.utils.fromWei(gasFees.toString(), 'ether'))?.toFixed(3),
           );
         } else {
           const gasNeeded = Number('90000') + Number('60000');
           const gasFees = 1.2 * gasNeeded * gasPrice;
           setGas(
-            Number(web3.utils.fromWei(gasFees.toString(), 'ether')).toFixed(3),
+            Number(web3.utils.fromWei(gasFees.toString(), 'ether'))?.toFixed(3),
           );
         }
       } else {

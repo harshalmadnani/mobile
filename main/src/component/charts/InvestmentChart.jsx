@@ -73,6 +73,7 @@ function InteractiveChart({assetName}) {
       if (from === null) return; // Early exit if timestamp is not found
       try {
         const data = await getHistoricalData(assetName, from);
+        console.log('historical data....', data);
         const historicalPriceXYPair = data.price_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
@@ -98,6 +99,7 @@ function InteractiveChart({assetName}) {
             : null;
 
           const data = await getHistoricalData(assetName, from);
+          console.log('historical data....', data);
           const historicalPriceXYPair = data.price_history.map(entry => {
             return {timestamp: entry[0], value: entry[1]};
           });
@@ -156,8 +158,8 @@ function InteractiveChart({assetName}) {
               <Text style={styles.stockPrice}>$</Text>
               <Text style={styles.stockPrice}>
                 {Number(currentPrice || '0')
-                  .toFixed(2)
-                  .toLocaleString('en-US')}
+                  ?.toFixed(2)
+                  ?.toLocaleString('en-US')}
               </Text>
             </View>
           )}
@@ -177,12 +179,12 @@ function InteractiveChart({assetName}) {
               }}>
               $
               {Number(priceChange || 0)
-                .toFixed(2)
-                .toLocaleString('en-US')}{' '}
+                ?.toFixed(2)
+                ?.toLocaleString('en-US')}{' '}
               (
               {Number(divisionResult || 0)
-                .toFixed(2)
-                .toLocaleString('en-US')}
+                ?.toFixed(2)
+                ?.toLocaleString('en-US')}
               %)
             </Text>
           </View>

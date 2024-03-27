@@ -67,7 +67,7 @@ export const getAuthCoreProvider = loginType => {
   const web3 = new Web3(provider);
   return web3;
 };
-export const connectWithAuthCore = async () => {
+export const connectWithAuthCore = async navigation => {
   const supportAuthType = [SupportAuthType.Email];
   const result = await particleAuthCore.connect(
     LoginType.Email,
@@ -77,7 +77,7 @@ export const connectWithAuthCore = async () => {
     {
       projectName: 'Enter a new era of finance',
       imagePath:
-        'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709582736/adlu2jdpsgeaao3apqoz.png',
+        'https://res.cloudinary.com/xade-finance/image/upload/v1711467035/mxhgrkatrattznnzkuif.jpg',
     },
   );
   if (result.status) {
@@ -87,6 +87,7 @@ export const connectWithAuthCore = async () => {
   } else {
     const error = result.data;
     console.log('connect', error);
+    navigation.navigate('LoggedOutHome');
     return 0;
   }
 };

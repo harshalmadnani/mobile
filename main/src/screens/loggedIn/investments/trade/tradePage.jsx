@@ -122,10 +122,15 @@ const TradePage = ({route}) => {
   };
   const getBestPrice = async () => {
     setLoading(true);
+    console.log('selected meta data....', selectedAssetMetaData);
     dispatch(
       getBestDLNCrossSwapRateBuy(
-        selectedAssetMetaData?.blockchains,
-        selectedAssetMetaData?.contracts,
+        selectedAssetMetaData?.blockchains?.length > 0
+          ? selectedAssetMetaData?.blockchains
+          : [selectedAssetMetaData?.blockchain],
+        selectedAssetMetaData?.contracts?.length > 0
+          ? selectedAssetMetaData?.contracts
+          : [selectedAssetMetaData?.address],
         value * 1000000, //USDC
       ),
     );
@@ -1071,7 +1076,7 @@ const TradePage = ({route}) => {
                   paddingHorizontal: '30%',
                   justifyContent: 'center',
                   alignSelf: 'center',
-                  width:'95%'
+                  width: '95%',
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
@@ -1090,7 +1095,7 @@ const TradePage = ({route}) => {
                     : bestSwappingBuyTrades.length === 0
                     ? 'Try Again'
                     : preparingTx
-                    ? 'CONFIRMING....'
+                    ? 'CONFIRMING..'
                     : 'CONFIRM'}
                 </Text>
               </LinearGradient>

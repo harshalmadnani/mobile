@@ -1,7 +1,7 @@
-import { StyleSheet, View, Text, Image } from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import moment from 'moment';
 
-const WalletTransactionTradeCard = ({ item }) => {
+const WalletTransactionTradeCard = ({item}) => {
   const mainSwapToken =
     item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
       ? item?.takeOfferWithMetadata
@@ -15,16 +15,16 @@ const WalletTransactionTradeCard = ({ item }) => {
     if (number < 1000) {
       return number;
     } else if (number >= 1000 && number < 1000000) {
-      return (number / 1000).toFixed(1) + 'K';
+      return (number / 1000)?.toFixed(1) + 'K';
     } else if (number >= 1000000 && number < 1000000000) {
-      return (number / 1000000).toFixed(1) + 'M';
+      return (number / 1000000)?.toFixed(1) + 'M';
     } else if (number >= 1000000000 && number < 1000000000000) {
-      return (number / 1000000000).toFixed(1) + 'B';
+      return (number / 1000000000)?.toFixed(1) + 'B';
     } else if (number >= 1000000000000 && number < 1000000000000000) {
-      return (number / 1000000000000).toFixed(1) + 'T';
+      return (number / 1000000000000)?.toFixed(1) + 'T';
     }
   }
-  console.log( mainSwapToken?.amount?.stringValue ,'main swap token');
+  console.log(mainSwapToken?.amount?.stringValue, 'main swap token');
   return (
     <View
       style={{
@@ -37,16 +37,16 @@ const WalletTransactionTradeCard = ({ item }) => {
         paddingHorizontal: 8,
         paddingVertical: 18,
         marginBottom: '0%',
-        marginVertical:'5%',
-        alignSelf:'center',
-        marginHorizontal:"2%"
+        marginVertical: '5%',
+        alignSelf: 'center',
+        marginHorizontal: '2%',
       }}>
       <View
         style={{
           flexDirection: 'row',
         }}>
         <Image
-          style={{ width: 50, height: 50 }}
+          style={{width: 50, height: 50}}
           source={{
             uri: `${mainSwapToken.logoURI}`,
           }}
@@ -56,10 +56,11 @@ const WalletTransactionTradeCard = ({ item }) => {
             marginLeft: 8,
           }}>
           <Text style={styles.primaryTitle}>
-            {`${item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
-              ? 'Bought'
-              : 'Sold'
-              } ${mainSwapToken?.metadata?.symbol}`}
+            {`${
+              item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
+                ? 'Bought'
+                : 'Sold'
+            } ${mainSwapToken?.metadata?.symbol}`}
           </Text>
           <Text style={styles.secondaryTitle}>
             {moment.unix(item?.creationTimestamp).format('MMM Do YY')}
@@ -67,20 +68,20 @@ const WalletTransactionTradeCard = ({ item }) => {
         </View>
       </View>
 
-      <View style={{ alignItems: 'flex-end' }}>
-        <Text style={[styles.secondaryTitle, { color: '#07F70F', opacity: 1 }]}>
+      <View style={{alignItems: 'flex-end'}}>
+        <Text style={[styles.secondaryTitle, {color: '#07F70F', opacity: 1}]}>
           {'+ '}
-          {
-            (mainSwapToken?.amount?.stringValue /
-            Math.pow(10, mainSwapToken?.decimals)).toFixed(2)
-         }
+          {(
+            mainSwapToken?.amount?.stringValue /
+            Math.pow(10, mainSwapToken?.decimals)
+          )?.toFixed(2)}
           {` ${mainSwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>
-        <Text style={[styles.secondaryTitle, { opacity: 1 }]}>
+        <Text style={[styles.secondaryTitle, {opacity: 1}]}>
           {'- '}
           {formatCompactNumber(
             secondarySwapToken?.amount?.stringValue /
-            Math.pow(10, secondarySwapToken?.decimals),
+              Math.pow(10, secondarySwapToken?.decimals),
           )?.toFixed(2)}
           {` ${secondarySwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>

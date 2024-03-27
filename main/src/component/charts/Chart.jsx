@@ -48,7 +48,6 @@ function InteractiveChart() {
   );
   const oneMinuteAgo = new Date(now.getTime() - 5 * 60 * 1000);
   const timeframes = [
-
     {label: '1H', value: '1H', timestamp: oneHourAgo.getTime()},
     {label: '1D', value: '1D', timestamp: oneDayAgo.getTime()},
     {label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime()},
@@ -118,8 +117,8 @@ function InteractiveChart() {
               <Text style={styles.stockPrice}>
                 $
                 {Number(currentPrice || '0')
-                  .toFixed(2)
-                  .toLocaleString('en-US')}
+                  ?.toFixed(2)
+                  ?.toLocaleString('en-US')}
               </Text>
             </View>
           )}
@@ -139,12 +138,12 @@ function InteractiveChart() {
               }}>
               $
               {Number(priceChange || 0)
-                .toFixed(2)
-                .toLocaleString('en-US')}{' '}
+                ?.toFixed(2)
+                ?.toLocaleString('en-US')}{' '}
               (
               {Number(divisionResult || 0)
-                .toFixed(2)
-                .toLocaleString('en-US')}
+                ?.toFixed(2)
+                ?.toLocaleString('en-US')}
               %)
             </Text>
           </View>
@@ -161,7 +160,7 @@ function InteractiveChart() {
               <LineChart width={apx(750)} height={apx(350)}>
                 <LineChart.Path color="white">
                   <LineChart.Gradient />
-                </LineChart.Path>   
+                </LineChart.Path>
                 <LineChart.CursorCrosshair
                   color="white"
                   onActivated={() => {

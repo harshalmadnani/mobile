@@ -18,7 +18,7 @@ export const getListOfCryptoFromMobulaApi = () => {
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData();
     if (data.length > 0) {
-      dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
+      dispatch(marketsAction.setListOfCrypto(data));
     } else {
       console.log(data);
       dispatch(marketsAction.setListOfCrypto([]));
@@ -58,7 +58,16 @@ export const getListOfStocksFromMobulaApi = () => {
     const stockList = [];
     Object.keys(data).forEach(function (key, index) {
       console.log('index', index);
-      stockList.push(data[key]);
+      if (key === '0x407274abb9241da0a1889c1b8ec65359dd9d316d') {
+        stockList.push({
+          ...data[key],
+          symbol: 'Coin',
+          name: 'Coinbase Global Inc',
+          logo: 'https://res.cloudinary.com/xade-finance/image/upload/v1711428857/s6och6simtaaau32xjq3.png',
+        });
+      } else {
+        stockList.push(data[key]);
+      }
     });
     console.log('key object commodity', stockList.length, stockList);
     dispatch(marketsAction.setListOfCrypto(stockList));
@@ -66,7 +75,12 @@ export const getListOfStocksFromMobulaApi = () => {
 };
 export const setAssetMetadata = assetName => {
   return async (dispatch, getState) => {
-    const data = await getAssetMetadata(assetName);
+    const data = await getAssetMetadata(
+      assetName === 'Coinbase Global Inc'
+        ? 'Wrapped Coinbase Global, Inc. Class A Common Stock - Dinari'
+        : assetName,
+    );
+    console.log('coinbase asset data', assetName, data);
     dispatch(marketsAction.setSelectedAssetData(data));
   };
 };

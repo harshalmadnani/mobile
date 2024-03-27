@@ -83,8 +83,6 @@ const MarketChart = props => {
       };
     }, []),
   );
-  console.log('current holdings', JSON.stringify(currentAsset));
-  console.log('Metdata', selectedAssetMetaData);
   const {width, height} = Dimensions.get('window');
   const formatNumber = numString => {
     const num = parseFloat(numString);
@@ -170,13 +168,16 @@ const MarketChart = props => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={styles.stockHead}>{currentItem?.name}</Text>
+            <Text style={styles.stockHead}>
+              {currentItem?.name.includes('Coinbase') //Temporary Fix
+                ? 'Coinbase'
+                : currentItem?.name}
+            </Text>
           </View>
         </View>
 
         <View style={styles.coinChart}>
           <View style={styles.chartContainer}>
-            {/* <TradingViewChart width={screenWidth} height={300} /> */}
             <InvestmentChart assetName={currentItem?.name} />
           </View>
         </View>
@@ -291,65 +292,61 @@ const MarketChart = props => {
             <View>
               {isLoading ? (
                 <ActivityIndicator size="large" color="#0000ff" />
-              ) : (
-                <FlatList
-                  data={newsData}
-                  keyExtractor={item => item.id.toString()}
-                  renderItem={({item}) => (
-                    <View
-                      style={{
-                        marginVertical: '5%',
-                        alignItems: 'flex-start',
-                        marginHorizontal: '5%',
-                      }}>
-                      <TouchableOpacity
-                        onPress={() => Linking.openURL(item.url)}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginBottom: 10,
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 13,
-                              color: 'gray',
-                              marginRight: 5,
-                            }}>
-                            {new Date(item.published_at).toLocaleTimeString()}
-                          </Text>
-                          <Text style={{marginHorizontal: 5, color: 'gray'}}>
-                            ·
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 13,
-                              color: 'gray',
-                              marginRight: 5,
-                            }}>
-                            {new Date(item.published_at).toLocaleDateString()}
-                          </Text>
-                          <Text style={{marginHorizontal: 5, color: 'gray'}}>
-                            ·
-                          </Text>
-                          <Text style={{fontSize: 13, color: 'gray'}}>
-                            {item.source.title}
-                          </Text>
-                        </View>
+              ) : newsData.length > 0 ? (
+                newsData.map((item, i) => (
+                  <View
+                    key={i.toString()}
+                    style={{
+                      marginVertical: '5%',
+                      alignItems: 'flex-start',
+                      marginHorizontal: '5%',
+                    }}>
+                    <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginBottom: 10,
+                        }}>
                         <Text
                           style={{
-                            fontSize: 24,
-                            fontWeight: 'bold',
-                            color: '#D1D2D9',
-                            textAlign: 'justify',
+                            fontSize: 13,
+                            color: 'gray',
+                            marginRight: 5,
                           }}>
-                          {item.title}
+                          {new Date(item.published_at).toLocaleTimeString()}
                         </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                />
-              )}
+                        <Text style={{marginHorizontal: 5, color: 'gray'}}>
+                          ·
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 13,
+                            color: 'gray',
+                            marginRight: 5,
+                          }}>
+                          {new Date(item.published_at).toLocaleDateString()}
+                        </Text>
+                        <Text style={{marginHorizontal: 5, color: 'gray'}}>
+                          ·
+                        </Text>
+                        <Text style={{fontSize: 13, color: 'gray'}}>
+                          {item.source.title}
+                        </Text>
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 24,
+                          fontWeight: 'bold',
+                          color: '#D1D2D9',
+                          textAlign: 'justify',
+                        }}>
+                        {item.title}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                ))
+              ) : null}
             </View>
           )}
           {selectedTab === 'Degen AI' && (

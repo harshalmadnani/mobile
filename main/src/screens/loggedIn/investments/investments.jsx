@@ -288,7 +288,7 @@ const Investments = ({ navigation }) => {
           width: '95%',
           backgroundColor: '#1d1d1d',
           position: 'absolute',
-          bottom: 90,
+          bottom: Platform.OS === 'ios' ? '13%' : '9%', 
           alignSelf: 'center',
           alignItems: 'center',
           borderRadius: 32,

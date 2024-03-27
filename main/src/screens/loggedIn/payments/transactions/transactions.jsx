@@ -132,7 +132,7 @@ const Transaction = ({navigation, route}) => {
               fontFamily: 'EuclidCircularA-Medium',
               textAlign: 'center',
             }}>
-            ${txDetails.value.toFixed(4)}
+            ${txDetails.value?.toFixed(4)}
           </Text>
         </View>
         <View style={{flexDirection: 'column', marginTop: '10%'}}>

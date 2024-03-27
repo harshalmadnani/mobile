@@ -228,7 +228,7 @@ const Ramper = ({ navigation }) => {
                             width: '100%',
                             borderRadius: 30,
                         }}
-                        onPress={() => selectedId === 'wallet' ? setModalVisible(true) : navigation.push('Uniramp', { value: value })} // Open modal on press
+                        onPress={() => selectedId === 'wallet' ? navigation.push('QRScreen'): navigation.push('Uniramp', { value: value })} // Open modal on press
                     >
                         <LinearGradient
                             useAngle={true}

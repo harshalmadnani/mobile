@@ -8,6 +8,7 @@ import {
   FlatList,
   ScrollView,
   Modal,
+  Platform,
 } from 'react-native';
 import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
@@ -246,7 +247,7 @@ const Portfolio = ({navigation}) => {
                       color: '#fff',
                       fontFamily: 'Unbounded-Bold',
                     }}>
-                    ${holdings?.total_wallet_balance.toFixed(2)}
+                    ${holdings?.total_wallet_balance?.toFixed(2)}
                   </Text>
                 </View>
 
@@ -283,7 +284,7 @@ const Portfolio = ({navigation}) => {
                           holdings?.total_unrealized_pnl -
                           holdings?.total_realized_pnl)) *
                       100
-                    ).toFixed(2)}
+                    )?.toFixed(2)}
                     %
                   </Text>
                 </View>
@@ -320,7 +321,7 @@ const Portfolio = ({navigation}) => {
                     holdings?.total_wallet_balance -
                     holdings?.total_unrealized_pnl -
                     holdings?.total_realized_pnl
-                  ).toFixed(2)}
+                  )?.toFixed(2)}
                 </Text>
               </View>
               <View
@@ -348,7 +349,7 @@ const Portfolio = ({navigation}) => {
                     flex: 1,
                     fontFamily: 'Unbounded-Medium',
                   }}>
-                  ${holdings?.total_unrealized_pnl.toFixed(2)}
+                  ${holdings?.total_unrealized_pnl?.toFixed(2)}
                 </Text>
               </View>
               <View
@@ -376,7 +377,7 @@ const Portfolio = ({navigation}) => {
                     flex: 1,
                     fontFamily: 'Unbounded-Medium',
                   }}>
-                  ${holdings?.total_realized_pnl.toFixed(2)}
+                  ${holdings?.total_realized_pnl?.toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -425,7 +426,7 @@ const Portfolio = ({navigation}) => {
                 color: '#fff',
                 fontSize: 16,
               }}>
-              ${Number(usdcBalance).toFixed(2).toLocaleString('en-US')}
+              ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
             </Text>
           </View>
           <View
@@ -489,7 +490,7 @@ const Portfolio = ({navigation}) => {
                   color: '#9C9C9C',
                   fontFamily: 'NeueMontreal-Medium',
                 }}>
-                Xade Shards can be redeemed{' '}
+                Distributed at the end of every week
               </Text>
             </View>
           </View>
@@ -581,14 +582,14 @@ const Portfolio = ({navigation}) => {
         }}
         style={{
           position: 'absolute', // Positions the button over the content
-          bottom: '10%', // Distance from the bottom of the screen
+          bottom: Platform.OS === 'ios' ? '5%' : '8.5%', // Distance from the bottom of the screen
           width: '95%',
           height: 56, // Button height
           borderRadius: 28, // Circular button
           backgroundColor: '#FFF', // Button color
           justifyContent: 'center', // Center the icon or text inside the button
           alignItems: 'center', // Center the icon or text inside the button
-          shadowColor: '#FFF', // Shadow for the button
+          shadowColor: '#000', // Shadow for the button
 
           shadowOffset: {
             width: 2,

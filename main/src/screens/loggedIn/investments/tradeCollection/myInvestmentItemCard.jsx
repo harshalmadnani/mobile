@@ -70,7 +70,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             }}>
             <View>
               <Text style={styles.text2}>
-                ${(item.current_price * item.balance).toFixed(3)}
+                ${(item.current_price * item.balance)?.toFixed(3)}
               </Text>
             </View>
             <View>
@@ -80,16 +80,16 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   {(
                     (item.unrealized_pnl + item.realized_pnl) /
                     item.price_bought
-                  ).toFixed(2)}
+                  )?.toFixed(2)}
                   %
                 </Text>
               )}
               {item.unrealized_pnl < 0 && (
                 <Text style={styles.text4}>
                   {(
-                    (item.unrealized_pnl + item.realized_pnl) /
-                    item.price_bought
-                  ).toFixed(2)}
+                    (item?.unrealized_pnl + item?.realized_pnl) /
+                    item?.price_bought
+                  )?.toFixed(2)}
                   %
                 </Text>
               )}
@@ -160,7 +160,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     fontFamily: 'Unbounded-Medium',
                     marginVertical: 10,
                   }}>
-                  ${item.current_price.toFixed(2)}
+                  ${item?.current_price?.toFixed(2)}
                 </Text>
                 <Text
                   style={{
@@ -206,7 +206,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                         color: '#fff',
                         fontFamily: 'Unbounded-Bold',
                       }}>
-                      ${(item.current_price * item.balance).toFixed(2)}
+                      ${(item?.current_price * item?.balance)?.toFixed(2)}
                     </Text>
                   </View>
 
@@ -237,11 +237,11 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                         fontFamily: 'Unbounded-Bold',
                       }}>
                       {(
-                        (item.realized_pnl + item.unrealized_pnl) /
-                        (item.current_price * item.balance -
-                          item.unrealized_pnl -
-                          item.realized_pnl)
-                      ).toFixed(2)}
+                        (item?.realized_pnl + item?.unrealized_pnl) /
+                        (item?.current_price * item?.balance -
+                          item?.unrealized_pnl -
+                          item?.realized_pnl)
+                      )?.toFixed(2)}
                       %
                     </Text>
                   </View>
@@ -274,10 +274,10 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     {' '}
                     $
                     {(
-                      item.current_price * item.balance -
-                      item.unrealized_pnl -
-                      item.realized_pnl
-                    ).toFixed(2)}
+                      item?.current_price * item?.balance -
+                      item?.unrealized_pnl -
+                      item?.realized_pnl
+                    )?.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -304,7 +304,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    ${item.price_bought.toFixed(2)}
+                    ${item?.price_bought?.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -331,7 +331,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    ${item.unrealized_pnl.toFixed(2)}
+                    ${item?.unrealized_pnl?.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -358,7 +358,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    ${item.realized_pnl.toFixed(2)}
+                    ${item?.realized_pnl?.toFixed(2)}
                   </Text>
                 </View>
               </View>

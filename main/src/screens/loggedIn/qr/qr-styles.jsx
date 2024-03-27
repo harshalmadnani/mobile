@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
 
   header: {
     textAlign: 'center',
-    fontFamily: 'EuclidCircularA-SemiBold',
+    fontFamily: 'NeueMontreal-Medium',
     fontSize: 35,
     color: '#fff',
   },
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: 30,
-    fontFamily: 'EuclidCircularA-Medium',
+    fontFamily: 'Unbounded-Medium',
   },
 
   address: {

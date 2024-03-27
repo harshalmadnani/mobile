@@ -42,7 +42,7 @@ const addPoints = async () => {
       body: JSON.stringify(inputValue),
     });
     const data = await response.json();
-    if (data.points > 0) return data.points.toFixed(0).toLocaleString();
+    if (data.points > 0) return data.points?.toFixed(0).toLocaleString();
     else return 0;
   } catch (err) {
     console.error(err);

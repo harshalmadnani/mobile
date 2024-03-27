@@ -16,13 +16,13 @@ const WalletTransactionTransferCard = ({item}) => {
     if (number < 1000) {
       return number;
     } else if (number >= 1000 && number < 1000000) {
-      return (number / 1000).toFixed(1) + 'K';
+      return (number / 1000)?.toFixed(1) + 'K';
     } else if (number >= 1000000 && number < 1000000000) {
-      return (number / 1000000).toFixed(1) + 'M';
+      return (number / 1000000)?.toFixed(1) + 'M';
     } else if (number >= 1000000000 && number < 1000000000000) {
-      return (number / 1000000000).toFixed(1) + 'B';
+      return (number / 1000000000)?.toFixed(1) + 'B';
     } else if (number >= 1000000000000 && number < 1000000000000000) {
-      return (number / 1000000000000).toFixed(1) + 'T';
+      return (number / 1000000000000)?.toFixed(1) + 'T';
     }
   }
   return (
@@ -37,9 +37,9 @@ const WalletTransactionTransferCard = ({item}) => {
         paddingHorizontal: 8,
         paddingVertical: 18,
         marginBottom: '0%',
-        marginVertical:'5%',
-        alignSelf:'center',
-        marginHorizontal:"2%"
+        marginVertical: '5%',
+        alignSelf: 'center',
+        marginHorizontal: '2%',
       }}>
       <View
         style={{
@@ -94,9 +94,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     fontFamily: 'Unbounded-Regular',
     color: '#ffffff',
-    alignSelf:'center',
-    alignContent:'center',
-    alignItems:'center'
+    alignSelf: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
   },
 });
 
