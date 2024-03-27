@@ -41,18 +41,32 @@ function QRCode() {
   return (
     <View>
       <View>
-        <Text style={styles.header}>QR Code</Text>
+        <Text style={styles.header}>Deposit USDC on Polygon POS</Text>
         <View style={styles.userInfo}>
           <Text style={styles.name}>{String(info)}</Text>
           <TouchableHighlight
-            onPress={() => {
-              Clipboard.setString(String(address).toLowerCase());
-              Alert.alert('Copied Address To Clipboard');
-            }}>
-            <Text style={styles.address}>
-              {String(address).toLowerCase().substring(0, 35)}...
-            </Text>
-          </TouchableHighlight>
+  onPress={() => {
+   
+    Clipboard.setString(String(address).toLowerCase());
+   
+    Alert.alert('Copied Address To Clipboard');
+  }}
+>
+  <View style={{flexDirection:'row',alignItems:'center',alignSelf:"center",justifyContent:'center'}}> 
+    <Text style={styles.address}>
+      {`${String(address).toLowerCase().substring(0, 8)}...${String(address).toLowerCase().slice(-8)} `}
+    </Text>
+    <View style={{marginTop:'5%'}}>
+    <Icon
+      name="file-copy"
+      size={14}
+      color="#f0f0f0"
+      type="materialicons"
+      alignSelf="center"
+    />
+    </View>
+  </View>
+</TouchableHighlight>
         </View>
         <View style={{width: '100%', alignItems: 'center'}}>
           <View style={styles.qr}>
@@ -165,7 +179,24 @@ class QRPage extends Component {
 
   render(navigation) {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{backgroundColor:'#000'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginTop: '5%' ,backgroundColor:'#000',marginLeft:'2%'}}>
+                        <Icon
+                            name={'navigate-before'}
+                            size={30}
+                            color={'#f0f0f0'}
+                            type="materialicons"
+                            onPress={() => this.props.navigation.goBack()}
+                            style={{ marginLeft: '15%' }}
+                        />
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginRight: '10%' }}>
+                            <Text style={{
+                                color: '#F0F0F0',
+                                fontFamily: 'Unbounded-Medium',
+                                fontSize: 16,
+                            }}>Deposit Funds</Text>
+                        </View>
+                    </View>
         <ScrollView>
           <View style={styles.container}>
             <View style={styles.topbar}></View>

@@ -61,8 +61,8 @@ export const getListOfStocksFromMobulaApi = () => {
       if (key === '0x407274abb9241da0a1889c1b8ec65359dd9d316d') {
         stockList.push({
           ...data[key],
-          symbol: 'Coinbase',
-          // name: 'Coinbase Global Inc',
+          symbol: 'Coin',
+          name: 'Coinbase Global Inc',
           logo: 'https://res.cloudinary.com/xade-finance/image/upload/v1711428857/s6och6simtaaau32xjq3.png',
         });
       } else {
