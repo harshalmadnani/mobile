@@ -73,6 +73,7 @@ function InteractiveChart({assetName}) {
       if (from === null) return; // Early exit if timestamp is not found
       try {
         const data = await getHistoricalData(assetName, from);
+        console.log('historical data....', data);
         const historicalPriceXYPair = data.price_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
@@ -98,6 +99,7 @@ function InteractiveChart({assetName}) {
             : null;
 
           const data = await getHistoricalData(assetName, from);
+          console.log('historical data....', data);
           const historicalPriceXYPair = data.price_history.map(entry => {
             return {timestamp: entry[0], value: entry[1]};
           });

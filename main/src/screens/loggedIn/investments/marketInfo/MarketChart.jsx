@@ -168,13 +168,16 @@ const MarketChart = props => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={styles.stockHead}>{currentItem?.name}</Text>
+            <Text style={styles.stockHead}>
+              {currentItem?.name.includes('Coinbase') //Temporary Fix
+                ? 'Coinbase'
+                : currentItem?.name}
+            </Text>
           </View>
         </View>
 
         <View style={styles.coinChart}>
           <View style={styles.chartContainer}>
-            {/* <TradingViewChart width={screenWidth} height={300} /> */}
             <InvestmentChart assetName={currentItem?.name} />
           </View>
         </View>

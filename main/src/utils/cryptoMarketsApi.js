@@ -45,7 +45,7 @@ export const getHistoricalData = async (assetName, from) => {
     );
     return response?.data?.data;
   } catch (error) {
-    console.log('error  from asset api:', error);
+    console.log('error  from history api:', error);
     return [];
   }
 };
@@ -96,12 +96,11 @@ export const getCommoditiesListData = async assets => {
 export const getStocksListData = async assets => {
   try {
     const response = await axios.get(
-      `${mobulaBaseURL}/market/multi-data?assets=0x407274abb9241da0a1889c1b8ec65359dd9d316d,0x2f71b3804a74a013d00065225752dba9ad061e51`,
+      `${mobulaBaseURL}/market/multi-data?assets=0x407274abb9241da0a1889c1b8ec65359dd9d316d&blockchains=42161`,
       {
         headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
       },
     );
-    console.log('commodities data....', response.data);
     return response?.data?.data;
   } catch (error) {
     console.log('error  from asset api:', error);
