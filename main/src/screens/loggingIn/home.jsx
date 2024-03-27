@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef } from 'react';
+import React, {Component, useEffect, useRef} from 'react';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -11,11 +11,11 @@ import {
   Platform,
   Animated,
 } from 'react-native';
-import { Text } from '@rneui/themed';
+import {Text} from '@rneui/themed';
 import BouncyIcon from './BouncyIcon';
-import { Icon } from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 // const Web3 = require('web3');
-import { PNAccount } from '../../Models/PNAccount';
+import {PNAccount} from '../../Models/PNAccount';
 import FastImage from 'react-native-fast-image';
 import {
   FlingGestureHandler,
@@ -23,16 +23,16 @@ import {
   State,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
-import { LoginCarousel } from './loginCarousel';
-import { onClickLogin } from '../../particle-auth';
+import LoginCarousel from './loginCarousel';
+import {onClickLogin} from '../../particle-auth';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 // import * as particleAuth from 'react-native-particle-auth';
 
 import LinearGradient from 'react-native-linear-gradient';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useDispatch } from 'react-redux';
-import { onAuthCoreLogin } from '../../store/actions/auth';
+import {useDispatch} from 'react-redux';
+import {onAuthCoreLogin} from '../../store/actions/auth';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -75,7 +75,7 @@ const images = [
   },
 ];
 
-const StaticHomeScreen = ({ navigation }) => {
+const StaticHomeScreen = ({navigation}) => {
   const [selectedButton, setSelectedButton] = React.useState(
     `THE ULTIMATE${'\n'}TRADING ${'\n'} EXPERIENCE`,
   );
@@ -92,7 +92,7 @@ const StaticHomeScreen = ({ navigation }) => {
     }, 3000);
   }, []);
 
-  const handleSwipeUp = ({ nativeEvent }) => {
+  const handleSwipeUp = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.BEGAN) {
       // Trigger haptic feedback
       const options = {
@@ -122,7 +122,7 @@ const StaticHomeScreen = ({ navigation }) => {
                 <View
                   style={
                     selectedButton ==
-                      `Pay globally with${'\n'}close to zero fees`
+                    `Pay globally with${'\n'}close to zero fees`
                       ? styles.selected
                       : styles.carouselIndicator
                   }></View>
@@ -152,7 +152,7 @@ const StaticHomeScreen = ({ navigation }) => {
                   address={'0x'}
                   key={images}
                 />
-                <View style={{ marginTop: '0%' }}>
+                <View style={{marginTop: '0%'}}>
                   <BouncyIcon />
                   <Text style={styles.getStartedText}>
                     SWIPE UP TO GET STARTED

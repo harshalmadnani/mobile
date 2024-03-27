@@ -73,9 +73,9 @@ export const onAuthCoreLogin = navigation => {
     global.mainnet = true;
     dispatch(globalActions.setMainnent(true));
     initializedAuthCore();
-    navigation.push('Loading');
+    navigation.navigate('Loading');
     try {
-      const userInfo = await connectWithAuthCore();
+      const userInfo = await connectWithAuthCore(navigation);
       if (userInfo) {
         console.log('user info......', userInfo);
         let email = userInfo.email?.toLowerCase()

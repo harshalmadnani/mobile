@@ -86,6 +86,7 @@ export const connectWithAuthCore = async () => {
     return userInfo;
   } else {
     const error = result.data;
+    navigation.navigate('LoggedOutHome');
     console.log('connect', error);
     return 0;
   }
