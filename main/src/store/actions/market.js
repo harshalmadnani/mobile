@@ -18,7 +18,7 @@ export const getListOfCryptoFromMobulaApi = () => {
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData();
     if (data.length > 0) {
-      dispatch(marketsAction.setListOfCrypto(listOfCrypto.concat(data)));
+      dispatch(marketsAction.setListOfCrypto(data));
     } else {
       console.log(data);
       dispatch(marketsAction.setListOfCrypto([]));
@@ -76,8 +76,14 @@ export const getListOfStocksFromMobulaApi = () => {
 export const setAssetMetadata = assetName => {
   return async (dispatch, getState) => {
     const data = await getAssetMetadata(assetName);
-    console.log('coinbase asset data', data);
-    dispatch(marketsAction.setSelectedAssetData(data));
+    console.log('coinbase asset data', assetName, data);
+    dispatch(
+      marketsAction.setSelectedAssetData(
+        assetName === 'Coinbase Global Inc'
+          ? 'Wrapped Coinbase Global, Inc. Class A Common Stock - Dinari'
+          : data,
+      ),
+    );
   };
 };
 export const setHistoricalDataOfSelectedTimeFrame = (

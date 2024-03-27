@@ -134,7 +134,7 @@ const AddFund = ({navigation}) => {
 
       const {tokenBalance, mainnet} = await paymentsLoad(web3, address);
       if (Number(tokenBalance) > 1000) {
-        setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
+        setBalance(Number(tokenBalance / 1000)?.toFixed(3) + ' K');
       } else {
         setBalance(tokenBalance);
       }

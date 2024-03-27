@@ -247,7 +247,7 @@ const Portfolio = ({navigation}) => {
                       color: '#fff',
                       fontFamily: 'Unbounded-Bold',
                     }}>
-                    ${holdings?.total_wallet_balance.toFixed(2)}
+                    ${holdings?.total_wallet_balance?.toFixed(2)}
                   </Text>
                 </View>
 
@@ -284,7 +284,7 @@ const Portfolio = ({navigation}) => {
                           holdings?.total_unrealized_pnl -
                           holdings?.total_realized_pnl)) *
                       100
-                    ).toFixed(2)}
+                    )?.toFixed(2)}
                     %
                   </Text>
                 </View>
@@ -321,7 +321,7 @@ const Portfolio = ({navigation}) => {
                     holdings?.total_wallet_balance -
                     holdings?.total_unrealized_pnl -
                     holdings?.total_realized_pnl
-                  ).toFixed(2)}
+                  )?.toFixed(2)}
                 </Text>
               </View>
               <View
@@ -349,7 +349,7 @@ const Portfolio = ({navigation}) => {
                     flex: 1,
                     fontFamily: 'Unbounded-Medium',
                   }}>
-                  ${holdings?.total_unrealized_pnl.toFixed(2)}
+                  ${holdings?.total_unrealized_pnl?.toFixed(2)}
                 </Text>
               </View>
               <View
@@ -377,7 +377,7 @@ const Portfolio = ({navigation}) => {
                     flex: 1,
                     fontFamily: 'Unbounded-Medium',
                   }}>
-                  ${holdings?.total_realized_pnl.toFixed(2)}
+                  ${holdings?.total_realized_pnl?.toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -426,7 +426,7 @@ const Portfolio = ({navigation}) => {
                 color: '#fff',
                 fontSize: 16,
               }}>
-              ${Number(usdcBalance).toFixed(2).toLocaleString('en-US')}
+              ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
             </Text>
           </View>
           <View

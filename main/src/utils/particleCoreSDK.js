@@ -67,7 +67,7 @@ export const getAuthCoreProvider = loginType => {
   const web3 = new Web3(provider);
   return web3;
 };
-export const connectWithAuthCore = async () => {
+export const connectWithAuthCore = async navigation => {
   const supportAuthType = [SupportAuthType.Email];
   const result = await particleAuthCore.connect(
     LoginType.Email,
@@ -87,6 +87,7 @@ export const connectWithAuthCore = async () => {
   } else {
     const error = result.data;
     console.log('connect', error);
+    navigation.navigate('LoggedOutHome');
     return 0;
   }
 };

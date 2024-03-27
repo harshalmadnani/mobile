@@ -158,8 +158,8 @@ function InteractiveChart({assetName}) {
               <Text style={styles.stockPrice}>$</Text>
               <Text style={styles.stockPrice}>
                 {Number(currentPrice || '0')
-                  .toFixed(2)
-                  .toLocaleString('en-US')}
+                  ?.toFixed(2)
+                  ?.toLocaleString('en-US')}
               </Text>
             </View>
           )}
@@ -179,12 +179,12 @@ function InteractiveChart({assetName}) {
               }}>
               $
               {Number(priceChange || 0)
-                .toFixed(2)
-                .toLocaleString('en-US')}{' '}
+                ?.toFixed(2)
+                ?.toLocaleString('en-US')}{' '}
               (
               {Number(divisionResult || 0)
-                .toFixed(2)
-                .toLocaleString('en-US')}
+                ?.toFixed(2)
+                ?.toLocaleString('en-US')}
               %)
             </Text>
           </View>

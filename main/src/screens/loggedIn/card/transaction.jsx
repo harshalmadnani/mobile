@@ -150,7 +150,7 @@ const CardTransactions = () => {
                     fontFamily: `EuclidCircularA-Medium`,
                   }}>
                   {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
-                  {json.value.toFixed(3)}
+                  {json?.value?.toFixed(3)}
                 </Text>
                 <Icon
                   // style={styles.tup}
