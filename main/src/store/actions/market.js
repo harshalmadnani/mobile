@@ -75,15 +75,13 @@ export const getListOfStocksFromMobulaApi = () => {
 };
 export const setAssetMetadata = assetName => {
   return async (dispatch, getState) => {
-    const data = await getAssetMetadata(assetName);
-    console.log('coinbase asset data', assetName, data);
-    dispatch(
-      marketsAction.setSelectedAssetData(
-        assetName === 'Coinbase Global Inc'
-          ? 'Wrapped Coinbase Global, Inc. Class A Common Stock - Dinari'
-          : data,
-      ),
+    const data = await getAssetMetadata(
+      assetName === 'Coinbase Global Inc'
+        ? 'Wrapped Coinbase Global, Inc. Class A Common Stock - Dinari'
+        : assetName,
     );
+    console.log('coinbase asset data', assetName, data);
+    dispatch(marketsAction.setSelectedAssetData(data));
   };
 };
 export const setHistoricalDataOfSelectedTimeFrame = (
