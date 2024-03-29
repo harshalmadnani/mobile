@@ -98,6 +98,7 @@
     "react-native-randombytes": "^3.6.1",
     "react-native-reanimated": "^3.8.0",
     "react-native-rename": "^3.2.12",
+    "react-native-root-toast": "^3.5.1",
     "react-native-safe-area-context": "^4.9.0",
     "react-native-screens": "^3.29.0",
     "react-native-select-dropdown": "^3.4.0",

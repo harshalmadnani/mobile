@@ -4838,7 +4838,7 @@ depd@~1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==
 
-deprecated-react-native-prop-types@^2.2.0:
+deprecated-react-native-prop-types@^2.2.0, deprecated-react-native-prop-types@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/deprecated-react-native-prop-types/-/deprecated-react-native-prop-types-2.3.0.tgz#c10c6ee75ff2b6de94bb127f142b814e6e08d9ab"
   integrity sha512-pWD0voFtNYxrVqvBMYf5gq3NA2GCpfodS1yNynTPc93AYA/KEMGeWDqqeUB6R2Z9ZofVhks2aeJXiuQqKNpesA==
@@ -10035,6 +10035,20 @@ react-native-rename@^3.2.12:
     replace-in-file "^7.0.1"
     shelljs "^0.8.5"
     update-check "^1.5.4"
+
+react-native-root-siblings@^4.0.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-root-siblings/-/react-native-root-siblings-4.1.1.tgz#b7742db7634a87f507eb99a5fd699c4f10c46ab0"
+  integrity sha512-sdmLElNs5PDWqmZmj4/aNH4anyxreaPm61c4ZkRiR8SO/GzLg6KjAbb0e17RmMdnBdD0AIQbS38h/l55YKN4ZA==
+
+react-native-root-toast@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-root-toast/-/react-native-root-toast-3.5.1.tgz#550520c77ee15c97ea6fb90151262ceb89cdcacc"
+  integrity sha512-zqsuec7Ugx2/9hR9BHqcmb3WWC/WBouqn2RYIpeTG+OpVvVfvr2UhWK4kLPJLk5/icZWl3xJrqiktPpbRpEA2A==
+  dependencies:
+    deprecated-react-native-prop-types "^2.3.0"
+    prop-types "^15.5.10"
+    react-native-root-siblings "^4.0.0"
 
 react-native-safe-area-context@^4.9.0:
   version "4.9.0"

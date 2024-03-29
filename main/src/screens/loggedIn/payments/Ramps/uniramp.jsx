@@ -6,25 +6,24 @@ import {useSelector} from 'react-redux';
 const Uniramp = ({route, navigation}) => {
   const webViewRef = useRef(null);
 
-  const address = useSelector(x => x.auth.address);
-
   const refresh = () => {
     if (webViewRef.current) webViewRef.current.reload();
   };
-
+  const {txInfo} = route?.params;
+  console.log('txInfo....', txInfo);
   return (
     <View style={styles.container}>
       <WebView
         ref={webViewRef}
         source={{
-          uri: `https://widget.uniramp.com/?theme_mode=dark&onramp_chain=poly&onramp_crypto=0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359&onramp_hybrid=true&onramp_wallet=${address}&api_key=pk_prod_eb0suFktOsnpthQYX5LXoMXIychV7Ofv`,
+          uri: txInfo?.cefiInitiate?.url,
         }}
         style={styles.webView}
       />
       {/* Adjusted Overlay View */}
       <View style={styles.overlay}>
         <TouchableOpacity
-      onPress={() => navigation.push('Portfolio')}
+          onPress={() => navigation.push('Portfolio')}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>

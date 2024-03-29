@@ -12,10 +12,14 @@ import {
 import {useSelector} from 'react-redux';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import {addFundsAarcApiFundKit} from '../../../../utils/AarcDepositApi';
+import Toast from 'react-native-root-toast';
+import {
+  createTransactionOnRamp,
+  fetchOnRampPaymentMethodsBasedOnIP,
+  getQuoteForCefiOnRamps,
+} from '../../../../utils/OnrampApis';
 
 const Ramper = ({navigation}) => {
-  const UNIRAMP_API_BASE_URL = 'https://api.uniramp.io/v1/onramp';
   const getCurrencySymbol = currencyCode => {
     const format = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -26,12 +30,13 @@ const Ramper = ({navigation}) => {
     const symbol = parts.find(part => part.type === 'currency').value;
     return symbol;
   };
-  const unirampKey = 'pk_prod_eb0suFktOsnpthQYX5LXoMXIychV7Ofv';
+
   const [value, setValue] = useState('1');
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [fiat, setFiat] = useState([]);
   const [selectedId, setSelectedId] = useState('wallet');
   const [modalVisible, setModalVisible] = useState(false);
+
   const handleTextChange = text => {
     // Optional: Add validation or formatting for numeric input if needed
     const numericText = text.replace(/[^0-9]/g, ''); // This will strip non-numeric characters
@@ -44,58 +49,17 @@ const Ramper = ({navigation}) => {
     // Additional actions based on other selectedId values or conditions
   };
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
+
   useEffect(() => {
-    fetchPublicIPv4Address().then(ipAddress => {
-      fetchPaymentMethodsBasedOnIP(ipAddress);
-    });
+    fetchPaymentMethodsBasedOnIP();
   }, []);
 
   const onWalletConnectOpen = async () => {};
-  const [prepareTx, setPrepareTx] = useState(false);
 
-  const executeTransfer = async () => {
-    const res = await addFundsAarcApiFundKit(
-      evmInfo.smartAccount,
-      137,
-      '0x6f8a06447Ff6FcF75d803135a7de15CE88C1d4ec',
-      value * 1e18,
-      address,
-    );
-    console.log('response...........', res);
-  };
-  const fetchPublicIPv4Address = async () => {
+  const fetchPaymentMethodsBasedOnIP = async () => {
     try {
-      const response = await fetch('https://api.ipify.org?format=json');
-      const data = await response.json();
-      console.log('Public IPv4 Address:', data.ip);
-      return data.ip;
-    } catch (error) {
-      console.error('Error fetching public IPv4 address:', error);
-    }
-  };
-  let globalPaymentMethods = []; // This will store the payment methods accessible globally
-
-  const fetchPaymentMethodsBasedOnIP = async ipAddress => {
-    const params = new URLSearchParams({address: ipAddress});
-    const url = new URL(`${UNIRAMP_API_BASE_URL}/supported/ip`);
-    url.search = params.toString();
-
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'x-api-key': unirampKey,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('uni ramp fetch api', data);
-      const fetchedPaymentMethods = data.payment || []; // Default to an empty array if undefined
-      const fetchedfiat = data.fiat || [];
+      const {fetchedPaymentMethods, fetchedfiat} =
+        await fetchOnRampPaymentMethodsBasedOnIP();
       // Optionally, add a custom payment method
       fetchedPaymentMethods.push({
         id: 'wallet',
@@ -106,18 +70,61 @@ const Ramper = ({navigation}) => {
       setFiat(fetchedfiat);
       setPaymentMethods(fetchedPaymentMethods);
     } catch (error) {
+      setPaymentMethods([
+        {
+          id: 'wallet',
+          name: 'Wallet',
+          image:
+            'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image
+        },
+      ]);
       console.error('There was an error fetching payment methods:', error);
     }
   };
-
-  useEffect(() => {
-    fetchPublicIPv4Address().then(ipAddress => {
-      if (ipAddress) {
-        fetchPaymentMethodsBasedOnIP(ipAddress);
+  const onRampContinue = async () => {
+    console.log(fiat, paymentMethods);
+    const quote = await getQuoteForCefiOnRamps(
+      fiat,
+      paymentMethods.filter(x => x.id === selectedId)?.[0],
+      value,
+      'poly',
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+    );
+    if (quote?.gateways) {
+      const listAllTransactionFee = quote?.gateways?.map(x =>
+        parseInt(x?.transactionFee),
+      );
+      const minTransactionFee = Math.min(...listAllTransactionFee);
+      const txInfo = await createTransactionOnRamp(
+        quote?.gateways?.[0],
+        quote?.fiat,
+        quote?.fiatAmount,
+        quote?.payment,
+        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+        evmInfo?.smartAccount,
+      );
+      if (txInfo) {
+        navigation.push('Uniramp', {txInfo});
       }
-    });
-  }, []);
-  console.log('Fiat', fiat.image);
+    } else {
+      console.log('error', quote);
+      Toast.show(
+        quote?.type === 'minimum_gateway_error'
+          ? `This Payment Type Requires Minimum ${
+              quote?.amount / Math.pow(10, fiat?.decimal)
+            }`
+          : 'This is a message',
+        {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        },
+      );
+    }
+  };
 
   return (
     <LinearGradient
@@ -333,7 +340,7 @@ const Ramper = ({navigation}) => {
             onPress={async () =>
               selectedId === 'wallet'
                 ? onWalletConnectOpen()
-                : navigation.push('Uniramp', {value: value})
+                : await onRampContinue()
             } // Open modal on press
           >
             <LinearGradient
@@ -354,9 +361,7 @@ const Ramper = ({navigation}) => {
                   fontSize: 14,
                   fontFamily: 'Unbounded-ExtraBold',
                 }}>
-                {address
-                  ? `${address?.slice(0, 4)}...${address?.slice(-4)}`
-                  : 'CONTINUE'}
+                {'CONTINUE'}
               </Text>
             </LinearGradient>
           </TouchableOpacity>
@@ -409,16 +414,6 @@ const Ramper = ({navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  // button: {
-  //     flexDirection: 'row', // Align items in a row
-  //     width: 100,
-  //     height: 35,
-  //     borderRadius: 100,
-  //     backgroundColor: '#1D1D1D', // Add your desired background color
-  //     justifyContent: 'center', // Center items horizontally
-  //     alignItems: 'center', // Center items vertically
-  //     paddingHorizontal: 10, // Add some padding if needed
-  // },
   imagePlaceholder: {
     width: 24,
     height: 24,
