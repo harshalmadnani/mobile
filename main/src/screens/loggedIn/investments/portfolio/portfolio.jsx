@@ -550,7 +550,7 @@ const Portfolio = ({navigation}) => {
       <TouchableOpacity
         onPress={() => {
           navigation.push('Ramper');
-          ReactNativeHapticFeedback.trigger("impactHeavy", options);
+          ReactNativeHapticFeedback.trigger('impactHeavy', options);
         }}
         style={{
           position: 'absolute',
