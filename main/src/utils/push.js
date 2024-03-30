@@ -22,11 +22,11 @@ const getFcmToken = async () => {
   let fcmToken = await AsyncStorage.getItem('token');
   if (!fcmToken) {
     try {
-      const fcmToken = await messaging().getToken();
-      if (fcmToken) {
-        await AsyncStorage.setItem('token', fcmToken);
-        // fetch();
-      }
+      // const fcmToken = await messaging().getToken();
+      // if (fcmToken) {
+      //   await AsyncStorage.setItem('token', fcmToken);
+      //   // fetch();
+      // }
     } catch (error) {
       console.log('Error:', error);
     }
