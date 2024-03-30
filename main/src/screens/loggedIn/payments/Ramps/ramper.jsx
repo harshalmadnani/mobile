@@ -36,7 +36,7 @@ const Ramper = ({navigation}) => {
   const [fiat, setFiat] = useState([]);
   const [selectedId, setSelectedId] = useState('wallet');
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [buttonTitle, setButtonTitle] = useState('Continue');
   const handleTextChange = text => {
     // Optional: Add validation or formatting for numeric input if needed
     const numericText = text.replace(/[^0-9]/g, ''); // This will strip non-numeric characters
@@ -83,6 +83,7 @@ const Ramper = ({navigation}) => {
   };
   const onRampContinue = async () => {
     console.log(fiat, paymentMethods);
+    setButtonTitle('Getting Quotes...');
     const quote = await getQuoteForCefiOnRamps(
       fiat,
       paymentMethods.filter(x => x.id === selectedId)?.[0],
@@ -95,6 +96,7 @@ const Ramper = ({navigation}) => {
         parseInt(x?.transactionFee),
       );
       const minTransactionFee = Math.min(...listAllTransactionFee);
+      setButtonTitle('Creating Tx...');
       const txInfo = await createTransactionOnRamp(
         quote?.gateways?.[0],
         quote?.fiat,
@@ -103,15 +105,29 @@ const Ramper = ({navigation}) => {
         '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
         evmInfo?.smartAccount,
       );
-      if (txInfo) {
+      console.log('ramp tx error', txInfo);
+      if (!txInfo?.error) {
+        setButtonTitle('Continue');
         navigation.push('Uniramp', {txInfo});
+      } else {
+        setButtonTitle('Error');
+        console.log('error....', txInfo);
+        Toast.show(txInfo?.message, {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
+        setButtonTitle('Continue');
       }
     } else {
-      console.log('error', quote);
+      setButtonTitle('Error');
       Toast.show(
-        quote?.type === 'minimum_gateway_error'
+        quote?.data?.type === 'minimum_gateway_error'
           ? `This Payment Type Requires Minimum ${
-              quote?.amount / Math.pow(10, fiat?.decimal)
+              quote?.data?.amount / Math.pow(10, fiat?.decimal)
             }`
           : 'This is a message',
         {
@@ -123,6 +139,7 @@ const Ramper = ({navigation}) => {
           delay: 0,
         },
       );
+      setButtonTitle('Continue');
     }
   };
 
@@ -361,7 +378,7 @@ const Ramper = ({navigation}) => {
                   fontSize: 14,
                   fontFamily: 'Unbounded-ExtraBold',
                 }}>
-                {'CONTINUE'}
+                {buttonTitle}
               </Text>
             </LinearGradient>
           </TouchableOpacity>

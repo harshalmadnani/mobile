@@ -14,7 +14,7 @@ export const fetchOnRampPaymentMethodsBasedOnIP = async () => {
         'x-api-key': unirampKey,
       },
     });
-    console.log('uni ramp fetch api', response, response.data);
+
     const fetchedPaymentMethods = response.data.payment || []; // Default to an empty array if undefined
     const fetchedfiat = response.data.fiat || [];
     return {fetchedPaymentMethods, fetchedfiat};
@@ -37,19 +37,43 @@ export const getQuoteForCefiOnRamps = async (
   console.log(
     `${UNIRAMP_API_BASE_URL}/quote/cefi?fiat=${fiatInfo?.id}&fiatAmount=${
       fiatAmount * 10 ** fiatInfo?.decimal
-    }&payment=${paymentInfo?.id}&chain=${chain}&crypto=${tokenAddress}`,
+    }&payment=${
+      paymentInfo?.id
+    }&chain=${chain}&crypto=${tokenAddress}&hybrid=false`,
   );
+
   try {
     const response = await axios.get(url, {
       headers: {
         'x-api-key': unirampKey,
       },
     });
-    console.log('uni ramp fetch api', response, response);
+    console.log('uni ramp fetch api', response?.data);
     return response?.data;
   } catch (error) {
-    console.log('There was an error fetching quote methods:', error?.code);
-    return error;
+    console.log(
+      'There was an error fetching quote methods:',
+      error?.response?.data,
+    );
+    return error?.response?.data;
+  }
+};
+
+export const PollStatusFromUniRamps = async transactionId => {
+  const url = `${UNIRAMP_API_BASE_URL}/transaction/${transactionId}`;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'x-api-key': unirampKey,
+      },
+    });
+    return response?.data?.cefiInitiate?.status;
+  } catch (error) {
+    console.log(
+      'There was an error fetching quote methods:',
+      error?.response?.data,
+    );
+    return error?.response?.data?.cefiInitiate?.status;
   }
 };
 export const createTransactionOnRamp = async (
@@ -71,7 +95,6 @@ export const createTransactionOnRamp = async (
         chain: gatewayInfo?.chain,
         crypto,
         wallet: smartAccount,
-        defiGateway: 'lifi',
       },
       {
         headers: {
@@ -83,6 +106,11 @@ export const createTransactionOnRamp = async (
     console.log('uni ramp transaction api', response.data);
     return response?.data;
   } catch (error) {
+    console.log(
+      'There was an error fetching quote methods:',
+      error.response?.data,
+    );
+    return error.response?.data;
     console.log('There was an error fetching quote methods:', error.toString());
   }
 };
