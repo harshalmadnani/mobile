@@ -1,16 +1,7 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  Modal,
-} from 'react-native';
-import {useSelector} from 'react-redux';
-import {Icon} from 'react-native-elements';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, SafeAreaView, StyleSheet, Image, FlatList, Modal } from 'react-native';
+import { Icon } from 'react-native-elements';
+import { color } from 'react-native-elements/dist/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-root-toast';
 import {
@@ -145,114 +136,60 @@ const Ramper = ({navigation}) => {
     }
   };
 
-  return (
-    <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 0, y: 1}}
-      colors={['#000', '#000', '#000']}
-      locations={[0.17, 0.99, 1.0]}
-      style={{flex: 1}}>
-      <SafeAreaView style={{flex: 1}}>
-        {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}
-        <View style={{flex: 1}}>
-          {/* Header and content here */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-              width: '100%',
-              marginBottom: '10%',
-              marginTop: '5%',
-            }}>
-            <Icon
-              name={'navigate-before'}
-              size={30}
-              color={'#f0f0f0'}
-              type="materialicons"
-              onPress={() => navigation.push('Portfolio')}
-              style={{marginLeft: '10%'}}
-            />
-            <View
-              style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginRight: 30,
-              }}>
-              <Text
-                style={{
-                  color: '#F0F0F0',
-                  fontFamily: 'Unbounded-Medium',
-                  fontSize: 16,
-                }}>
-                Deposit Funds
-              </Text>
-            </View>
-          </View>
-          <View
-            style={{
-              marginTop: 80,
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: 8,
-            }}>
-            {selectedId === 'wallet' ? (
-              <Text
-                style={{
-                  fontSize: 80,
-                  color: '#fff',
-                  textAlign: 'center',
-                  marginTop: 10,
-                  fontFamily: 'Unbounded-Medium',
-                }}>
-                $
-              </Text>
-            ) : (
-              <Text
-                style={{
-                  fontSize: 80,
-                  color: '#fff',
-                  textAlign: 'center',
-                  marginTop: 10,
-                  fontFamily: 'Unbounded-Medium',
-                }}>
-                {getCurrencySymbol(fiat.id)}
-              </Text>
-            )}
-            <TextInput
-              style={{
-                fontSize: 80,
-                color: '#fff',
-                textAlign: 'center',
-                fontFamily: 'Unbounded-Medium',
-              }}
-              value={value}
-              onChangeText={text => {
-                setValue(text);
-              }}
-              keyboardType="numeric"
-            />
-          </View>
-          {selectedId === 'wallet' ? (
-            <View
-              style={{
-                marginTop: '2%',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 8,
-              }}>
-              <TouchableOpacity style={styles.button}>
-                <View style={styles.imagePlaceholder}>
-                  <Image
-                    source={{
-                      uri: 'https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png',
-                    }}
-                    style={{width: 24, height: 24, borderRadius: 12}} // Make image rounded
-                  />
-                </View>
-                <Text style={styles.text}>USDC</Text>
-                {/* <Icon
+    return (
+        <LinearGradient  start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        colors={['#000', '#000', '#000']}
+        locations={[0.17, 0.99, 1.0]} style={{ flex: 1 }}>
+            <SafeAreaView style={{ flex: 1 }}>
+                {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}
+                <View style={{ flex: 1 }}>
+                    {/* Header and content here */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', width: '100%', marginBottom: '10%', marginTop: '5%' }}>
+                        <Icon
+                            name={'navigate-before'}
+                            size={30}
+                            color={'#f0f0f0'}
+                            type="materialicons"
+                            onPress={() => navigation.push('Portfolio')}
+                            style={{ marginLeft: '10%' }}
+                        />
+                        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', marginRight: 30 }}>
+                            <Text style={{
+                                color: '#F0F0F0',
+                                fontFamily: 'Unbounded-Medium',
+                                fontSize: 16,
+                            }}>Deposit Funds</Text>
+                        </View>
+                    </View>
+                    <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 }}>
+                        {selectedId === 'wallet' ? (
+                            <Text style={{ fontSize: 80, color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Medium' }}>$</Text>)
+                            :
+                            (
+                                <Text style={{ fontSize: 80,  color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Medium' }}>{getCurrencySymbol(fiat.id)}</Text>
+                            )}
+                        <TextInput
+                            style={{ fontSize: 80, color: "#fff", textAlign: "center", fontFamily: "Unbounded-Medium", }}
+                            value={value}
+                            onChangeText={(text) => {
+                                setValue(text)
+                            }}
+                            keyboardType='numeric'
+
+                        />
+                    </View>
+                    {selectedId === "wallet" ? (
+                        <View style={{ marginTop: '2%', flexDirection: "row", justifyContent: "center", gap: 8 }}>
+                            <TouchableOpacity style={styles.button}>
+                                <View style={styles.imagePlaceholder}>
+                                    <Image
+                                        source={{ uri: 'https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png' }}
+                                        style={{ width: 24, height: 24, borderRadius: 12 }} // Make image rounded
+                                    />
+                                </View>
+                                <Text style={styles.text}>USDC</Text>
+                                {/* <Icon
                                 name={'expand-more'}
                                 size={16}
                                 color={'#f0f0f0'}
@@ -260,86 +197,26 @@ const Ramper = ({navigation}) => {
                                 onPress={() => navigation.goBack()}
                                 style={{ marginLeft: 120 }}
                             /> */}
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View
-              style={{
-                marginTop: '2%',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 8,
-              }}>
-              <TouchableOpacity style={styles.button}>
-                {/* <Image source={{ uri: fiat.image }} style={{
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
+                        <View style={{ marginTop: '2%', flexDirection: "row", justifyContent: "center", gap: 8 }}>
+                            <TouchableOpacity style={styles.button}>
+                                {/* <Image source={{ uri: fiat.image }} style={{
                                     width: 26,
                                     height: 26,
                                     borderRadius: 13, // Make the image round
                                     marginRight: 10,
                                 }} /> */}
 
-                <Text style={styles.text1}>{getCurrencySymbol(fiat.id)} </Text>
-                <Text style={styles.text}>{fiat.id.toUpperCase()}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+                                <Text style={styles.text1}>{getCurrencySymbol(fiat.id)} </Text>
+                                <Text style={styles.text}>{fiat.id.toUpperCase()}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                    }
 
-          <View style={{marginTop: '9%'}}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#7e7e7e',
-                textAlign: 'center',
-                fontFamily: 'NeueMontreal-Medium',
-              }}>
-              Choose your preffered deposit method
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#fff',
-                textAlign: 'center',
-                fontFamily: 'Satoshi-Bold',
-              }}>
-              to enter a new era of finance
-            </Text>
-          </View>
-          <View style={styles.wrapContainer}>
-            {paymentMethods.map(item => (
-              <TouchableOpacity
-                key={item.id}
-                onPress={() => setSelectedId(item.id)}
-                style={[
-                  styles.button,
-                  {
-                    borderColor:
-                      item.id === selectedId ? '#fff' : 'transparent',
-                  },
-                  {color: item.id === selectedId ? '#fff' : 'transparent'},
-                ]}>
-                <Image
-                  source={{uri: item.image}}
-                  style={{
-                    backgroundColor: '#fff',
-                    width: 26,
-                    height: 26,
-                    borderRadius: 13, // Make the image round
-                    marginRight: 10,
-                  }}
-                />
-                <Text
-                  style={{
-                    color: item.id === selectedId ? '#FFF' : '#8D8D8D',
-                    fontFamily: 'Satoshi-Regular',
-                  }}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
 
-        {/* Footer: Trade button sticky at the bottom */}
 
         <View
           style={{
@@ -418,21 +295,27 @@ const Ramper = ({navigation}) => {
                   Deposit from wallet
                 </Text>
               </TouchableOpacity>
-              {/* Button 2 */}
-              <TouchableOpacity
-                style={[styles.button, styles.buttonOpen, (padding = '1%')]}
-                onPress={() => navigation.push('QRScreen')}>
-                <Text
-                  style={{fontFamily: 'NeueMontreal-Medium', color: '#fff'}}>
-                  Deposit via QR code
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-      </SafeAreaView>
-    </LinearGradient>
-  );
+                        </View>
+                            {/* Button 1 */}
+                            <TouchableOpacity
+                                style={[styles.button1, styles.buttonClose,]}
+                                onPress={() => {
+                                    navigation.push('LiFi', { value: value });
+                                }}>
+                                <Text style={{ color: '#000',fontFamily:'NeueMontreal-Medium' }}>Deposit from wallet</Text>
+                            </TouchableOpacity>
+                            {/* Button 2 */}
+                            <TouchableOpacity
+                                style={[styles.button, styles.buttonOpen, padding = '1%']}
+                                onPress={() => navigation.push('QRScreen')}>
+                                <Text style={{ fontFamily: 'NeueMontreal-Medium',color:'#fff' }}>Deposit via QR code</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </SafeAreaView>
+        </LinearGradient>
+    );
 };
 const styles = StyleSheet.create({
   imagePlaceholder: {
@@ -511,22 +394,6 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 2,
-    borderRadius: 100,
-    padding: '5%',
-    paddingHorizontal: 10,
-    justifyContent: 'center',
-    margin: 1.5, // Space around each button
-    width: '95%',
-  },
 });
 
 export default Ramper;

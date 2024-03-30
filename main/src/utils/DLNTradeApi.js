@@ -255,6 +255,7 @@ export const confirmDLNTransaction = async (
       quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
     !quoteTxReciept?.tokenIn?.address
   ) {
+    console.log('Tx confirming started!!!');
     const erc20Abi = new ethers.utils.Interface(erc20);
     const proxyDlnAbi = new ethers.utils.Interface(ProxyDLNAbi);
     const sendData = erc20Abi.encodeFunctionData('transfer', [

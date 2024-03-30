@@ -6,6 +6,7 @@ import {Buffer} from 'buffer';
 global.Buffer = Buffer;
 import './global';
 import {
+  Image,
   View,
   ActivityIndicator,
   ImageBackground,
@@ -78,21 +79,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './store/store';
 import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxStatusPage';
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
-// 1. Get projectId at https://cloud.walletconnect.com
-
-// 2. Create config
-
-// 3. Define your chains
-// const mainnet = {
-//   chainId: 1,
-//   name: 'Ethereum',
-//   currency: 'ETH',
-//   explorerUrl: 'https://etherscan.io',
-//   rpcUrl: 'https://cloudflare-eth.com',
-// };
-
-// 4. Create modal
-
 function PreLaunchLoad({navigation}) {
   return (
     <View>
@@ -589,6 +575,7 @@ export default function App({navigation, uri}) {
 
     preLaunchChecks();
   }, []);
+  console.log('Here App');
   return (
     <RootSiblingParent>
       <Provider store={store}>

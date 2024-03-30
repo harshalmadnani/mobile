@@ -10,7 +10,7 @@ export async function requestUserPermission() {
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
   if (enabled) {
-    // getFcmToken();
+    getFcmToken();
     const address = global.withAuth
       ? global.loginAccount.scw
       : global.connectAccount?.publicAddress;
