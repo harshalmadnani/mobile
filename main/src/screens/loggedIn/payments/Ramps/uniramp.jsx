@@ -80,7 +80,7 @@ const Uniramp = ({route, navigation}) => {
         <TouchableOpacity
           onPress={() => navigation.push('Portfolio')}
           style={styles.iconButton}>
-          <Icon name="arrow-back" size={24} color="#fff" />
+          <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.overlayText}>Deposit Funds</Text>
         {/* <TouchableOpacity onPress={refresh} style={styles.iconButton}>
@@ -103,14 +103,14 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#000',
+    backgroundColor: '#fff',
     flexDirection: 'row', // Align children horizontally
     alignItems: 'center', // Align items vertically
-    height: '8%',
+    height: '7%',
     paddingHorizontal: 10, // Add some padding on the sides
   },
   overlayText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 18,
     justifyContent: 'center',
     fontFamily: 'Unbounded-Medium',

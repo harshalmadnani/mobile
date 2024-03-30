@@ -9,7 +9,12 @@ import {
   fetchOnRampPaymentMethodsBasedOnIP,
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
 const Ramper = ({navigation}) => {
   const getCurrencySymbol = currencyCode => {
     const format = new Intl.NumberFormat('en-US', {
@@ -21,7 +26,12 @@ const Ramper = ({navigation}) => {
     const symbol = parts.find(part => part.type === 'currency').value;
     return symbol;
   };
-
+  const getDynamicFontSize = (inputLength) => {
+    const baseSize = 80; // Base font size
+    if (inputLength < 3) return baseSize;
+    // Increase the decrement factor to reduce the size more quickly
+    return Math.max(baseSize - (inputLength - 4) * 10, 30); // Adjust 10 as needed
+};
   const [value, setValue] = useState('1');
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [fiat, setFiat] = useState([]);
@@ -136,6 +146,7 @@ const Ramper = ({navigation}) => {
     }
   };
 
+<<<<<<< Updated upstream
     return (
         <LinearGradient  start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -190,6 +201,111 @@ const Ramper = ({navigation}) => {
                                 </View>
                                 <Text style={styles.text}>USDC</Text>
                                 {/* <Icon
+=======
+  return (
+    <LinearGradient
+      start={{x: 0, y: 0}}
+      end={{x: 0, y: 1}}
+      colors={['#000', '#000', '#000']}
+      locations={[0.17, 0.99, 1.0]}
+      style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1}}>
+        {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}
+        <View style={{flex: 1}}>
+          {/* Header and content here */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              width: '100%',
+              marginBottom: '10%',
+              marginTop: '5%',
+            }}>
+            <Icon
+              name={'navigate-before'}
+              size={30}
+              color={'#f0f0f0'}
+              type="materialicons"
+              onPress={() => navigation.push('Portfolio')}
+              style={{marginLeft: '10%'}}
+            />
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginRight: 30,
+              }}>
+              <Text
+                style={{
+                  color: '#F0F0F0',
+                  fontFamily: 'Unbounded-Medium',
+                  fontSize: 16,
+                }}>
+                Deposit Funds
+              </Text>
+            </View>
+          </View>
+          <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 ,marginHorizontal:'5%'}}>
+      {selectedId === 'wallet' ? (
+          <Text style={{
+            fontSize: getDynamicFontSize(value.length),
+            color: "#fff",
+            textAlign: "center",
+            marginTop: 10,
+            fontFamily: 'Unbounded-Medium',
+          }}>
+            $
+          </Text>)
+          :
+          (
+          <Text style={{
+            fontSize: getDynamicFontSize(value.length),
+            color: "#fff",
+            textAlign: "center",
+            marginTop: 10,
+            fontFamily: 'Unbounded-Medium'
+            
+          }}>
+            {getCurrencySymbol(fiat.id)}
+          </Text>
+          )}
+      <TextInput
+          style={{
+            fontSize: getDynamicFontSize(value.length),
+            color: "#fff",
+            textAlign: "center",
+            fontFamily: "Unbounded-Medium",
+          }}
+          value={value}
+          onChangeText={(text) => {
+            setValue(text);
+            ReactNativeHapticFeedback.trigger("impactMedium", options);
+          }}
+          keyboardType='numeric'
+      />
+    </View>
+          {selectedId === 'wallet' ? (
+            <View
+              style={{
+                marginTop: '2%',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                gap: 8,
+              }}>
+              <TouchableOpacity style={styles.button}>
+                <View style={styles.imagePlaceholder}>
+                  <Image
+                    source={{
+                      uri: 'https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png',
+                    }}
+                    style={{width: 24, height: 24, borderRadius: 12}} // Make image rounded
+                  />
+                </View>
+                <Text style={styles.text}>USDC</Text>
+                {/* <Icon
+>>>>>>> Stashed changes
                                 name={'expand-more'}
                                 size={16}
                                 color={'#f0f0f0'}
