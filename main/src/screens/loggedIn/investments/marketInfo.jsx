@@ -14,6 +14,12 @@ import {
 import MarketChart from './marketInfo/MarketChart';
 import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 const MarketInfo = ({route, navigation, item}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
@@ -218,6 +224,9 @@ const MarketInfo = ({route, navigation, item}) => {
           right: 0,
         }}
         onPress={() => {
+          if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
           // if (holdings) {
           navigation.navigate('TradePage', {
             state: item,

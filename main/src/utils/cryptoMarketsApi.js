@@ -66,7 +66,7 @@ export const getMarketData = async assets => {
 export const getForexListData = async assets => {
   try {
     const response = await axios.get(
-      `${mobulaBaseURL}/market/multi-data?assets=0xC891EB4cbdEFf6e073e859e987815Ed1505c2ACD,0xdc3326e71d45186f113a2f448984ca0e8d201995,0xcdb3867935247049e87c38ea270edd305d84c9ae,0xe4095d9372e68d108225c306a4491cacfb33b097`,
+      `${mobulaBaseURL}/market/multi-data?assets=0xdc3326e71d45186f113a2f448984ca0e8d201995,0xcdb3867935247049e87c38ea270edd305d84c9ae,0xe4095d9372e68d108225c306a4491cacfb33b097,0xE6A537a407488807F0bbeb0038B79004f19DDDFb`,
       {
         headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
       },

@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, SafeAreaView, StyleSheet, Imag
 import { Icon } from 'react-native-elements';
 import { color } from 'react-native-elements/dist/helpers';
 import LinearGradient from 'react-native-linear-gradient';
-
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 const Ramper = ({ navigation }) => {
     const UNIRAMP_API_BASE_URL = 'https://api.uniramp.io/v1/onramp';
     const getCurrencySymbol = (currencyCode) => {
@@ -18,6 +18,10 @@ const Ramper = ({ navigation }) => {
     const [fiat, setFiat] = useState([]);
     const [selectedId, setSelectedId] = useState('wallet');
     const [modalVisible, setModalVisible] = useState(false);
+    const options = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false
+      };
     const handleTextChange = (text) => {
         // Optional: Add validation or formatting for numeric input if needed
         const numericText = text.replace(/[^0-9]/g, ''); // This will strip non-numeric characters
@@ -128,6 +132,7 @@ const Ramper = ({ navigation }) => {
                             value={value}
                             onChangeText={(text) => {
                                 setValue(text)
+                                ReactNativeHapticFeedback.trigger("impactMedium", options);
                             }}
                             keyboardType='numeric'
 

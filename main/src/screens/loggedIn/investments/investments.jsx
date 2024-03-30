@@ -24,7 +24,12 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import { getForexListData, getMarketData } from '../../../utils/cryptoMarketsApi';
 import { marketsAction } from '../../../store/reducers/market';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 const Investments = ({ navigation }) => {
   const [marketData, setMarketData] = useState(null);
 
@@ -113,6 +118,9 @@ const Investments = ({ navigation }) => {
               dispatch(marketsAction.setListOfCrypto([]));
               setSection('crypto');
               dispatch(getListOfCryptoFromMobulaApi());
+              if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
             }}>
             <Text
               style={{
@@ -135,6 +143,9 @@ const Investments = ({ navigation }) => {
             onPress={() => {
               setSection('forex');
               dispatch(getListOfForexFromMobulaApi());
+              if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
             }}>
             <Text
               style={{
@@ -155,6 +166,9 @@ const Investments = ({ navigation }) => {
             }}
             onPress={() => {
               setSection('stocks');
+              if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
               dispatch(getListOfStocksFromMobulaApi());
             }}>
             <Text
@@ -177,6 +191,9 @@ const Investments = ({ navigation }) => {
             }}
             onPress={() => {
               setSection('commodities');
+              if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
               dispatch(getListOfCommoditiesFromMobulaApi());
             }}>
             <Text
@@ -282,6 +299,9 @@ const Investments = ({ navigation }) => {
         onPress={() => {
           console.log(cryptoData.length);
           navigation.navigate('MarketSearch', { cryptoData });
+          if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
         }}
         style={{
           height: 60,

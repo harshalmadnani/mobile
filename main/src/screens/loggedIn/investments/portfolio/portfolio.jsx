@@ -18,7 +18,12 @@ import {
   getCryptoHoldingForAddressFromMobula,
   getEvmAddresses,
 } from '../../../../store/actions/portfolio';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 
 import {Icon} from '@rneui/base';
@@ -119,7 +124,9 @@ const Portfolio = ({navigation}) => {
           style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
           PORTFOLIO
         </Text>
-        <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
+        <TouchableOpacity onPress={() => { if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }navigation.push('TransactionHistory')}}>
           <Image
             source={{
               uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png',
@@ -134,23 +141,28 @@ const Portfolio = ({navigation}) => {
       </View>
 
       <ScrollView>
-        <TouchableOpacity
-          style={{
-            alignItems: 'center',
-            marginTop: '8%',
-            flexDirection: 'row',
-            alignSelf: 'center',
-          }}
-          onPress={() => setModalVisible(true)} // Set the modal visibility to true when the TouchableOpacity is pressed
-        >
-          <Text style={styles.portfolioHead}>Portfolio Value</Text>
-          <Icon
-            name={'expand-more'}
-            size={20}
-            color={'#989898'}
-            type="materialicons"
-          />
-        </TouchableOpacity>
+      <TouchableOpacity
+    style={{
+      alignItems: 'center',
+      marginTop: '8%',
+      flexDirection: 'row',
+      alignSelf: 'center',
+    }}
+    onPress={() => {
+      setModalVisible(true); // Set the modal visibility to true
+      if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
+    }}
+  >
+    <Text style={styles.portfolioHead}>Portfolio Value</Text>
+    <Icon
+      name={'expand-more'}
+      size={20}
+      color={'#989898'}
+      type="materialicons"
+    />
+  </TouchableOpacity>
         {/* Modal Component */}
         <Modal
           animationType="slide"
@@ -272,21 +284,29 @@ const Portfolio = ({navigation}) => {
                     Total Returns
                   </Text>
                   <Text
-                    style={{
-                      fontSize: 16,
-                      color:
-                        holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
-                      fontFamily: 'Unbounded-Bold',
-                    }}>
-                    {(
-                      (holdings?.total_unrealized_pnl /
-                        (holdings?.total_wallet_balance -
-                          holdings?.total_unrealized_pnl -
-                          holdings?.total_realized_pnl)) *
-                      100
-                    )?.toFixed(2)}
-                    %
-                  </Text>
+  style={{
+    fontSize: 16,
+    color: holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
+    fontFamily: 'Unbounded-Bold',
+  }}
+>
+  {(
+    isNaN(
+      (holdings?.total_unrealized_pnl /
+        (holdings?.total_wallet_balance -
+          holdings?.total_unrealized_pnl -
+          holdings?.total_realized_pnl)) *
+        100
+    )
+      ? 0
+      : (holdings?.total_unrealized_pnl /
+          (holdings?.total_wallet_balance -
+            holdings?.total_unrealized_pnl -
+            holdings?.total_realized_pnl)) *
+        100
+  )?.toFixed(2)}
+  %
+</Text>
                 </View>
               </View>
 
@@ -579,6 +599,7 @@ const Portfolio = ({navigation}) => {
       <TouchableOpacity
         onPress={() => {
           navigation.push('Ramper');
+          ReactNativeHapticFeedback.trigger("impactHeavy", options);
         }}
         style={{
           position: 'absolute', // Positions the button over the content
@@ -601,7 +622,7 @@ const Portfolio = ({navigation}) => {
         }}>
         {/* Add Icon or Text inside the TouchableOpacity as needed */}
         <Text
-          style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Medium'}}>
+          style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Bold'}}>
           ADD FUNDS
         </Text>
       </TouchableOpacity>
