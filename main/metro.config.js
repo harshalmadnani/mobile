@@ -14,7 +14,16 @@ module.exports = {
       },
     }),
   },
+
   resolver: {
     extraNodeModules: require('node-libs-react-native'),
   },
+
+  serializer: {
+    customSerializer: createSentryMetroSerializer()
+  }
 };
+
+const {
+  createSentryMetroSerializer
+} = require("@sentry/react-native/dist/js/tools/sentryMetroSerializer");

@@ -115,7 +115,7 @@ function InteractiveChart({assetName}) {
           console.log(e);
         }
       }
-      await initialHistoryFetch();
+      initialHistoryFetch();
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };

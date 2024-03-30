@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 import {Text, Icon, Image} from '@rneui/themed';
 import styles from '../investment-styles';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
 import InvestmentChart from '../../../../component/charts/InvestmentChart';
 import {useDispatch, useSelector} from 'react-redux';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
+import axios from 'axios';
 const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -72,7 +72,7 @@ const MarketChart = props => {
     x => x.asset?.symbol.toLowerCase() === currentItem?.symbol.toLowerCase(),
   );
 
-  useFocusEffect(
+  useEffect(
     useCallback(() => {
       async function onFocusFunction() {
         dispatch(setAssetMetadata(currentItem?.name));
@@ -105,11 +105,11 @@ const MarketChart = props => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           'https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439',
         );
-        const json = await response.json();
-        setNewsData(json.results);
+        // const json = await response.json();
+        setNewsData(response.data.results);
       } catch (error) {
         console.error(error);
       } finally {

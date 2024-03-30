@@ -15,12 +15,11 @@ import {marketsAction} from '../reducers/market';
 
 export const getListOfCryptoFromMobulaApi = () => {
   return async (dispatch, getState) => {
-    const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData();
+    console.log('mobula', data.length);
     if (data.length > 0) {
       dispatch(marketsAction.setListOfCrypto(data));
     } else {
-      console.log(data);
       dispatch(marketsAction.setListOfCrypto([]));
     }
   };

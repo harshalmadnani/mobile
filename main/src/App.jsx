@@ -78,6 +78,11 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './store/store';
 import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxStatusPage';
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://1b1bbd962e5ed53341f84c3a6389bc8f@o4506999411703808.ingest.us.sentry.io/4506999413407744',
+});
 function PreLaunchLoad({navigation}) {
   return (
     <View>

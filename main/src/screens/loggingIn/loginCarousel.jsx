@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'column',
     width: width,
-    height: 625,
+    height: height,
     alignItems: 'center',
   },
 
