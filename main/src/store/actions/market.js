@@ -15,20 +15,24 @@ import {marketsAction} from '../reducers/market';
 
 export const getListOfCryptoFromMobulaApi = () => {
   return async (dispatch, getState) => {
+    dispatch(marketsAction.setMarketListFetchLoading(true));
     const listOfCrypto = getState().market.listOfCrypto ?? [];
     const data = await getMarketAssetData();
     if (data.length > 0) {
+      dispatch(marketsAction.setMarketListFetchLoading(true));
       dispatch(marketsAction.setListOfCrypto(data));
+      dispatch(marketsAction.setMarketListFetchLoading(false));
     } else {
       console.log(data);
       dispatch(marketsAction.setListOfCrypto([]));
     }
+    dispatch(marketsAction.setMarketListFetchLoading(false));
   };
 };
 export const getListOfForexFromMobulaApi = () => {
   return async (dispatch, getState) => {
+    dispatch(marketsAction.setMarketListFetchLoading(true));
     const data = await getForexListData();
-
     const forexList = [];
     Object.keys(data).forEach(function (key, index) {
       console.log('index', index);
@@ -36,10 +40,12 @@ export const getListOfForexFromMobulaApi = () => {
     });
     console.log('key object', forexList.length, forexList);
     dispatch(marketsAction.setListOfCrypto(forexList));
+    dispatch(marketsAction.setMarketListFetchLoading(false));
   };
 };
 export const getListOfCommoditiesFromMobulaApi = () => {
   return async (dispatch, getState) => {
+    dispatch(marketsAction.setMarketListFetchLoading(true));
     const data = await getCommoditiesListData();
 
     const commodityList = [];
@@ -49,10 +55,12 @@ export const getListOfCommoditiesFromMobulaApi = () => {
     });
     console.log('key object commodity', commodityList.length, commodityList);
     dispatch(marketsAction.setListOfCrypto(commodityList));
+    dispatch(marketsAction.setMarketListFetchLoading(false));
   };
 };
 export const getListOfStocksFromMobulaApi = () => {
   return async (dispatch, getState) => {
+    dispatch(marketsAction.setMarketListFetchLoading(true));
     const data = await getStocksListData();
 
     const stockList = [];
@@ -71,6 +79,7 @@ export const getListOfStocksFromMobulaApi = () => {
     });
     console.log('key object commodity', stockList.length, stockList);
     dispatch(marketsAction.setListOfCrypto(stockList));
+    dispatch(marketsAction.setMarketListFetchLoading(false));
   };
 };
 export const setAssetMetadata = assetName => {

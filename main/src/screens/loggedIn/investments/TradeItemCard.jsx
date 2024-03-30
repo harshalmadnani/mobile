@@ -12,7 +12,12 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 import {useDispatch} from 'react-redux';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 import {useNavigation} from '@react-navigation/native';
 const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const dispatch = useDispatch();
@@ -21,6 +26,9 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
     <Pressable
       onPress={() => {
         navigation.navigate('MarketInfo', {item: item});
+        if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
       }}
       style={{
         width: '100%',

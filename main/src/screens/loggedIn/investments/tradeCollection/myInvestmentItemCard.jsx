@@ -11,11 +11,20 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Icon, Image} from '@rneui/themed';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 const MyInvestmentItemCard = ({navigation, item}) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <TouchableOpacity
       onPress={e => {
+        if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
         setModalVisible(true);
       }}
       style={{

@@ -16,6 +16,7 @@ import InvestmentChart from '../../../../component/charts/InvestmentChart';
 import {useDispatch, useSelector} from 'react-redux';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
+import CustomSkeleton from '../../../../component/Skeleton';
 const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -259,14 +260,6 @@ const MarketChart = props => {
             </Text>
           </View>
         </TouchableOpacity>
-        {/* <View style={{marginVertical:'8%',marginHorizontal:'5%'}}>
-            <Text style={{color:'#fff',fontFamily:'Unbounded-Medium',fontSize:20}}>
-              About
-            </Text>
-            <Text  style={{color:'#777',fontFamily:'NeueMontreal-Medium',fontSize:14,marginTop:'5%'}}>
-             {selectedAssetMetaData.description}
-            </Text>
-          </View> */}
         <View
           style={{
             flexDirection: 'row',
@@ -291,7 +284,15 @@ const MarketChart = props => {
           {selectedTab === 'News' && (
             <View>
               {isLoading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
+                <View
+                  scrollEnabled
+                  style={{
+                    width: width,
+                    // height: 200,
+                    backgroundColor: 'red',
+                  }}>
+                  {/* <CustomSkeleton element={5} width={'98%'} height={120} /> */}
+                </View>
               ) : newsData.length > 0 ? (
                 newsData.map((item, i) => (
                   <View
@@ -397,7 +398,6 @@ const MarketChart = props => {
                 style={{width: width, height: 400}}
                 onLoadStart={() => setLoading(true)}
                 onLoad={() => {
-                  console.log('WebView loaded.');
                   setLoading(false);
                 }}
               />

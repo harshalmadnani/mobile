@@ -23,9 +23,16 @@ import styles from './settings-styles';
 import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux'
 import {logoutRefresh} from '../../store/actions/auth';
 // import {EventsCarousel} from './eventsCarousel';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
+
 const HorizontalRule = () => {
   return <View style={ruleStyles.hr} />;
 };
@@ -234,14 +241,13 @@ const Component = ({navigation}) => {
 
         <View style={[styles.otherSettings, {marginTop: 20, marginBottom: 10}]}>
           <TouchableOpacity
-            style={styles.innerSettings}
-            onPress={() => Linking.openURL('mailto:support@xade.finance')}>
+            style={styles.innerSettings}>
             <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
               source={require('./face-id.png')}
             />
             <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>FaceID</Text>
+              <Text style={styles.settingsText}>Face ID</Text>
               <Switch
                 trackColor={{false: '#767577', true: '#fff'}}
                 thumbColor={'#fff'}
@@ -538,6 +544,7 @@ const Component = ({navigation}) => {
       <TouchableOpacity
         onPress={() => {
           navigation.push('SendEmail');
+          ReactNativeHapticFeedback.trigger("impactHeavy", options);
         }}
         style={{
           position: 'absolute', // Positions the button over the content

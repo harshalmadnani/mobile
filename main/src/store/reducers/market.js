@@ -10,6 +10,7 @@ const initialState = {
   selectedAssetWalletHolding: null,
   bestSwappingTrades: null,
   tokenBalanceUSD: null,
+  marketListFetchLoading: false,
   availableBlockchain: [
     'BNB Smart Chain (BEP20)',
     'Polygon',
@@ -25,6 +26,9 @@ export const marketSlice = createSlice({
     // All the reducers go here
     setListOfCrypto: (state, action) => {
       state.listOfCrypto = action.payload;
+    },
+    setMarketListFetchLoading: (state, action) => {
+      state.marketListFetchLoading = action.payload;
     },
     setFilteredListOfCrypto: (state, action) => {
       state.listOfFilteredCrypto = action.payload;

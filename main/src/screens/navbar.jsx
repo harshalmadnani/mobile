@@ -59,7 +59,9 @@ const BottomNavbar = ({ navigation, selected }) => {
             onPress={() => navigation.push('Payments')}
             color={selected == 'Payments' ? selectedIcon : icon}
           /> */}
-          <TouchableOpacity onPress={() => {navigation.push('Portfolio')}}>
+          <TouchableOpacity onPress={() => {         if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }navigation.push('Portfolio')}}>
             {selected == 'Portfolio' ? (
               <FastImage
                 source={require(`./navbar-images/home-selected.png`)}
@@ -90,7 +92,9 @@ const BottomNavbar = ({ navigation, selected }) => {
         <View>
           <TouchableOpacity
            onPress={() => {
-        // ReactNativeHapticFeedback.trigger("impactLight", options);
+        if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
         navigation.push('Investments')
       }}>
           {selected == 'Investments' ? (
@@ -137,7 +141,9 @@ const BottomNavbar = ({ navigation, selected }) => {
         </View> */}
 
         <View>
-          <TouchableOpacity onPress={() =>{navigation.push('Settings')}}>
+          <TouchableOpacity onPress={() =>{        if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }navigation.push('Settings')}}>
           {selected == 'Settings' ? (
               <FastImage
                 source={require(`./navbar-images/profile-selected.png`)}
@@ -192,8 +198,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: '#9D9D9D',
-    width: 28,
-    height: 28,
+    width: 24,
+    height: 24,
   },
   iconSelected: {
     color: '#FE2C5E',

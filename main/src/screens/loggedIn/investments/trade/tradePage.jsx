@@ -21,7 +21,12 @@ import {
   getBestDLNCrossSwapRateSell,
 } from '../../../../store/actions/market';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 import {
   confirmDLNTransaction,
   getDLNTradeCreateBuyOrderTxn,
@@ -460,6 +465,7 @@ const TradePage = ({route}) => {
               <TouchableOpacity
                 style={{width: '50%'}}
                 onPress={() => {
+                  ReactNativeHapticFeedback.trigger("impactHeavy", options);
                   setTradeType('buy');
                   setConvertedValue('token');
                 }}>
@@ -501,7 +507,9 @@ const TradePage = ({route}) => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={{width: '50%'}}
-                onPress={() => setTradeType('sell')}>
+                onPress={() => {  if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    } setTradeType('sell')}}>
                 {tradeType === 'sell' ? (
                   <LinearGradient
                     colors={['#292929', '#292929']}
@@ -663,6 +671,7 @@ const TradePage = ({route}) => {
                   value={value}
                   onChangeText={text => {
                     setValue(text);
+                    ReactNativeHapticFeedback.trigger("impactMedium", options);
                   }}
                   keyboardType="numeric"
                 />
@@ -999,6 +1008,9 @@ const TradePage = ({route}) => {
           <View style={{marginTop: '10%', alignSelf: 'center'}}>
             <TouchableOpacity
               onPress={async () => {
+                if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger("impactMedium", options);
+    }
                 if (!loading && bestSwappingBuyTrades && !preparingTx) {
                   if (
                     // value <= usdcValue?.[1]?.estimated_balance &&

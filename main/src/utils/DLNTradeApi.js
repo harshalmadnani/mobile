@@ -258,7 +258,7 @@ export const confirmDLNTransaction = async (
     const erc20Abi = new ethers.utils.Interface(erc20);
     const proxyDlnAbi = new ethers.utils.Interface(ProxyDLNAbi);
     const sendData = erc20Abi.encodeFunctionData('transfer', [
-      '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
       amount,
     ]);
 
@@ -289,11 +289,11 @@ export const confirmDLNTransaction = async (
     ]);
     const executeProxyDLN = await getEthereumTransaction(
       smartAccount,
-      '0x2c4bac6ded5082ec95930c512aba7e098ea9037a',
+      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
       dlnProxyTxData,
       '0',
     );
-    console.log('tx executing swapping part', dlnProxyTxData);
+
     txs.push(executeProxyDLN);
   } else {
     const erc20Abi = new ethers.utils.Interface(erc20);

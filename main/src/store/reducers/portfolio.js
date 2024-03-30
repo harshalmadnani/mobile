@@ -8,6 +8,7 @@ const initialState = {
   evmTxListInfo: null,
   evmDLNTradesTxListInfo: null,
   userInfo: null,
+  portfolioHoldingFetch: false,
 };
 
 export const portfolioSlice = createSlice({
@@ -17,6 +18,9 @@ export const portfolioSlice = createSlice({
     // All the reducers go here
     setHoldings: (state, action) => {
       state.holdings = action.payload;
+    },
+    setPortfolioHoldingFetch: (state, action) => {
+      state.portfolioHoldingFetch = action.payload;
     },
     setUserInfo: (state, action) => {
       state.userInfo = action.payload;
