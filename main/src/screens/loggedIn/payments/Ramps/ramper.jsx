@@ -12,6 +12,13 @@ const Ramper = ({ navigation }) => {
         const symbol = parts.find(part => part.type === 'currency').value;
         return symbol;
     };
+    const getDynamicFontSize = (inputLength) => {
+        const baseSize = 80; // Base font size
+        if (inputLength < 3) return baseSize;
+        // Increase the decrement factor to reduce the size more quickly
+        return Math.max(baseSize - (inputLength - 4) * 10, 30); // Adjust 10 as needed
+    };
+    
     const unirampKey = 'pk_prod_eb0suFktOsnpthQYX5LXoMXIychV7Ofv';
     const [value, setValue] = useState("1");
     const [paymentMethods, setPaymentMethods] = useState([]);
@@ -120,24 +127,45 @@ const Ramper = ({ navigation }) => {
                             }}>Deposit Funds</Text>
                         </View>
                     </View>
-                    <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 }}>
-                        {selectedId === 'wallet' ? (
-                            <Text style={{ fontSize: 80, color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Medium' }}>$</Text>)
-                            :
-                            (
-                                <Text style={{ fontSize: 80,  color: "#fff", textAlign: "center", marginTop: 10, fontFamily: 'Unbounded-Medium' }}>{getCurrencySymbol(fiat.id)}</Text>
-                            )}
-                        <TextInput
-                            style={{ fontSize: 80, color: "#fff", textAlign: "center", fontFamily: "Unbounded-Medium", }}
-                            value={value}
-                            onChangeText={(text) => {
-                                setValue(text)
-                                ReactNativeHapticFeedback.trigger("impactMedium", options);
-                            }}
-                            keyboardType='numeric'
-
-                        />
-                    </View>
+                    <View style={{ marginTop: 80, flexDirection: "row", justifyContent: "center", gap: 8 ,marginHorizontal:'5%'}}>
+      {selectedId === 'wallet' ? (
+          <Text style={{
+            fontSize: getDynamicFontSize(value.length),
+            color: "#fff",
+            textAlign: "center",
+            marginTop: 10,
+            fontFamily: 'Unbounded-Medium',
+          }}>
+            $
+          </Text>)
+          :
+          (
+          <Text style={{
+            fontSize: getDynamicFontSize(value.length),
+            color: "#fff",
+            textAlign: "center",
+            marginTop: 10,
+            fontFamily: 'Unbounded-Medium'
+            
+          }}>
+            {getCurrencySymbol(fiat.id)}
+          </Text>
+          )}
+      <TextInput
+          style={{
+            fontSize: getDynamicFontSize(value.length),
+            color: "#fff",
+            textAlign: "center",
+            fontFamily: "Unbounded-Medium",
+          }}
+          value={value}
+          onChangeText={(text) => {
+            setValue(text);
+            ReactNativeHapticFeedback.trigger("impactMedium", options);
+          }}
+          keyboardType='numeric'
+      />
+    </View>
                     {selectedId === "wallet" ? (
                         <View style={{ marginTop: '2%', flexDirection: "row", justifyContent: "center", gap: 8 }}>
                             <TouchableOpacity style={styles.button}>

@@ -21,7 +21,12 @@ import { Icon } from 'react-native-elements';
 import { CRYPTO_LIST } from './data/crypto';
 import Investments from './investments';
 import { ImageAssets } from '../../../../assets';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false
+};
 
 const Trade = ({ navigation }) => {
   const width = Dimensions.get('window').width;

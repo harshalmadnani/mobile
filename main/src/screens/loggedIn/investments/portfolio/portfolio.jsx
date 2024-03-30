@@ -152,7 +152,7 @@ const Portfolio = ({navigation}) => {
             }}>
             <View
               style={{
-                backgroundColor: '#151515',
+                backgroundColor: '#090909',
                 borderRadius: 20,
                 padding: 35,
                 paddingTop: 60,
@@ -163,7 +163,7 @@ const Portfolio = ({navigation}) => {
                 shadowRadius: 4,
                 elevation: 5,
                 width: '100%',
-                height: '75%',
+                height: '60%',
                 position: 'relative',
               }}>
               {/* Close Icon */}
@@ -179,11 +179,7 @@ const Portfolio = ({navigation}) => {
               </TouchableOpacity>
 
               {/* Image */}
-              <Image
-                source={{uri: imageUrl}} // Dummy image source
-                style={{width: 48, height: 48}}
-                resizeMode="contain"
-              />
+  
 
               {/* Price */}
               <Text
@@ -193,7 +189,7 @@ const Portfolio = ({navigation}) => {
                   fontFamily: 'Unbounded-Medium',
                   marginVertical: 10,
                 }}>
-                {info}
+                {info.toUpperCase()}
               </Text>
 
               <View
@@ -551,7 +547,7 @@ const Portfolio = ({navigation}) => {
           )}
         </View>
       </ScrollView>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         onPress={() => {
           navigation.push('Ramper');
           ReactNativeHapticFeedback.trigger("impactHeavy", options);
@@ -579,7 +575,7 @@ const Portfolio = ({navigation}) => {
           style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Bold'}}>
           ADD FUNDS
         </Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

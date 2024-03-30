@@ -128,7 +128,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
               }}>
               <View
                 style={{
-                  backgroundColor: '#151515',
+                  backgroundColor: '#090909',
                   borderRadius: 20,
                   padding: 35,
                   paddingTop: 60, // Add more padding at the top for the icon
@@ -139,7 +139,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   shadowRadius: 4,
                   elevation: 5,
                   width: '100%',
-                  height: '75%',
+                  height: '80%',
                   position: 'relative', // To absolutely position the close icon
                 }}>
                 {/* Close Icon */}

@@ -218,7 +218,7 @@ const MarketInfo = ({route, navigation, item}) => {
           backgroundColor: 'rgba(0, 0, 0, 0.2)',
           marginTop: '30%',
           position: 'absolute',
-          bottom: 70,
+          bottom: '5%',
           shadowColor: '#000', // Adjust the bottom spacing as needed
           left: 0,
           right: 0,
