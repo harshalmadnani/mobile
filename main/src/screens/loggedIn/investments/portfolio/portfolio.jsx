@@ -551,10 +551,10 @@ const Portfolio = ({navigation}) => {
           )}
         </View>
       </ScrollView>
-      {/* <TouchableOpacity
+      <TouchableOpacity
         onPress={() => {
           navigation.push('Ramper');
-          ReactNativeHapticFeedback.trigger("impactHeavy", options);
+          ReactNativeHapticFeedback.trigger('impactHeavy', options);
         }}
         style={{
           position: 'absolute',
@@ -579,7 +579,7 @@ const Portfolio = ({navigation}) => {
           style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Bold'}}>
           ADD FUNDS
         </Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
