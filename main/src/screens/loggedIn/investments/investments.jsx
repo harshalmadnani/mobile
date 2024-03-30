@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
   TouchableOpacity,
@@ -12,51 +12,48 @@ import {
   FlatList,
   Pressable,
 } from 'react-native';
-import { ImageAssets } from '../../../../assets';
 import TradeItemCard from './TradeItemCard';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   getListOfCommoditiesFromMobulaApi,
   getListOfCryptoFromMobulaApi,
   getListOfForexFromMobulaApi,
   getListOfStocksFromMobulaApi,
 } from '../../../store/actions/market';
-import { useFocusEffect } from '@react-navigation/native';
-import { getForexListData, getMarketData } from '../../../utils/cryptoMarketsApi';
-import { marketsAction } from '../../../store/reducers/market';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import {useFocusEffect} from '@react-navigation/native';
+import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
+import {marketsAction} from '../../../store/reducers/market';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
+  ignoreAndroidSystemSettings: false,
 };
-const Investments = ({ navigation }) => {
-  const [marketData, setMarketData] = useState(null);
 
+const Investments = ({navigation}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
 
   const cryptoData = useSelector(x => x.market.listOfCrypto);
-  const [isLoading, setIsLoading] = useState(false);
+  const marketListFetchLoading = useSelector(
+    x => x.market.marketListFetchLoading,
+  );
+
   const [section, setSection] = useState('crypto');
   const [page, setPage] = useState(1);
   const dispatch = useDispatch();
-  const evmInfo = useSelector(x => x.portfolio.evmInfo);
+
   useFocusEffect(
     useCallback(() => {
-      setIsLoading(true);
       setSection('crypto');
       dispatch(getListOfCryptoFromMobulaApi());
       setPage(2);
-      setIsLoading(false);
-
-      return () => {
-        setIsLoading(false);
-      };
+      return () => {};
     }, []),
   );
+  console.log(marketListFetchLoading);
 
-  const onEndReachedFetch = async () => { };
+  const onEndReachedFetch = async () => {};
 
   return (
     <SafeAreaView
@@ -76,7 +73,7 @@ const Investments = ({ navigation }) => {
           justifyContent: 'space-between',
         }}>
         <Text
-          style={{ fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20 }}>
+          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
           MARKETS
         </Text>
         <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
@@ -119,8 +116,8 @@ const Investments = ({ navigation }) => {
               setSection('crypto');
               dispatch(getListOfCryptoFromMobulaApi());
               if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
             }}>
             <Text
               style={{
@@ -144,8 +141,8 @@ const Investments = ({ navigation }) => {
               setSection('forex');
               dispatch(getListOfForexFromMobulaApi());
               if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
             }}>
             <Text
               style={{
@@ -167,8 +164,8 @@ const Investments = ({ navigation }) => {
             onPress={() => {
               setSection('stocks');
               if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
               dispatch(getListOfStocksFromMobulaApi());
             }}>
             <Text
@@ -192,8 +189,8 @@ const Investments = ({ navigation }) => {
             onPress={() => {
               setSection('commodities');
               if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
               dispatch(getListOfCommoditiesFromMobulaApi());
             }}>
             <Text
@@ -209,17 +206,19 @@ const Investments = ({ navigation }) => {
         </View>
       </View>
 
-      {isLoading && (
-        <View style={{ height: '100%' }}>
-          <ActivityIndicator
-            size={30}
-            style={{ marginTop: '40%' }}
-            color="#fff"
-          />
+      {marketListFetchLoading && (
+        <View
+          scrollEnabled
+          style={{
+            marginTop: '1%',
+            width: '100%',
+            backgroundColor: 'red',
+          }}>
+          {/* <CustomSkeleton element={5} width={'98%'} height={80} /> */}
         </View>
       )}
 
-      {!isLoading && section === 'crypto' && (
+      {!marketListFetchLoading && section === 'crypto' && (
         <View
           scrollEnabled
           style={{
@@ -228,8 +227,8 @@ const Investments = ({ navigation }) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{ marginBottom: 64 }}
-              renderItem={({ item }) => (
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -238,7 +237,7 @@ const Investments = ({ navigation }) => {
           )}
         </View>
       )}
-      {!isLoading && section === 'forex' && (
+      {!marketListFetchLoading && section === 'forex' && (
         <View
           scrollEnabled
           style={{
@@ -247,8 +246,8 @@ const Investments = ({ navigation }) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{ marginBottom: 64 }}
-              renderItem={({ item }) => (
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -257,7 +256,7 @@ const Investments = ({ navigation }) => {
           )}
         </View>
       )}
-      {!isLoading && section === 'commodities' && (
+      {!marketListFetchLoading && section === 'commodities' && (
         <View
           scrollEnabled
           style={{
@@ -266,8 +265,8 @@ const Investments = ({ navigation }) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{ marginBottom: 64 }}
-              renderItem={({ item }) => (
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -276,7 +275,7 @@ const Investments = ({ navigation }) => {
           )}
         </View>
       )}
-      {!isLoading && section === 'stocks' && (
+      {!marketListFetchLoading && section === 'stocks' && (
         <View
           scrollEnabled
           style={{
@@ -285,8 +284,8 @@ const Investments = ({ navigation }) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{ marginBottom: 64 }}
-              renderItem={({ item }) => (
+              style={{marginBottom: 64}}
+              renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}
               onEndReached={async () => await onEndReachedFetch()}
@@ -298,17 +297,17 @@ const Investments = ({ navigation }) => {
       <Pressable
         onPress={() => {
           console.log(cryptoData.length);
-          navigation.navigate('MarketSearch', { cryptoData });
+          navigation.navigate('MarketSearch', {cryptoData});
           if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+            ReactNativeHapticFeedback.trigger('impactMedium', options);
+          }
         }}
         style={{
           height: 60,
           width: '95%',
           backgroundColor: '#1d1d1d',
           position: 'absolute',
-          bottom: Platform.OS === 'ios' ? '13%' : '9%', 
+          bottom: Platform.OS === 'ios' ? '13%' : '9%',
           alignSelf: 'center',
           alignItems: 'center',
           borderRadius: 32,

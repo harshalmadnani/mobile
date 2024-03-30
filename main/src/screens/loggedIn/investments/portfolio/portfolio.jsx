@@ -14,15 +14,16 @@ import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
 import {POINTS_KEY} from '@env';
 import {useDispatch, useSelector} from 'react-redux';
+import CustomSkeleton from '../../../../component/Skeleton';
 import {
   getCryptoHoldingForAddressFromMobula,
   getEvmAddresses,
 } from '../../../../store/actions/portfolio';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
+  ignoreAndroidSystemSettings: false,
 };
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 
@@ -31,36 +32,11 @@ const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
 
   const holdings = useSelector(x => x.portfolio.holdings);
+  const portfolioHoldingFetch = useSelector(
+    x => x.portfolio.portfolioHoldingFetch,
+  );
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const userInfo = useSelector(x => x.portfolio.userInfo);
-  const addPoints = async () => {
-    try {
-      const address = global.withAuth
-        ? global.loginAccount.scw
-        : global.connectAccount?.publicAddress;
-      // const address = ''
-
-      const inputValue = {
-        userId: address,
-        // userId: address.toLowerCase(),
-        transactionAmount: 0,
-        key: POINTS_KEY,
-      };
-      const response = await fetch('https://refer.xade.finance/points', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': POINTS_KEY,
-        },
-        body: JSON.stringify(inputValue),
-      });
-      const data = await response.json();
-      if (data.points > 0) return data.points.toFixed(0).toLocaleString();
-      else return 0;
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -70,13 +46,7 @@ const Portfolio = ({navigation}) => {
   imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
 
-  async function logic() {
-    const _points = await addPoints();
-    global.points = _points;
-    setPoints(_points);
-  }
   useEffect(() => {
-    console.log('Evm changes......');
     if (evmInfo?.smartAccount) {
       dispatch(
         getCryptoHoldingForAddressFromMobula(evmInfo?.smartAccount, null),
@@ -105,10 +75,9 @@ const Portfolio = ({navigation}) => {
     // Assuming the balance is directly available on usdcAsset (or adapt based on actual structure)
     return usdcAsset.cross_chain_balances.Polygon.balance || 0;
   };
-  console.log('userinfo....', evmInfo, userInfo);
-  // Extract the USDC balance
-  const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
 
+  const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
+  console.log(portfolioHoldingFetch);
   return (
     <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
       <View
@@ -124,9 +93,13 @@ const Portfolio = ({navigation}) => {
           style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
           PORTFOLIO
         </Text>
-        <TouchableOpacity onPress={() => { if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }navigation.push('TransactionHistory')}}>
+        <TouchableOpacity
+          onPress={() => {
+            if (Platform.OS === 'ios') {
+              ReactNativeHapticFeedback.trigger('impactMedium', options);
+            }
+            navigation.push('TransactionHistory');
+          }}>
           <Image
             source={{
               uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png',
@@ -141,28 +114,27 @@ const Portfolio = ({navigation}) => {
       </View>
 
       <ScrollView>
-      <TouchableOpacity
-    style={{
-      alignItems: 'center',
-      marginTop: '8%',
-      flexDirection: 'row',
-      alignSelf: 'center',
-    }}
-    onPress={() => {
-      setModalVisible(true); // Set the modal visibility to true
-      if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
-    }}
-  >
-    <Text style={styles.portfolioHead}>Portfolio Value</Text>
-    <Icon
-      name={'expand-more'}
-      size={20}
-      color={'#989898'}
-      type="materialicons"
-    />
-  </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            alignItems: 'center',
+            marginTop: '8%',
+            flexDirection: 'row',
+            alignSelf: 'center',
+          }}
+          onPress={() => {
+            setModalVisible(true); // Set the modal visibility to true
+            if (Platform.OS === 'ios') {
+              ReactNativeHapticFeedback.trigger('impactMedium', options);
+            }
+          }}>
+          <Text style={styles.portfolioHead}>Portfolio Value</Text>
+          <Icon
+            name={'expand-more'}
+            size={20}
+            color={'#989898'}
+            type="materialicons"
+          />
+        </TouchableOpacity>
         {/* Modal Component */}
         <Modal
           animationType="slide"
@@ -284,29 +256,28 @@ const Portfolio = ({navigation}) => {
                     Total Returns
                   </Text>
                   <Text
-  style={{
-    fontSize: 16,
-    color: holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
-    fontFamily: 'Unbounded-Bold',
-  }}
->
-  {(
-    isNaN(
-      (holdings?.total_unrealized_pnl /
-        (holdings?.total_wallet_balance -
-          holdings?.total_unrealized_pnl -
-          holdings?.total_realized_pnl)) *
-        100
-    )
-      ? 0
-      : (holdings?.total_unrealized_pnl /
-          (holdings?.total_wallet_balance -
-            holdings?.total_unrealized_pnl -
-            holdings?.total_realized_pnl)) *
-        100
-  )?.toFixed(2)}
-  %
-</Text>
+                    style={{
+                      fontSize: 16,
+                      color:
+                        holdings?.total_unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
+                      fontFamily: 'Unbounded-Bold',
+                    }}>
+                    {(isNaN(
+                      (holdings?.total_unrealized_pnl /
+                        (holdings?.total_wallet_balance -
+                          holdings?.total_unrealized_pnl -
+                          holdings?.total_realized_pnl)) *
+                        100,
+                    )
+                      ? 0
+                      : (holdings?.total_unrealized_pnl /
+                          (holdings?.total_wallet_balance -
+                            holdings?.total_unrealized_pnl -
+                            holdings?.total_realized_pnl)) *
+                        100
+                    )?.toFixed(2)}
+                    %
+                  </Text>
                 </View>
               </View>
 
@@ -527,7 +498,9 @@ const Portfolio = ({navigation}) => {
             }}>
             My Investments
           </Text>
-
+          {/* {portfolioHoldingFetch && !holdings?.assets && (
+            <CustomSkeleton element={5} width={'98%'} height={80} />
+          )} */}
           {!holdings || !holdings?.assets ? (
             <View
               style={{
@@ -563,54 +536,36 @@ const Portfolio = ({navigation}) => {
                         key={i.toString()}
                         navigation={navigation}
                         item={{
-                          ...item.asset, // Assuming the structure matches what MyInvestmentItemCard expects
-                          balance: item.token_balance, // Adapt properties as needed
+                          ...item.asset,
+                          balance: item.token_balance,
                           current_price: item.price,
                           unrealized_pnl: item.unrealized_pnl,
-                          realized_pnl: item.realized_pnl, // Example
+                          realized_pnl: item.realized_pnl,
                           image: item.asset.logo,
                           price_bought: item.price_bought,
                         }}
                       />
                     ))
                 : null}
-              {/* <FlatList
-                data={holdings?.assets.filter(item => item.token_balance > 0)}
-                keyExtractor={item => item.asset.id} // Use a unique property of each asset as the key
-                renderItem={({item}) => (
-                  <MyInvestmentItemCard
-                    navigation={navigation}
-                    item={{
-                      ...item.asset, // Assuming the structure matches what MyInvestmentItemCard expects
-                      balance: item.token_balance, // Adapt properties as needed
-                      current_price: item.price,
-                      unrealized_pnl: item.unrealized_pnl,
-                      realized_pnl: item.realized_pnl, // Example
-                      image: item.asset.logo,
-                      price_bought: item.price_bought,
-                    }}
-                  />
-                )}
-              /> */}
             </View>
           )}
         </View>
       </ScrollView>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.push('Ramper');
           ReactNativeHapticFeedback.trigger("impactHeavy", options);
         }}
         style={{
-          position: 'absolute', // Positions the button over the content
-          bottom: Platform.OS === 'ios' ? '5%' : '8.5%', // Distance from the bottom of the screen
+          position: 'absolute',
+          bottom: Platform.OS === 'ios' ? '5%' : '8.5%',
           width: '95%',
-          height: 56, // Button height
-          borderRadius: 28, // Circular button
-          backgroundColor: '#FFF', // Button color
-          justifyContent: 'center', // Center the icon or text inside the button
-          alignItems: 'center', // Center the icon or text inside the button
-          shadowColor: '#000', // Shadow for the button
+          height: 56,
+          borderRadius: 28,
+          backgroundColor: '#FFF',
+          justifyContent: 'center',
+          alignItems: 'center',
+          shadowColor: '#000',
 
           shadowOffset: {
             width: 2,
@@ -618,14 +573,13 @@ const Portfolio = ({navigation}) => {
           },
           shadowOpacity: 0.5,
           shadowRadius: 10,
-          elevation: 5, // Elevation for Android
+          elevation: 5,
         }}>
-        {/* Add Icon or Text inside the TouchableOpacity as needed */}
         <Text
           style={{color: '#000', fontSize: 16, fontFamily: 'Unbounded-Bold'}}>
           ADD FUNDS
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };

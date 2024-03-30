@@ -86,7 +86,7 @@ const MarketInfo = ({route, navigation, item}) => {
 
         // backgroundColor: 'red'
       }}>
-      {isLoading && (
+      {/* {isLoading && (
         <View style={{height: '100%'}}>
           <ActivityIndicator
             size={30}
@@ -94,9 +94,9 @@ const MarketInfo = ({route, navigation, item}) => {
             color="#fff"
           />
         </View>
-      )}
+      )} */}
 
-      {!isLoading && (
+      {
         <ScrollView
           scrollEnabled
           style={{
@@ -208,7 +208,7 @@ const MarketInfo = ({route, navigation, item}) => {
 
                     </View> */}
         </ScrollView>
-      )}
+      }
       <TouchableOpacity
         style={{
           flexDirection: 'row',

@@ -14,8 +14,9 @@ import {portfolioAction} from '../reducers/portfolio';
 // getTransactionsByWallet;
 export const getCryptoHoldingForAddressFromMobula = (smartAccount, asset) => {
   return async (dispatch, getState) => {
+    dispatch(portfolioAction.setPortfolioHoldingFetch(true));
     const data = await getCryptoHoldingForAddress(smartAccount, asset);
-    console.log('dtaaaa', data?.data);
+    dispatch(portfolioAction.setPortfolioHoldingFetch(false));
     dispatch(portfolioAction.setHoldings(data?.data));
     return data;
   };
