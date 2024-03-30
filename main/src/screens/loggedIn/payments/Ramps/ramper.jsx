@@ -54,7 +54,9 @@ const Ramper = ({navigation}) => {
     fetchPaymentMethodsBasedOnIP();
   }, []);
 
-  const onWalletConnectOpen = async () => {};
+  const onWalletConnectOpen = async () => {
+    navigation.push('QRScreen');
+  };
 
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
@@ -354,11 +356,13 @@ const Ramper = ({navigation}) => {
               width: '100%',
               borderRadius: 30,
             }}
-            onPress={async () =>
-              selectedId === 'wallet'
-                ? onWalletConnectOpen()
-                : await onRampContinue()
-            } // Open modal on press
+            onPress={async () => {
+              if (buttonTitle.toLocaleLowerCase() === 'continue') {
+                selectedId === 'wallet'
+                  ? onWalletConnectOpen()
+                  : await onRampContinue();
+              }
+            }} // Open modal on press
           >
             <LinearGradient
               useAngle={true}
