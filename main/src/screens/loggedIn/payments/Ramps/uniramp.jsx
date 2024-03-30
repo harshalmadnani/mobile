@@ -1,30 +1,84 @@
-import React, {useRef} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, StyleSheet, Text, TouchableOpacity, AppState} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon component
-import {useSelector} from 'react-redux';
+import {PollStatusFromUniRamps} from '../../../../utils/OnrampApis';
+import Toast from 'react-native-root-toast';
+import {useFocusEffect} from '@react-navigation/native';
 const Uniramp = ({route, navigation}) => {
   const webViewRef = useRef(null);
-
-  const address = useSelector(x => x.auth.address);
-
+  const [timer, setTimer] = useState(false);
+  const [count, setCount] = useState(0);
   const refresh = () => {
     if (webViewRef.current) webViewRef.current.reload();
   };
+  const {txInfo} = route?.params;
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     // This code runs when the screen gains focus
+  //     const onBlurSubscription = AppState.addEventListener('blur', () =>
+  //       console.log('blur'),
+  //     );
 
+  //     return () => {
+  //       console.log('Loosing focus.', timer);
+  //       setTimer(false);
+  //       // This code runs when the screen loses focus
+  //       onBlurSubscription.remove();
+  //     };
+  //   }, []),
+  // );
+
+  // useEffect(async () => {
+  //   async function pollStatus() {
+  //     try {
+  //       const response = await PollStatusFromUniRamps(txInfo?.id);
+  //       if (
+  //         response === 'failed' ||
+  //         response === 'success' ||
+  //         response === 'invalid'
+  //       ) {
+  //         clearInterval(interval);
+  //         setTimer(false);
+  //         Toast.show(response, {
+  //           duration: Toast.durations.SHORT,
+  //           position: Toast.positions.BOTTOM,
+  //           shadow: true,
+  //           animation: true,
+  //           hideOnPress: true,
+  //           delay: 0,
+  //         });
+  //         navigation.push('Portfolio');
+  //         // Do something when status is finished
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //       // Handle error here
+  //     }
+  //   }
+
+  //   // Fetch the status of the task
+  //   // Poll every 1000 milliseconds
+  //   if (timer) {
+  //     pollStatus();
+  //   } else {
+  //     if (count === 0) {
+  //       setTimer(true);
+  //     }
+  //   }
+  // }, [count]);
   return (
     <View style={styles.container}>
       <WebView
         ref={webViewRef}
         source={{
-          uri: `https://widget.uniramp.com/?theme_mode=dark&onramp_chain=poly&onramp_crypto=0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359&onramp_hybrid=true&onramp_wallet=${address}&api_key=pk_prod_eb0suFktOsnpthQYX5LXoMXIychV7Ofv`,
+          uri: txInfo?.cefiInitiate?.url,
         }}
         style={styles.webView}
       />
-      {/* Adjusted Overlay View */}
       <View style={styles.overlay}>
         <TouchableOpacity
-      onPress={() => navigation.push('Portfolio')}
+          onPress={() => navigation.push('Portfolio')}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
