@@ -871,9 +871,7 @@ const TradePage = ({route}) => {
                     }}>
                     $
                     {tradeType === 'sell'
-                      ? bestSwappingBuyTrades?.action?.toToken?.priceUSD?.toFixed(
-                          5,
-                        ) ||
+                      ? bestSwappingBuyTrades?.action?.toToken?.priceUSD ||
                         (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                             ?.amount /

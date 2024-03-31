@@ -187,7 +187,7 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
               }}>
               $
               {tradeType === 'sell'
-                ? txQuoteInfo?.action?.toToken?.priceUSD?.toFixed(5) ||
+                ? txQuoteInfo?.action?.toToken?.priceUSD ||
                   (
                     txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
                     Math.pow(
