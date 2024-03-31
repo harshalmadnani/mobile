@@ -6,26 +6,23 @@ import {
   Dimensions,
   Platform,
   StyleSheet,
-  ActivityIndicator,
-  useWindowDimensions,
   TouchableOpacity,
   Text,
 } from 'react-native';
 import MarketChart from './marketInfo/MarketChart';
 import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
+  ignoreAndroidSystemSettings: false,
 };
 const MarketInfo = ({route, navigation, item}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
-
+  const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const [isLoading, setIsLoading] = useState(false);
-  const [address, setAddress] = useState();
 
   const [showSellModal, setShowSellModal] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
@@ -41,7 +38,6 @@ const MarketInfo = ({route, navigation, item}) => {
   const currentAsset = holdings?.assets.filter(
     x => x.asset?.symbol.toLowerCase() === item?.symbol.toLowerCase(),
   );
-  // console.log(route.params);
 
   const uri =
     Platform.OS === 'android'
@@ -104,7 +100,7 @@ const MarketInfo = ({route, navigation, item}) => {
           }}>
           <View>
             <View style={{}}>
-              <MarketChart item={item} scwAddress={address} />
+              <MarketChart item={item} scwAddress={evmInfo?.smartAccount} />
             </View>
           </View>
 
@@ -225,8 +221,8 @@ const MarketInfo = ({route, navigation, item}) => {
         }}
         onPress={() => {
           if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+            ReactNativeHapticFeedback.trigger('impactMedium', options);
+          }
           // if (holdings) {
           navigation.navigate('TradePage', {
             state: item,

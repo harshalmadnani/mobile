@@ -11,11 +11,14 @@ export const getMarketAssetData = async page => {
   try {
     const response = await axios.get(
       'https://api.mobula.io/api/1/market/query?filters=volume:10000:&sortBy=market_cap&limit=100',
+      {
+        headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+      },
     );
     console.log('market data.....', response?.data?.length);
     return response?.data;
   } catch (error) {
-    console.log('error from market investment api:', error);
+    console.log('error from market investment api:', error?.response?.data);
     return [];
   }
 };

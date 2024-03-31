@@ -45,6 +45,7 @@ import MarketInfo from './screens/loggedIn/investments/marketInfo';
 import SavingsPending from './screens/loggedIn/savings/savingStatus/pending';
 import SavingsSuccessful from './screens/loggedIn/savings/savingStatus/successful';
 import PendingTxStatusPage from './screens/loggedIn/investments/trade/PendingTxStatusPage';
+import MainFlowStack from './navigator/MainFlow';
 // import SavingsUnsuccessful from './screens/loggedIn/savings/savingStatus/unsuccessful';
 import Ramper from './screens/loggedIn/payments/Ramps/ramper';
 import LiFi from './screens/loggedIn/payments/Ramps/lifi';
@@ -74,11 +75,11 @@ import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccoun
 import AddFund from './screens/loggedIn/card/fund/addFund';
 import CardInfo from './screens/loggedIn/card/info/cardInfo';
 import TradePage from './screens/loggedIn/investments/trade/tradePage';
-import Portfolio from './screens/loggedIn/investments/portfolio/portfolio';
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistor, store} from './store/store';
 import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxStatusPage';
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
+
 function PreLaunchLoad({navigation}) {
   return (
     <View>
@@ -127,16 +128,6 @@ function WidgetPage({navigation}) {
   );
 }
 
-function Settings({navigation}) {
-  return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
-        <SettingsComponent navigation={navigation} />
-        <BottomNavbar navigation={navigation} selected="Settings" />
-      </SafeAreaView>
-    </View>
-  );
-}
 function LoggedIn({navigation}) {
   return (
     <ScrollView>
@@ -253,32 +244,11 @@ function Savings({navigation, route}) {
   );
 }
 
-function Investment({navigation}) {
-  return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
-        <Investments navigation={navigation} />
-        <BottomNavbar navigation={navigation} selected="Investments" />
-      </SafeAreaView>
-    </View>
-  );
-}
 function MarketSearch({navigation, route}) {
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.container}>
         <MarketSearchScreen route={route} navigation={navigation} />
-        {/* <BottomNavbar navigation={navigation} selected="Investments" /> */}
-      </SafeAreaView>
-    </View>
-  );
-}
-function Portfolios({navigation}) {
-  return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
-        <Portfolio navigation={navigation} />
-        <BottomNavbar navigation={navigation} selected="Portfolio" />
       </SafeAreaView>
     </View>
   );
@@ -316,7 +286,6 @@ function Payments({navigation}) {
         <PaymentsComponent navigation={navigation} />
       </ScrollView>
       <BottomNavbar navigation={navigation} selected="Payments" />
-      {/* </View> */}
     </SafeAreaView>
   );
 }
@@ -648,14 +617,8 @@ export default function App({navigation, uri}) {
                 options={{headerShown: false}}
               />
               <Stack.Screen
-                name="Investments"
-                component={Investment}
-                navigation={navigation}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
                 name="Portfolio"
-                component={Portfolios}
+                component={MainFlowStack}
                 navigation={navigation}
                 options={{headerShown: false}}
               />
@@ -793,12 +756,6 @@ export default function App({navigation, uri}) {
               <Stack.Screen
                 name="RedeemForm"
                 component={RedeemForm}
-                navigation={navigation}
-                options={{headerShown: false}}
-              />
-              <Stack.Screen
-                name="Settings"
-                component={Settings}
                 navigation={navigation}
                 options={{headerShown: false}}
               />

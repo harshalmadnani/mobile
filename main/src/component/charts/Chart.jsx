@@ -34,7 +34,10 @@ function InteractiveChart() {
     return (width / 750) * size;
   };
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
-  const [priceList, setPriceList] = useState([]);
+  const [priceList, setPriceList] = useState([
+    {timestamp: 0, value: 0},
+    {timestamp: 0, value: 0},
+  ]);
   const now = new Date();
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
   const oneHourAgo = new Date(now.getTime() - 1 * 60 * 60 * 1000);
@@ -71,8 +74,11 @@ function InteractiveChart() {
         const historicalPriceXYPair = data.balance_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
-        setPriceList(historicalPriceXYPair);
-        setcurrentPrice(data.balance_usd);
+        // historicalPriceXYPair = [];
+        if (historicalPriceXYPair.length > 0) {
+          setPriceList(historicalPriceXYPair);
+        }
+        setcurrentPrice(data?.balance_usd ?? 0);
       } catch (e) {
         console.log(e);
       }

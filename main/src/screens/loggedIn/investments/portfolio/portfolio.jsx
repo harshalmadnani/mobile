@@ -179,7 +179,6 @@ const Portfolio = ({navigation}) => {
               </TouchableOpacity>
 
               {/* Image */}
-  
 
               {/* Price */}
               <Text
@@ -554,7 +553,7 @@ const Portfolio = ({navigation}) => {
         }}
         style={{
           position: 'absolute',
-          bottom: Platform.OS === 'ios' ? '5%' : '8.5%',
+          bottom: Platform.OS === 'ios' ? '5%' : '2%',
           width: '95%',
           height: 56,
           borderRadius: 28,
