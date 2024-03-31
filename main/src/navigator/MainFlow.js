@@ -20,14 +20,6 @@ function MainFlowStack() {
           headerShown: false,
           tabBarStyle: {backgroundColor: 'black', borderTopWidth: 0},
           tabBarShowLabel: false,
-          //   tabBarBackground: () => (
-          //     <BlurView
-          //       style={{...StyleSheet.absoluteFill}}
-          //       blurType="light"
-          //       blurAmount={10}
-          //       reducedTransparencyFallbackColor="white"
-          //     />
-          //   ),
         }}>
         <Tab.Screen
           listeners={() => ({
