@@ -360,10 +360,7 @@ function MarketInfoScreen({route, navigation}) {
 function TradePageScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
-      <ScrollView style={{height: '100%'}}>
-        <TradePage navigation={navigation} route={route} />
-      </ScrollView>
+      <TradePage navigation={navigation} route={route} />
     </SafeAreaView>
   );
 }
