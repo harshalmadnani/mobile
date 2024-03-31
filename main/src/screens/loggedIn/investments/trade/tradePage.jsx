@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Keyboard,
+  Animated
 } from 'react-native';
 import {ImageAssets} from '../../../../../assets';
 import {Icon} from 'react-native-elements';
@@ -22,7 +23,19 @@ import {
 } from '../../../../store/actions/market';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+const DotLoading = ({ loadingText }) => {
+  const [dots, setDots] = useState('');
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots((prevDots) => (prevDots.length < 3 ? prevDots + '.' : ''));
+    }, 500); // Change dot every 500 ms
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return <Text>{loadingText + dots}</Text>;
+};
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false
@@ -72,7 +85,13 @@ const TradePage = ({route}) => {
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const tokensToSell = tradeAsset?.[0]?.contracts_balances;
-
+  const getDisplayText = () => {
+    if (loading) return <DotLoading loadingText="Calculating" />;
+    if (!bestSwappingBuyTrades) return 'Calculating....';
+    if (bestSwappingBuyTrades.length === 0) return 'Try Again';
+    if (preparingTx) return <DotLoading loadingText="CONFIRMING" />;
+    return 'CONFIRM';
+  };
   useEffect(() => {
     if (tradeType === 'sell') {
       setLoading(true);
@@ -206,7 +225,7 @@ const TradePage = ({route}) => {
               flexDirection: 'row',
               marginLeft: '30%',
             }}
-            onPress={() => setModalVisible(true)} // Modified to open the modal
+            onPress={() => setModalVisible(true)}
           >
             <Modal
               animationType="slide"
@@ -220,7 +239,7 @@ const TradePage = ({route}) => {
                   position: 'absolute',
                   bottom: 0,
                   width: '100%',
-                  backgroundColor: '#151515',
+                  backgroundColor: '#010101',
                   padding: 20,
                   borderTopLeftRadius: 20,
                   borderTopRightRadius: 20,
@@ -518,7 +537,7 @@ const TradePage = ({route}) => {
                     style={{
                       paddingVertical: 10,
                       paddingHorizontal: 22,
-                      borderRadius: 5,
+                      borderRadius: 20,
                       flexDirection: 'row',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -551,34 +570,34 @@ const TradePage = ({route}) => {
             {tradeType === 'buy' ? (
               <View
                 style={{
-                  marginTop: 25,
+                  marginTop: '5%',
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}>
+                     <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#9d9d9d',
+                    textAlign: 'center',
+                    fontFamily: 'NeueMontreal-Medium',
+                  }}>
+                 Available to invest:{' '}
+                </Text>
                 <Text
                   style={{
                     fontSize: 16,
                     color: '#fff',
                     textAlign: 'center',
-                    fontFamily: 'Unbounded-ExtraBold',
+                    fontFamily: 'Unbounded-Medium',
                   }}>
                   ${usdcValue?.[0]?.estimated_balance?.toFixed(2)}{' '}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: '#7e7e7e',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Regular',
-                  }}>
-                  available to invest{' '}
                 </Text>
               </View>
             ) : (
               <View
                 style={{
-                  marginTop: 25,
+                  marginTop: '5%',
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -598,19 +617,20 @@ const TradePage = ({route}) => {
                     fontSize: 16,
                     color: '#7e7e7e',
                     textAlign: 'center',
-                    fontFamily: 'Unbounded-Regular',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
-                  available to sell{' '}
+                  is available{' '}
                 </Text>
                 {/* image to allow btc input */}
                 {/* <Image source={ImageAssets.arrowImg} /> */}
               </View>
             )}
+<View style={{marginVertical:'10%'}}>
             {/*Input Number */}
             {tradeType === 'sell' ? (
               <View
                 style={{
-                  marginTop: 25,
+                  marginTop: '5%',
                   flexDirection: 'row',
                   justifyContent: 'center',
                   gap: 8,
@@ -637,7 +657,7 @@ const TradePage = ({route}) => {
                     color: '#252525',
                     textAlign: 'center',
                     textTransform: 'uppercase',
-                    marginTop: 10,
+              
                   }}>
                   {state.symbol.toUpperCase()}
                 </Text>
@@ -653,10 +673,8 @@ const TradePage = ({route}) => {
                 <Text
                   style={{
                     fontSize: 56,
-
-                    color: '#252525',
+                    color: '#fff',
                     textAlign: 'center',
-                    marginTop: 10,
                     fontFamily: 'Unbounded-Medium',
                   }}>
                   $
@@ -688,16 +706,16 @@ const TradePage = ({route}) => {
                 <Text
                   style={{
                     fontSize: 16,
-                    color: '#7e7e7e',
+                    color: '#5C5C5C',
                     textAlign: 'center',
-                    fontFamily: 'Unbounded-Regular',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
-                  You'll get{' '}
+                  You'll get {' '}
                 </Text>
                 <Text
                   style={{
                     fontSize: 16,
-                    color: '#7e7e7e',
+                    color: '#b3b3b3',
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
@@ -743,11 +761,11 @@ const TradePage = ({route}) => {
                 <Text
                   style={{
                     fontSize: 16,
-                    color: '#7e7e7e',
+                    color: '#5c5c5c',
                     textAlign: 'center',
-                    fontFamily: 'Unbounded-Regular',
+                    fontFamily: 'NeueMontreal-Medium',
                   }}>
-                  You'll get{' '}
+                  You'll get {' '}
                 </Text>
                 <Text
                   style={{
@@ -756,6 +774,7 @@ const TradePage = ({route}) => {
                     textAlign: 'center',
                     fontFamily: 'Unbounded-Bold',
                   }}>
+                    $
                   {isNaN(
                     bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                       ?.amount /
@@ -786,7 +805,7 @@ const TradePage = ({route}) => {
                 {/* <Image source={ImageAssets.arrowImg} /> */}
               </View>
             )}
-
+</View>
             {/*order summary */}
             <View style={{marginTop: '25%'}}>
               <View
@@ -1088,28 +1107,25 @@ const TradePage = ({route}) => {
                   paddingHorizontal: '30%',
                   justifyContent: 'center',
                   alignSelf: 'center',
-                  width: '95%',
+                  width: '105%',
                 }}
                 locations={[0, 1]}
                 colors={['#fff', '#fff']}
                 useAngle={true}
                 angle={95.96}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    letterSpacing: 0.2,
-                    fontFamily: 'Unbounded-Bold',
-                    color: '#000',
-                    textAlign: 'center',
-                  }}>
-                  {!bestSwappingBuyTrades || loading
-                    ? 'Calculating....'
-                    : bestSwappingBuyTrades.length === 0
-                    ? 'Try Again'
-                    : preparingTx
-                    ? 'CONFIRMING..'
-                    : 'CONFIRM'}
-                </Text>
+              <View>
+      <Text
+        style={{
+          fontSize: 14,
+          letterSpacing: 0.2,
+          fontFamily: 'Unbounded-Bold',
+          color: '#000',
+          textAlign: 'center',
+        }}
+      >
+        {getDisplayText()}
+      </Text>
+    </View>
               </LinearGradient>
             </TouchableOpacity>
           </View>
