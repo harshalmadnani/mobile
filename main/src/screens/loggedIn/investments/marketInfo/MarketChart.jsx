@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
 import CustomSkeleton from '../../../../component/Skeleton';
+import axios from 'axios';
 const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -106,11 +107,10 @@ const MarketChart = props => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           'https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439',
         );
-        const json = await response.json();
-        setNewsData(json.results);
+        setNewsData(response?.data?.results);
       } catch (error) {
         console.error(error);
       } finally {
