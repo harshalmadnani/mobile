@@ -12,11 +12,11 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 import {useDispatch} from 'react-redux';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
+  ignoreAndroidSystemSettings: false,
 };
 import {useNavigation} from '@react-navigation/native';
 const TradeItemCard = memo(({onlyMeta = false, item}) => {
@@ -27,13 +27,14 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
       onPress={() => {
         navigation.navigate('MarketInfo', {item: item});
         if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+          ReactNativeHapticFeedback.trigger('impactMedium', options);
+        }
       }}
       style={{
         width: '100%',
         alignSelf: 'flex-start',
         paddingVertical: '2%',
+        // paddingHorizontal: '1%',
       }}>
       <View
         style={{
@@ -64,7 +65,9 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
               <Text style={styles.text1}>{item.symbol.toUpperCase()}</Text>
             </View>
             <View>
-              <Text style={styles.text2}>{item.name}</Text>
+              <Text numberOfLines={1} style={[styles.text2, {width: 100}]}>
+                {item.name}
+              </Text>
             </View>
           </View>
         </View>

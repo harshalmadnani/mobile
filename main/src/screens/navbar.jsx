@@ -1,10 +1,16 @@
 import React from 'react';
 
-import { View, StyleSheet, Dimensions, TouchableOpacity,Vibration } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Vibration,
+} from 'react-native';
 
-import { Text } from 'react-native-elements';
-import { Icon } from 'react-native-elements';
-import { color } from 'react-native-elements/dist/helpers';
+import {Text} from 'react-native-elements';
+import {Icon} from 'react-native-elements';
+import {color} from 'react-native-elements/dist/helpers';
 import LinearGradient from 'react-native-linear-gradient';
 
 import FastImage from 'react-native-fast-image';
@@ -16,52 +22,32 @@ import YoSvg from './navbar-images/yo.svg';
 import RedeemSvg from './navbar-images/cards.svg';
 import HomeSelectedNavIcon from './navbar-images/home-selected';
 import HomeNavIcon from './navbar-images/home';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 const windowHeight = Dimensions.get('window').height;
 const selectedIcon = '#ffffff';
 const icon = '#696969';
-const BottomNavbar = ({ navigation, selected }) => {
+const BottomNavbar = ({navigation, selected}) => {
   const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
   };
   return (
     // <View style = {{height: windowHeight * 0.3}}>
-    <View style={[styles.container, { paddingBottom: 0 }]}>
-
+    <View style={[styles.container, {paddingBottom: 0}]}>
       <View
         style={{
           flexDirection: 'row',
           width: '100%',
           justifyContent: 'space-around',
         }}>
-        {/* <View>
-
-          <TouchableOpacity onPress={() => navigation.push('Payments')}>
-            <View style={styles.navItem}>
-            <SvgUri
-                width="28"
-                height="28"
-                svgXmlData={SaveSvg}
-                fill={selected == 'Payments' ? selectedIcon : icon}
-              />
-              <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text>
-            </View>
-          </TouchableOpacity>
-        </View> */}
-
         <View style={styles.navItem}>
-          {/* <Icon
-            name="home"
-            type="octicon"
-            size={26}
-            // style={selected == 'Payments'?selectedIcon:icon}
-            onPress={() => navigation.push('Payments')}
-            color={selected == 'Payments' ? selectedIcon : icon}
-          /> */}
-          <TouchableOpacity onPress={() => {         if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }navigation.push('Portfolio')}}>
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+              navigation.push('Portfolio');
+            }}>
             {selected == 'Portfolio' ? (
               <FastImage
                 source={require(`./navbar-images/home-selected.png`)}
@@ -73,31 +59,18 @@ const BottomNavbar = ({ navigation, selected }) => {
                 style={styles.icon}
               />
             )}
-            {/* <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text> */}
           </TouchableOpacity>
         </View>
-        {/* <View >
-          <TouchableOpacity onPress={() => navigation.push('Savings')}>
-            <View style={styles.navItem}>
-              <SvgUri
-                width="28"
-                height="28"
-                svgXmlData={SaveSvg}
-                fill={selected == 'Savings' ? selectedIcon : icon}
-              />
-              <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Save</Text>
-            </View>
-          </TouchableOpacity>
-        </View> */}
+
         <View>
           <TouchableOpacity
-           onPress={() => {
-        if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
-        navigation.push('Investments')
-      }}>
-          {selected == 'Investments' ? (
+            onPress={() => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+              navigation.push('Investments');
+            }}>
+            {selected == 'Investments' ? (
               <FastImage
                 source={require(`./navbar-images/markets-selected.png`)}
                 style={styles.icon}
@@ -141,10 +114,14 @@ const BottomNavbar = ({ navigation, selected }) => {
         </View> */}
 
         <View>
-          <TouchableOpacity onPress={() =>{        if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }navigation.push('Settings')}}>
-          {selected == 'Settings' ? (
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+              navigation.push('Settings');
+            }}>
+            {selected == 'Settings' ? (
               <FastImage
                 source={require(`./navbar-images/profile-selected.png`)}
                 style={styles.icon}
@@ -210,7 +187,7 @@ const styles = StyleSheet.create({
     color: '#9D9D9D',
     width: 24,
     height: 18,
-    marginVertical: 3
+    marginVertical: 3,
   },
   navIconSelected: {
     color: '#fff',
@@ -227,7 +204,7 @@ const styles = StyleSheet.create({
     color: '#696969',
     fontSize: 11,
     fontFamily: 'Satoshi-Bold',
-    fontWeight: "700",
+    fontWeight: '700',
     paddingTop: 4,
   },
   navItemLabelSelected: {
@@ -235,9 +212,9 @@ const styles = StyleSheet.create({
     // color: '#A38CFF',
     fontSize: 11,
     fontFamily: 'Satoshi-Bold',
-    fontWeight: "700",
+    fontWeight: '700',
     paddingTop: 4,
-  }
+  },
 });
 
 export default BottomNavbar;

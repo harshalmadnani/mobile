@@ -113,24 +113,19 @@ export const setHistoricalDataOfSelectedTimeFrame = (
     );
   };
 };
-export const getCryptoHoldingForMarketFromMobula = asset => {
-  return async (dispatch, getState) => {
-    const address = getState().auth.address;
-    const data = await getCryptoHoldingForAddress(address, asset);
-    dispatch(marketsAction.setSelectedAssetWalletHolding(data));
-  };
-};
+
 export const getBestDLNCrossSwapRateBuy = (
   blockchains,
   contractAddress,
   value,
 ) => {
   return async (dispatch, getState) => {
-    console.log('asset contracts best', blockchains, contractAddress);
+    const evmInfo = getState().portfolio.evmInfo;
     const bestRate = await getBestCrossSwapRateBuy(
       blockchains,
       contractAddress,
       value,
+      evmInfo?.smartAccount,
     );
 
     dispatch(marketsAction.setBestSwappingRates(bestRate));

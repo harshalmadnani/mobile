@@ -8,7 +8,6 @@ import {
   Image,
   Dimensions,
   StyleSheet,
-  ActivityIndicator,
   FlatList,
   Pressable,
 } from 'react-native';
@@ -21,7 +20,6 @@ import {
   getListOfStocksFromMobulaApi,
 } from '../../../store/actions/market';
 import {useFocusEffect} from '@react-navigation/native';
-import {getForexListData, getMarketData} from '../../../utils/cryptoMarketsApi';
 import {marketsAction} from '../../../store/reducers/market';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
