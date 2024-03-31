@@ -71,7 +71,7 @@ function InteractiveChart() {
 
       try {
         const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
-        const historicalPriceXYPair = data.balance_history.map(entry => {
+        const historicalPriceXYPair = data?.balance_history.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
         // historicalPriceXYPair = [];

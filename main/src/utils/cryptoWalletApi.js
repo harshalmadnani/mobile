@@ -54,7 +54,7 @@ export const getWalletHistoricalData = async (smartAccount, from) => {
     );
     return response?.data?.data;
   } catch (error) {
-    console.log('error  from history api:', error);
+    console.log('error  from history api:', error?.response?.data);
     return [];
   }
 };
@@ -73,7 +73,7 @@ export const getTransactionsByWallet = async (address, page) => {
     );
     return response?.data?.data;
   } catch (error) {
-    console.log('error  from history api:', error);
+    console.log('error  from history api:', error?.response?.data);
     return [];
   }
 };

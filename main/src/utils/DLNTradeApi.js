@@ -18,23 +18,24 @@ export const getDLNTradeCreateBuyOrder = async (
   srcChainTokenInAmount,
   dstChainId,
   dstChainTokenOut,
+  smartAccount,
 ) => {
   try {
     let response;
     if (dstChainId === srcChainId) {
-      response = await axios.get(
-        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
-          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : srcChainTokenIn
-        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : dstChainTokenOut
-        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      response = await getQuoteFromLifi(
+        srcChainId,
+        dstChainId,
+        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : srcChainTokenIn,
+        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : dstChainTokenOut,
+        srcChainTokenInAmount,
+        smartAccount,
       );
     } else {
-      console.log('hereeee...........');
       response = await axios.get(
         `${DLNBaseURL}${
           tradeRoutes.createOrder
@@ -52,17 +53,10 @@ export const getDLNTradeCreateBuyOrder = async (
     return response?.data;
   } catch (error) {
     console.log(
-      'error from DLN same api: matic same',
-      `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
-        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-          ? '0x0000000000000000000000000000000000000000'
-          : srcChainTokenIn
-      }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-          ? '0x0000000000000000000000000000000000000000'
-          : dstChainTokenOut
-      }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-      error.toString(),
+      'error from Trade Quote api:',
+      dstChainId,
+      srcChainId,
+      error.response?.data,
     );
     return null;
   }
@@ -104,7 +98,6 @@ export const getDLNTradeCreateSellOrder = async (
       );
     }
 
-    console.log('response from DLN api: sell', dstChainId, response?.data);
     return response?.data;
   } catch (error) {
     console.log('error  from DLN api:', dstChainId, error.toString());
@@ -128,11 +121,12 @@ export const getBestCrossSwapRateBuy = async (
   blockchains,
   contractAddress,
   value,
+  smartAccount,
 ) => {
   let blockchainsContractAddress = blockchains.map((x, i) => {
     return {blockchains: blockchains[i], contractAddress: contractAddress[i]};
   });
-  console.log('block chain to be called call', blockchains);
+
   blockchainsContractAddress = blockchainsContractAddress.filter(
     x =>
       x.blockchains === 'Ethereum' ||
@@ -142,12 +136,22 @@ export const getBestCrossSwapRateBuy = async (
       x.blockchains === 'Arbitrum',
   );
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
+    console.log(
+      'quote fetch call type...........',
+      137,
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      value,
+      getChainIdOnChainName(x?.blockchains),
+      x?.contractAddress,
+      smartAccount,
+    );
     const res = await getDLNTradeCreateBuyOrder(
       137,
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       value,
       getChainIdOnChainName(x?.blockchains),
       x?.contractAddress,
+      smartAccount,
     );
     return res;
   });
@@ -159,14 +163,12 @@ export const getBestCrossSwapRateBuy = async (
     return {
       fee: isNaN(
         parseInt(
-          x?.estimation?.dstChainTokenOut?.amount ||
-            x?.estimation?.tokenOut?.amount,
+          x?.estimation?.dstChainTokenOut?.amount || x?.estimate?.toAmountMin,
         ),
       )
         ? 0
         : parseInt(
-            x?.estimation?.dstChainTokenOut?.amount ||
-              x?.estimation?.tokenOut?.amount,
+            x?.estimation?.dstChainTokenOut?.amount || x?.estimate?.toAmountMin,
           ),
       chainId: x?.estimation?.dstChainTokenOut?.chainId || 137,
     };
@@ -175,17 +177,16 @@ export const getBestCrossSwapRateBuy = async (
   console.log(
     'before filter',
     bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
-    results,
   );
   results =
     bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId === 137
-      ? results.filter(x => x.estimation?.tokenOut !== undefined)
+      ? results.filter(x => x?.estimate?.toAmountMin !== undefined)
       : results.filter(
           x =>
-            x.estimation?.dstChainTokenOut?.chainId ===
+            x?.estimation?.dstChainTokenOut?.chainId ===
             bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
         );
-  console.log('after filter', results);
+  console.log('after filter', results.length);
   if (results.length > 0) {
     return results[0];
   } else {
@@ -248,7 +249,7 @@ export const confirmDLNTransaction = async (
   eoaAddress,
 ) => {
   let txs = [];
-  // console.log(quoteTxReciept);
+
   if (
     tradeType === 'buy' &&
     quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
@@ -297,6 +298,7 @@ export const confirmDLNTransaction = async (
 
     txs.push(executeProxyDLN);
   } else {
+    console.log('approval address....', smartAccount, txData, tokenAddress);
     const erc20Abi = new ethers.utils.Interface(erc20);
     const sendData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,
@@ -374,4 +376,29 @@ export const getDLNTradeForAddress = async (smartAccount, page) => {
   );
   console.log('dln stats api....', res.data);
   return res.data;
+};
+export const getQuoteFromLifi = async (
+  fromChain,
+  toChain,
+  fromToken,
+  toToken,
+  fromAmount,
+  fromAddress,
+) => {
+  try {
+    const result = await axios.get('https://li.quest/v1/quote', {
+      params: {
+        fromChain,
+        toChain,
+        fromToken,
+        toToken,
+        fromAmount,
+        fromAddress,
+        integrator: 'xade-finance',
+      },
+    });
+    return result;
+  } catch (error) {
+    console.log('lifi error.....', error?.response?.data);
+  }
 };

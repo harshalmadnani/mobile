@@ -133,12 +133,11 @@ export const getBestDLNCrossSwapRateBuy = (
 };
 export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
   return async (dispatch, getState) => {
+    const evmInfo = getState().portfolio.evmInfo;
     console.log(
       'Same Chain sell.....',
-      tokenInfo?.chainId,
-      tokenInfo?.address,
       value,
-      tokenInfo?.chainId === '137',
+      tokenInfo,
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
     );
     const bestRate = await getDLNTradeCreateBuyOrder(
@@ -147,8 +146,9 @@ export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
       value,
       '137',
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      evmInfo?.smartAccount,
     );
     console.log('best rates.....sell', JSON.stringify(bestRate));
-    dispatch(marketsAction.setBestSwappingRates(bestRate));
+    dispatch(marketsAction.setBestSwappingRates(bestRate ?? []));
   };
 };

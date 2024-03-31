@@ -48,7 +48,7 @@ export const getHistoricalData = async (assetName, from) => {
     );
     return response?.data?.data;
   } catch (error) {
-    console.log('error  from history api:', error);
+    console.log('error  from history api:', error?.response?.data);
     return [];
   }
 };

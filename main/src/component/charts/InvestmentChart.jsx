@@ -40,7 +40,10 @@ function InteractiveChart({assetName}) {
     return (width / 750) * size;
   };
 
-  const [priceList, setPriceList] = useState([]);
+  const [priceList, setPriceList] = useState([
+    {timestamp: 0, value: 0},
+    {timestamp: 0, value: 0},
+  ]);
   const now = new Date();
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
   const oneHourAgo = new Date(now.getTime() - 1 * 60 * 60 * 1000);
