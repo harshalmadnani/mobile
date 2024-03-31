@@ -481,24 +481,23 @@ const TradePage = ({route}) => {
               }}>
               is available{' '}
             </Text>
-            {/* image to allow btc input */}
-            {/* <Image source={ImageAssets.arrowImg} /> */}
           </View>
         )}
+
         <View style={{marginVertical: '10%'}}>
-          {/*Input Number */}
           {tradeType === 'sell' ? (
             <View
               style={{
-                marginTop: '5%',
+                marginTop: 25,
                 flexDirection: 'row',
                 justifyContent: 'center',
                 gap: 8,
-                fontFamily: 'Unbounded-Medium',
+                // backgroundColor: 'red',
               }}>
               <TextInput
                 style={{
                   fontSize: 56,
+                  height: 94,
                   color: '#ffffff',
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
@@ -506,17 +505,16 @@ const TradePage = ({route}) => {
                 value={value}
                 onChangeText={text => {
                   setValue(text);
+                  ReactNativeHapticFeedback.trigger('impactMedium', options);
                 }}
                 keyboardType="numeric"
               />
-
               <Text
                 style={{
                   fontSize: 56,
-                  fontFamily: 'Unbounded-Bold',
-                  color: '#252525',
+                  color: '#fff',
                   textAlign: 'center',
-                  textTransform: 'uppercase',
+                  fontFamily: 'Unbounded-Medium',
                 }}>
                 {state.symbol.toUpperCase()}
               </Text>
@@ -546,7 +544,6 @@ const TradePage = ({route}) => {
                   color: '#ffffff',
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
-                  // backgroundColor: 'blue',
                 }}
                 value={value}
                 onChangeText={text => {
