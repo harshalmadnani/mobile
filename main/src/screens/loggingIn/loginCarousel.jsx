@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 const {width, height} = Dimensions.get('window');
 import Clipboard from '@react-native-clipboard/clipboard';
 import FastImage from 'react-native-fast-image';
-
+import BouncyIcon from './BouncyIcon';
 class LoginCarousel extends React.Component {
   scrollRef = React.createRef();
   constructor(props) {
@@ -60,7 +60,11 @@ class LoginCarousel extends React.Component {
     const {images} = this.props;
     const {selectedIndex} = this.state;
     return (
-      <ScrollView horizontal pagingEnabled ref={this.scrollRef}>
+      <ScrollView
+        style={{height: height}}
+        horizontal
+        pagingEnabled
+        ref={this.scrollRef}>
         {images.map(image => (
           <View style={styles.depWith} key={image.name}>
             <Text style={styles.xade}>XADE</Text>
@@ -74,6 +78,8 @@ class LoginCarousel extends React.Component {
               style={{
                 width: '100%',
                 height: 300,
+                position: 'absolute',
+                bottom: 100,
                 borderRadius: 50,
               }}
             />
@@ -88,10 +94,16 @@ const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'column',
     width: width,
-    height: 625,
     alignItems: 'center',
+    // backgroundColor: 'red',
   },
-
+  getStartedText: {
+    color: '#A1A1A1',
+    fontFamily: `Unbounded-Medium`,
+    textAlign: 'center',
+    fontSize: 11,
+    marginTop: '1%',
+  },
   header: {
     color: '#fff',
     fontFamily: `Unbounded-Bold`,
