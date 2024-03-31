@@ -389,7 +389,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   shadowRadius: 10,
                 }}
                 onPress={() => {
-                  // if (holdings) {
+                  setModalVisible(false);
                   navigation.navigate('TradePage', {
                     state: item,
                     asset: item.name,

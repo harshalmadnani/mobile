@@ -102,126 +102,126 @@ function InteractiveChart() {
     }
   }, [priceList]);
 
-  return (
-    <LineChart.Provider data={priceList}>
-      <View
-        style={{
-          backgroundColor: '#000',
-          alignItems: 'stretch',
-        }}>
-        <View style={styles.portfoioPriceContainer}>
-          {touchActive ? (
-            <CustomPriceText />
-          ) : (
-            <View
-              style={{
-                flexDirection: 'row',
-                // backgroundColor: 'red',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text style={styles.stockPrice}>
-                $
-                {Number(currentPrice || '0')
-                  ?.toFixed(2)
-                  ?.toLocaleString('en-US')}
-              </Text>
-            </View>
-          )}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center', // Vertically center
-              justifyContent: 'center',
-              marginTop: '1%',
-            }}>
-            <Text
-              style={{
-                color: divisionResult < 0 ? '#FF5050' : '#ADFF6C',
-                fontFamily: 'Unbounded-Medium',
-                fontSize: 14,
-                textAlign: 'center',
-              }}>
-              $
-              {Number(priceChange || 0)
-                ?.toFixed(2)
-                ?.toLocaleString('en-US')}{' '}
-              (
-              {Number(divisionResult || 0)
-                ?.toFixed(2)
-                ?.toLocaleString('en-US')}
-              %)
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: apx(750),
-            height: apx(350),
-            alignSelf: 'stretch',
-          }}>
-          {priceList.length > 0 ? (
-            <GestureHandlerRootView>
-              <LineChart width={apx(750)} height={apx(350)}>
-                <LineChart.Path color="white">
-                  <LineChart.Gradient />
-                </LineChart.Path>
-                <LineChart.CursorCrosshair
-                  color="white"
-                  onActivated={() => {
-                    setTouchActive(true);
-                    const options = {
-                      enableVibrateFallback: true,
-                      ignoreAndroidSystemSettings: false,
-                    };
-                    ReactNativeHapticFeedback.trigger('impactHeavy', options);
-                  }}
-                  onEnded={() => {
-                    setTouchActive(false);
-                  }}
-                />
-              </LineChart>
-              {/* </LineChart.Provider> */}
-            </GestureHandlerRootView>
-          ) : null}
-        </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            padding: apx(20),
-          }}>
-          {timeframes.map(timeframe => (
-            <TouchableOpacity
-              key={timeframe.value}
-              style={{
-                padding: apx(15),
-                backgroundColor:
-                  selectedTimeframe === timeframe.value
-                    ? '#343434'
-                    : 'transparent',
-                borderRadius: apx(20),
-              }}
-              onPress={() => {
-                const options = {
-                  enableVibrateFallback: true,
-                  ignoreAndroidSystemSettings: false,
-                };
-                ReactNativeHapticFeedback.trigger('impactHeavy', options);
-                setSelectedTimeframe(timeframe.value);
-              }}>
-              <Text
-                style={{
-                  color:
-                    selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
-                }}>
-                {timeframe.label}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    </LineChart.Provider>
-  );
+  // return (
+    // <LineChart.Provider data={priceList}>
+    //   <View
+    //     style={{
+    //       backgroundColor: '#000',
+    //       alignItems: 'stretch',
+    //     }}>
+    //     <View style={styles.portfoioPriceContainer}>
+    //       {touchActive ? (
+    //         <CustomPriceText />
+    //       ) : (
+    //         <View
+    //           style={{
+    //             flexDirection: 'row',
+    //             // backgroundColor: 'red',
+    //             alignItems: 'center',
+    //             justifyContent: 'center',
+    //           }}>
+    //           <Text style={styles.stockPrice}>
+    //             $
+    //             {Number(currentPrice || '0')
+    //               ?.toFixed(2)
+    //               ?.toLocaleString('en-US')}
+    //           </Text>
+    //         </View>
+    //       )}
+    //       <View
+    //         style={{
+    //           flexDirection: 'row',
+    //           alignItems: 'center', // Vertically center
+    //           justifyContent: 'center',
+    //           marginTop: '1%',
+    //         }}>
+    //         <Text
+    //           style={{
+    //             color: divisionResult < 0 ? '#FF5050' : '#ADFF6C',
+    //             fontFamily: 'Unbounded-Medium',
+    //             fontSize: 14,
+    //             textAlign: 'center',
+    //           }}>
+    //           $
+    //           {Number(priceChange || 0)
+    //             ?.toFixed(2)
+    //             ?.toLocaleString('en-US')}{' '}
+    //           (
+    //           {Number(divisionResult || 0)
+    //             ?.toFixed(2)
+    //             ?.toLocaleString('en-US')}
+    //           %)
+    //         </Text>
+    //       </View>
+    //     </View>
+    //     <View
+    //       style={{
+    //         flexDirection: 'row',
+    //         width: apx(750),
+    //         height: apx(350),
+    //         alignSelf: 'stretch',
+    //       }}>
+    //       {priceList.length > 0 ? (
+    //         <GestureHandlerRootView>
+    //           <LineChart width={apx(750)} height={apx(350)}>
+    //             <LineChart.Path color="white">
+    //               <LineChart.Gradient />
+    //             </LineChart.Path>
+    //             <LineChart.CursorCrosshair
+    //               color="white"
+    //               onActivated={() => {
+    //                 setTouchActive(true);
+    //                 const options = {
+    //                   enableVibrateFallback: true,
+    //                   ignoreAndroidSystemSettings: false,
+    //                 };
+    //                 ReactNativeHapticFeedback.trigger('impactHeavy', options);
+    //               }}
+    //               onEnded={() => {
+    //                 setTouchActive(false);
+    //               }}
+    //             />
+    //           </LineChart>
+    //           {/* </LineChart.Provider> */}
+    //         </GestureHandlerRootView>
+    //       ) : null}
+    //     </View>
+    //     <View
+    //       style={{
+    //         flexDirection: 'row',
+    //         justifyContent: 'space-around',
+    //         padding: apx(20),
+    //       }}>
+    //       {timeframes.map(timeframe => (
+    //         <TouchableOpacity
+    //           key={timeframe.value}
+    //           style={{
+    //             padding: apx(15),
+    //             backgroundColor:
+    //               selectedTimeframe === timeframe.value
+    //                 ? '#343434'
+    //                 : 'transparent',
+    //             borderRadius: apx(20),
+    //           }}
+    //           onPress={() => {
+    //             const options = {
+    //               enableVibrateFallback: true,
+    //               ignoreAndroidSystemSettings: false,
+    //             };
+    //             ReactNativeHapticFeedback.trigger('impactHeavy', options);
+    //             setSelectedTimeframe(timeframe.value);
+    //           }}>
+    //           <Text
+    //             style={{
+    //               color:
+    //                 selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
+    //             }}>
+    //             {timeframe.label}
+    //           </Text>
+    //         </TouchableOpacity>
+    //       ))}
+    //     </View>
+    //   </View>
+    // </LineChart.Provider>
+  // );
 }

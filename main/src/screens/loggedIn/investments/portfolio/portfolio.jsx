@@ -9,6 +9,7 @@ import {
   ScrollView,
   Modal,
   Platform,
+  Pressable
 } from 'react-native';
 import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
@@ -45,7 +46,7 @@ const Portfolio = ({navigation}) => {
   info = global.loginAccount.name;
   imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
-
+  const [modal2Visible, setModal2Visible] = useState(false);
   useEffect(() => {
     if (evmInfo?.smartAccount) {
       dispatch(
@@ -406,15 +407,122 @@ const Portfolio = ({navigation}) => {
               }}>
               Cash Balance
             </Text>
-            <Text
-              style={{
-                fontFamily: 'Unbounded-Medium',
-                color: '#fff',
-                fontSize: 16,
-              }}>
-              ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
+            <View style={{ }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <TouchableOpacity onPress={() => setModal2Visible(true)} style={{flexDirection:'row'}}> 
+        <Text
+          style={{
+            fontFamily: 'Unbounded-Medium',
+            color: '#fff',
+            fontSize: 16,
+            marginRight: '2%',
+          }}>
+          ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
+        </Text>
+          <Icon
+            name={'expand-more'}
+            size={18}
+            color={'#f0f0f0'}
+            type="materialicons"
+          />
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modal2Visible} 
+        onRequestClose={() => setModal2Visible(!modal2Visible)}  
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          marginTop: 22,
+          width:'100%'
+        }}>
+          <View style={{
+            backgroundColor: '#010101',
+            padding: 35,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
+          }}>
+            <Text style={{
+              marginBottom: 15,
+              textAlign: 'center',
+              fontFamily: 'Unbounded-Medium',
+              fontSize: 20,
+              color: '#fff',
+            }}>Cash Balance</Text>
+            <Text style={{
+              marginBottom: 15,
+              textAlign: 'center',
+              color: '#666',
+              fontSize: 16,
+            }}>
+              Your Cash Balance is the USDC you hold on the Polygon POS chain and is the base currency to settle all transactions on Xade.
             </Text>
+            <Pressable
+              onPress={() => setModal2Visible(!modal2Visible)}  
+              style={{
+                borderRadius: 30,
+                paddingHorizontal: '40%',
+                paddingVertical:'6%',
+                elevation: 2,
+                marginTop: 10,
+                backgroundColor: '#fff',
+              }}
+            >
+              <Text style={{
+                color: 'black',
+                fontWeight: 'bold',
+                textAlign: 'center',
+                fontSize:14
+              }}>Close</Text>
+            </Pressable>
           </View>
+        </View>
+      </Modal>
+    </View>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modal2Visible}  
+        onRequestClose={() => setModal2Visible(!modal2Visible)}
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 22,
+        }}>
+          <View style={{
+            margin: 20,
+            backgroundColor: '#000',
+            borderRadius: 20,
+            padding: 35,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
+          }}>
+          </View>
+        </View>
+      </Modal>
+    </View>     
           <View
             style={{
               flexDirection: 'row',
@@ -553,7 +661,7 @@ const Portfolio = ({navigation}) => {
         }}
         style={{
           position: 'absolute',
-          bottom: Platform.OS === 'ios' ? '5%' : '0%',
+          bottom: Platform.OS === 'ios' ? '0%' : '0%',
           width: '95%',
           height: 56,
           borderRadius: 28,

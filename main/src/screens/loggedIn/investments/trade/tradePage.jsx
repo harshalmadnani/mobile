@@ -83,6 +83,12 @@ const TradePage = ({route}) => {
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const tokensToSell = tradeAsset?.[0]?.contracts_balances;
+  console.log(
+    'available balance',
+    holdings?.assets.filter(
+      x => x.asset?.symbol.toLowerCase() === state.symbol.toLowerCase(),
+    ),tokensToSell
+  );
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
     if (!bestSwappingBuyTrades) return 'Calculating....';
