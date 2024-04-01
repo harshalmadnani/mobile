@@ -78,133 +78,25 @@ const MarketInfo = ({route, navigation, item}) => {
         width: width,
         height: height,
         alignSelf: 'flex-start',
-        // backgroundColor: '#000000',
-
-        // backgroundColor: 'red'
       }}>
-      {/* {isLoading && (
-        <View style={{height: '100%'}}>
-          <ActivityIndicator
-            size={30}
-            style={{marginTop: '40%'}}
-            color="#fff"
-          />
+      <ScrollView
+        scrollEnabled
+        style={{
+          marginTop: '10%',
+        }}>
+        <View>
+          <MarketChart item={item} scwAddress={evmInfo?.smartAccount} />
         </View>
-      )} */}
 
-      {
-        <ScrollView
-          scrollEnabled
-          style={{
-            marginTop: '10%',
-          }}>
-          <View>
-            <View style={{}}>
-              <MarketChart item={item} scwAddress={evmInfo?.smartAccount} />
-            </View>
-          </View>
+        {/* <View margin={4} /> */}
 
-          <View margin={4} />
+        {/* {showBuyModal && (
+          <BuyModal marketData={{}} onClose={handleCloseBuyModal} />
+        )} */}
 
-          {showBuyModal && (
-            <BuyModal marketData={{}} onClose={handleCloseBuyModal} />
-          )}
+        {/* {showSellModal && <SellModal onClose={handleCloseSellModal} />} */}
+      </ScrollView>
 
-          {showSellModal && <SellModal onClose={handleCloseSellModal} />}
-          {/*
-                    <View>
-                        <View style={{
-                            marginHorizontal:20,
-                            marginTop: 16
-                        }}>
-                            <Text
-                                style={{
-                                    fontFamily: 'Satoshi-Regular',
-                                    fontSize: 16,
-                                    color: "#fff",
-                                    fontWeight: "400",
-                                }}>
-                                Your total balance
-                            </Text>
-                        </View>
-
-                        <View style={{
-                            marginHorizontal:20,
-                            }}>
-                            <Text
-                                style={{
-                                    fontFamily: 'Satoshi-Bold',
-                                    fontSize: 32,
-                                    color: "#fff",
-                                    fontWeight: "700",
-                                }}>
-                                {item.balance}
-                            </Text>
-                        </View>
-                    </View> */}
-
-          {/* <Tabs.Container
-                        // renderTabBar={renderTabBar}
-                        containerStyle={{ minHeight: 400, fontSize: '14px', fontFamily: 'Satoshi-Bold'}}
-                        onIndexChange={setIndex}
-                        initialLayout={{ width: layout.width }}
-                        style={{backgroundColor: '#000000'}}
-                        renderTabBar={props => <MaterialTabBar {...props} pressColor={'transparent'} activeColor={'#fff'}  inactiveColor={'#ffffffcc'} indicatorStyle={{ backgroundColor: '#fff' }} labelStyle={{fontSize: 14, fontFamily: 'Satoshi-Bold', }} />}
-                        headerContainerStyle={{ backgroundColor : '#000'}}
-                    >
-                        <Tabs.Tab name="Buy" label={"Buy"} key={1} >
-                            <Tabs.ScrollView>
-                                <BuyForm navigation={navigation} />
-                            </Tabs.ScrollView>
-                        </Tabs.Tab>
-                        <Tabs.Tab name="Sell" label={"Sell"} key={2}>
-                            <Tabs.ScrollView>
-                                <SellForm navigation={navigation} />
-                            </Tabs.ScrollView>
-                        </Tabs.Tab>
-                    </Tabs.Container> */}
-
-          {/* <View
-                        style={{
-                            flexDirection: 'row',
-                            // width: '80%',
-                            height: 50,
-                            justifyContent: 'space-evenly',
-                            flexDirection: 'row',
-                            marginTop: 30,
-                            marginHorizontal:10
-                        }}>
-
-                        <TouchableOpacity
-                            style={styles.depWith}
-                            onPress={() => {
-                                setShowBuyModal(true);
-                            }}>
-
-                            <LinearGradient useAngle={true} angle={150} colors={['#5038E1','#B961FF']} style={[styles.innerDep]}>
-
-                                    <Text style={{color: '#fff', fontSize: 14, paddingLeft:'5%', fontFamily: 'Satoshi-Bold', fontWeight: 300}}>
-                                        Buy
-                                    </Text>
-
-                            </LinearGradient>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.depWith}
-                            onPress={() => {
-                                setShowSellModal(true);
-                            }}>
-                            <View
-                                style={[styles.innerDep, styles.innerDepColored]}>
-                                <Text style={{color: '#fff', fontSize: 14,paddingLeft:'5%', fontFamily: 'Satoshi-Bold', fontWeight: 300}}>
-                                    Sell
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-
-                    </View> */}
-        </ScrollView>
-      }
       <TouchableOpacity
         style={{
           flexDirection: 'row',
@@ -223,12 +115,10 @@ const MarketInfo = ({route, navigation, item}) => {
           if (Platform.OS === 'ios') {
             ReactNativeHapticFeedback.trigger('impactMedium', options);
           }
-          // if (holdings) {
           navigation.navigate('TradePage', {
             state: item,
             asset: currentAsset,
           });
-          // }
         }}>
         <LinearGradient
           useAngle={true}

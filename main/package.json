@@ -52,6 +52,7 @@
     "events": "^1.1.1",
     "https-browserify": "^0.0.1",
     "localstorage-polyfill": "^1.0.1",
+    "lottie-react-native": "^6.7.0",
     "metro": "0.76.0",
     "micro": "^10.0.1",
     "moment": "^2.30.1",

@@ -12,6 +12,7 @@ import {
   Pressable,
 } from 'react-native';
 import TradeItemCard from './TradeItemCard';
+import LottieView from 'lottie-react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getListOfCommoditiesFromMobulaApi,
@@ -206,13 +207,21 @@ const Investments = ({navigation}) => {
 
       {marketListFetchLoading && (
         <View
-          scrollEnabled
           style={{
-            marginTop: '1%',
+            justifyContent: 'center',
+            height: '80%',
             width: '100%',
-            backgroundColor: 'red',
           }}>
-          {/* <CustomSkeleton element={5} width={'98%'} height={80} /> */}
+          <LottieView
+            source={require('../../../../assets/lottie/iosLottieLoader.json')}
+            style={{
+              width: 20,
+              height: 20,
+              alignSelf: 'center',
+            }}
+            autoPlay
+            loop
+          />
         </View>
       )}
 

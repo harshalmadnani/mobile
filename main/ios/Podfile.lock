@@ -99,6 +99,10 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
+  - lottie-ios (4.4.1)
+  - lottie-react-native (6.7.0):
+    - lottie-ios (~> 4.4.1)
+    - React-Core
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
     - nanopb/encode (= 2.30909.1)
@@ -583,6 +587,7 @@ DEPENDENCIES:
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - lottie-react-native (from `../node_modules/lottie-react-native`)
   - ParticleAA (= 1.3.9)
   - ParticleAuthCore (= 1.3.4)
   - ParticleAuthService (= 1.3.9)
@@ -677,6 +682,7 @@ SPEC REPOS:
     - GoogleDataTransport
     - GoogleUtilities
     - libwebp
+    - lottie-ios
     - nanopb
     - ParticleAA
     - ParticleAuthCore
@@ -713,6 +719,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/React/FBReactNativeSpec"
   glog:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  lottie-react-native:
+    :path: "../node_modules/lottie-react-native"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -871,6 +879,8 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
+  lottie-ios: e047b1d2e6239b787cc5e9755b988869cf190494
+  lottie-react-native: e3205322282d72e23efb3bff3287d0bd16fb1b01
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   ParticleAA: fb608dcdfb1aabf5ff65d3ff1ae5750054f52fb3
   ParticleAuthCore: 76f7bd577266549b81fc67cfa659109a0d085a26

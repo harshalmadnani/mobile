@@ -7,6 +7,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
+import {useFocusEffect} from '@react-navigation/native';
 export default InteractiveChart;
 function CustomPriceText() {
   return (
@@ -70,6 +71,7 @@ function InteractiveChart() {
       if (from === null) return; // Early exit if timestamp is not found
 
       try {
+        console.log('wallet history fetch...');
         const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
         const historicalPriceXYPair = data?.balance_history?.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
@@ -84,8 +86,40 @@ function InteractiveChart() {
       }
     }
     init();
-  }, [selectedTimeframe, evmInfo]);
-
+  }, [selectedTimeframe]);
+  useFocusEffect(
+    useCallback(() => {
+      async function initialHistoryFetch() {
+        try {
+          const selectedTimeframeObject = timeframes.find(
+            timeframe => timeframe?.value === selectedTimeframe,
+          );
+          const from = selectedTimeframeObject
+            ? selectedTimeframeObject.timestamp
+            : null;
+          console.log('wallet history fetch...');
+          const data = await getWalletHistoricalData(
+            evmInfo?.smartAccount,
+            from,
+          );
+          const historicalPriceXYPair = data?.balance_history?.map(entry => {
+            return {timestamp: entry[0], value: entry[1]};
+          });
+          console.log('wallet history......', historicalPriceXYPair?.length);
+          if (historicalPriceXYPair?.length > 0) {
+            setPriceList(historicalPriceXYPair);
+          }
+          setcurrentPrice(data?.balance_usd ?? 0);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      initialHistoryFetch();
+      return () => {
+        // Perform any clean-up tasks here, such as cancelling requests or clearing state
+      };
+    }, [evmInfo]),
+  );
   // The currently selected X coordinate position
   useEffect(() => {
     if (priceList?.length > 1 || priceList?.[0]?.value === '0') {
