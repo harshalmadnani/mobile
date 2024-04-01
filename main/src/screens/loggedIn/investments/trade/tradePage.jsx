@@ -262,7 +262,7 @@ const TradePage = ({route}) => {
                     <View
                       key={index}
                       style={{
-                        flex:1,
+                        flex: 1,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         alignItems: 'center',
@@ -484,183 +484,185 @@ const TradePage = ({route}) => {
             </Text>
           </View>
         )}
-<View style={{marginTop:'20%',marginBottom:'30%'}}>
-        <View>
-          {tradeType === 'sell' ? (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 8,
-              }}>
-              <TextInput
+        <View style={{marginTop: '20%', marginBottom: '30%'}}>
+          <View>
+            {tradeType === 'sell' ? (
+              <View
                 style={{
-                  fontSize: 56,
-                  color: '#ffffff',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Medium',
-                }}
-                value={value}
-                onChangeText={text => {
-                  setValue(text);
-                  ReactNativeHapticFeedback.trigger('impactMedium', options);
-                }}
-                keyboardType="numeric"
-              />
-              <Text
-                style={{
-                  fontSize: 56,
-                  color: '#fff',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Medium',
-                  alignSelf:'center'
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: 8,
                 }}>
-                {state.symbol.toUpperCase()}
-              </Text>
-            </View>
-          ) : (
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                gap: 8,
-                // backgroundColor: 'red',
-              }}>
-              <Text
+                <TextInput
+                  style={{
+                    fontSize: 56,
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Medium',
+                  }}
+                  value={value}
+                  onChangeText={text => {
+                    setValue(text);
+                    ReactNativeHapticFeedback.trigger('impactMedium', options);
+                  }}
+                  keyboardType="numeric"
+                />
+                <Text
+                  style={{
+                    fontSize: 56,
+                    color: '#fff',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Medium',
+                    alignSelf: 'center',
+                  }}>
+                  {state.symbol.toUpperCase()}
+                </Text>
+              </View>
+            ) : (
+              <View
                 style={{
-                  fontSize: 56,
-                  color: '#fff',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Medium',
-                  alignSelf:'center'
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  gap: 8,
+                  // backgroundColor: 'red',
                 }}>
-                $
-              </Text>
-              <TextInput
+                <Text
+                  style={{
+                    fontSize: 56,
+                    color: '#fff',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Medium',
+                    alignSelf: 'center',
+                  }}>
+                  $
+                </Text>
+                <TextInput
+                  style={{
+                    fontSize: 56,
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Medium',
+                  }}
+                  value={value}
+                  onChangeText={text => {
+                    setValue(text);
+                    ReactNativeHapticFeedback.trigger('impactMedium', options);
+                  }}
+                  keyboardType="numeric"
+                />
+              </View>
+            )}
+            {tradeType === 'buy' ? (
+              <View
                 style={{
-                  fontSize: 56,
-                  color: '#ffffff',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Medium',
-                }}
-                value={value}
-                onChangeText={text => {
-                  setValue(text);
-                  ReactNativeHapticFeedback.trigger('impactMedium', options);
-                }}
-                keyboardType="numeric"
-              />
-            </View>
-          )}
-          {tradeType === 'buy' ? (
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#5C5C5C',
-                  textAlign: 'center',
-                  fontFamily: 'NeueMontreal-Medium',
+                  marginTop: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}>
-                You'll get{' '}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#b3b3b3',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Bold',
-                }}>
-                {isNaN(
-                  bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount /
-                    Math.pow(
-                      10,
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.decimals,
-                    ),
-                )
-                  ? (
-                      bestSwappingBuyTrades?.estimate?.toAmountMin /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.action?.toToken?.decimals,
-                      )
-                    ).toFixed(5)
-                  : (
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#5C5C5C',
+                    textAlign: 'center',
+                    fontFamily: 'NeueMontreal-Medium',
+                  }}>
+                  You'll get{' '}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#b3b3b3',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Bold',
+                  }}>
+                  {isNaN(
+                    bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                      ?.amount /
                       Math.pow(
                         10,
                         bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                           ?.decimals,
-                      )
-                    ).toFixed(5)}
-                {' ' + state?.symbol.toUpperCase()}
-              </Text>
+                      ),
+                  )
+                    ? (
+                        bestSwappingBuyTrades?.estimate?.toAmountMin /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.action?.toToken?.decimals,
+                        )
+                      ).toFixed(5)
+                    : (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )
+                      ).toFixed(5)}
+                  {' ' + state?.symbol.toUpperCase()}
+                </Text>
 
-              {/* image to allow btc input */}
-              {/* <Image source={ImageAssets.arrowImg} /> */}
-            </View>
-          ) : (
-            <View
-              style={{
-                marginTop: 1,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text
+                {/* image to allow btc input */}
+                {/* <Image source={ImageAssets.arrowImg} /> */}
+              </View>
+            ) : (
+              <View
                 style={{
-                  fontSize: 16,
-                  color: '#5c5c5c',
-                  textAlign: 'center',
-                  fontFamily: 'NeueMontreal-Medium',
+                  marginTop: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}>
-                You'll get{' '}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#7e7e7e',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Bold',
-                }}>
-                $
-                {isNaN(
-                  bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount /
-                    Math.pow(
-                      10,
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.decimals,
-                    ),
-                )
-                  ? (
-                      bestSwappingBuyTrades?.estimate?.toAmountMin /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.action?.toToken?.decimals,
-                      )
-                    ).toFixed(5)
-                  : (
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#5c5c5c',
+                    textAlign: 'center',
+                    fontFamily: 'NeueMontreal-Medium',
+                  }}>
+                  You'll get{' '}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: '#7e7e7e',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Bold',
+                  }}>
+                  $
+                  {isNaN(
+                    bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                      ?.amount /
                       Math.pow(
                         10,
                         bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                           ?.decimals,
-                      )
-                    ).toFixed(5)}
-              </Text>
-              {/* image to allow btc input */}
-              {/* <Image source={ImageAssets.arrowImg} /> */}
-            </View>
-          )}
-        </View>
+                      ),
+                  )
+                    ? (
+                        bestSwappingBuyTrades?.estimate?.toAmountMin /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.action?.toToken?.decimals,
+                        )
+                      ).toFixed(5)
+                    : (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        )
+                      ).toFixed(5)}
+                </Text>
+                {/* image to allow btc input */}
+                {/* <Image source={ImageAssets.arrowImg} /> */}
+              </View>
+            )}
+          </View>
         </View>
 
         {/*order summary */}
@@ -852,81 +854,84 @@ const TradePage = ({route}) => {
           bottom: Platform.OS === 'ios' ? '10%' : '2%',
         }}
         onPress={async () => {
-          if (Platform.OS === 'ios') {
-            ReactNativeHapticFeedback.trigger('impactMedium', options);
-          }
-          if (!loading && bestSwappingBuyTrades && !preparingTx) {
-            if (tradeType === 'buy' && bestSwappingBuyTrades) {
-              setPreparingTx(true);
-
-              let res;
-              if (bestSwappingBuyTrades?.transactionRequest) {
-                res = bestSwappingBuyTrades;
-              } else {
-                res = await getTradeSigningData();
-              }
-
-              const signature = await confirmDLNTransaction(
-                tradeType,
-                res,
-                res?.estimation?.srcChainTokenIn?.amount ||
-                  res?.action?.fromAmount,
-                res?.estimation?.srcChainTokenIn?.address ||
-                  res?.action?.fromToken?.address,
-                res?.tx ?? res?.transactionRequest,
-                evmInfo?.smartAccount,
-                evmInfo?.address,
-              );
-              setPreparingTx(false);
-              if (signature) {
-                console.log('txn hash....', JSON.stringify(res), signature);
-                navigation.navigate('PendingTxStatus', {
-                  state: res,
-                  tradeType,
-                });
-              }
-            } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
-              setPreparingTx(true);
-              let res;
-              if (bestSwappingBuyTrades?.transactionRequest) {
-                res = bestSwappingBuyTrades;
-              } else {
-                res = await getTradeSigningData();
-              }
-              if (
-                res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
-                res?.estimation?.srcChainTokenIn?.chainId !== undefined
-              ) {
-                await switchAuthCoreChain(
-                  res?.estimation?.srcChainTokenIn?.chainId,
-                );
-              }
-              console.log('Final quote...', JSON.stringify(res));
-              const signature = await confirmDLNTransaction(
-                tradeType,
-                res,
-                res?.estimation?.srcChainTokenIn?.amount ||
-                  res?.action?.fromAmount,
-                res?.estimation?.srcChainTokenIn?.address ||
-                  res?.action?.fromToken?.address,
-                res?.tx ?? res?.transactionRequest,
-                evmInfo?.smartAccount,
-                evmInfo?.address,
-              );
-              setPreparingTx(false);
-              if (signature) {
-                console.log('txn hash', res, signature);
-                navigation.navigate('PendingTxStatus', {
-                  state: res,
-                  tradeType,
-                });
-              }
-            } else if (
-              bestSwappingBuyTrades !== null &&
-              bestSwappingBuyTrades.length === 0
-            ) {
-              await getBestPrice();
+          try {
+            if (Platform.OS === 'ios') {
+              ReactNativeHapticFeedback.trigger('impactMedium', options);
             }
+            if (!loading && bestSwappingBuyTrades && !preparingTx) {
+              if (tradeType === 'buy' && bestSwappingBuyTrades) {
+                setPreparingTx(true);
+
+                let res;
+                if (bestSwappingBuyTrades?.transactionRequest) {
+                  res = bestSwappingBuyTrades;
+                } else {
+                  res = await getTradeSigningData();
+                }
+
+                const signature = await confirmDLNTransaction(
+                  tradeType,
+                  res,
+                  res?.estimation?.srcChainTokenIn?.amount ||
+                    res?.action?.fromAmount,
+                  res?.estimation?.srcChainTokenIn?.address ||
+                    res?.action?.fromToken?.address,
+                  res?.tx ?? res?.transactionRequest,
+                  evmInfo?.smartAccount,
+                  evmInfo?.address,
+                );
+                setPreparingTx(false);
+                if (signature) {
+                  console.log('txn hash....', JSON.stringify(res), signature);
+                  navigation.navigate('PendingTxStatus', {
+                    state: res,
+                    tradeType,
+                  });
+                }
+              } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
+                setPreparingTx(true);
+                let res;
+                if (bestSwappingBuyTrades?.transactionRequest) {
+                  res = bestSwappingBuyTrades;
+                } else {
+                  res = await getTradeSigningData();
+                }
+                if (
+                  res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
+                  res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                ) {
+                  await switchAuthCoreChain(
+                    res?.estimation?.srcChainTokenIn?.chainId,
+                  );
+                }
+                const signature = await confirmDLNTransaction(
+                  tradeType,
+                  res,
+                  res?.estimation?.srcChainTokenIn?.amount ||
+                    res?.action?.fromAmount,
+                  res?.estimation?.srcChainTokenIn?.address ||
+                    res?.action?.fromToken?.address,
+                  res?.tx ?? res?.transactionRequest,
+                  evmInfo?.smartAccount,
+                  evmInfo?.address,
+                );
+                setPreparingTx(false);
+                if (signature) {
+                  console.log('txn hash', res, signature);
+                  navigation.navigate('PendingTxStatus', {
+                    state: res,
+                    tradeType,
+                  });
+                }
+              } else if (
+                bestSwappingBuyTrades !== null &&
+                bestSwappingBuyTrades.length === 0
+              ) {
+                await getBestPrice();
+              }
+            }
+          } catch (err) {
+            setPreparingTx(false);
           }
         }}>
         <Text
