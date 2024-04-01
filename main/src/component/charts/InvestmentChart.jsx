@@ -67,17 +67,16 @@ function InteractiveChart({assetName}) {
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
   useEffect(() => {
     const selectedTimeframeObject = timeframes.find(
-      timeframe => timeframe.value === selectedTimeframe,
+      timeframe => timeframe?.value === selectedTimeframe,
     );
     const from = selectedTimeframeObject
-      ? selectedTimeframeObject.timestamp
+      ? selectedTimeframeObject?.timestamp
       : null;
     async function init() {
       if (from === null) return; // Early exit if timestamp is not found
       try {
         const data = await getHistoricalData(assetName, from);
-        console.log('historical data....', data);
-        const historicalPriceXYPair = data.price_history.map(entry => {
+        const historicalPriceXYPair = data?.price_history?.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
 
@@ -91,7 +90,7 @@ function InteractiveChart({assetName}) {
   }, [selectedTimeframe]);
 
   useFocusEffect(
-    useCallback(async () => {
+    useCallback(() => {
       async function initialHistoryFetch() {
         try {
           const selectedTimeframeObject = timeframes.find(
@@ -100,10 +99,8 @@ function InteractiveChart({assetName}) {
           const from = selectedTimeframeObject
             ? selectedTimeframeObject.timestamp
             : null;
-
           const data = await getHistoricalData(assetName, from);
-          console.log('historical data....', data);
-          const historicalPriceXYPair = data.price_history.map(entry => {
+          const historicalPriceXYPair = data?.price_history?.map(entry => {
             return {timestamp: entry[0], value: entry[1]};
           });
           setPriceList(historicalPriceXYPair);
@@ -115,7 +112,7 @@ function InteractiveChart({assetName}) {
           console.log(e);
         }
       }
-      await initialHistoryFetch();
+      initialHistoryFetch();
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
@@ -126,12 +123,13 @@ function InteractiveChart({assetName}) {
   const [priceChange, setpriceChange] = useState(0); // The currently selected X coordinate position
 
   useEffect(() => {
-    if (priceList.length > 1 || priceList?.[0]?.value === '0') {
+    if (priceList?.length > 1 || priceList?.[0]?.value === '0') {
       const result =
         ((priceList?.[priceList.length - 1]?.value - priceList?.[0]?.value) /
-          priceList[priceList.length - 1]?.value) *
+          priceList[priceList?.length - 1]?.value) *
         100;
-      const test = priceList[priceList.length - 1]?.value - priceList[0]?.value;
+      const test =
+        priceList[priceList?.length - 1]?.value - priceList[0]?.value;
       setDivisionResult(result);
       setpriceChange(test); // Use the correct function name for setting state
     } else {
@@ -232,13 +230,13 @@ function InteractiveChart({assetName}) {
             justifyContent: 'space-around',
             padding: apx(20),
           }}>
-          {timeframes.map(timeframe => (
+          {timeframes?.map(timeframe => (
             <TouchableOpacity
               key={timeframe.value}
               style={{
                 padding: apx(15),
                 backgroundColor:
-                  selectedTimeframe === timeframe.value
+                  selectedTimeframe === timeframe?.value
                     ? '#343434'
                     : 'transparent',
                 borderRadius: apx(20),
@@ -256,7 +254,7 @@ function InteractiveChart({assetName}) {
                   color:
                     selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
                 }}>
-                {timeframe.label}
+                {timeframe?.label}
               </Text>
             </TouchableOpacity>
           ))}

@@ -47,30 +47,30 @@ const MarketInfo = ({route, navigation, item}) => {
 
   console.log(uri);
 
-  useEffect(() => {
-    async function init() {
-      try {
-        setIsLoading(true);
+  // useEffect(() => {
+  //   async function init() {
+  //     try {
+  //       setIsLoading(true);
 
-        if (global.withAuth) {
-          authAddress = global.loginAccount?.publicAddress;
-          const scwAddress = global.loginAccount.scw;
-          setAddress(scwAddress);
-        } else {
-          authAddress = global.connectAccount?.publicAddress;
-          const scwAddress = global.connectAccount?.publicAddress;
-          setAddress(scwAddress);
-        }
+  //       if (global.withAuth) {
+  //         authAddress = global.loginAccount?.publicAddress;
+  //         const scwAddress = global.loginAccount.scw;
+  //         setAddress(scwAddress);
+  //       } else {
+  //         authAddress = global.connectAccount?.publicAddress;
+  //         const scwAddress = global.connectAccount?.publicAddress;
+  //         setAddress(scwAddress);
+  //       }
 
-        // fetch selected coin contract address
-      } catch (e) {
-        console.log(e);
-      }
-      setIsLoading(false);
-    }
+  //       // fetch selected coin contract address
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //     setIsLoading(false);
+  //   }
 
-    init();
-  }, []);
+  //   init();
+  // }, []);
 
   return (
     <SafeAreaView

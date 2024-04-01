@@ -76,10 +76,10 @@ const MarketChart = props => {
 
   useFocusEffect(
     useCallback(() => {
-      async function onFocusFunction() {
-        dispatch(setAssetMetadata(currentItem?.name));
-      }
-      onFocusFunction();
+      // async function onFocusFunction() {
+      dispatch(setAssetMetadata(currentItem?.name));
+      // }
+      // onFocusFunction();
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };

@@ -11,11 +11,11 @@ import {
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Icon, Image} from '@rneui/themed';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
   enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
+  ignoreAndroidSystemSettings: false,
 };
 const MyInvestmentItemCard = ({navigation, item}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -23,8 +23,8 @@ const MyInvestmentItemCard = ({navigation, item}) => {
     <TouchableOpacity
       onPress={e => {
         if (Platform.OS === 'ios') {
-      ReactNativeHapticFeedback.trigger("impactMedium", options);
-    }
+          ReactNativeHapticFeedback.trigger('impactMedium', options);
+        }
         setModalVisible(true);
       }}
       style={{
@@ -52,18 +52,18 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             <FastImage
               style={{width: 42, height: 42}}
               source={{
-                uri: `${item.image}`,
+                uri: `${item?.image}`,
               }}
             />
           </View>
 
           <View style={{paddingHorizontal: 10}}>
             <View>
-              <Text style={styles.text1}>{item.symbol.toUpperCase()}</Text>
+              <Text style={styles.text1}>{item?.symbol?.toUpperCase()}</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
               <View style={{paddingRight: 10}}>
-                <Text style={styles.text5}>{item.balance}</Text>
+                <Text style={styles.text5}>{item?.balance?.toFixed(5)}</Text>
               </View>
             </View>
           </View>
@@ -79,7 +79,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             }}>
             <View>
               <Text style={styles.text2}>
-                ${(item.current_price * item.balance)?.toFixed(3)}
+                ${(item?.current_price * item.balance)?.toFixed(3)}
               </Text>
             </View>
             <View>
@@ -87,8 +87,8 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                 <Text style={styles.text3}>
                   +
                   {(
-                    (item.unrealized_pnl + item.realized_pnl) /
-                    item.price_bought
+                    (item?.unrealized_pnl + item?.realized_pnl) /
+                    item?.price_bought
                   )?.toFixed(2)}
                   %
                 </Text>
@@ -156,7 +156,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
 
                 {/* Image */}
                 <Image
-                  source={{uri: item.image}}
+                  source={{uri: item?.image}}
                   style={{width: 48, height: 48}}
                   resizeMode="contain"
                 />
@@ -178,7 +178,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     fontFamily: 'NeueMontreal-Medium',
                     marginTop: '0.5%',
                   }}>
-                  {item.name} ({item.symbol})
+                  {item?.name} ({item?.symbol})
                 </Text>
                 <View
                   style={{
@@ -335,7 +335,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      color: item.unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
+                      color: item?.unrealized_pnl >= 0 ? '#ADFF6C' : 'red',
                       textAlign: 'right',
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
@@ -362,7 +362,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   <Text
                     style={{
                       fontSize: 16,
-                      color: item.realized_pnl >= 0 ? '#ADFF6C' : 'red',
+                      color: item?.realized_pnl >= 0 ? '#ADFF6C' : 'red',
                       textAlign: 'right',
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
@@ -392,7 +392,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   setModalVisible(false);
                   navigation.navigate('TradePage', {
                     state: item,
-                    asset: item.name,
+                    asset: item?.name,
                   });
                   // }
                 }}>
@@ -402,7 +402,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     fontSize: 16,
                     fontFamily: 'Unbounded-Medium',
                   }}>
-                  TRADE {item.symbol}
+                  TRADE {item?.symbol}
                 </Text>
               </TouchableOpacity>
             </View>

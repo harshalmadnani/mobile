@@ -61,21 +61,21 @@ function InteractiveChart() {
 
   useEffect(() => {
     const selectedTimeframeObject = timeframes.find(
-      timeframe => timeframe.value === selectedTimeframe,
+      timeframe => timeframe?.value === selectedTimeframe,
     );
     const from = selectedTimeframeObject
-      ? selectedTimeframeObject.timestamp
+      ? selectedTimeframeObject?.timestamp
       : null;
     async function init() {
       if (from === null) return; // Early exit if timestamp is not found
 
       try {
         const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
-        const historicalPriceXYPair = data?.balance_history.map(entry => {
+        const historicalPriceXYPair = data?.balance_history?.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
-        // historicalPriceXYPair = [];
-        if (historicalPriceXYPair.length > 0) {
+        console.log('wallet history......', historicalPriceXYPair.length);
+        if (historicalPriceXYPair?.length > 0) {
           setPriceList(historicalPriceXYPair);
         }
         setcurrentPrice(data?.balance_usd ?? 0);
@@ -88,12 +88,13 @@ function InteractiveChart() {
 
   // The currently selected X coordinate position
   useEffect(() => {
-    if (priceList.length > 1 || priceList?.[0]?.value === '0') {
+    if (priceList?.length > 1 || priceList?.[0]?.value === '0') {
       const result =
         ((priceList?.[priceList.length - 1]?.value - priceList?.[0]?.value) /
           priceList[priceList.length - 1]?.value) *
         100;
-      const test = priceList[priceList.length - 1]?.value - priceList[0]?.value;
+      const test =
+        priceList[priceList?.length - 1]?.value - priceList[0]?.value;
       setDivisionResult(result);
       setpriceChange(test); // Use the correct function name for setting state
     } else {
@@ -116,7 +117,6 @@ function InteractiveChart() {
             <View
               style={{
                 flexDirection: 'row',
-                // backgroundColor: 'red',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
@@ -194,11 +194,11 @@ function InteractiveChart() {
           }}>
           {timeframes.map(timeframe => (
             <TouchableOpacity
-              key={timeframe.value}
+              key={timeframe?.value}
               style={{
                 padding: apx(15),
                 backgroundColor:
-                  selectedTimeframe === timeframe.value
+                  selectedTimeframe === timeframe?.value
                     ? '#343434'
                     : 'transparent',
                 borderRadius: apx(20),
@@ -209,14 +209,14 @@ function InteractiveChart() {
                   ignoreAndroidSystemSettings: false,
                 };
                 ReactNativeHapticFeedback.trigger('impactHeavy', options);
-                setSelectedTimeframe(timeframe.value);
+                setSelectedTimeframe(timeframe?.value);
               }}>
               <Text
                 style={{
                   color:
                     selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
                 }}>
-                {timeframe.label}
+                {timeframe?.label}
               </Text>
             </TouchableOpacity>
           ))}

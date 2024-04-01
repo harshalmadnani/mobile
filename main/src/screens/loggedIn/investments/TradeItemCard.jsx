@@ -55,18 +55,18 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             <FastImage
               style={{width: 42, height: 42, borderRadius: 250}}
               source={{
-                uri: `${item.image || item.logo}`,
+                uri: `${item?.image || item?.logo}`,
               }}
             />
           </View>
 
           <View style={{paddingHorizontal: 10}}>
             <View>
-              <Text style={styles.text1}>{item.symbol.toUpperCase()}</Text>
+              <Text style={styles.text1}>{item?.symbol?.toUpperCase()}</Text>
             </View>
             <View>
               <Text numberOfLines={1} style={[styles.text2, {width: 100}]}>
-                {item.name}
+                {item?.name}
               </Text>
             </View>
           </View>
@@ -84,25 +84,25 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             <View>
               <Text style={styles.text1}>
                 $
-                {item.current_price?.toLocaleString() ||
-                  item.price?.toLocaleString()}
+                {item?.current_price?.toLocaleString() ||
+                  item?.price?.toLocaleString()}
               </Text>
             </View>
             <View>
-              {(item.price_change_24h >= 0 ||
-                item.price_change_percentage_24h >= 0) && (
+              {(item?.price_change_24h >= 0 ||
+                item?.price_change_percentage_24h >= 0) && (
                 <Text style={styles.text3}>
                   +{' '}
-                  {item.price_change_percentage_24h?.toFixed(2) ||
+                  {item?.price_change_percentage_24h?.toFixed(2) ||
                     item?.price_change_24h?.toFixed(2) ||
                     0.0}{' '}
                   %
                 </Text>
               )}
-              {(item.price_change_24h < 0 ||
-                item.price_change_percentage_24h < 0) && (
+              {(item?.price_change_24h < 0 ||
+                item?.price_change_percentage_24h < 0) && (
                 <Text style={styles.text4}>
-                  {item.price_change_percentage_24h?.toFixed(2) ||
+                  {item?.price_change_percentage_24h?.toFixed(2) ||
                     item?.price_change_24h?.toFixed(2) ||
                     0.0}{' '}
                   %
