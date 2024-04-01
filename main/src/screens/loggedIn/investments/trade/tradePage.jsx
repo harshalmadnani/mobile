@@ -262,6 +262,7 @@ const TradePage = ({route}) => {
                     <View
                       key={index}
                       style={{
+                        flex:1,
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                         alignItems: 'center',
@@ -483,21 +484,18 @@ const TradePage = ({route}) => {
             </Text>
           </View>
         )}
-
-        <View style={{marginVertical: '10%'}}>
+<View style={{marginTop:'20%',marginBottom:'30%'}}>
+        <View>
           {tradeType === 'sell' ? (
             <View
               style={{
-                marginTop: 25,
                 flexDirection: 'row',
                 justifyContent: 'center',
                 gap: 8,
-                // backgroundColor: 'red',
               }}>
               <TextInput
                 style={{
                   fontSize: 56,
-                  height: 94,
                   color: '#ffffff',
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
@@ -515,6 +513,7 @@ const TradePage = ({route}) => {
                   color: '#fff',
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
+                  alignSelf:'center'
                 }}>
                 {state.symbol.toUpperCase()}
               </Text>
@@ -522,7 +521,6 @@ const TradePage = ({route}) => {
           ) : (
             <View
               style={{
-                marginTop: 25,
                 flexDirection: 'row',
                 justifyContent: 'center',
                 gap: 8,
@@ -534,13 +532,13 @@ const TradePage = ({route}) => {
                   color: '#fff',
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
+                  alignSelf:'center'
                 }}>
                 $
               </Text>
               <TextInput
                 style={{
                   fontSize: 56,
-                  height: 94,
                   color: '#ffffff',
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
@@ -663,6 +661,8 @@ const TradePage = ({route}) => {
             </View>
           )}
         </View>
+        </View>
+
         {/*order summary */}
         <View style={{marginTop: 0}}>
           <View
@@ -849,7 +849,7 @@ const TradePage = ({route}) => {
           justifyContent: 'center',
           position: 'absolute',
           width: '98%',
-          bottom: 30,
+          bottom: Platform.OS === 'ios' ? '10%' : '2%',
         }}
         onPress={async () => {
           if (Platform.OS === 'ios') {
