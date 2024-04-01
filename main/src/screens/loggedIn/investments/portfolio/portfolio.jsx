@@ -408,7 +408,7 @@ const Portfolio = ({navigation}) => {
               Cash Balance
             </Text>
             <View style={{ }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center',alignSelf:'center'}}>
       <TouchableOpacity onPress={() => setModal2Visible(true)} style={{flexDirection:'row'}}> 
         <Text
           style={{
@@ -419,12 +419,15 @@ const Portfolio = ({navigation}) => {
           }}>
           ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
         </Text>
+        <View style={{alignSelf:'center'}}>
           <Icon
             name={'expand-more'}
             size={18}
             color={'#f0f0f0'}
             type="materialicons"
+            alignSelf='center'
           />
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -439,7 +442,7 @@ const Portfolio = ({navigation}) => {
           justifyContent: 'flex-end',
           alignItems: 'center',
           marginTop: 22,
-          width:'100%'
+          width:'105%'
         }}>
           <View style={{
             backgroundColor: '#010101',
