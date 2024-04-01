@@ -79,7 +79,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             }}>
             <View>
               <Text style={styles.text2}>
-                ${(item?.current_price * item.balance)?.toFixed(3)}
+                ${(item?.current_price * item?.balance)?.toFixed(3)}
               </Text>
             </View>
             <View>

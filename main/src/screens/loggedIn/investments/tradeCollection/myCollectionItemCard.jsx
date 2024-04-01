@@ -72,12 +72,12 @@ const MyCollectionItemCard = ({navigation, item}) => {
           <View>
             {item.price_change_percentage_24h >= 0 && (
               <Text style={styles.text3}>
-                {item.price_change_percentage_24h?.toFixed(2)}
+                {item?.price_change_percentage_24h?.toFixed(2)}
               </Text>
             )}
             {item.price_change_percentage_24h < 0 && (
               <Text style={styles.text4}>
-                {item.price_change_percentage_24h?.toFixed(2)} %
+                {item?.price_change_percentage_24h?.toFixed(2)} %
               </Text>
             )}
           </View>

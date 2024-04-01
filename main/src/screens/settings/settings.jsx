@@ -73,7 +73,7 @@ let info;
 
 const Component = ({navigation}) => {
   const dispatch = useDispatch();
-  const userInfo = useSelector(x => x.portfolio.userInf);
+  const userInfo = useSelector(x => x.portfolio.userInfo);
   // const imageUrl = `https://ui-avatars.com/api/?name=${userInfo[0]?.name}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
   const onShare = async () => {
     try {

@@ -65,7 +65,7 @@ async function getTokenBalance(contract, mainnet, eoa) {
     const formattedResult = parseInt(result) / 10 ** decimals;
     console.log('Balance:', formattedResult);
     global.balance = formattedResult?.toFixed(3)?.toString();
-    return formattedResult?.toFixed(3).toString();
+    return formattedResult?.toFixed(3)?.toString();
   } catch (err) {
     console.log(err);
   }

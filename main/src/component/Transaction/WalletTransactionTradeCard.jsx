@@ -22,6 +22,8 @@ const WalletTransactionTradeCard = ({item}) => {
       return (number / 1000000000)?.toFixed(1) + 'B';
     } else if (number >= 1000000000000 && number < 1000000000000000) {
       return (number / 1000000000000)?.toFixed(1) + 'T';
+    } else {
+      return null;
     }
   }
   console.log(mainSwapToken?.amount?.stringValue, 'main swap token');
@@ -83,6 +85,7 @@ const WalletTransactionTradeCard = ({item}) => {
             secondarySwapToken?.amount?.stringValue /
               Math.pow(10, secondarySwapToken?.decimals),
           )?.toFixed(2)}
+
           {` ${secondarySwapToken?.metadata?.symbol?.substring(0, 7)}`}
         </Text>
       </View>

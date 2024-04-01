@@ -155,7 +155,7 @@ const TransactionList = ({navigation, route}) => {
             )
           }
           onEndReached={async () => await onEndReachedFetch()}
-          keyExtractor={(item, i) => i.toString()}
+          keyExtractor={(item, i) => i?.toString()}
         />
       ) : null}
     </SafeAreaView>
