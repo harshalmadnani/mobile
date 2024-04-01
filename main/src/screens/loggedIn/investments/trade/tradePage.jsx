@@ -338,6 +338,8 @@ const TradePage = ({route}) => {
             justifyContent: 'space-between',
             margin: 8,
             padding: 6,
+            width:"90%",
+            alignSelf:'center'
           }}>
           <TouchableOpacity
             style={{width: '50%'}}
@@ -850,7 +852,8 @@ const TradePage = ({route}) => {
           paddingHorizontal: '30%',
           justifyContent: 'center',
           position: 'absolute',
-          width: '98%',
+          alignSelf:'center',
+          width: '90%',
           bottom: Platform.OS === 'ios' ? '10%' : '2%',
         }}
         onPress={async () => {

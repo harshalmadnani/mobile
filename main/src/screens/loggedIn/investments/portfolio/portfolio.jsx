@@ -393,7 +393,7 @@ const Portfolio = ({navigation}) => {
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              width: '90%',
+              width: '88%',
               marginTop: '3%',
               marginRight: '5%',
               marginLeft: '3%',
@@ -442,7 +442,7 @@ const Portfolio = ({navigation}) => {
           justifyContent: 'flex-end',
           alignItems: 'center',
           marginTop: 22,
-          width:'105%'
+          width:'100%'
         }}>
           <View style={{
             backgroundColor: '#010101',
@@ -463,7 +463,7 @@ const Portfolio = ({navigation}) => {
               fontFamily: 'Unbounded-Medium',
               fontSize: 20,
               color: '#fff',
-            }}>Cash Balance</Text>
+            }}>CASH BALANCE</Text>
             <Text style={{
               marginBottom: 15,
               textAlign: 'center',
@@ -531,7 +531,7 @@ const Portfolio = ({navigation}) => {
               flexDirection: 'row',
               alignItems: 'center',
               height: 72,
-              width: '95%',
+              width: '92%',
               margin: '5%',
               borderRadius: 20,
               backgroundColor: '#121212',

@@ -171,7 +171,7 @@ const Ramper = ({navigation}) => {
               color={'#f0f0f0'}
               type="materialicons"
               onPress={() => navigation.push('Portfolio')}
-              style={{marginLeft: '10%'}}
+              style={{marginLeft: '2%'}}
             />
             <View
               style={{
@@ -183,8 +183,9 @@ const Ramper = ({navigation}) => {
               <Text
                 style={{
                   color: '#F0F0F0',
-                  fontFamily: 'Unbounded-Medium',
+                  fontFamily: 'NeueMontreal-Medium',
                   fontSize: 16,
+                  alignItems:'center'
                 }}>
                 Deposit Funds
               </Text>
