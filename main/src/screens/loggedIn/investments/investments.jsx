@@ -83,7 +83,8 @@ const Investments = ({navigation}) => {
             style={{
               width: 40,
               height: 40,
-              bottom: 3,
+              bottom: 10,
+              alignSelf:'center'
             }}
           />
         </TouchableOpacity>
