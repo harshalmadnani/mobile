@@ -9,13 +9,11 @@ import {
   ScrollView,
   Modal,
   Platform,
-  Pressable
+  Pressable,
 } from 'react-native';
 import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
-import {POINTS_KEY} from '@env';
 import {useDispatch, useSelector} from 'react-redux';
-import CustomSkeleton from '../../../../component/Skeleton';
 import {
   getCryptoHoldingForAddressFromMobula,
   getEvmAddresses,
@@ -78,7 +76,7 @@ const Portfolio = ({navigation}) => {
   };
 
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
-  console.log(portfolioHoldingFetch);
+
   return (
     <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
       <View
@@ -104,7 +102,7 @@ const Portfolio = ({navigation}) => {
           <Image
             source={{
               uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png',
-            }} // Replace with your image URI
+            }}
             style={{
               width: 40,
               height: 40,
@@ -407,125 +405,141 @@ const Portfolio = ({navigation}) => {
               }}>
               Cash Balance
             </Text>
-            <View style={{ }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center',alignSelf:'center'}}>
-      <TouchableOpacity onPress={() => setModal2Visible(true)} style={{flexDirection:'row'}}> 
-        <Text
-          style={{
-            fontFamily: 'Unbounded-Medium',
-            color: '#fff',
-            fontSize: 16,
-            marginRight: '2%',
-          }}>
-          ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
-        </Text>
-        <View style={{alignSelf:'center'}}>
-          <Icon
-            name={'expand-more'}
-            size={18}
-            color={'#f0f0f0'}
-            type="materialicons"
-            alignSelf='center'
-          />
-          </View>
-        </TouchableOpacity>
-      </View>
+            <View style={{}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  alignSelf: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={() => setModal2Visible(true)}
+                  style={{flexDirection: 'row'}}>
+                  <Text
+                    style={{
+                      fontFamily: 'Unbounded-Medium',
+                      color: '#fff',
+                      fontSize: 16,
+                      marginRight: '2%',
+                    }}>
+                    ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
+                  </Text>
+                  <View style={{alignSelf: 'center'}}>
+                    <Icon
+                      name={'expand-more'}
+                      size={18}
+                      color={'#f0f0f0'}
+                      type="materialicons"
+                      alignSelf="center"
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modal2Visible} 
-        onRequestClose={() => setModal2Visible(!modal2Visible)}  
-      >
-        <View style={{
-          flex: 1,
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          marginTop: 22,
-          width:'100%'
-        }}>
-          <View style={{
-            backgroundColor: '#010101',
-            padding: 35,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-          }}>
-            <Text style={{
-              marginBottom: 15,
-              textAlign: 'center',
-              fontFamily: 'Unbounded-Medium',
-              fontSize: 20,
-              color: '#fff',
-            }}>CASH BALANCE</Text>
-            <Text style={{
-              marginBottom: 15,
-              textAlign: 'center',
-              color: '#666',
-              fontSize: 16,
-            }}>
-              Your Cash Balance is the USDC you hold on the Polygon POS chain and is the base currency to settle all transactions on Xade.
-            </Text>
-            <Pressable
-              onPress={() => setModal2Visible(!modal2Visible)}  
-              style={{
-                borderRadius: 30,
-                paddingHorizontal: '40%',
-                paddingVertical:'6%',
-                elevation: 2,
-                marginTop: 10,
-                backgroundColor: '#fff',
-              }}
-            >
-              <Text style={{
-                color: 'black',
-                fontWeight: 'bold',
-                textAlign: 'center',
-                fontSize:14
-              }}>Close</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-    </View>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modal2Visible}
+                onRequestClose={() => setModal2Visible(!modal2Visible)}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    marginTop: 22,
+                    width: '100%',
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: '#010101',
+                      padding: 35,
+                      alignItems: 'center',
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 5,
+                    }}>
+                    <Text
+                      style={{
+                        marginBottom: 15,
+                        textAlign: 'center',
+                        fontFamily: 'Unbounded-Medium',
+                        fontSize: 20,
+                        color: '#fff',
+                      }}>
+                      CASH BALANCE
+                    </Text>
+                    <Text
+                      style={{
+                        marginBottom: 15,
+                        textAlign: 'center',
+                        color: '#666',
+                        fontSize: 16,
+                      }}>
+                      Your Cash Balance is the USDC you hold on the Polygon POS
+                      chain and is the base currency to settle all transactions
+                      on Xade.
+                    </Text>
+                    <Pressable
+                      onPress={() => setModal2Visible(!modal2Visible)}
+                      style={{
+                        borderRadius: 30,
+                        paddingHorizontal: '40%',
+                        paddingVertical: '6%',
+                        elevation: 2,
+                        marginTop: 10,
+                        backgroundColor: '#fff',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'black',
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: 14,
+                        }}>
+                        Close
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
+            </View>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modal2Visible}  
-        onRequestClose={() => setModal2Visible(!modal2Visible)}
-      >
-        <View style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 22,
-        }}>
-          <View style={{
-            margin: 20,
-            backgroundColor: '#000',
-            borderRadius: 20,
-            padding: 35,
-            alignItems: 'center',
-            shadowColor: '#000',
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 5,
-          }}>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modal2Visible}
+              onRequestClose={() => setModal2Visible(!modal2Visible)}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 22,
+                }}>
+                <View
+                  style={{
+                    margin: 20,
+                    backgroundColor: '#000',
+                    borderRadius: 20,
+                    padding: 35,
+                    alignItems: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,
+                  }}></View>
+              </View>
+            </Modal>
           </View>
-        </View>
-      </Modal>
-    </View>     
           <View
             style={{
               flexDirection: 'row',
@@ -633,7 +647,7 @@ const Portfolio = ({navigation}) => {
                 backgroundColor: '#000',
                 paddingBottom: '30%',
               }}>
-              {holdings?.assets.filter(item => item.token_balance > 0).length >
+              {holdings?.assets.filter(item => item.token_balance > 0)?.length >
               0
                 ? holdings?.assets
                     .filter(item => item.token_balance > 0)

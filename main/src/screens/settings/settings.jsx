@@ -43,7 +43,6 @@ const ruleStyles = StyleSheet.create({
     borderBottomWidth: 1,
     marginVertical: 10,
     width: '100%',
-    // marginTop: '0%',
   },
 });
 // func = () => {
@@ -74,12 +73,12 @@ let info;
 
 const Component = ({navigation}) => {
   const dispatch = useDispatch();
-  const userInfo = useSelector(x => x.portfolio.userInfo);
+  const userInfo = useSelector(x => x.portfolio.userInf);
   // const imageUrl = `https://ui-avatars.com/api/?name=${userInfo[0]?.name}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: `Download the ultimate trading app with my refer code: ${userInfo[0]?.name?.toUpperCase()}
+        message: `Download the ultimate trading app with my refer code: ${userInfo?.[0]?.name?.toUpperCase()}
           to win 400 Xade Shards and other exclusive rewards!
           Experience the new era of finance: bit.ly/xadefinance`,
       });
@@ -143,7 +142,7 @@ const Component = ({navigation}) => {
                 fontFamily: `Unbounded-Medium`,
                 textAlign: 'center',
               }}>
-              {userInfo[0]?.name?.toUpperCase()}
+              {userInfo?.[0]?.name?.toUpperCase()}
             </Text>
             <Text
               style={{
