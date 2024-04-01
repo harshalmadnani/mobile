@@ -153,12 +153,12 @@ const Ramper = ({navigation}) => {
   };
   const handleValueChange = text => {
     // Regular expression to allow only numbers and up to 6 decimal places
-    // const regex = /^\d{0,6}$/;
+    const regex = /^\d{0,6}$/;
     // Check if the new text matches the regular expression
-    // if (regex.test(text) || text === '') {
-    // console.log(text, regex.test(text));
-    setValue(text);
-    // }
+    if (regex.test(text)) {
+      setValue(text);
+      console.log(text, regex.test(text));
+    }
   };
   console.log(value.length, getDynamicFontSize(value?.length));
   return (
@@ -205,15 +205,13 @@ const Ramper = ({navigation}) => {
               marginTop: 80,
               flexDirection: 'row',
               justifyContent: 'center',
-              // gap: 8,
+              alignItems: 'center',
+              // backgroundColor: 'blue',
             }}>
             {selectedId === 'wallet' ? (
               <Text
                 style={{
-                  fontSize:
-                    value.length === 6
-                      ? 56
-                      : getDynamicFontSize(value?.length ?? 0),
+                  fontSize: getDynamicFontSize(value?.length ?? 0),
                   color: '#fff',
                   textAlign: 'center',
                   marginTop: 10,
@@ -224,14 +222,12 @@ const Ramper = ({navigation}) => {
             ) : (
               <Text
                 style={{
-                  fontSize:
-                    value.length === 6
-                      ? 56
-                      : getDynamicFontSize(value?.length ?? 0),
+                  fontSize: getDynamicFontSize(value?.length ?? 0),
                   color: '#fff',
                   textAlign: 'center',
                   marginTop: 10,
                   fontFamily: 'Unbounded-Medium',
+                  maxWidth: '80%',
                 }}>
                 {getCurrencySymbol(fiat.id)}
               </Text>
@@ -242,6 +238,8 @@ const Ramper = ({navigation}) => {
                 color: '#fff',
                 textAlign: 'center',
                 fontFamily: 'Unbounded-Medium',
+                // backgroundColor: 'red',
+                minWidth: value.length === 6 ? '80%' : 0,
               }}
               value={value}
               onChangeText={text => {
@@ -295,7 +293,6 @@ const Ramper = ({navigation}) => {
                     marginRight: 10,
                   }}
                 />
-                {/* <Text style={styles.text1}>{getCurrencySymbol(fiat.id)} </Text> */}
                 <Text style={styles.text}>{fiat.id.toUpperCase()}</Text>
               </TouchableOpacity>
             </View>
