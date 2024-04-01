@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {useSelector} from 'react-redux';
 import {Icon} from 'react-native-elements';
@@ -18,6 +19,7 @@ import {
   fetchOnRampPaymentMethodsBasedOnIP,
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
+import {SvgUri} from 'react-native-svg';
 
 const Ramper = ({navigation}) => {
   const getCurrencySymbol = currencyCode => {
@@ -144,18 +146,25 @@ const Ramper = ({navigation}) => {
       setButtonTitle('Continue');
     }
   };
-
+  const getDynamicFontSize = inputLength => {
+    const baseSize = 56; // Base font size
+    if (inputLength < 3) return baseSize;
+    return Math.max(baseSize - (inputLength - 5) * 5, 30); // Decrease font size as input length increases, with a minimum size
+  };
+  const handleValueChange = text => {
+    // Regular expression to allow only numbers and up to 6 decimal places
+    // const regex = /^\d{0,6}$/;
+    // Check if the new text matches the regular expression
+    // if (regex.test(text) || text === '') {
+    // console.log(text, regex.test(text));
+    setValue(text);
+    // }
+  };
+  console.log(value.length, getDynamicFontSize(value?.length));
   return (
-    <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 0, y: 1}}
-      colors={['#000', '#000', '#000']}
-      locations={[0.17, 0.99, 1.0]}
-      style={{flex: 1}}>
+    <View style={{padding: 8, flex: 1, backgroundColor: '#000'}}>
       <SafeAreaView style={{flex: 1}}>
-        {/* Use a wrapper View with flex: 1 to fill available space and push the footer to the bottom */}
         <View style={{flex: 1}}>
-          {/* Header and content here */}
           <View
             style={{
               flexDirection: 'row',
@@ -185,7 +194,7 @@ const Ramper = ({navigation}) => {
                   color: '#F0F0F0',
                   fontFamily: 'NeueMontreal-Medium',
                   fontSize: 16,
-                  alignItems:'center'
+                  alignItems: 'center',
                 }}>
                 Deposit Funds
               </Text>
@@ -196,12 +205,15 @@ const Ramper = ({navigation}) => {
               marginTop: 80,
               flexDirection: 'row',
               justifyContent: 'center',
-              gap: 8,
+              // gap: 8,
             }}>
             {selectedId === 'wallet' ? (
               <Text
                 style={{
-                  fontSize: 80,
+                  fontSize:
+                    value.length === 6
+                      ? 56
+                      : getDynamicFontSize(value?.length ?? 0),
                   color: '#fff',
                   textAlign: 'center',
                   marginTop: 10,
@@ -212,7 +224,10 @@ const Ramper = ({navigation}) => {
             ) : (
               <Text
                 style={{
-                  fontSize: 80,
+                  fontSize:
+                    value.length === 6
+                      ? 56
+                      : getDynamicFontSize(value?.length ?? 0),
                   color: '#fff',
                   textAlign: 'center',
                   marginTop: 10,
@@ -223,14 +238,14 @@ const Ramper = ({navigation}) => {
             )}
             <TextInput
               style={{
-                fontSize: 80,
+                fontSize: getDynamicFontSize(value?.length ?? 0),
                 color: '#fff',
                 textAlign: 'center',
                 fontFamily: 'Unbounded-Medium',
               }}
               value={value}
               onChangeText={text => {
-                setValue(text);
+                handleValueChange(text);
               }}
               keyboardType="numeric"
             />
@@ -272,19 +287,19 @@ const Ramper = ({navigation}) => {
                 gap: 8,
               }}>
               <TouchableOpacity style={styles.button}>
-                {/* <Image source={{ uri: fiat.image }} style={{
-                                    width: 26,
-                                    height: 26,
-                                    borderRadius: 13, // Make the image round
-                                    marginRight: 10,
-                                }} /> */}
-
-                <Text style={styles.text1}>{getCurrencySymbol(fiat.id)} </Text>
+                <SvgUri
+                  width="26"
+                  height="26"
+                  uri={fiat.image}
+                  style={{
+                    marginRight: 10,
+                  }}
+                />
+                {/* <Text style={styles.text1}>{getCurrencySymbol(fiat.id)} </Text> */}
                 <Text style={styles.text}>{fiat.id.toUpperCase()}</Text>
               </TouchableOpacity>
             </View>
           )}
-
           <View style={{marginTop: '9%'}}>
             <Text
               style={{
@@ -432,7 +447,7 @@ const Ramper = ({navigation}) => {
           </View>
         </Modal>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 };
 const styles = StyleSheet.create({
