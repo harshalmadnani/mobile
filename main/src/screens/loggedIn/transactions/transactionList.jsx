@@ -16,6 +16,7 @@ import {
   getWalletTransactionForAddressFromDLN,
   getWalletTransactionForAddressFromMobula,
 } from '../../../store/actions/portfolio';
+import { SceneMap, TabView } from 'react-native-tab-view';
 
 const width = Dimensions.get('window').width;
 const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
@@ -27,15 +28,14 @@ const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
         paddingVertical: 12,
         paddingHorizontal: 6,
         borderRadius: 100,
-        borderColor: 'white',
-        borderWidth: isActive ? 1 : 0,
-        backgroundColor: isActive ? '#000' : '#1F1C25',
+        
+        backgroundColor: isActive ? '#303030' : '#1d1d1d',
         alignItems: 'center',
         justifyContent: 'center',
       }}>
       <Text
         style={{
-          color: isActive ? '#fff' : '#776F94',
+          color: isActive ? '#fff' : '#cdcdcd',
           fontFamily: 'NeueMontreal-Bold',
           fontSize: 14,
         }}>
@@ -112,7 +112,7 @@ const TransactionList = ({navigation, route}) => {
           <Text
             style={{
               color: '#F0F0F0',
-              fontFamily: 'Unbounded-Regular',
+              fontFamily: 'NeueMontreal-Medium',
               fontSize: 16,
               right: 30,
             }}>
@@ -125,7 +125,10 @@ const TransactionList = ({navigation, route}) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           paddingHorizontal: '4%',
-          width: '100%',
+          width: '90%',
+          backgroundColor:'#1d1d1d',
+          padding:'2%',
+          borderRadius: 100,
         }}>
         <TransactionFilterButton
           title={'Transfers'}
