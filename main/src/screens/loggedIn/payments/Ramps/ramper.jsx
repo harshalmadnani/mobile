@@ -219,7 +219,6 @@ const Ramper = ({navigation}) => {
                   fontSize: getDynamicFontSize(value?.length ?? 0),
                   color: '#fff',
                   textAlign: 'center',
-                  marginTop: 10,
                   fontFamily: 'Unbounded-Medium',
                 }}>
                 $
