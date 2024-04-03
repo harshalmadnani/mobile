@@ -233,7 +233,9 @@ export const onIsLoginCheckAuthCore = (
         const uuid = userInfo.wallets[0].uuid;
         const address = await getUserAddressFromAuthCoreSDK();
         console.log('address ====:', address);
-        await AsyncStorage.setItem('address', address);
+        if (address) {
+          await AsyncStorage.setItem('address', address);
+        }
         dispatch(authActions.setEOAAddress(address));
         setLoadingText('Fetching User Info...');
         if (email.includes('@')) {
