@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import axios from 'axios';
 import {getEvmAddresses} from '../../store/actions/portfolio';
-
+import {appendToGalaxeList} from '../../utils/galaxeApi';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 
@@ -92,6 +92,8 @@ const Name = ({navigation, route}) => {
             },
           },
         );
+        //galaxy register
+        await appendToGalaxeList(email);
         await fetch('https://mongo.api.xade.finance/polygon', {
           method: 'POST',
           body: json,

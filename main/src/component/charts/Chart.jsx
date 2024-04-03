@@ -195,7 +195,7 @@ function InteractiveChart() {
             height: apx(350),
             alignSelf: 'stretch',
           }}>
-          {priceList.length > 0 ? (
+          {priceList?.length > 0 ? (
             <GestureHandlerRootView>
               <LineChart width={apx(750)} height={apx(350)}>
                 <LineChart.Path color="white">

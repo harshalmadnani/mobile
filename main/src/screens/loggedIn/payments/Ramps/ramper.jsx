@@ -20,6 +20,7 @@ import {
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
 import {SvgUri} from 'react-native-svg';
+import {Keyboard} from 'react-native';
 
 const Ramper = ({navigation}) => {
   const getCurrencySymbol = currencyCode => {
@@ -162,8 +163,12 @@ const Ramper = ({navigation}) => {
   };
   console.log(value.length, getDynamicFontSize(value?.length));
   return (
-    <View style={{padding: 8, flex: 1, backgroundColor: '#000'}}>
-      <SafeAreaView style={{flex: 1}}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      style={{padding: 8, flex: 1, backgroundColor: '#000'}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
         <View style={{flex: 1}}>
           <View
             style={{
@@ -444,7 +449,7 @@ const Ramper = ({navigation}) => {
           </View>
         </Modal>
       </SafeAreaView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({

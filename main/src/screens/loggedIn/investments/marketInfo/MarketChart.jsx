@@ -11,12 +11,11 @@ import {
 import {Text, Icon, Image} from '@rneui/themed';
 import styles from '../investment-styles';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
+
 import InvestmentChart from '../../../../component/charts/InvestmentChart';
 import {useDispatch, useSelector} from 'react-redux';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
-import CustomSkeleton from '../../../../component/Skeleton';
 import axios from 'axios';
 const MarketChart = props => {
   const navigation = useNavigation();
@@ -70,8 +69,8 @@ const MarketChart = props => {
     </TouchableOpacity>
   );
   const holdings = useSelector(x => x.portfolio.holdings);
-  const currentAsset = holdings?.assets.filter(
-    x => x.asset?.symbol.toLowerCase() === currentItem?.symbol.toLowerCase(),
+  const currentAsset = holdings?.assets?.filter(
+    x => x?.asset?.symbol?.toLowerCase() === currentItem?.symbol?.toLowerCase(),
   );
 
   useFocusEffect(
@@ -124,19 +123,22 @@ const MarketChart = props => {
   const data = [];
 
   if (selectedAssetMetaData) {
-    selectedAssetMetaData.market_cap &&
-      data.push({label: 'Market Cap', value: selectedAssetMetaData.market_cap});
-    selectedAssetMetaData.volume &&
-      data.push({label: 'Volume', value: selectedAssetMetaData.volume});
-    selectedAssetMetaData.total_supply &&
+    selectedAssetMetaData?.market_cap &&
       data.push({
-        label: 'Circulating Supply',
-        value: selectedAssetMetaData.total_supply,
+        label: 'Market Cap',
+        value: selectedAssetMetaData.market_cap,
       });
-    selectedAssetMetaData.max_supply &&
-      data.push({
+    selectedAssetMetaData?.volume &&
+      data?.push({label: 'Volume', value: selectedAssetMetaData.volume});
+    selectedAssetMetaData?.total_supply &&
+      data?.push({
+        label: 'Circulating Supply',
+        value: selectedAssetMetaData?.total_supply,
+      });
+    selectedAssetMetaData?.max_supply &&
+      data?.push({
         label: 'Total Supply',
-        value: selectedAssetMetaData.max_supply,
+        value: selectedAssetMetaData?.max_supply,
       });
   }
 
@@ -170,7 +172,7 @@ const MarketChart = props => {
               justifyContent: 'center',
             }}>
             <Text style={styles.stockHead}>
-              {currentItem?.name.includes('Coinbase') //Temporary Fix
+              {currentItem?.name?.includes('Coinbase') //Temporary Fix
                 ? 'Coinbase'
                 : currentItem?.name}
             </Text>
@@ -208,14 +210,14 @@ const MarketChart = props => {
                     marginBottom: 5,
                     fontFamily: 'NeueMontreal-Bold',
                   }}>
-                  {item.label}
+                  {item?.label}
                 </Text>
                 <Text
                   style={{color: 'grey', fontFamily: 'NeueMontreal-Medium'}}>
-                  {item.label === 'Market Cap' || item.label === 'Volume'
+                  {item?.label === 'Market Cap' || item?.label === 'Volume'
                     ? '$'
                     : ''}
-                  {formatNumber(item.value)}
+                  {formatNumber(item?.value)}
                 </Text>
               </View>
             ))}
@@ -293,7 +295,7 @@ const MarketChart = props => {
                   }}>
                   {/* <CustomSkeleton element={5} width={'98%'} height={120} /> */}
                 </View>
-              ) : newsData.length > 0 ? (
+              ) : newsData?.length > 0 ? (
                 newsData.map((item, i) => (
                   <View
                     key={i.toString()}
@@ -302,7 +304,8 @@ const MarketChart = props => {
                       alignItems: 'flex-start',
                       marginHorizontal: '5%',
                     }}>
-                    <TouchableOpacity onPress={() => Linking.openURL(item.url)}>
+                    <TouchableOpacity
+                      onPress={() => Linking.openURL(item?.url)}>
                       <View
                         style={{
                           flexDirection: 'row',
@@ -315,7 +318,7 @@ const MarketChart = props => {
                             color: 'gray',
                             marginRight: 5,
                           }}>
-                          {new Date(item.published_at).toLocaleTimeString()}
+                          {new Date(item?.published_at)?.toLocaleTimeString()}
                         </Text>
                         <Text style={{marginHorizontal: 5, color: 'gray'}}>
                           ·
@@ -326,13 +329,13 @@ const MarketChart = props => {
                             color: 'gray',
                             marginRight: 5,
                           }}>
-                          {new Date(item.published_at).toLocaleDateString()}
+                          {new Date(item?.published_at).toLocaleDateString()}
                         </Text>
                         <Text style={{marginHorizontal: 5, color: 'gray'}}>
                           ·
                         </Text>
                         <Text style={{fontSize: 13, color: 'gray'}}>
-                          {item.source.title}
+                          {item?.source?.title}
                         </Text>
                       </View>
                       <Text
@@ -342,7 +345,7 @@ const MarketChart = props => {
                           color: '#D1D2D9',
                           textAlign: 'justify',
                         }}>
-                        {item.title}
+                        {item?.title}
                       </Text>
                     </TouchableOpacity>
                   </View>

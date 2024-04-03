@@ -8,6 +8,8 @@ import {
   Dimensions,
   SafeAreaView,
   ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {ImageAssets} from '../../../../../assets';
 import {Icon} from 'react-native-elements';
@@ -174,781 +176,793 @@ const TradePage = ({route}) => {
   );
   const {height} = Dimensions.get('window');
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: '#000',
-        paddingBottom: 80,
-        height: height,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}>
-      <View>
-        {/* Top bar */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            marginTop: '2%',
-            width: width,
-            marginBottom: 16,
-          }}>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      style={{padding: 8, flex: 1, backgroundColor: '#000'}}>
+      <SafeAreaView
+        style={{
+          backgroundColor: '#000',
+          paddingBottom: 80,
+          height: height,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}>
+        <View>
+          {/* Top bar */}
           <View
             style={{
-              alignItems: 'center',
               flexDirection: 'row',
               justifyContent: 'space-between',
-              paddingLeft: '5%',
-              width: width * 0.9,
+              marginTop: '2%',
+              width: width,
+              marginBottom: 16,
             }}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Icon
-                name={'navigate-before'}
-                size={30}
-                color={'#f0f0f0'}
-                type="materialicons"
-                onPress={() => navigation.goBack()}
-              />
-
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#ffffff',
-                  fontFamily: `Unbounded-Medium`,
-                  marginLeft: '5%',
-                }}>
-                {state.symbol.toUpperCase()}/USD
-              </Text>
-            </View>
-            <TouchableOpacity
+            <View
               style={{
-                padding: 10,
-                borderRadius: 5,
+                alignItems: 'center',
                 flexDirection: 'row',
-                marginLeft: '30%',
-              }}
-              onPress={() => setModalVisible(true)}>
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => {
-                  setModalVisible(!modalVisible);
-                }}>
-                <View
+                justifyContent: 'space-between',
+                paddingLeft: '5%',
+                width: width * 0.9,
+              }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Icon
+                  name={'navigate-before'}
+                  size={30}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                  onPress={() => navigation.goBack()}
+                />
+
+                <Text
                   style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    width: '100%',
-                    backgroundColor: '#010101',
-                    padding: 20,
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
+                    fontSize: 16,
+                    color: '#ffffff',
+                    fontFamily: `Unbounded-Medium`,
+                    marginLeft: '5%',
+                  }}>
+                  {state.symbol.toUpperCase()}/USD
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={{
+                  padding: 10,
+                  borderRadius: 5,
+                  flexDirection: 'row',
+                  marginLeft: '30%',
+                }}
+                onPress={() => setModalVisible(true)}>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={modalVisible}
+                  onRequestClose={() => {
+                    setModalVisible(!modalVisible);
                   }}>
                   <View
                     style={{
-                      paddingBottom: '20%',
+                      position: 'absolute',
+                      bottom: 0,
+                      width: '100%',
+                      backgroundColor: '#010101',
+                      padding: 20,
+                      borderTopLeftRadius: 20,
+                      borderTopRightRadius: 20,
                     }}>
-                    <TouchableOpacity
-                      style={{
-                        position: 'absolute',
-                        left: '-5%',
-                        zIndex: 1,
-                      }}
-                      onPress={() => setModalVisible(!modalVisible)}>
-                      <Icon name="close" size={35} color="#fff" />
-                    </TouchableOpacity>
-                  </View>
-                  {items.map((item, index) => (
                     <View
-                      key={index}
                       style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '10%',
+                        paddingBottom: '20%',
                       }}>
-                      <Text
+                      <TouchableOpacity
                         style={{
-                          color: '#fff',
-                          fontSize: 16,
-                          fontFamily: 'Unbounded-Medium',
-                        }}>
-                        {item.left}
-                      </Text>
-                      {item.right !== ' ' && (
-                        <View
-                          style={{
-                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                            borderRadius: 5,
-                            padding: 5,
-                          }}>
-                          <Text
-                            style={{
-                              color: '#fff',
-                              fontSize: 8,
-                              fontFamily: 'Unbounded-Medium',
-                            }}>
-                            {item.right}
-                          </Text>
-                        </View>
-                      )}
+                          position: 'absolute',
+                          left: '-5%',
+                          zIndex: 1,
+                        }}
+                        onPress={() => setModalVisible(!modalVisible)}>
+                        <Icon name="close" size={35} color="#fff" />
+                      </TouchableOpacity>
                     </View>
-                  ))}
-                </View>
-              </Modal>
-              <Text
-                style={{
-                  color: 'white',
-                  fontSize: 12,
-                  fontFamily: 'Unbounded-Medium',
-                }}>
-                MARKET
-              </Text>
-              <Icon
-                name={'expand-more'}
-                size={20}
-                color={'#f0f0f0'}
-                type="materialicons"
-              />
-            </TouchableOpacity>
+                    {items.map((item, index) => (
+                      <View
+                        key={index}
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          marginBottom: '10%',
+                        }}>
+                        <Text
+                          style={{
+                            color: '#fff',
+                            fontSize: 16,
+                            fontFamily: 'Unbounded-Medium',
+                          }}>
+                          {item.left}
+                        </Text>
+                        {item.right !== ' ' && (
+                          <View
+                            style={{
+                              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                              borderRadius: 5,
+                              padding: 5,
+                            }}>
+                            <Text
+                              style={{
+                                color: '#fff',
+                                fontSize: 8,
+                                fontFamily: 'Unbounded-Medium',
+                              }}>
+                              {item.right}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                    ))}
+                  </View>
+                </Modal>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontSize: 12,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  MARKET
+                </Text>
+                <Icon
+                  name={'expand-more'}
+                  size={20}
+                  color={'#f0f0f0'}
+                  type="materialicons"
+                />
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => setIsDropDownOpen(!isDropDownOpen)}>
-              <View></View>
-              {/* Drop-down options go here */}
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setIsDropDownOpen(!isDropDownOpen)}>
+                <View></View>
+                {/* Drop-down options go here */}
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
 
-        {/* <ScrollView
+          {/* <ScrollView
         scrollEnabled
         // contentContainerStyle={{flexGrow: 1}} // Add this line to allow scrolling
       > */}
-        {/* Market, Limit, Stop */}
+          {/* Market, Limit, Stop */}
 
-        {/*Buy and Sell */}
-        <View
-          style={{
-            flexDirection: 'row',
-            borderRadius: 17,
-            backgroundColor: '#151515',
-            alignItems: 'center',
-            height: 56,
-            justifyContent: 'space-between',
-            margin: 8,
-            padding: 6,
-            width:"90%",
-            alignSelf:'center'
-          }}>
-          <TouchableOpacity
-            style={{width: '50%'}}
-            onPress={() => {
-              ReactNativeHapticFeedback.trigger('impactHeavy', options);
-              setTradeType('buy');
-              setConvertedValue('token');
+          {/*Buy and Sell */}
+          <View
+            style={{
+              flexDirection: 'row',
+              borderRadius: 17,
+              backgroundColor: '#151515',
+              alignItems: 'center',
+              height: 56,
+              justifyContent: 'space-between',
+              margin: 8,
+              padding: 6,
+              width: '90%',
+              alignSelf: 'center',
             }}>
-            {tradeType === 'buy' ? (
-              <LinearGradient
-                colors={['#292929', '#292929']}
-                useAngle={true}
-                angle={93.68}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 22,
-                  borderRadius: 20,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
+            <TouchableOpacity
+              style={{width: '50%'}}
+              onPress={() => {
+                ReactNativeHapticFeedback.trigger('impactHeavy', options);
+                setTradeType('buy');
+                setConvertedValue('token');
+              }}>
+              {tradeType === 'buy' ? (
+                <LinearGradient
+                  colors={['#292929', '#292929']}
+                  useAngle={true}
+                  angle={93.68}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 22,
+                    borderRadius: 20,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontSize: 14,
+                      fontFamily: 'Unbounded-Bold',
+                      width: '40%',
+                      textAlign: 'center',
+                    }}>
+                    BUY
+                  </Text>
+                </LinearGradient>
+              ) : (
                 <Text
                   style={{
-                    color: '#fff',
-                    fontSize: 14,
+                    color: '#848484',
                     fontFamily: 'Unbounded-Bold',
-                    width: '40%',
+                    fontSize: 14,
                     textAlign: 'center',
                   }}>
                   BUY
                 </Text>
-              </LinearGradient>
-            ) : (
-              <Text
-                style={{
-                  color: '#848484',
-                  fontFamily: 'Unbounded-Bold',
-                  fontSize: 14,
-                  textAlign: 'center',
-                }}>
-                BUY
-              </Text>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{width: '50%'}}
-            onPress={() => {
-              if (Platform.OS === 'ios') {
-                ReactNativeHapticFeedback.trigger('impactMedium', options);
-              }
-              setTradeType('sell');
-            }}>
-            {tradeType === 'sell' ? (
-              <LinearGradient
-                colors={['#292929', '#292929']}
-                useAngle={true}
-                angle={93.68}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 22,
-                  borderRadius: 20,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{width: '50%'}}
+              onPress={() => {
+                if (Platform.OS === 'ios') {
+                  ReactNativeHapticFeedback.trigger('impactMedium', options);
+                }
+                setTradeType('sell');
+              }}>
+              {tradeType === 'sell' ? (
+                <LinearGradient
+                  colors={['#292929', '#292929']}
+                  useAngle={true}
+                  angle={93.68}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 22,
+                    borderRadius: 20,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'Unbounded-Medium',
+                      color: '#fff',
+                      fontSize: 14,
+                      width: '40%',
+                      textAlign: 'center',
+                    }}>
+                    SELL
+                  </Text>
+                </LinearGradient>
+              ) : (
                 <Text
                   style={{
+                    color: '#848484',
                     fontFamily: 'Unbounded-Medium',
-                    color: '#fff',
                     fontSize: 14,
-                    width: '40%',
                     textAlign: 'center',
                   }}>
                   SELL
                 </Text>
-              </LinearGradient>
-            ) : (
-              <Text
-                style={{
-                  color: '#848484',
-                  fontFamily: 'Unbounded-Medium',
-                  fontSize: 14,
-                  textAlign: 'center',
-                }}>
-                SELL
-              </Text>
-            )}
-          </TouchableOpacity>
-        </View>
+              )}
+            </TouchableOpacity>
+          </View>
 
-        {tradeType === 'buy' ? (
-          <View
-            style={{
-              marginTop: '5%',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#9d9d9d',
-                textAlign: 'center',
-                fontFamily: 'NeueMontreal-Medium',
-              }}>
-              Available to invest:{' '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#fff',
-                textAlign: 'center',
-                fontFamily: 'Unbounded-Medium',
-              }}>
-              ${usdcValue?.[0]?.estimated_balance?.toFixed(2)}{' '}
-            </Text>
-          </View>
-        ) : (
-          <View
-            style={{
-              marginTop: '5%',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#fff',
-                textAlign: 'center',
-                fontFamily: 'Unbounded-Bold',
-              }}>
-              {tokensToSell?.[0]?.balance?.toFixed(2)}{' '}
-              {state.symbol.toUpperCase()}{' '}
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: '#7e7e7e',
-                textAlign: 'center',
-                fontFamily: 'NeueMontreal-Medium',
-              }}>
-              is available{' '}
-            </Text>
-          </View>
-        )}
-        <View style={{marginTop: '20%', marginBottom: '30%'}}>
-          <View>
-            {tradeType === 'sell' ? (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  gap: 8,
-                }}>
-                <TextInput
-                  style={{
-                    fontSize: 56,
-                    color: '#ffffff',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Medium',
-                  }}
-                  value={value}
-                  onChangeText={text => {
-                    setValue(text);
-                    ReactNativeHapticFeedback.trigger('impactMedium', options);
-                  }}
-                  keyboardType="numeric"
-                />
-                <Text
-                  style={{
-                    fontSize: 56,
-                    color: '#fff',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Medium',
-                    alignSelf: 'center',
-                  }}>
-                  {state.symbol.toUpperCase()}
-                </Text>
-              </View>
-            ) : (
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  gap: 8,
-                  // backgroundColor: 'red',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 56,
-                    color: '#fff',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Medium',
-                    alignSelf: 'center',
-                  }}>
-                  $
-                </Text>
-                <TextInput
-                  style={{
-                    fontSize: 56,
-                    color: '#ffffff',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Medium',
-                  }}
-                  value={value}
-                  onChangeText={text => {
-                    setValue(text);
-                    ReactNativeHapticFeedback.trigger('impactMedium', options);
-                  }}
-                  keyboardType="numeric"
-                />
-              </View>
-            )}
-            {tradeType === 'buy' ? (
-              <View
-                style={{
-                  marginTop: 10,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: '#5C5C5C',
-                    textAlign: 'center',
-                    fontFamily: 'NeueMontreal-Medium',
-                  }}>
-                  You'll get{' '}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: '#b3b3b3',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Bold',
-                  }}>
-                  {isNaN(
-                    bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                      ?.amount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.decimals,
-                      ),
-                  )
-                    ? (
-                        bestSwappingBuyTrades?.estimate?.toAmountMin /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.action?.toToken?.decimals,
-                        )
-                      ).toFixed(5)
-                    : (
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        )
-                      ).toFixed(5)}
-                  {' ' + state?.symbol.toUpperCase()}
-                </Text>
-
-                {/* image to allow btc input */}
-                {/* <Image source={ImageAssets.arrowImg} /> */}
-              </View>
-            ) : (
-              <View
-                style={{
-                  marginTop: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: '#5c5c5c',
-                    textAlign: 'center',
-                    fontFamily: 'NeueMontreal-Medium',
-                  }}>
-                  You'll get{' '}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: '#7e7e7e',
-                    textAlign: 'center',
-                    fontFamily: 'Unbounded-Bold',
-                  }}>
-                  $
-                  {isNaN(
-                    bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                      ?.amount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.decimals,
-                      ),
-                  )
-                    ? (
-                        bestSwappingBuyTrades?.estimate?.toAmountMin /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.action?.toToken?.decimals,
-                        )
-                      ).toFixed(5)
-                    : (
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        )
-                      ).toFixed(5)}
-                </Text>
-                {/* image to allow btc input */}
-                {/* <Image source={ImageAssets.arrowImg} /> */}
-              </View>
-            )}
-          </View>
-        </View>
-
-        {/*order summary */}
-        <View style={{marginTop: 0}}>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <LinearGradient
-              colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={{height: 2, width: '80%'}} // Adjust the height and width as needed
-            />
-          </View>
-          <View
-            style={{
-              marginVertical: '5%',
-              paddingHorizontal: '8%',
-            }}>
+          {tradeType === 'buy' ? (
             <View
               style={{
+                marginTop: '5%',
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                marginBottom: 16,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
               <Text
                 style={{
                   fontSize: 16,
+                  color: '#9d9d9d',
+                  textAlign: 'center',
                   fontFamily: 'NeueMontreal-Medium',
-                  alignSelf: 'flex-start',
-                  color: '#fff',
                 }}>
-                Entry Price:
+                Available to invest:{' '}
               </Text>
               <Text
                 style={{
                   fontSize: 16,
-                  fontFamily: 'Unbounded-Medium',
-                  alignSelf: 'flex-end',
                   color: '#fff',
+                  textAlign: 'center',
+                  fontFamily: 'Unbounded-Medium',
                 }}>
-                $
-                {tradeType === 'sell'
-                  ? bestSwappingBuyTrades?.action?.toToken?.priceUSD ||
-                    (
+                ${usdcValue?.[0]?.estimated_balance?.toFixed(2)}{' '}
+              </Text>
+            </View>
+          ) : (
+            <View
+              style={{
+                marginTop: '5%',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#fff',
+                  textAlign: 'center',
+                  fontFamily: 'Unbounded-Bold',
+                }}>
+                {tokensToSell?.[0]?.balance?.toFixed(2)}{' '}
+                {state.symbol.toUpperCase()}{' '}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#7e7e7e',
+                  textAlign: 'center',
+                  fontFamily: 'NeueMontreal-Medium',
+                }}>
+                is available{' '}
+              </Text>
+            </View>
+          )}
+          <View style={{marginTop: '20%', marginBottom: '30%'}}>
+            <View>
+              {tradeType === 'sell' ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}>
+                  <TextInput
+                    style={{
+                      fontSize: 56,
+                      color: '#ffffff',
+                      textAlign: 'center',
+                      fontFamily: 'Unbounded-Medium',
+                    }}
+                    value={value}
+                    onChangeText={text => {
+                      setValue(text);
+                      ReactNativeHapticFeedback.trigger(
+                        'impactMedium',
+                        options,
+                      );
+                    }}
+                    keyboardType="numeric"
+                  />
+                  <Text
+                    style={{
+                      fontSize: 56,
+                      color: '#fff',
+                      textAlign: 'center',
+                      fontFamily: 'Unbounded-Medium',
+                      alignSelf: 'center',
+                    }}>
+                    {state.symbol.toUpperCase()}
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    gap: 8,
+                    // backgroundColor: 'red',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 56,
+                      color: '#fff',
+                      textAlign: 'center',
+                      fontFamily: 'Unbounded-Medium',
+                      alignSelf: 'center',
+                    }}>
+                    $
+                  </Text>
+                  <TextInput
+                    style={{
+                      fontSize: 56,
+                      color: '#ffffff',
+                      textAlign: 'center',
+                      fontFamily: 'Unbounded-Medium',
+                    }}
+                    value={value}
+                    onChangeText={text => {
+                      setValue(text);
+                      ReactNativeHapticFeedback.trigger(
+                        'impactMedium',
+                        options,
+                      );
+                    }}
+                    keyboardType="numeric"
+                  />
+                </View>
+              )}
+              {tradeType === 'buy' ? (
+                <View
+                  style={{
+                    marginTop: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: '#5C5C5C',
+                      textAlign: 'center',
+                      fontFamily: 'NeueMontreal-Medium',
+                    }}>
+                    You'll get{' '}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: '#b3b3b3',
+                      textAlign: 'center',
+                      fontFamily: 'Unbounded-Bold',
+                    }}>
+                    {isNaN(
                       bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                         ?.amount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.decimals,
-                      ) /
-                      (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        ),
+                    )
+                      ? (
+                          bestSwappingBuyTrades?.estimate?.toAmountMin /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.action?.toToken?.decimals,
+                          )
+                        ).toFixed(5)
+                      : (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          )
+                        ).toFixed(5)}
+                    {' ' + state?.symbol.toUpperCase()}
+                  </Text>
+
+                  {/* image to allow btc input */}
+                  {/* <Image source={ImageAssets.arrowImg} /> */}
+                </View>
+              ) : (
+                <View
+                  style={{
+                    marginTop: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: '#5c5c5c',
+                      textAlign: 'center',
+                      fontFamily: 'NeueMontreal-Medium',
+                    }}>
+                    You'll get{' '}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: '#7e7e7e',
+                      textAlign: 'center',
+                      fontFamily: 'Unbounded-Bold',
+                    }}>
+                    $
+                    {isNaN(
+                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                         ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        ),
+                    )
+                      ? (
+                          bestSwappingBuyTrades?.estimate?.toAmountMin /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.action?.toToken?.decimals,
+                          )
+                        ).toFixed(5)
+                      : (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          )
+                        ).toFixed(5)}
+                  </Text>
+                  {/* image to allow btc input */}
+                  {/* <Image source={ImageAssets.arrowImg} /> */}
+                </View>
+              )}
+            </View>
+          </View>
+
+          {/*order summary */}
+          <View style={{marginTop: 0}}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <LinearGradient
+                colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+              />
+            </View>
+            <View
+              style={{
+                marginVertical: '5%',
+                paddingHorizontal: '8%',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 16,
+                  marginBottom: 16,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'NeueMontreal-Medium',
+                    alignSelf: 'flex-start',
+                    color: '#fff',
+                  }}>
+                  Entry Price:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Unbounded-Medium',
+                    alignSelf: 'flex-end',
+                    color: '#fff',
+                  }}>
+                  $
+                  {tradeType === 'sell'
+                    ? bestSwappingBuyTrades?.action?.toToken?.priceUSD ||
+                      (
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                        Math.pow(
+                          10,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.decimals,
+                        ) /
+                        (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              ?.decimals,
+                          ))
+                      ).toFixed(6)
+                    : //when same chain
+
+                      bestSwappingBuyTrades?.action?.toToken?.priceUSD || //when cross chain
+                      (
+                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          ?.amount /
                         Math.pow(
                           10,
                           bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                             ?.decimals,
-                        ))
-                    ).toFixed(6)
-                  : //when same chain
+                        ) /
+                        (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          ))
+                      ).toFixed(6)}
+                </Text>
+              </View>
 
-                    bestSwappingBuyTrades?.action?.toToken?.priceUSD || //when cross chain
-                    (
-                      bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                        ?.amount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.decimals,
-                      ) /
-                      (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        ))
-                    ).toFixed(6)}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                marginBottom: 16,
-              }}>
-              <Text
+              <View
                 style={{
-                  fontSize: 16,
-                  fontFamily: 'NeueMontreal-Medium',
-                  alignSelf: 'flex-start',
-                  color: '#fff',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 16,
+                  marginBottom: 16,
                 }}>
-                Estimated Fees:
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: 'Unbounded-Medium',
-                  alignSelf: 'flex-end',
-                  color: '#fff',
-                }}>
-                $
-                {bestSwappingBuyTrades?.estimation?.costsDetails
-                  ? tradeType === 'sell'
-                    ? (
-                        bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'NeueMontreal-Medium',
+                    alignSelf: 'flex-start',
+                    color: '#fff',
+                  }}>
+                  Estimated Fees:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Unbounded-Medium',
+                    alignSelf: 'flex-end',
+                    color: '#fff',
+                  }}>
+                  $
+                  {bestSwappingBuyTrades?.estimation?.costsDetails
+                    ? tradeType === 'sell'
+                      ? (
+                          bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                            x => x.type === 'DlnProtocolFee',
+                          )[0]?.payload?.feeAmount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              ?.decimals,
+                          )
+                        ).toFixed(2)
+                      : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
                           x => x.type === 'DlnProtocolFee',
                         )[0]?.payload?.feeAmount /
                         Math.pow(
                           10,
-                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                             ?.decimals,
                         )
-                      ).toFixed(2)
-                    : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
-                        x => x.type === 'DlnProtocolFee',
-                      )[0]?.payload?.feeAmount /
-                      Math.pow(
-                        10,
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.decimals,
-                      )
-                  : bestSwappingBuyTrades?.estimate?.gasCosts?.[0]?.amountUSD}
-              </Text>
-            </View>
+                    : bestSwappingBuyTrades?.estimate?.gasCosts?.[0]?.amountUSD}
+                </Text>
+              </View>
 
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 16,
+                  marginBottom: 16,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'NeueMontreal-Medium',
+                    alignSelf: 'flex-start',
+                    color: '#fff',
+                  }}>
+                  Transaction will take:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Unbounded-Medium',
+                    alignSelf: 'flex-end',
+                    color: '#fff',
+                  }}>
+                  {' '}
+                  {bestSwappingBuyTrades?.order?.approximateFulfillmentDelay ??
+                    bestSwappingBuyTrades?.estimate?.executionDuration}
+                  s
+                </Text>
+              </View>
+            </View>
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                marginBottom: 16,
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: 'NeueMontreal-Medium',
-                  alignSelf: 'flex-start',
-                  color: '#fff',
-                }}>
-                Transaction will take:
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: 'Unbounded-Medium',
-                  alignSelf: 'flex-end',
-                  color: '#fff',
-                }}>
-                {' '}
-                {bestSwappingBuyTrades?.order?.approximateFulfillmentDelay ??
-                  bestSwappingBuyTrades?.estimate?.executionDuration}
-                s
-              </Text>
+              <LinearGradient
+                colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+              />
             </View>
           </View>
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <LinearGradient
-              colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={{height: 2, width: '80%'}} // Adjust the height and width as needed
-            />
-          </View>
         </View>
-      </View>
-      <TouchableOpacity
-        style={{
-          backgroundColor: 'white',
-          borderRadius: 17,
-          paddingVertical: 22,
-          paddingHorizontal: '30%',
-          justifyContent: 'center',
-          position: 'absolute',
-          alignSelf:'center',
-          width: '90%',
-          bottom: Platform.OS === 'ios' ? '10%' : '2%',
-        }}
-        onPress={async () => {
-          try {
-            if (Platform.OS === 'ios') {
-              ReactNativeHapticFeedback.trigger('impactMedium', options);
-            }
-            if (!loading && bestSwappingBuyTrades && !preparingTx) {
-              if (tradeType === 'buy' && bestSwappingBuyTrades) {
-                setPreparingTx(true);
-
-                let res;
-                if (bestSwappingBuyTrades?.transactionRequest) {
-                  res = bestSwappingBuyTrades;
-                } else {
-                  res = await getTradeSigningData();
-                }
-
-                const signature = await confirmDLNTransaction(
-                  tradeType,
-                  res,
-                  res?.estimation?.srcChainTokenIn?.amount ||
-                    res?.action?.fromAmount,
-                  res?.estimation?.srcChainTokenIn?.address ||
-                    res?.action?.fromToken?.address,
-                  res?.tx ?? res?.transactionRequest,
-                  evmInfo?.smartAccount,
-                  evmInfo?.address,
-                );
-                setPreparingTx(false);
-                if (signature) {
-                  console.log('txn hash....', JSON.stringify(res), signature);
-                  navigation.navigate('PendingTxStatus', {
-                    state: res,
-                    tradeType,
-                  });
-                }
-              } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
-                setPreparingTx(true);
-                let res;
-                if (bestSwappingBuyTrades?.transactionRequest) {
-                  res = bestSwappingBuyTrades;
-                } else {
-                  res = await getTradeSigningData();
-                }
-                if (
-                  res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
-                  res?.estimation?.srcChainTokenIn?.chainId !== undefined
-                ) {
-                  await switchAuthCoreChain(
-                    res?.estimation?.srcChainTokenIn?.chainId,
-                  );
-                }
-                const signature = await confirmDLNTransaction(
-                  tradeType,
-                  res,
-                  res?.estimation?.srcChainTokenIn?.amount ||
-                    res?.action?.fromAmount,
-                  res?.estimation?.srcChainTokenIn?.address ||
-                    res?.action?.fromToken?.address,
-                  res?.tx ?? res?.transactionRequest,
-                  evmInfo?.smartAccount,
-                  evmInfo?.address,
-                );
-                setPreparingTx(false);
-                if (signature) {
-                  console.log('txn hash', res, signature);
-                  navigation.navigate('PendingTxStatus', {
-                    state: res,
-                    tradeType,
-                  });
-                }
-              } else if (
-                bestSwappingBuyTrades !== null &&
-                bestSwappingBuyTrades.length === 0
-              ) {
-                await getBestPrice();
-              }
-            }
-          } catch (err) {
-            setPreparingTx(false);
-          }
-        }}>
-        <Text
+        <TouchableOpacity
           style={{
-            fontSize: 14,
-            letterSpacing: 0.2,
-            fontFamily: 'Unbounded-Bold',
-            color: '#000',
-            textAlign: 'center',
+            backgroundColor: 'white',
+            borderRadius: 17,
+            paddingVertical: 22,
+            paddingHorizontal: '30%',
+            justifyContent: 'center',
+            position: 'absolute',
+            alignSelf: 'center',
+            width: '90%',
+            bottom: Platform.OS === 'ios' ? '10%' : '2%',
+          }}
+          onPress={async () => {
+            try {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+              if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                if (tradeType === 'buy' && bestSwappingBuyTrades) {
+                  setPreparingTx(true);
+
+                  let res;
+                  if (bestSwappingBuyTrades?.transactionRequest) {
+                    res = bestSwappingBuyTrades;
+                  } else {
+                    res = await getTradeSigningData();
+                  }
+
+                  const signature = await confirmDLNTransaction(
+                    tradeType,
+                    res,
+                    res?.estimation?.srcChainTokenIn?.amount ||
+                      res?.action?.fromAmount,
+                    res?.estimation?.srcChainTokenIn?.address ||
+                      res?.action?.fromToken?.address,
+                    res?.tx ?? res?.transactionRequest,
+                    evmInfo?.smartAccount,
+                    evmInfo?.address,
+                  );
+                  setPreparingTx(false);
+                  if (signature) {
+                    console.log('txn hash....', JSON.stringify(res), signature);
+                    navigation.navigate('PendingTxStatus', {
+                      state: res,
+                      tradeType,
+                    });
+                  }
+                } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
+                  setPreparingTx(true);
+                  let res;
+                  if (bestSwappingBuyTrades?.transactionRequest) {
+                    res = bestSwappingBuyTrades;
+                  } else {
+                    res = await getTradeSigningData();
+                  }
+                  if (
+                    res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
+                    res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                  ) {
+                    await switchAuthCoreChain(
+                      res?.estimation?.srcChainTokenIn?.chainId,
+                    );
+                  }
+                  const signature = await confirmDLNTransaction(
+                    tradeType,
+                    res,
+                    res?.estimation?.srcChainTokenIn?.amount ||
+                      res?.action?.fromAmount,
+                    res?.estimation?.srcChainTokenIn?.address ||
+                      res?.action?.fromToken?.address,
+                    res?.tx ?? res?.transactionRequest,
+                    evmInfo?.smartAccount,
+                    evmInfo?.address,
+                  );
+                  setPreparingTx(false);
+                  if (signature) {
+                    console.log('txn hash', res, signature);
+                    navigation.navigate('PendingTxStatus', {
+                      state: res,
+                      tradeType,
+                    });
+                  }
+                } else if (
+                  bestSwappingBuyTrades !== null &&
+                  bestSwappingBuyTrades.length === 0
+                ) {
+                  await getBestPrice();
+                }
+              }
+            } catch (err) {
+              setPreparingTx(false);
+            }
           }}>
-          {getDisplayText()}
-        </Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+          <Text
+            style={{
+              fontSize: 14,
+              letterSpacing: 0.2,
+              fontFamily: 'Unbounded-Bold',
+              color: '#000',
+              textAlign: 'center',
+            }}>
+            {getDisplayText()}
+          </Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

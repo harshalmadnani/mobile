@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import MarketChart from './marketInfo/MarketChart';
 import LinearGradient from 'react-native-linear-gradient';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
@@ -35,8 +35,8 @@ const MarketInfo = ({route, navigation, item}) => {
     setShowSellModal(false);
   };
   const holdings = useSelector(x => x.portfolio.holdings);
-  const currentAsset = holdings?.assets.filter(
-    x => x.asset?.symbol.toLowerCase() === item?.symbol.toLowerCase(),
+  const currentAsset = holdings?.assets?.filter(
+    x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
 
   const uri =

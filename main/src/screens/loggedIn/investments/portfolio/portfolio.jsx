@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
-  FlatList,
   ScrollView,
   Modal,
   Platform,
@@ -59,12 +58,12 @@ const Portfolio = ({navigation}) => {
     if (!holdings || !holdings?.assets) {
       return '0'; // Return a default value indicating that the balance couldn't be extracted
     }
-    const usdcAsset = holdings?.assets.find(
+    const usdcAsset = holdings?.assets?.find(
       asset =>
-        asset.asset.symbol === 'USDC' &&
-        asset.cross_chain_balances.Polygon &&
-        asset.cross_chain_balances.Polygon.address.toLowerCase() ===
-          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'.toLowerCase(),
+        asset?.asset?.symbol === 'USDC' &&
+        asset?.cross_chain_balances?.Polygon &&
+        asset?.cross_chain_balances?.Polygon?.address?.toLowerCase() ===
+          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'?.toLowerCase(),
     );
 
     // Check if the USDC asset on Polygon was found
@@ -72,7 +71,7 @@ const Portfolio = ({navigation}) => {
       return '0'; // Return a default value if the USDC asset isn't found
     }
     // Assuming the balance is directly available on usdcAsset (or adapt based on actual structure)
-    return usdcAsset.cross_chain_balances.Polygon.balance || 0;
+    return usdcAsset?.cross_chain_balances?.Polygon.balance || 0;
   };
 
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
@@ -187,7 +186,7 @@ const Portfolio = ({navigation}) => {
                   fontFamily: 'Unbounded-Medium',
                   marginVertical: 10,
                 }}>
-                {info.toUpperCase()}
+                {info?.toUpperCase()}
               </Text>
 
               <View
@@ -422,7 +421,7 @@ const Portfolio = ({navigation}) => {
                       fontSize: 16,
                       marginRight: '2%',
                     }}>
-                    ${Number(usdcBalance)?.toFixed(2).toLocaleString('en-US')}
+                    ${Number(usdcBalance)?.toFixed(2)?.toLocaleString('en-US')}
                   </Text>
                   <View style={{alignSelf: 'center'}}>
                     <Icon
@@ -647,22 +646,22 @@ const Portfolio = ({navigation}) => {
                 backgroundColor: '#000',
                 paddingBottom: '30%',
               }}>
-              {holdings?.assets.filter(item => item.token_balance > 0)?.length >
-              0
+              {holdings?.assets?.filter(item => item.token_balance > 0)
+                ?.length > 0
                 ? holdings?.assets
-                    .filter(item => item.token_balance > 0)
-                    .map((item, i) => (
+                    ?.filter(item => item?.token_balance > 0)
+                    ?.map((item, i) => (
                       <MyInvestmentItemCard
                         key={i.toString()}
                         navigation={navigation}
                         item={{
-                          ...item.asset,
-                          balance: item.token_balance,
-                          current_price: item.price,
-                          unrealized_pnl: item.unrealized_pnl,
-                          realized_pnl: item.realized_pnl,
-                          image: item.asset.logo,
-                          price_bought: item.price_bought,
+                          ...item?.asset,
+                          balance: item?.token_balance,
+                          current_price: item?.price,
+                          unrealized_pnl: item?.unrealized_pnl,
+                          realized_pnl: item?.realized_pnl,
+                          image: item?.asset?.logo,
+                          price_bought: item?.price_bought,
                         }}
                       />
                     ))

@@ -81,7 +81,9 @@ function InteractiveChart({assetName}) {
         });
 
         setPriceList(historicalPriceXYPair);
-        setcurrentPrice(data?.price_history[data?.price_history.length - 1][1]);
+        setcurrentPrice(
+          data?.price_history[data?.price_history?.length - 1][1],
+        );
       } catch (e) {
         console.log(e);
       }
@@ -106,7 +108,7 @@ function InteractiveChart({assetName}) {
           setPriceList(historicalPriceXYPair);
           // Extracting the price part
           setcurrentPrice(
-            data?.price_history[data?.price_history.length - 1][1],
+            data?.price_history[data?.price_history?.length - 1][1],
           );
         } catch (e) {
           console.log(e);
@@ -125,7 +127,7 @@ function InteractiveChart({assetName}) {
   useEffect(() => {
     if (priceList?.length > 1 || priceList?.[0]?.value === '0') {
       const result =
-        ((priceList?.[priceList.length - 1]?.value - priceList?.[0]?.value) /
+        ((priceList?.[priceList?.length - 1]?.value - priceList?.[0]?.value) /
           priceList[priceList?.length - 1]?.value) *
         100;
       const test =
@@ -197,7 +199,7 @@ function InteractiveChart({assetName}) {
             height: apx(500),
             alignSelf: 'stretch',
           }}>
-          {priceList.length > 0 ? (
+          {priceList?.length > 0 ? (
             <GestureHandlerRootView>
               <LineChart width={apx(750)} height={apx(500)}>
                 <LineChart.Path color="white">
@@ -232,7 +234,7 @@ function InteractiveChart({assetName}) {
           }}>
           {timeframes?.map(timeframe => (
             <TouchableOpacity
-              key={timeframe.value}
+              key={timeframe?.value}
               style={{
                 padding: apx(15),
                 backgroundColor:
