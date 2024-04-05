@@ -371,7 +371,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   </Text>
                 </View>
               </View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   position: 'absolute', // Positions the button over the content
                   width: '95%',
@@ -404,7 +404,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   }}>
                   TRADE {item?.symbol}
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </Modal>
         </View>
