@@ -16,7 +16,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 export default InteractiveChart;
 
-function CustomPriceText({divisionResult}) {
+function CustomPriceText() {
   return (
     <View
       style={{
@@ -24,8 +24,8 @@ function CustomPriceText({divisionResult}) {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      <Text style={[styles.stockPrice]}>$</Text>
-      <LineChart.PriceText style={[styles.stockPrice]} />
+      <Text style={styles.stockPrice}>$</Text>
+      <LineChart.PriceText style={styles.stockPrice} />
     </View>
   );
 }
@@ -149,7 +149,7 @@ function InteractiveChart({assetName}) {
         }}>
         <View style={styles.portfoioPriceContainer}>
           {touchActive ? (
-            <CustomPriceText divisionResult={divisionResult ?? 0} />
+            <CustomPriceText />
           ) : (
             <View
               style={{
@@ -158,8 +158,8 @@ function InteractiveChart({assetName}) {
                 justifyContent: 'center',
                 maxHeight: 50,
               }}>
-              <Text style={[styles.stockPrice]}>$</Text>
-              <Text style={[styles.stockPrice]}>
+              <Text style={styles.stockPrice}>$</Text>
+              <Text style={styles.stockPrice}>
                 {Number(currentPrice || '0')
                   ?.toFixed(2)
                   ?.toLocaleString('en-US')}
@@ -202,8 +202,7 @@ function InteractiveChart({assetName}) {
           {priceList?.length > 0 ? (
             <GestureHandlerRootView>
               <LineChart width={apx(750)} height={apx(500)}>
-                <LineChart.Path
-                  color={divisionResult < 0 ? '#FF5050' : '#ADFF6C'}>
+                <LineChart.Path color="white">
                   <LineChart.Gradient />
                 </LineChart.Path>
                 <LineChart.Tooltip>
@@ -240,12 +239,9 @@ function InteractiveChart({assetName}) {
                 padding: apx(15),
                 backgroundColor:
                   selectedTimeframe === timeframe?.value
-                    ? divisionResult < 0
-                      ? '#FF5050'
-                      : '#ADFF6C'
+                    ? '#343434'
                     : 'transparent',
                 borderRadius: apx(20),
-                opacity: 0.3,
               }}
               onPress={() => {
                 const options = {
@@ -258,11 +254,7 @@ function InteractiveChart({assetName}) {
               <Text
                 style={{
                   color:
-                    selectedTimeframe === timeframe.value
-                      ? divisionResult < 0
-                        ? '#FF5050'
-                        : '#ADFF6C'
-                      : '#787878',
+                    selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
                 }}>
                 {timeframe?.label}
               </Text>

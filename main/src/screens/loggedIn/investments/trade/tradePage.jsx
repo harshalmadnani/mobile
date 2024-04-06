@@ -98,8 +98,8 @@ const TradePage = ({route}) => {
       console.log('Token to selll......', tokensToSell);
       dispatch(
         getBestDLNCrossSwapRateSell(
-          tokensToSell?.[0],
-          value * Math.pow(10, tokensToSell?.[0]?.decimals),
+          tokensToSell?.[1],
+          value * Math.pow(10, tokensToSell?.[1]?.decimals),
         ),
       );
       setLoading(false);
