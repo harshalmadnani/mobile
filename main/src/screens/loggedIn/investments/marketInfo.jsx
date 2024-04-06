@@ -38,40 +38,7 @@ const MarketInfo = ({route, navigation, item}) => {
   const currentAsset = holdings?.assets?.filter(
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
-
-  const uri =
-    Platform.OS === 'android'
-      ? `file:///android_asset/index.html?theme=dark&symbol=BINANCE:BTCUSDT&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-      : // ? `file:///android_asset/index.html?theme=dark&symbol=${item.symbol}&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-        'index.html';
-
-  console.log(uri);
-
-  // useEffect(() => {
-  //   async function init() {
-  //     try {
-  //       setIsLoading(true);
-
-  //       if (global.withAuth) {
-  //         authAddress = global.loginAccount?.publicAddress;
-  //         const scwAddress = global.loginAccount.scw;
-  //         setAddress(scwAddress);
-  //       } else {
-  //         authAddress = global.connectAccount?.publicAddress;
-  //         const scwAddress = global.connectAccount?.publicAddress;
-  //         setAddress(scwAddress);
-  //       }
-
-  //       // fetch selected coin contract address
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //     setIsLoading(false);
-  //   }
-
-  //   init();
-  // }, []);
-
+  console.log('Here.....', currentAsset[0]?.asset);
   return (
     <SafeAreaView
       style={{

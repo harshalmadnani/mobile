@@ -13,10 +13,6 @@ import {
 import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  getCryptoHoldingForAddressFromMobula,
-  getEvmAddresses,
-} from '../../../../store/actions/portfolio';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 import {w3cwebsocket as W3CWebSocket} from 'websocket';

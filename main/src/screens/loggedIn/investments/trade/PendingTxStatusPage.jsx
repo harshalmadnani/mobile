@@ -202,7 +202,7 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                   ).toFixed(6)
                 : //when same chain
 
-                  txQuoteInfo?.action?.toToken?.priceUSD?.toFixed(5) || //when cross chain
+                  txQuoteInfo?.action?.toToken?.priceUSD || //when cross chain
                   (
                     txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
                     Math.pow(
