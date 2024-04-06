@@ -38,7 +38,7 @@ const MarketInfo = ({route, navigation, item}) => {
   const currentAsset = holdings?.assets?.filter(
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
-  console.log('Here.....', currentAsset[0]?.asset);
+
   return (
     <SafeAreaView
       style={{

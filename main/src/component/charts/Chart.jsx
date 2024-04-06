@@ -201,11 +201,12 @@ function InteractiveChart() {
           {priceList?.length > 0 ? (
             <GestureHandlerRootView>
               <LineChart width={apx(750)} height={apx(350)}>
-                <LineChart.Path color="white">
+                <LineChart.Path
+                  color={divisionResult < 0 ? '#FF5050' : '#ADFF6C'}>
                   <LineChart.Gradient />
                 </LineChart.Path>
                 <LineChart.CursorCrosshair
-                  color="white"
+                  color={divisionResult < 0 ? '#FF5050' : '#ADFF6C'}
                   onActivated={() => {
                     setTouchActive(true);
                     const options = {
@@ -236,9 +237,12 @@ function InteractiveChart() {
                 padding: apx(15),
                 backgroundColor:
                   selectedTimeframe === timeframe?.value
-                    ? '#343434'
+                    ? divisionResult < 0
+                      ? '#FF5050'
+                      : '#ADFF6C'
                     : 'transparent',
                 borderRadius: apx(20),
+                opacity: 0.3,
               }}
               onPress={() => {
                 const options = {
@@ -251,7 +255,11 @@ function InteractiveChart() {
               <Text
                 style={{
                   color:
-                    selectedTimeframe === timeframe.value ? '#FFF' : '#787878',
+                    selectedTimeframe === timeframe.value
+                      ? divisionResult < 0
+                        ? '#FF5050'
+                        : '#ADFF6C'
+                      : '#787878',
                 }}>
                 {timeframe?.label}
               </Text>
