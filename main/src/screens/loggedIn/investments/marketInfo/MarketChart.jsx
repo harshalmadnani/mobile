@@ -52,8 +52,8 @@ const MarketChart = props => {
   const renderTabItem = tabName => (
     <TouchableOpacity
       style={{
-        paddingVertical: 5,
-        paddingHorizontal: 20,
+        paddingVertical: '3%',
+        paddingHorizontal: '8%',
         borderRadius: 30,
         backgroundColor: selectedTab === tabName ? '#444' : 'transparent',
         margin: 5,

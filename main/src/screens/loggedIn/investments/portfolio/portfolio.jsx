@@ -473,62 +473,67 @@ const Portfolio = ({navigation}) => {
                     marginTop: 22,
                     width: '100%',
                   }}>
-                  <View
-                    style={{
-                      backgroundColor: '#010101',
-                      padding: 35,
-                      alignItems: 'center',
-                      shadowColor: '#000',
-                      shadowOffset: {
-                        width: 0,
-                        height: 2,
-                      },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 4,
-                      elevation: 5,
-                    }}>
-                    <Text
-                      style={{
-                        marginBottom: 15,
-                        textAlign: 'center',
-                        fontFamily: 'Unbounded-Medium',
-                        fontSize: 20,
-                        color: '#fff',
-                      }}>
-                      CASH BALANCE
-                    </Text>
-                    <Text
-                      style={{
-                        marginBottom: 15,
-                        textAlign: 'center',
-                        color: '#666',
-                        fontSize: 16,
-                      }}>
-                      Your Cash Balance is the USDC you hold on the Polygon POS
-                      chain and is the base currency to settle all transactions
-                      on Xade.
-                    </Text>
-                    <Pressable
-                      onPress={() => setModal2Visible(!modal2Visible)}
-                      style={{
-                        borderRadius: 30,
-                        paddingHorizontal: '40%',
-                        paddingVertical: '6%',
-                        elevation: 2,
-                        marginTop: 10,
-                        backgroundColor: '#fff',
-                      }}>
-                      <Text
-                        style={{
-                          color: 'black',
-                          fontWeight: 'bold',
-                          textAlign: 'center',
-                          fontSize: 14,
-                        }}>
-                        Close
-                      </Text>
-                    </Pressable>
-                  </View>
+        <View
+      style={{
+        backgroundColor: '#010101',
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        width: '100%',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+      }}>
+      {/* Image component added here */}
+      <Image
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712474035/hnjacvonwztzamqzibpt.png' }}
+        style={{ width: 200, height: 200,alignSelf:'center'}} // Adjust size as needed
+        resizeMode="contain" // Adjust resizeMode as needed
+      />
+      <Text
+        style={{
+          marginBottom: 15,
+          textAlign: 'center',
+          fontFamily: 'Unbounded-Medium',
+          fontSize: 20,
+          color: '#fff',
+        }}>
+        CASH BALANCE
+      </Text>
+      <Text
+        style={{
+          marginBottom: 15,
+          textAlign: 'center',
+          color: '#666',
+          fontSize: 16,
+        }}>
+        Your Cash Balance is the USDC you hold on the Polygon POS chain and is the base currency to settle all transactions on Xade.
+      </Text>
+      <Pressable
+        onPress={() => setModal2Visible(!modal2Visible)}
+        style={{
+          borderRadius: 30,
+          paddingHorizontal: '40%',
+          paddingVertical: '6%',
+          elevation: 2,
+          marginTop: 10,
+          backgroundColor: '#fff',
+        }}>
+        <Text
+          style={{
+            color: 'black',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            fontSize: 14,
+          }}>
+          Close
+        </Text>
+      </Pressable>
+    </View>
                 </View>
               </Modal>
             </View>
@@ -545,22 +550,7 @@ const Portfolio = ({navigation}) => {
                   alignItems: 'center',
                   marginTop: 22,
                 }}>
-                <View
-                  style={{
-                    margin: 20,
-                    backgroundColor: '#000',
-                    borderRadius: 20,
-                    padding: 35,
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                    elevation: 5,
-                  }}></View>
+  
               </View>
             </Modal>
           </View>
