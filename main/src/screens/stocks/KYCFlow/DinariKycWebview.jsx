@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {checkKYCAvailableOrNotForDinari} from '../../../utils/DinariApi';
+import {checkKYCAvailableOrNotForDinari} from '../../../utils/Dinari/DinariApi';
 // Import Icon component
 const DinariKycWebview = ({route, navigation}) => {
   const webViewRef = useRef(null);
@@ -17,7 +17,7 @@ const DinariKycWebview = ({route, navigation}) => {
       try {
         const response = await checkKYCAvailableOrNotForDinari(address);
         console.log(response);
-        if (response === 'PENDING') {
+        if (response != 'PENDING') {
           clearInterval(interval);
           navigation.navigate('MarketInfo');
         }

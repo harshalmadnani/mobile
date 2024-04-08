@@ -10,7 +10,7 @@ import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
 import {
   getAllDinariStocks,
   getAllDinariStocksPriceChange,
-} from '../../utils/DinariApi';
+} from '../../utils/Dinari/DinariApi';
 import {
   getBestCrossSwapRateBuy,
   getDLNTradeCreateBuyOrder,

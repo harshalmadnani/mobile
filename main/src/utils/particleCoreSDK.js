@@ -1,5 +1,5 @@
 import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {Polygon, BNBChain} from '@particle-network/chains';
+import {Polygon, BNBChain, ArbitrumOne} from '@particle-network/chains';
 import * as particleAuth from '@particle-network/rn-auth';
 import {Env, ParticleInfo} from '@particle-network/rn-auth';
 import * as particleAuthCore from '@particle-network/rn-auth-core';
@@ -48,13 +48,14 @@ const chainInfoOnId = chainId => {
       return Polygon;
     case 56:
       return BNBChain;
+    case 42161:
+      return ArbitrumOne;
   }
 };
 
 export const switchAuthCoreChain = async chainId => {
   const chainInfo = chainInfoOnId(chainId);
   const result = await particleAuthCore.switchChain(chainInfo);
-  console.log(result);
   return result;
 };
 export const getAuthCoreProvider = loginType => {
@@ -66,6 +67,17 @@ export const getAuthCoreProvider = loginType => {
   // @ts-ignore
   const web3 = new Web3(provider);
   return web3;
+};
+export const getAuthCoreProviderEthers = loginType => {
+  const provider = new particleAuthCore.ParticleAuthCoreProvider({
+    projectId,
+    clientKey,
+    loginType,
+  });
+  // @ts-ignore
+  const ether = new ethers.BrowserProvider(provider);
+  console.log('start....', ether);
+  return ether;
 };
 export const connectWithAuthCore = async navigation => {
   const supportAuthType = [SupportAuthType.Email];
@@ -193,6 +205,9 @@ export async function getSignedMessage(message) {
   } catch (error) {
     console.log('approve tx', error?.response?.data);
   }
+}
+export async function getSignerObjectParticleAuthCore() {
+  return particleAuthCore.evm;
 }
 export const signAndSendBatchTransactionWithGasless = async (
   eoaAddress,

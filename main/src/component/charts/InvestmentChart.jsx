@@ -14,7 +14,7 @@ import {getHistoricalData} from '../../utils/cryptoMarketsApi';
 import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {getStockMapDataPointsFromDinari} from '../../utils/DinariApi';
+import {getStockMapDataPointsFromDinari} from '../../utils/Dinari/DinariApi';
 export default InteractiveChart;
 
 function CustomPriceText() {

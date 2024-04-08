@@ -23,7 +23,6 @@ import {
 import {useFocusEffect} from '@react-navigation/native';
 import {marketsAction} from '../../../store/reducers/market';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {getAllDinariStocks} from '../../../utils/DinariApi';
 
 const options = {
   enableVibrateFallback: true,

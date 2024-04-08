@@ -16,7 +16,7 @@ import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {
   checkKYCAvailableOrNotForDinari,
   requestKYCWalletSignatureForDinari,
-} from '../../../utils/DinariApi';
+} from '../../../utils/Dinari/DinariApi';
 
 const options = {
   enableVibrateFallback: true,
@@ -78,10 +78,10 @@ const MarketInfo = ({route, navigation, item}) => {
             const status = await checkKYCAvailableOrNotForDinari(
               evmInfo?.address,
             );
-            if (status !== 'PENDING' && status) {
+            if (status === 'PENDING' && status) {
               navigation.navigate('TradePage', {
                 state: item,
-                asset: currentAsset,
+                // asset: currentAsset,
               });
             } else {
               const url = await requestKYCWalletSignatureForDinari(

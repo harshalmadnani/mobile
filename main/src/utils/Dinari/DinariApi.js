@@ -3,7 +3,12 @@ import // getSmartAccountAddress,
 // getUserAddressFromAuthCoreSDK,
 '../particleCoreSDK';
 import {getSignedMessage} from '../particleCoreSDK';
-
+import {
+  orderProcessorARBContractAddress,
+  orderProcessorAbi,
+} from './utilsDinari';
+import tokenAbi from '../../screens/loggedIn/payments/USDC.json';
+import {ethers} from 'ethers';
 const dinariBaseURL = 'https://api-enterprise.sbt.dinari.com';
 const dinariRoutes = {
   getStockTokens: '/api/v1/tokens/',
@@ -158,7 +163,9 @@ export const requestKYCWalletURLForDinari = async (
 export const getMarketOrderFeesEstimationFromDinari = async (
   assetTokenAddress,
   paymentTokenAddress,
-  paymentmount,
+  signer,
+  paymentAmount,
+  isSell,
 ) => {
   // ------------------ Setup ------------------
 
@@ -200,8 +207,8 @@ export const getMarketOrderFeesEstimationFromDinari = async (
   //   const provider = ethers.getDefaultProvider(RPC_URL);
   //   const signer = new ethers.Wallet(privateKey, provider);
   // const chainId = Number((await provider.getNetwork()).chainId); //42161
-  const orderProcessorAddress = '0x4c3bD1Ac4F62F25388c02caf8e3e0D32d09Ff8B3'; //For ARB
-  console.log(`Order Processor Address: ${orderProcessorAddress}`);
+  // const orderProcessorAddress = '0x4c3bD1Ac4F62F25388c02caf8e3e0D32d09Ff8B3'; //For ARB
+  console.log(`Order Processor Address: ${orderProcessorARBContractAddress}`);
 
   // connect signer to payment token contract
   const paymentToken = new ethers.Contract(
@@ -215,7 +222,7 @@ export const getMarketOrderFeesEstimationFromDinari = async (
 
   // connect signer to buy processor contract
   const orderProcessor = new ethers.Contract(
-    orderProcessorAddress,
+    orderProcessorARBContractAddress,
     orderProcessorAbi,
     signer,
   );
@@ -223,9 +230,10 @@ export const getMarketOrderFeesEstimationFromDinari = async (
   // ------------------ Configure Order ------------------
 
   // order amount (1000 USDC)
-  const orderAmount = BigInt(1000_000_000);
+  // const orderAmount = BigInt(100_000_000);
+  console.log('Done.....', signer.address);
   // buy order (Change to true for Sell Order)
-  const sellOrder = false;
+  const sellOrder = isSell;
   // market order
   const orderType = Number(0);
 
@@ -235,218 +243,226 @@ export const getMarketOrderFeesEstimationFromDinari = async (
     const maxDecimals = await orderProcessor.maxOrderDecimals(
       assetTokenAddress,
     );
+    console.log('maxDecimals.....', maxDecimals);
     const assetTokenDecimals = await assetToken.decimals();
+    console.log('assetTokenDecimals.....', assetTokenDecimals);
     const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
-    if (Number(orderAmount) % allowablePrecision != 0) {
+    if (Number(paymentAmount) % allowablePrecision != 0) {
       throw new Error(
         `Order amount precision exceeds max decimals of ${maxDecimals}`,
       );
     }
   }
-
+  console.log(
+    'fees.....',
+    signer.address,
+    false,
+    paymentTokenAddress,
+    paymentAmount,
+  );
   // get fees, fees will be added to buy order deposit or taken from sell order proceeds
   const fees = await orderProcessor.estimateTotalFeesForOrder(
     signer.address,
     false,
     paymentTokenAddress,
-    orderAmount,
+    paymentAmount,
   );
-  const totalSpendAmount = orderAmount + fees;
-  console.log(`fees: ${ethers.formatUnits(fees, 6)}`);
+  console.log('fees.....', parseInt(fees?.toString()));
+  return parseInt(fees?.toString());
 
   // ------------------ Approve Spend ------------------
 
   // approve buy processor to spend payment token
-  const approveTx = await paymentToken.approve(
-    orderProcessorAddress,
-    totalSpendAmount,
-  );
-  await approveTx.wait();
-  console.log(`approve tx hash: ${approveTx.hash}`);
+  // const approveTx = await paymentToken.approve(
+  //   orderProcessorAddress,
+  //   totalSpendAmount,
+  // );
+  // await approveTx.wait();
+  // console.log(`approve tx hash: ${approveTx.hash}`);
 
-  // ------------------ Submit Order ------------------
+  // // ------------------ Submit Order ------------------
 
-  // submit request order transaction
-  // see IOrderProcessor.Order struct for order parameters
-  const tx = await orderProcessor.requestOrder([
-    signer.address,
-    assetTokenAddress,
-    paymentTokenAddress,
-    sellOrder,
-    orderType,
-    0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-    orderAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
-    0, // Unused limit price
-    1, // GTC
-    ethers.ZeroAddress, // split recipient
-    0, // split amount
-  ]);
-  const receipt = await tx.wait();
-  console.log(`tx hash: ${tx.hash}`);
+  // // submit request order transaction
+  // // see IOrderProcessor.Order struct for order parameters
+  // const tx = await orderProcessor.requestOrder([
+  //   signer.address,
+  //   assetTokenAddress,
+  //   paymentTokenAddress,
+  //   sellOrder,
+  //   orderType,
+  //   0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+  //   orderAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+  //   0, // Unused limit price
+  //   1, // GTC
+  //   ethers.ZeroAddress, // split recipient
+  //   0, // split amount
+  // ]);
+  // const receipt = await tx.wait();
+  // console.log(`tx hash: ${tx.hash}`);
 
-  // get order id from event
-  const events = receipt.logs.map((log: any) =>
-    orderProcessor.interface.parseLog(log),
-  );
-  if (!events) throw new Error('no events');
-  const orderEvent = events.find(
-    (event: any) => event && event.name === 'OrderRequested',
-  );
-  if (!orderEvent) throw new Error('no order event');
-  const orderId = orderEvent.args[0];
-  const orderAccount = orderEvent.args[1];
-  console.log(`Order ID: ${orderId}`);
-  console.log(`Order Account: ${orderAccount}`);
+  // // get order id from event
+  // const events = receipt.logs.map((log: any) =>
+  //   orderProcessor.interface.parseLog(log),
+  // );
+  // if (!events) throw new Error('no events');
+  // const orderEvent = events.find(
+  //   (event: any) => event && event.name === 'OrderRequested',
+  // );
+  // if (!orderEvent) throw new Error('no order event');
+  // const orderId = orderEvent.args[0];
+  // const orderAccount = orderEvent.args[1];
+  // console.log(`Order ID: ${orderId}`);
+  // console.log(`Order Account: ${orderAccount}`);
 
-  // use order id to get order status (ACTIVE, FULFILLED, CANCELLED)
-  const orderStatus = await orderProcessor.getOrderStatus(orderId);
-  console.log(`Order Status: ${orderStatus}`);
+  // // use order id to get order status (ACTIVE, FULFILLED, CANCELLED)
+  // const orderStatus = await orderProcessor.getOrderStatus(orderId);
+  // console.log(`Order Status: ${orderStatus}`);
 };
-export const placeMarketOrderToDinari = async (
-  stockId,
-  paymentmount,
-  assetTokenAddress,
-  paymentTokenAddress,
-) => {
-  // ------------------ Setup ------------------
+// export const placeMarketOrderToDinari = async (
+//   stockId,
+//   paymentmount,
+//   assetTokenAddress,
+//   paymentTokenAddress,
+// ) => {
+//   // ------------------ Setup ------------------
 
-  // permit EIP712 signature data type
-  const permitTypes = {
-    Permit: [
-      {
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        name: 'spender',
-        type: 'address',
-      },
-      {
-        name: 'value',
-        type: 'uint256',
-      },
-      {
-        name: 'nonce',
-        type: 'uint256',
-      },
-      {
-        name: 'deadline',
-        type: 'uint256',
-      },
-    ],
-  };
+//   // permit EIP712 signature data type
+//   const permitTypes = {
+//     Permit: [
+//       {
+//         name: 'owner',
+//         type: 'address',
+//       },
+//       {
+//         name: 'spender',
+//         type: 'address',
+//       },
+//       {
+//         name: 'value',
+//         type: 'uint256',
+//       },
+//       {
+//         name: 'nonce',
+//         type: 'uint256',
+//       },
+//       {
+//         name: 'deadline',
+//         type: 'uint256',
+//       },
+//     ],
+//   };
 
-  // setup values
-  //   const privateKey = process.env.PRIVATE_KEY;
-  //   if (!privateKey) throw new Error('empty key');
-  //   const RPC_URL = process.env.RPC_URL;
-  //   if (!RPC_URL) throw new Error('empty rpc url');
-  const assetTokenAddress = '0xed12e3394e78C2B0074aa4479b556043cC84503C'; // SPY
-  const paymentTokenAddress = '0x709CE4CB4b6c2A03a4f938bA8D198910E44c11ff';
+//   // setup values
+//   //   const privateKey = process.env.PRIVATE_KEY;
+//   //   if (!privateKey) throw new Error('empty key');
+//   //   const RPC_URL = process.env.RPC_URL;
+//   //   if (!RPC_URL) throw new Error('empty rpc url');
+//   const assetTokenAddress = '0xed12e3394e78C2B0074aa4479b556043cC84503C'; // SPY
+//   const paymentTokenAddress = '0x709CE4CB4b6c2A03a4f938bA8D198910E44c11ff';
 
-  // setup provider and signer
-  //   const provider = ethers.getDefaultProvider(RPC_URL);
-  //   const signer = new ethers.Wallet(privateKey, provider);
-  const chainId = Number((await provider.getNetwork()).chainId); //42161
-  const orderProcessorAddress = '0x4c3bD1Ac4F62F25388c02caf8e3e0D32d09Ff8B3';
-  console.log(`Order Processor Address: ${orderProcessorAddress}`);
+//   // setup provider and signer
+//   //   const provider = ethers.getDefaultProvider(RPC_URL);
+//   //   const signer = new ethers.Wallet(privateKey, provider);
+//   const chainId = Number((await provider.getNetwork()).chainId); //42161
+//   const orderProcessorAddress = '0x4c3bD1Ac4F62F25388c02caf8e3e0D32d09Ff8B3';
+//   console.log(`Order Processor Address: ${orderProcessorAddress}`);
 
-  // connect signer to payment token contract
-  const paymentToken = new ethers.Contract(
-    paymentTokenAddress,
-    tokenAbi,
-    signer,
-  );
+//   // connect signer to payment token contract
+//   const paymentToken = new ethers.Contract(
+//     paymentTokenAddress,
+//     tokenAbi,
+//     signer,
+//   );
 
-  // connect signer to asset token contract
-  const assetToken = new ethers.Contract(assetTokenAddress, tokenAbi, signer);
+//   // connect signer to asset token contract
+//   const assetToken = new ethers.Contract(assetTokenAddress, tokenAbi, signer);
 
-  // connect signer to buy processor contract
-  const orderProcessor = new ethers.Contract(
-    orderProcessorAddress,
-    orderProcessorAbi,
-    signer,
-  );
+//   // connect signer to buy processor contract
+//   const orderProcessor = new ethers.Contract(
+//     orderProcessorAddress,
+//     orderProcessorAbi,
+//     signer,
+//   );
 
-  // ------------------ Configure Order ------------------
+//   // ------------------ Configure Order ------------------
 
-  // order amount (1000 USDC)
-  const orderAmount = BigInt(1000_000_000);
-  // buy order (Change to true for Sell Order)
-  const sellOrder = false;
-  // market order
-  const orderType = Number(0);
+//   // order amount (1000 USDC)
+//   const orderAmount = BigInt(1000_000_000);
+//   // buy order (Change to true for Sell Order)
+//   const sellOrder = false;
+//   // market order
+//   const orderType = Number(0);
 
-  // check the order precision doesn't exceed max decimals
-  // applicable to sell and limit orders only
-  if (sellOrder || orderType === 1) {
-    const maxDecimals = await orderProcessor.maxOrderDecimals(
-      assetTokenAddress,
-    );
-    const assetTokenDecimals = await assetToken.decimals();
-    const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
-    if (Number(orderAmount) % allowablePrecision != 0) {
-      throw new Error(
-        `Order amount precision exceeds max decimals of ${maxDecimals}`,
-      );
-    }
-  }
+//   // check the order precision doesn't exceed max decimals
+//   // applicable to sell and limit orders only
+//   if (sellOrder || orderType === 1) {
+//     const maxDecimals = await orderProcessor.maxOrderDecimals(
+//       assetTokenAddress,
+//     );
+//     const assetTokenDecimals = await assetToken.decimals();
+//     const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
+//     if (Number(orderAmount) % allowablePrecision != 0) {
+//       throw new Error(
+//         `Order amount precision exceeds max decimals of ${maxDecimals}`,
+//       );
+//     }
+//   }
 
-  // get fees, fees will be added to buy order deposit or taken from sell order proceeds
-  const fees = await orderProcessor.estimateTotalFeesForOrder(
-    signer.address,
-    false,
-    paymentTokenAddress,
-    orderAmount,
-  );
-  const totalSpendAmount = orderAmount + fees;
-  console.log(`fees: ${ethers.formatUnits(fees, 6)}`);
+//   // get fees, fees will be added to buy order deposit or taken from sell order proceeds
+//   const fees = await orderProcessor.estimateTotalFeesForOrder(
+//     signer.address,
+//     false,
+//     paymentTokenAddress,
+//     orderAmount,
+//   );
+//   const totalSpendAmount = orderAmount + fees;
+//   console.log(`fees: ${ethers.formatUnits(fees, 6)}`);
 
-  // ------------------ Approve Spend ------------------
+//   // ------------------ Approve Spend ------------------
 
-  // approve buy processor to spend payment token
-  const approveTx = await paymentToken.approve(
-    orderProcessorAddress,
-    totalSpendAmount,
-  );
-  await approveTx.wait();
-  console.log(`approve tx hash: ${approveTx.hash}`);
+//   // approve buy processor to spend payment token
+//   const approveTx = await paymentToken.approve(
+//     orderProcessorAddress,
+//     totalSpendAmount,
+//   );
+//   await approveTx.wait();
+//   console.log(`approve tx hash: ${approveTx.hash}`);
 
-  // ------------------ Submit Order ------------------
+//   // ------------------ Submit Order ------------------
 
-  // submit request order transaction
-  // see IOrderProcessor.Order struct for order parameters
-  const tx = await orderProcessor.requestOrder([
-    signer.address,
-    assetTokenAddress,
-    paymentTokenAddress,
-    sellOrder,
-    orderType,
-    0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-    orderAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
-    0, // Unused limit price
-    1, // GTC
-    ethers.ZeroAddress, // split recipient
-    0, // split amount
-  ]);
-  const receipt = await tx.wait();
-  console.log(`tx hash: ${tx.hash}`);
+//   // submit request order transaction
+//   // see IOrderProcessor.Order struct for order parameters
+//   const tx = await orderProcessor.requestOrder([
+//     signer.address,
+//     assetTokenAddress,
+//     paymentTokenAddress,
+//     sellOrder,
+//     orderType,
+//     0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+//     orderAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+//     0, // Unused limit price
+//     1, // GTC
+//     ethers.ZeroAddress, // split recipient
+//     0, // split amount
+//   ]);
+//   const receipt = await tx.wait();
+//   console.log(`tx hash: ${tx.hash}`);
 
-  // get order id from event
-  const events = receipt.logs.map((log: any) =>
-    orderProcessor.interface.parseLog(log),
-  );
-  if (!events) throw new Error('no events');
-  const orderEvent = events.find(
-    (event: any) => event && event.name === 'OrderRequested',
-  );
-  if (!orderEvent) throw new Error('no order event');
-  const orderId = orderEvent.args[0];
-  const orderAccount = orderEvent.args[1];
-  console.log(`Order ID: ${orderId}`);
-  console.log(`Order Account: ${orderAccount}`);
+//   // get order id from event
+//   const events = receipt.logs.map((log: any) =>
+//     orderProcessor.interface.parseLog(log),
+//   );
+//   if (!events) throw new Error('no events');
+//   const orderEvent = events.find(
+//     (event: any) => event && event.name === 'OrderRequested',
+//   );
+//   if (!orderEvent) throw new Error('no order event');
+//   const orderId = orderEvent.args[0];
+//   const orderAccount = orderEvent.args[1];
+//   console.log(`Order ID: ${orderId}`);
+//   console.log(`Order Account: ${orderAccount}`);
 
-  // use order id to get order status (ACTIVE, FULFILLED, CANCELLED)
-  const orderStatus = await orderProcessor.getOrderStatus(orderId);
-  console.log(`Order Status: ${orderStatus}`);
-};
+//   // use order id to get order status (ACTIVE, FULFILLED, CANCELLED)
+//   const orderStatus = await orderProcessor.getOrderStatus(orderId);
+//   console.log(`Order Status: ${orderStatus}`);
+// };
