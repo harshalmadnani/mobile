@@ -17,6 +17,7 @@ const initialState = {
     'Avalanche C-Chain',
     'Arbitrum',
   ],
+  isStockTrade: false,
 };
 
 export const marketSlice = createSlice({
@@ -49,6 +50,9 @@ export const marketSlice = createSlice({
     setTokenUsdcBalance: (state, action) => {
       console.log('best rates.....swapping', action.payload);
       state.tokenBalanceUSD = action.payload;
+    },
+    setStockTradeMode: (state, action) => {
+      state.isStockTrade = action.payload;
     },
   },
 });

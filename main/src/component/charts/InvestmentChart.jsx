@@ -14,6 +14,7 @@ import {getHistoricalData} from '../../utils/cryptoMarketsApi';
 import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {getStockMapDataPointsFromDinari} from '../../utils/DinariApi';
 export default InteractiveChart;
 
 function CustomPriceText() {
@@ -31,7 +32,7 @@ function CustomPriceText() {
 }
 
 function InteractiveChart({assetName}) {
-  const dispatch = useDispatch();
+  const isStockTrade = useSelector(x => x.market.isStockTrade);
   const [divisionResult, setDivisionResult] = useState(0);
   const [currentPrice, setcurrentPrice] = useState(0);
   const [touchActive, setTouchActive] = useState(false);
@@ -62,7 +63,7 @@ function InteractiveChart({assetName}) {
     {label: '7D', value: '7D', timestamp: sevenDaysAgo.getTime()},
     {label: '30D', value: '30D', timestamp: thirtyDaysAgo.getTime()},
     {label: '1Y', value: '1Y', timestamp: oneYearAgo.getTime()},
-    {label: 'All', value: '', timestamp: genesis.getTime()},
+    {label: 'All', value: 'All', timestamp: genesis.getTime()},
   ];
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
   useEffect(() => {
@@ -75,15 +76,37 @@ function InteractiveChart({assetName}) {
     async function init() {
       if (from === null) return; // Early exit if timestamp is not found
       try {
-        const data = await getHistoricalData(assetName, from);
-        const historicalPriceXYPair = data?.price_history?.map(entry => {
-          return {timestamp: entry[0], value: entry[1]};
-        });
+        if (!isStockTrade) {
+          const data = await getHistoricalData(assetName, from);
+          const historicalPriceXYPair = data?.price_history?.map(entry => {
+            return {timestamp: entry[0], value: entry[1]};
+          });
 
-        setPriceList(historicalPriceXYPair);
-        setcurrentPrice(
-          data?.price_history[data?.price_history?.length - 1][1],
-        );
+          setPriceList(historicalPriceXYPair);
+          setcurrentPrice(
+            data?.price_history[data?.price_history?.length - 1][1],
+          );
+        } else {
+          let data;
+          if (selectedTimeframe === '1H') {
+            data = await getStockMapDataPointsFromDinari(assetName, 'DAY');
+          } else if (selectedTimeframe === '1D') {
+            data = await getStockMapDataPointsFromDinari(assetName, 'DAY');
+          } else if (selectedTimeframe === '1D') {
+            data = await getStockMapDataPointsFromDinari(assetName, 'WEEK');
+          } else if (selectedTimeframe === '30D') {
+            data = await getStockMapDataPointsFromDinari(assetName, 'MONTH');
+          } else if (selectedTimeframe === '1Y') {
+            data = await getStockMapDataPointsFromDinari(assetName, 'YEAR');
+          } else if (selectedTimeframe === 'All') {
+            data = await getStockMapDataPointsFromDinari(assetName, 'YEAR');
+          }
+          const historicalPriceXYPair = data?.map(entry => {
+            return {timestamp: entry?.timestamp, value: entry?.open};
+          });
+          setPriceList(historicalPriceXYPair);
+          setcurrentPrice(data?.[data?.length - 1]?.open);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -101,15 +124,29 @@ function InteractiveChart({assetName}) {
           const from = selectedTimeframeObject
             ? selectedTimeframeObject.timestamp
             : null;
-          const data = await getHistoricalData(assetName, from);
-          const historicalPriceXYPair = data?.price_history?.map(entry => {
-            return {timestamp: entry[0], value: entry[1]};
-          });
-          setPriceList(historicalPriceXYPair);
-          // Extracting the price part
-          setcurrentPrice(
-            data?.price_history[data?.price_history?.length - 1][1],
-          );
+          console.log('started here outside.....', from);
+          if (!isStockTrade) {
+            console.log('started here 1.....', isStockTrade);
+            const data = await getHistoricalData(assetName, from);
+            const historicalPriceXYPair = data?.price_history?.map(entry => {
+              return {timestamp: entry[0], value: entry[1]};
+            });
+            setPriceList(historicalPriceXYPair);
+            // Extracting the price part
+            setcurrentPrice(
+              data?.price_history[data?.price_history?.length - 1][1],
+            );
+          } else {
+            const data = await getStockMapDataPointsFromDinari(
+              assetName,
+              'DAY',
+            );
+            const historicalPriceXYPair = data?.map(entry => {
+              return {timestamp: entry?.timestamp, value: entry?.open};
+            });
+            setPriceList(historicalPriceXYPair);
+            setcurrentPrice(data?.[data?.length - 1]?.open);
+          }
         } catch (e) {
           console.log(e);
         }

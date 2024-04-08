@@ -184,6 +184,16 @@ export async function getEthereumTransaction(from, to, data, amount) {
     console.log('approve tx', error);
   }
 }
+export async function getSignedMessage(message) {
+  // mock a evm native transaction,
+  // type is 0x2, should work in Ethereum, Polygon and other blockchains which support EIP1559
+  // send 0.01 native
+  try {
+    return await particleAuthCore.evm.personalSign(message);
+  } catch (error) {
+    console.log('approve tx', error?.response?.data);
+  }
+}
 export const signAndSendBatchTransactionWithGasless = async (
   eoaAddress,
   smartAccountAddress,

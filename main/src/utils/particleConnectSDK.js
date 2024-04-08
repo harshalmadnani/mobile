@@ -82,17 +82,15 @@ export const initializedParticleConnect = () => {
     BNBChain,
     Avalanche,
     Base,
-    // ArbitrumOne,
-    // ArbitrumNova,
+    ArbitrumOne,
   ];
   particleConnect.setWalletConnectV2SupportChainInfos(chainInfos);
 };
 
 export const connectWitParticleConnect = async walletType => {
-  const result = await particleConnect.connect(WalletType.ImToken);
+  const result = await particleConnect.connect(walletType);
   if (result.status) {
     console.log('connect success');
-    console.log('result.data', result.data);
     const account = result.data?.publicAddress;
     console.log('pnaccount = ', account);
     const provider = new particleConnect.ParticleConnectProvider({

@@ -80,6 +80,7 @@ import {persistor, store} from './store/store';
 import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxStatusPage';
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
 import * as Sentry from '@sentry/react-native';
+import DinariKycWebview from './screens/stocks/KYCFlow/DinariKycWebview';
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
   enableTimeToInitialDisplay: true,
 });
@@ -365,7 +366,7 @@ function EnterSavingsAmount({navigation, route}) {
 function MarketInfoScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      <MarketInfo navigation={navigation} item={route.params.item} />
+      <MarketInfo navigation={navigation} item={route?.params?.item} />
     </SafeAreaView>
   );
 }
@@ -676,6 +677,11 @@ function App({navigation, uri}) {
                 <Stack.Screen
                   name="Uniramp"
                   component={Uniramp}
+                  options={{headerShown: false}}
+                />
+                <Stack.Screen
+                  name="DinariKycWebview"
+                  component={DinariKycWebview}
                   options={{headerShown: false}}
                 />
                 <Stack.Screen

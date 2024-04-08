@@ -28,9 +28,10 @@ export const getNftsHoldingForAddress = async address => {
 };
 export const getCryptoHoldingForAddress = async (address, asset) => {
   const url = asset
-    ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}`
-    : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}`;
+    ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}&cache=true`
+    : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&cache=true`;
   try {
+    console.log('data from wallet holding api:', url);
     const response = await axios.get(url, {
       headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
     });
@@ -41,7 +42,22 @@ export const getCryptoHoldingForAddress = async (address, asset) => {
     return [];
   }
 };
-
+export const getCryptoHoldingForSwapAddress = async (address, asset) => {
+  const url = asset
+    ? `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&asset=${asset}&pnl=false`
+    : `${mobulaBaseURL}${marketRoutes.getWallets}?wallet=${address}&pnl=false&cache=true`;
+  try {
+    console.log('data from wallet holding api:', url);
+    const response = await axios.get(url, {
+      headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
+    });
+    console.log('data from wallet holding api:', url, response?.data);
+    return response?.data;
+  } catch (error) {
+    console.log('error from wallet holding api:', url, error);
+    return [];
+  }
+};
 export const getWalletHistoricalData = async (smartAccount, from) => {
   try {
     const response = await axios.get(

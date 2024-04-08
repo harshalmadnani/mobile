@@ -13,6 +13,10 @@ import MarketChart from './marketInfo/MarketChart';
 import LinearGradient from 'react-native-linear-gradient';
 import {useSelector} from 'react-redux';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {
+  checkKYCAvailableOrNotForDinari,
+  requestKYCWalletSignatureForDinari,
+} from '../../../utils/DinariApi';
 
 const options = {
   enableVibrateFallback: true,
@@ -22,56 +26,14 @@ const MarketInfo = ({route, navigation, item}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [showSellModal, setShowSellModal] = useState(false);
-  const [showBuyModal, setShowBuyModal] = useState(false);
-
-  const handleCloseBuyModal = () => {
-    setShowBuyModal(false);
-  };
-
-  const handleCloseSellModal = () => {
-    setShowSellModal(false);
-  };
   const holdings = useSelector(x => x.portfolio.holdings);
-  const currentAsset = holdings?.assets?.filter(
-    x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
-  );
-
-  const uri =
-    Platform.OS === 'android'
-      ? `file:///android_asset/index.html?theme=dark&symbol=BINANCE:BTCUSDT&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-      : // ? `file:///android_asset/index.html?theme=dark&symbol=${item.symbol}&hide_top_toolbar=true&hide_legend=true&save_image=false&hide_volume=true`
-        'index.html';
-
-  console.log(uri);
-
-  // useEffect(() => {
-  //   async function init() {
-  //     try {
-  //       setIsLoading(true);
-
-  //       if (global.withAuth) {
-  //         authAddress = global.loginAccount?.publicAddress;
-  //         const scwAddress = global.loginAccount.scw;
-  //         setAddress(scwAddress);
-  //       } else {
-  //         authAddress = global.connectAccount?.publicAddress;
-  //         const scwAddress = global.connectAccount?.publicAddress;
-  //         setAddress(scwAddress);
-  //       }
-
-  //       // fetch selected coin contract address
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //     setIsLoading(false);
-  //   }
-
-  //   init();
-  // }, []);
-
+  let currentAsset;
+  const isStockTrade = useSelector(x => x.market.isStockTrade);
+  if (!isStockTrade) {
+    currentAsset = holdings?.assets?.filter(
+      x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
+    );
+  }
   return (
     <SafeAreaView
       style={{
@@ -87,14 +49,6 @@ const MarketInfo = ({route, navigation, item}) => {
         <View>
           <MarketChart item={item} scwAddress={evmInfo?.smartAccount} />
         </View>
-
-        {/* <View margin={4} /> */}
-
-        {/* {showBuyModal && (
-          <BuyModal marketData={{}} onClose={handleCloseBuyModal} />
-        )} */}
-
-        {/* {showSellModal && <SellModal onClose={handleCloseSellModal} />} */}
       </ScrollView>
 
       <TouchableOpacity
@@ -111,14 +65,37 @@ const MarketInfo = ({route, navigation, item}) => {
           left: 0,
           right: 0,
         }}
-        onPress={() => {
+        onPress={async () => {
           if (Platform.OS === 'ios') {
             ReactNativeHapticFeedback.trigger('impactMedium', options);
           }
-          navigation.navigate('TradePage', {
-            state: item,
-            asset: currentAsset,
-          });
+          if (!isStockTrade) {
+            navigation.navigate('TradePage', {
+              state: item,
+              asset: currentAsset,
+            });
+          } else {
+            const status = await checkKYCAvailableOrNotForDinari(
+              evmInfo?.address,
+            );
+            if (status !== 'PENDING' && status) {
+              navigation.navigate('TradePage', {
+                state: item,
+                asset: currentAsset,
+              });
+            } else {
+              const url = await requestKYCWalletSignatureForDinari(
+                evmInfo?.address,
+              );
+              if (url) {
+                console.log('redirecting url kyc message......', url);
+                navigation.navigate('DinariKycWebview', {
+                  url,
+                  address: evmInfo?.address,
+                });
+              }
+            }
+          }
         }}>
         <LinearGradient
           useAngle={true}
@@ -137,7 +114,8 @@ const MarketInfo = ({route, navigation, item}) => {
               fontSize: 14,
               fontFamily: 'Unbounded-ExtraBold',
             }}>
-            TRADE {item.symbol.toUpperCase()}
+            TRADE{' '}
+            {item?.stock?.symbol.toUpperCase() ?? item?.symbol?.toUpperCase()}
           </Text>
         </LinearGradient>
       </TouchableOpacity>

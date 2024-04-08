@@ -18,7 +18,7 @@ import {
   getEvmAddresses,
 } from '../../../../store/actions/portfolio';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-
+import {w3cwebsocket as W3CWebSocket} from 'websocket';
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -26,6 +26,7 @@ const options = {
 import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // Assuming this is the path to your component
 
 import {Icon} from '@rneui/base';
+import {portfolioAction} from '../../../../store/reducers/portfolio';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
 
@@ -44,16 +45,50 @@ const Portfolio = ({navigation}) => {
   imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
+  // useEffect(() => {
+  //   if (evmInfo?.smartAccount) {
+  //     dispatch(
+  //       getCryptoHoldingForAddressFromMobula(evmInfo?.smartAccount, null),
+  //     );
+  //   } else {
+  //     dispatch(getEvmAddresses());
+  //   }
+  // }, [evmInfo]);
   useEffect(() => {
+    const ws = new W3CWebSocket(
+      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
+    );
     if (evmInfo?.smartAccount) {
-      dispatch(
-        getCryptoHoldingForAddressFromMobula(evmInfo?.smartAccount, null),
-      );
-    } else {
-      dispatch(getEvmAddresses());
-    }
-  }, [evmInfo]);
+      ws.onopen = () => {
+        const payload = {
+          type: 'wallet',
+          authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
+          payload: {
+            wallet: evmInfo?.smartAccount,
+            interval: 15,
+          },
+        };
 
+        ws.send(JSON.stringify(payload));
+      };
+
+      ws.onmessage = event => {
+        // console.log('portfolio.....', event.data?.assets);
+        dispatch(portfolioAction.setHoldings(JSON.parse(event?.data)));
+      };
+
+      ws.onerror = event => {
+        console.log('WebSocket error:', event);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket connection closed');
+      };
+    }
+    return () => {
+      ws.close();
+    };
+  }, [evmInfo]);
   const extractUSDCBalanceOnPolygon = holdings => {
     if (!holdings || !holdings?.assets) {
       return '0'; // Return a default value indicating that the balance couldn't be extracted
