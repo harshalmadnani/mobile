@@ -64,12 +64,10 @@ const Portfolio = ({navigation}) => {
             interval: 15,
           },
         };
-        console.log('portfolio..... sent');
         ws.send(JSON.stringify(payload));
       };
 
       ws.onmessage = event => {
-        console.log('portfolio.....', event.data);
         dispatch(portfolioAction.setHoldings(JSON.parse(event?.data)));
       };
 

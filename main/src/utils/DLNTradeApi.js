@@ -365,7 +365,7 @@ export const confirmDLNTransactionPolToArb = async (
       quoteTxReciept?.estimation?.dstChainTokenOut?.address,
       quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
       quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
-      eoaAddress,
+      smartAccount,
       smartAccount,
       smartAccount,
     );
@@ -376,7 +376,7 @@ export const confirmDLNTransactionPolToArb = async (
       quoteTxReciept?.estimation?.dstChainTokenOut?.address,
       quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
       quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
-      eoaAddress,
+      smartAccount,
       smartAccount,
       smartAccount,
     ]);
@@ -394,7 +394,7 @@ export const confirmDLNTransactionPolToArb = async (
     smartAccount,
     txs,
   );
-  console.log('Signature Signed...........', signature);
+  console.log('Signature Signed...........', eoaAddress, signature);
   if (signature) {
     console.log('Signature Signed confirmed...........', signature);
     return signature;

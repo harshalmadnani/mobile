@@ -433,8 +433,8 @@ export const placeMarketOrderToDinari = async (
     paymentTokenAddress,
     paymentAmount,
   );
-  const totalSpendAmount = parseInt(fees?.toString()) + paymentAmount / 1000000;
-  console.log('final fees.....', totalSpendAmount);
+  const totalSpendAmount = parseInt(fees?.toString()) + parseInt(paymentAmount);
+  console.log('final fees.....', parseInt(fees?.toString()), totalSpendAmount);
   // return parseInt(fees?.toString());
   let txs = [];
   // ------------------ Approve Spend ------------------
@@ -464,7 +464,7 @@ export const placeMarketOrderToDinari = async (
         sellOrder,
         orderType,
         0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-        totalSpendAmount * 1000000, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+        totalSpendAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
         0, // Unused limit price
         1, // GTC
         ethers.ZeroAddress, // split recipient
@@ -487,40 +487,20 @@ export const placeMarketOrderToDinari = async (
     txs,
   );
   console.log('Final ARB TX', signature);
-  return signature;
 
-  // approve buy processor to spend payment token
-  // const approveTx = await paymentToken.approve(
-  //   orderProcessorARBContractAddress,
-  //   totalSpendAmount,
-  // );
-  // await approveTx.wait();
-  // console.log(`approve tx hash: ${approveTx.hash}`);
-
-  // ------------------ Submit Order ------------------
-
-  // submit request order transaction
-  // see IOrderProcessor.Order struct for order parameters
-  // const tx = await orderProcessor.requestOrder([
-  //   signer.address,
-  //   assetTokenAddress,
-  //   paymentTokenAddress,
-  //   sellOrder,
-  //   orderType,
-  //   0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-  //   orderAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
-  //   0, // Unused limit price
-  //   1, // GTC
-  //   ethers.ZeroAddress, // split recipient
-  //   0, // split amount
-  // ]);
-  // const receipt = await tx.wait();
-  // console.log(`tx hash: ${tx.hash}`);
-
-  // get order id from event
-  // const events = receipt.logs.map(log =>
+  // const txReceipt = await signer.getTransactionReceipt(signature);
+  // const events = txReceipt.logs.map(log =>
   //   orderProcessor.interface.parseLog(log),
   // );
+  // const orderEvent = events.find(
+  //   event => event && event.name === 'OrderRequested',
+  // );
+  // if (!orderEvent) throw new Error('no order event');
+  // const orderId = orderEvent.args[0];
+  // const orderAccount = orderEvent.args[1];
+  // console.log(`${orderId} Order ID: ${orderAccount}`);
+  return signature;
+
   // if (!events) throw new Error('no events');
   // const orderEvent = events.find(
   //   event => event && event.name === 'OrderRequested',

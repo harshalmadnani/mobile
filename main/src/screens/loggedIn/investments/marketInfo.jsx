@@ -82,7 +82,9 @@ const MarketInfo = ({route, navigation, item}) => {
             const status = await checkKYCAvailableOrNotForDinari(
               evmInfo?.address,
             );
-            if (status !== 'PENDING' && status) {
+            console.log('kyc status', status);
+            // if (status !== 'PENDING' && status) {
+            if (!status) {
               navigation.navigate('TradePage', {
                 state: item,
                 asset: [],

@@ -60,7 +60,8 @@ const TradePage = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
-  const [value, setValue] = useState('5');
+  const [value, setValue] = useState('2');
+  const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
   const [stockFee, setStockFee] = useState(0);
@@ -125,7 +126,9 @@ const TradePage = ({route}) => {
         getBestPrice();
       }
     } else {
-      getCurrentStockTradingPrice();
+      if (value !== '0' && value) {
+        getCurrentStockTradingPrice();
+      }
     }
   }, [value]);
 
@@ -171,13 +174,14 @@ const TradePage = ({route}) => {
     setLoading(false);
   };
   const getCurrentStockTradingPrice = async () => {
+    setStockOrderStages('Getting Quotes...');
     await switchAuthCoreChain(42161);
     const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
     const signerObj = await ethersProvider.getSigner();
     const res = await getDLNTradeCreateBuyOrder(
       137,
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      value * 1000000,
+      (parseInt(value) + 2) * 1000000,
       42161,
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
       signerObj.address,
@@ -198,6 +202,7 @@ const TradePage = ({route}) => {
           Math.pow(10, res?.estimation?.dstChainTokenOut?.decimals),
     );
     setStockDLNRes(res);
+    setStockOrderStages('Execute Order');
     console.log(
       'Feeessss.......',
       feesDinari,
@@ -207,34 +212,45 @@ const TradePage = ({route}) => {
     );
   };
   const orderStockPrice = async () => {
-    console.log('started....', evmInfo);
+    setStockOrderStages('Trading ARB USDC...');
     const res = await confirmDLNTransactionPolToArb(
       tradeType,
       stockDLNRes,
-      value * 1000000,
+      (parseInt(value) + 2) * 1000000,
       stockDLNRes?.estimation?.srcChainTokenIn?.address,
       null,
       evmInfo?.smartAccount,
       evmInfo?.address,
     );
-    // if (res) {
-    //after polling from Poly
-    setTimeout(async () => {
-      console.log('run........');
-      await switchAuthCoreChain(42161);
-      const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
-      const signerObj = await ethersProvider.getSigner();
-      const feesDinari = await placeMarketOrderToDinari(
-        state?.token?.address,
-        '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-        signerObj,
-        stockDLNRes?.estimation?.dstChainTokenOut?.amount,
-        false,
-        evmInfo?.smartAccount,
-      );
-      // }
-      await switchAuthCoreChain(137);
-    }, 6000);
+    // const res = true;
+    if (res) {
+      //after polling from Poly
+      setTimeout(async () => {
+        console.log('run........');
+        setStockOrderStages('Placing Stock Order...');
+        await switchAuthCoreChain(42161);
+        const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+        const signerObj = await ethersProvider.getSigner();
+        const feesDinari = await placeMarketOrderToDinari(
+          state?.token?.address,
+          '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+          signerObj,
+          value * 1000000,
+          false,
+          evmInfo?.smartAccount,
+        );
+        setStockOrderStages('Stock Order Placed');
+        await switchAuthCoreChain(137);
+        if (feesDinari) {
+          navigation.navigate('PendingTxStatus', {
+            state: stockDLNRes,
+            tradeType,
+            isStockTrade,
+            stockInfo: state,
+          });
+        }
+      }, 6000);
+    }
   };
   // Example of logging state changes
   useFocusEffect(
@@ -985,7 +1001,7 @@ const TradePage = ({route}) => {
               color: '#000',
               textAlign: 'center',
             }}>
-            {getDisplayText()}
+            {isStockTrade ? stockOrderStages : getDisplayText()}
           </Text>
         </TouchableOpacity>
         <Modal
