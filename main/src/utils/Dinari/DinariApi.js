@@ -36,6 +36,23 @@ export const getAllDinariStocks = async chainId => {
     return [];
   }
 };
+export const getAllDinariNewsForSpecificStock = async stockId => {
+  try {
+    const response = await axios.get(
+      `${dinariBaseURL}/api/v1/stocks/${stockId}/news_articles`,
+      {
+        headers: {
+          Authorization: 'Bearer bnod0_h-1dFU_nq5BVZZIXkDmqpXbsrc-8KxT4Gp-w8',
+        },
+      },
+    );
+    console.log('response from dinari get news api:', response?.data);
+    return response?.data;
+  } catch (error) {
+    console.log('error  from asset api:', error);
+    return [];
+  }
+};
 export const getAllDinariStocksPriceChange = async stockIds => {
   const queryString = stockIds.map(id => `stock_ids=${id}`).join('&');
   console.log('stockids queryString.....', queryString);

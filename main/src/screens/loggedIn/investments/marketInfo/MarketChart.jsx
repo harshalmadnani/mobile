@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
 import axios from 'axios';
+import {getAllDinariNewsForSpecificStock} from '../../../../utils/Dinari/DinariApi';
 const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -84,7 +85,6 @@ const MarketChart = props => {
   useFocusEffect(
     useCallback(() => {
       if (!isStockTrade) {
-        console.log('runnnn', isStockTrade);
         dispatch(setAssetMetadata(currentItem?.name));
       }
       return () => {
@@ -124,8 +124,22 @@ const MarketChart = props => {
         setLoading(false);
       }
     };
+    const fetchStockNewsData = async () => {
+      try {
+        const data = await getAllDinariNewsForSpecificStock(
+          currentItem?.stock?.id,
+        );
+        setNewsData(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
     if (!isStockTrade) {
       fetchData();
+    } else {
+      fetchStockNewsData();
     }
   }, []);
 
@@ -194,45 +208,49 @@ const MarketChart = props => {
             />
           </View>
         </View>
-        {/* <View
-          style={{
-            backgroundColor: '#1414141',
-            marginTop: '3%',
-            borderBottomColor: '#333',
-            borderBottomWidth: 1,
-            borderTopColor: '#333',
-            borderTopWidth: 1,
-            paddingVertical: '5%',
-          }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              alignItems: 'center',
-              paddingStart: 20,
-              paddingEnd: 20,
+        {isStockTrade ? null : (
+          <View
+            style={{
+              backgroundColor: '#1414141',
+              marginTop: '3%',
+              borderBottomColor: '#333',
+              borderBottomWidth: 1,
+              borderTopColor: '#333',
+              borderTopWidth: 1,
+              paddingVertical: '5%',
             }}>
-            {data.map((item, index) => (
-              <View key={index} style={{alignItems: 'center', marginRight: 40}}>
-                <Text
-                  style={{
-                    color: 'white',
-                    marginBottom: 5,
-                    fontFamily: 'NeueMontreal-Bold',
-                  }}>
-                  {item?.label}
-                </Text>
-                <Text
-                  style={{color: 'grey', fontFamily: 'NeueMontreal-Medium'}}>
-                  {item?.label === 'Market Cap' || item?.label === 'Volume'
-                    ? '$'
-                    : ''}
-                  {formatNumber(item?.value)}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View> */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                alignItems: 'center',
+                paddingStart: 20,
+                paddingEnd: 20,
+              }}>
+              {data.map((item, index) => (
+                <View
+                  key={index}
+                  style={{alignItems: 'center', marginRight: 40}}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      marginBottom: 5,
+                      fontFamily: 'NeueMontreal-Bold',
+                    }}>
+                    {item?.label}
+                  </Text>
+                  <Text
+                    style={{color: 'grey', fontFamily: 'NeueMontreal-Medium'}}>
+                    {item?.label === 'Market Cap' || item?.label === 'Volume'
+                      ? '$'
+                      : ''}
+                    {formatNumber(item?.value)}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
         <TouchableOpacity
           style={{
             paddingHorizontal: '5%',
@@ -315,7 +333,9 @@ const MarketChart = props => {
                       marginHorizontal: '5%',
                     }}>
                     <TouchableOpacity
-                      onPress={() => Linking.openURL(item?.url)}>
+                      onPress={() =>
+                        Linking.openURL(item?.url ?? item?.article_url)
+                      }>
                       <View
                         style={{
                           flexDirection: 'row',
@@ -328,7 +348,9 @@ const MarketChart = props => {
                             color: 'gray',
                             marginRight: 5,
                           }}>
-                          {new Date(item?.published_at)?.toLocaleTimeString()}
+                          {new Date(
+                            item?.published_at ?? item?.published_utc,
+                          )?.toLocaleTimeString()}
                         </Text>
                         <Text style={{marginHorizontal: 5, color: 'gray'}}>
                           ·
@@ -339,13 +361,15 @@ const MarketChart = props => {
                             color: 'gray',
                             marginRight: 5,
                           }}>
-                          {new Date(item?.published_at).toLocaleDateString()}
+                          {new Date(
+                            item?.published_at ?? item?.published_utc,
+                          ).toLocaleDateString()}
                         </Text>
                         <Text style={{marginHorizontal: 5, color: 'gray'}}>
                           ·
                         </Text>
                         <Text style={{fontSize: 13, color: 'gray'}}>
-                          {item?.source?.title}
+                          {item?.source?.title ?? item?.publisher}
                         </Text>
                       </View>
                       <Text
@@ -355,7 +379,7 @@ const MarketChart = props => {
                           color: '#D1D2D9',
                           textAlign: 'justify',
                         }}>
-                        {item?.title}
+                        {item?.title ?? item?.description}
                       </Text>
                     </TouchableOpacity>
                   </View>
