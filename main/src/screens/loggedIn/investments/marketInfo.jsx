@@ -75,13 +75,17 @@ const MarketInfo = ({route, navigation, item}) => {
               asset: currentAsset,
             });
           } else {
+            // navigation.navigate('TradePage', {
+            //   state: item,
+            //   asset: [],
+            // });
             const status = await checkKYCAvailableOrNotForDinari(
               evmInfo?.address,
             );
-            if (status === 'PENDING' && status) {
+            if (status !== 'PENDING' && status) {
               navigation.navigate('TradePage', {
                 state: item,
-                // asset: currentAsset,
+                asset: [],
               });
             } else {
               const url = await requestKYCWalletSignatureForDinari(

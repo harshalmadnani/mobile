@@ -42,6 +42,7 @@ const options = {
 };
 import {
   confirmDLNTransaction,
+  confirmDLNTransactionPolToArb,
   getDLNTradeCreateBuyOrder,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
@@ -49,29 +50,22 @@ import {
   getAuthCoreProviderEthers,
   switchAuthCoreChain,
 } from '../../../../utils/particleCoreSDK';
-import {getMarketOrderFeesEstimationFromDinari} from '../../../../utils/Dinari/DinariApi';
+import {
+  getMarketOrderFeesEstimationFromDinari,
+  placeMarketOrderToDinari,
+} from '../../../../utils/Dinari/DinariApi';
 import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
-  const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-
-  const openBottomSheet = () => {
-    setBottomSheetVisible(true);
-  };
-
-  const closeBottomSheet = () => {
-    setBottomSheetVisible(false);
-  };
   const [modalVisible, setModalVisible] = useState(false);
-
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
   const [value, setValue] = useState('5');
   const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
   const [stockFee, setStockFee] = useState(0);
+  const [stockDLNRes, setStockDLNRes] = useState(0);
   const [preparingTx, setPreparingTx] = useState(false);
-  const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
   const state = route.params.state;
   const tradeAsset = route.params.asset;
@@ -88,7 +82,6 @@ const TradePage = ({route}) => {
   ];
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
-  console.log('usd value....', holdings, usdcValue);
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const isStockTrade = useSelector(x => x.market.isStockTrade);
   const tokensToSell = isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
@@ -204,6 +197,7 @@ const TradePage = ({route}) => {
         )[0]?.payload?.feeAmount /
           Math.pow(10, res?.estimation?.dstChainTokenOut?.decimals),
     );
+    setStockDLNRes(res);
     console.log(
       'Feeessss.......',
       feesDinari,
@@ -211,6 +205,36 @@ const TradePage = ({route}) => {
         ?.payload?.feeAmount /
         Math.pow(10, res?.estimation?.dstChainTokenOut?.decimals),
     );
+  };
+  const orderStockPrice = async () => {
+    console.log('started....', evmInfo);
+    const res = await confirmDLNTransactionPolToArb(
+      tradeType,
+      stockDLNRes,
+      value * 1000000,
+      stockDLNRes?.estimation?.srcChainTokenIn?.address,
+      null,
+      evmInfo?.smartAccount,
+      evmInfo?.address,
+    );
+    // if (res) {
+    //after polling from Poly
+    setTimeout(async () => {
+      console.log('run........');
+      await switchAuthCoreChain(42161);
+      const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+      const signerObj = await ethersProvider.getSigner();
+      const feesDinari = await placeMarketOrderToDinari(
+        state?.token?.address,
+        '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+        signerObj,
+        stockDLNRes?.estimation?.dstChainTokenOut?.amount,
+        false,
+        evmInfo?.smartAccount,
+      );
+      // }
+      await switchAuthCoreChain(137);
+    }, 6000);
   };
   // Example of logging state changes
   useFocusEffect(
@@ -224,12 +248,6 @@ const TradePage = ({route}) => {
     }, []),
   );
   // Log when component mounts
-  console.log(
-    bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
-      x => x.type === 'DlnProtocolFee',
-    )[0]?.payload?.feeAmount,
-    Math.pow(10, bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals),
-  );
   const {height} = Dimensions.get('window');
   return (
     <TouchableWithoutFeedback
@@ -875,76 +893,84 @@ const TradePage = ({route}) => {
               if (Platform.OS === 'ios') {
                 ReactNativeHapticFeedback.trigger('impactMedium', options);
               }
-              if (!loading && bestSwappingBuyTrades && !preparingTx) {
-                if (tradeType === 'buy' && bestSwappingBuyTrades) {
-                  setPreparingTx(true);
+              if (isStockTrade) {
+                await orderStockPrice();
+              } else {
+                if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                  if (tradeType === 'buy' && bestSwappingBuyTrades) {
+                    setPreparingTx(true);
 
-                  let res;
-                  if (bestSwappingBuyTrades?.transactionRequest) {
-                    res = bestSwappingBuyTrades;
-                  } else {
-                    res = await getTradeSigningData();
-                  }
+                    let res;
+                    if (bestSwappingBuyTrades?.transactionRequest) {
+                      res = bestSwappingBuyTrades;
+                    } else {
+                      res = await getTradeSigningData();
+                    }
 
-                  const signature = await confirmDLNTransaction(
-                    tradeType,
-                    res,
-                    res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.action?.fromAmount,
-                    res?.estimation?.srcChainTokenIn?.address ||
-                      res?.action?.fromToken?.address,
-                    res?.tx ?? res?.transactionRequest,
-                    evmInfo?.smartAccount,
-                    evmInfo?.address,
-                  );
-                  setPreparingTx(false);
-                  if (signature) {
-                    console.log('txn hash....', JSON.stringify(res), signature);
-                    navigation.navigate('PendingTxStatus', {
-                      state: res,
+                    const signature = await confirmDLNTransaction(
                       tradeType,
-                    });
-                  }
-                } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
-                  setPreparingTx(true);
-                  let res;
-                  if (bestSwappingBuyTrades?.transactionRequest) {
-                    res = bestSwappingBuyTrades;
-                  } else {
-                    res = await getTradeSigningData();
-                  }
-                  if (
-                    res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
-                    res?.estimation?.srcChainTokenIn?.chainId !== undefined
-                  ) {
-                    await switchAuthCoreChain(
-                      res?.estimation?.srcChainTokenIn?.chainId,
+                      res,
+                      res?.estimation?.srcChainTokenIn?.amount ||
+                        res?.action?.fromAmount,
+                      res?.estimation?.srcChainTokenIn?.address ||
+                        res?.action?.fromToken?.address,
+                      res?.tx ?? res?.transactionRequest,
+                      evmInfo?.smartAccount,
+                      evmInfo?.address,
                     );
-                  }
-                  const signature = await confirmDLNTransaction(
-                    tradeType,
-                    res,
-                    res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.action?.fromAmount,
-                    res?.estimation?.srcChainTokenIn?.address ||
-                      res?.action?.fromToken?.address,
-                    res?.tx ?? res?.transactionRequest,
-                    evmInfo?.smartAccount,
-                    evmInfo?.address,
-                  );
-                  setPreparingTx(false);
-                  if (signature) {
-                    console.log('txn hash', res, signature);
-                    navigation.navigate('PendingTxStatus', {
-                      state: res,
+                    setPreparingTx(false);
+                    if (signature) {
+                      console.log(
+                        'txn hash....',
+                        JSON.stringify(res),
+                        signature,
+                      );
+                      navigation.navigate('PendingTxStatus', {
+                        state: res,
+                        tradeType,
+                      });
+                    }
+                  } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
+                    setPreparingTx(true);
+                    let res;
+                    if (bestSwappingBuyTrades?.transactionRequest) {
+                      res = bestSwappingBuyTrades;
+                    } else {
+                      res = await getTradeSigningData();
+                    }
+                    if (
+                      res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
+                      res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                    ) {
+                      await switchAuthCoreChain(
+                        res?.estimation?.srcChainTokenIn?.chainId,
+                      );
+                    }
+                    const signature = await confirmDLNTransaction(
                       tradeType,
-                    });
+                      res,
+                      res?.estimation?.srcChainTokenIn?.amount ||
+                        res?.action?.fromAmount,
+                      res?.estimation?.srcChainTokenIn?.address ||
+                        res?.action?.fromToken?.address,
+                      res?.tx ?? res?.transactionRequest,
+                      evmInfo?.smartAccount,
+                      evmInfo?.address,
+                    );
+                    setPreparingTx(false);
+                    if (signature) {
+                      console.log('txn hash', res, signature);
+                      navigation.navigate('PendingTxStatus', {
+                        state: res,
+                        tradeType,
+                      });
+                    }
+                  } else if (
+                    bestSwappingBuyTrades !== null &&
+                    bestSwappingBuyTrades.length === 0
+                  ) {
+                    await getBestPrice();
                   }
-                } else if (
-                  bestSwappingBuyTrades !== null &&
-                  bestSwappingBuyTrades.length === 0
-                ) {
-                  await getBestPrice();
                 }
               }
             } catch (err) {

@@ -248,8 +248,8 @@ export const confirmDLNTransaction = async (
     !quoteTxReciept?.tokenIn?.address
   ) {
     console.log('Tx confirming started!!!');
-    const erc20Abi = new ethers.utils.Interface(erc20);
-    const proxyDlnAbi = new ethers.utils.Interface(ProxyDLNAbi);
+    const erc20Abi = new ethers.Interface(erc20);
+    const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
     const sendData = erc20Abi.encodeFunctionData('transfer', [
       '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
       amount,
@@ -313,6 +313,81 @@ export const confirmDLNTransaction = async (
     );
     console.log('tx executing swapping part', executeDLNSap);
     txs.push(executeDLNSap);
+  }
+  const signature = await signAndSendBatchTransactionWithGasless(
+    eoaAddress,
+    smartAccount,
+    txs,
+  );
+  console.log('Signature Signed...........', signature);
+  if (signature) {
+    console.log('Signature Signed confirmed...........', signature);
+    return signature;
+  } else {
+    return false;
+  }
+};
+export const confirmDLNTransactionPolToArb = async (
+  tradeType,
+  quoteTxReciept,
+  amount,
+  tokenAddress,
+  txData,
+  smartAccount,
+  eoaAddress,
+) => {
+  let txs = [];
+  console.log(tradeType);
+  if (
+    tradeType === 'buy' &&
+    quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
+    !quoteTxReciept?.tokenIn?.address
+  ) {
+    const erc20Abi = new ethers.Interface(erc20);
+    const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
+    const sendData = erc20Abi.encodeFunctionData('transfer', [
+      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+      amount,
+    ]);
+
+    const sendTX = await getEthereumTransaction(
+      smartAccount,
+      tokenAddress,
+      sendData,
+      '0',
+    );
+    txs.push(sendTX);
+    console.log(
+      'Tx send started!!!',
+      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+      eoaAddress,
+      smartAccount,
+      smartAccount,
+    );
+
+    const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+      eoaAddress,
+      smartAccount,
+      smartAccount,
+    ]);
+    const executeProxyDLN = await getEthereumTransaction(
+      smartAccount,
+      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+      dlnProxyTxData,
+      '0',
+    );
+
+    txs.push(executeProxyDLN);
   }
   const signature = await signAndSendBatchTransactionWithGasless(
     eoaAddress,

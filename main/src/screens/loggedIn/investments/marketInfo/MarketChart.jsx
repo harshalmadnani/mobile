@@ -233,7 +233,7 @@ const MarketChart = props => {
             ))}
           </ScrollView>
         </View> */}
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={{
             paddingHorizontal: '5%',
             marginTop: '8%',
@@ -268,11 +268,11 @@ const MarketChart = props => {
                 fontSize: 14,
               }}>
               {currentAsset?.[0]?.token_balance?.toFixed(6) ?? 0.0}
-              {` ${currentItem.symbol}`}
+              {` ${currentItem?.symbol ?? currentItem?.stock?.symbol}`}
             </Text>
           </View>
-        </TouchableOpacity> */}
-        {/* <View
+        </TouchableOpacity>
+        <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-around',
@@ -285,7 +285,7 @@ const MarketChart = props => {
           {renderTabItem('News')}
           {renderTabItem('Degen AI')}
           {renderTabItem('Analytics')}
-        </View> */}
+        </View>
         <View
           style={{
             flex: 1,
