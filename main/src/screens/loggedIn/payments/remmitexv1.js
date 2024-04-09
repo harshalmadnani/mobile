@@ -419,29 +419,16 @@ export const transferUSDCWithParticleAAGasless = async (
   isAuth,
 ) => {
   const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
-  const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
-
-  const decimals = 6;
-
-  const amount = ethers.utils.parseUnits(_amount, decimals);
+  const amount = _amount;
   const recipient = _recipient;
   if (isAuth) {
     setStatus('Calculating Gas In USDC...');
-
     web3 = getAuthCoreProvider(LoginType.Email);
-
-    const usdcAbi = new ethers.utils.Interface(usdAbi);
-
+    const usdcAbi = new ethers.Interface(usdAbi);
     let txs = [];
     const eoaAddress = await getUserAddressFromAuthCoreSDK();
     const smartAccount = await getSmartAccountAddress(eoaAddress);
-
-    // const contractAbi = new ethers.utils.Interface(abi);
-    // const usdcAbi = new ethers.utils.Interface(usdAbi);
-    // let txs = [];
-
     setStatus('Creating Transactions...');
-
     try {
       console.log('eoas', smartAccount, eoaAddress, recipient);
       // const approveData = usdcAbi.encodeFunctionData('approve', [
@@ -484,7 +471,7 @@ export const transferUSDCWithParticleAAGasless = async (
       if (signature) {
         return {
           status: true,
-          fees: null,
+          fees: 0.0,
         };
       } else {
         return {
