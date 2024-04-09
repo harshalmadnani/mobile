@@ -75,7 +75,7 @@ const Component = ({route, navigation}) => {
             //   global.withAuth,
             // );
             const {status, fees} = await transferUSDCWithParticleAAGasless(
-              amount,
+              amount * 1000000,
               walletAddress,
               navigation,
               setStatus,

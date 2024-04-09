@@ -1,39 +1,25 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, AppState} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {WebView} from 'react-native-webview';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon component
-import {PollStatusFromUniRamps} from '../../../../utils/OnrampApis';
-import Toast from 'react-native-root-toast';
-const Uniramp = ({route, navigation}) => {
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {checkKYCAvailableOrNotForDinari} from '../../../utils/Dinari/DinariApi';
+// Import Icon component
+const DinariKycWebview = ({route, navigation}) => {
   const webViewRef = useRef(null);
   const [timer, setTimer] = useState(false);
   const [count, setCount] = useState(0);
   const refresh = () => {
     if (webViewRef.current) webViewRef.current.reload();
   };
-  const {txInfo} = route?.params;
+  const {url, address} = route?.params;
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const response = await PollStatusFromUniRamps(txInfo?.id);
+        const response = await checkKYCAvailableOrNotForDinari(address);
         console.log(response);
-        if (
-          response === 'failed' ||
-          response === 'success' ||
-          response === 'invalid'
-        ) {
+        if (response != 'PENDING') {
           clearInterval(interval);
-          setTimer(false);
-          Toast.show(response, {
-            duration: Toast.durations.SHORT,
-            position: Toast.positions.BOTTOM,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-          });
-          navigation.push('Portfolio');
-          // Do something when status is finished
+          navigation.navigate('MarketInfo');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -47,20 +33,17 @@ const Uniramp = ({route, navigation}) => {
       <WebView
         ref={webViewRef}
         source={{
-          uri: txInfo?.cefiInitiate?.url,
+          uri: url,
         }}
         style={styles.webView}
       />
       <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => navigation.push('Ramper')}
+          onPress={() => navigation.push('Portfolio')}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.overlayText}>Deposit Funds</Text>
-        {/* <TouchableOpacity onPress={refresh} style={styles.iconButton}>
-          <Icon name="refresh" size={24} color="#000" />
-        </TouchableOpacity> */}
+        <Text style={styles.overlayText}>Dinari KYC</Text>
       </View>
     </View>
   );
@@ -72,11 +55,10 @@ const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
-    marginTop:'5%'
   },
   overlay: {
     position: 'absolute',
-    top: '2%',
+    top: 0,
     left: 0,
     right: 0,
     backgroundColor: '#fff',
@@ -101,4 +83,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Uniramp;
+export default DinariKycWebview;

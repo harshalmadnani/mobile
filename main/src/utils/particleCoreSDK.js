@@ -1,5 +1,5 @@
 import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {Polygon, BNBChain} from '@particle-network/chains';
+import {Polygon, BNBChain, ArbitrumOne} from '@particle-network/chains';
 import * as particleAuth from '@particle-network/rn-auth';
 import {Env, ParticleInfo} from '@particle-network/rn-auth';
 import * as particleAuthCore from '@particle-network/rn-auth-core';
@@ -48,13 +48,14 @@ const chainInfoOnId = chainId => {
       return Polygon;
     case 56:
       return BNBChain;
+    case 42161:
+      return ArbitrumOne;
   }
 };
 
 export const switchAuthCoreChain = async chainId => {
   const chainInfo = chainInfoOnId(chainId);
   const result = await particleAuthCore.switchChain(chainInfo);
-  console.log(result);
   return result;
 };
 export const getAuthCoreProvider = loginType => {
@@ -66,6 +67,17 @@ export const getAuthCoreProvider = loginType => {
   // @ts-ignore
   const web3 = new Web3(provider);
   return web3;
+};
+export const getAuthCoreProviderEthers = loginType => {
+  const provider = new particleAuthCore.ParticleAuthCoreProvider({
+    projectId,
+    clientKey,
+    loginType,
+  });
+  // @ts-ignore
+  const ether = new ethers.BrowserProvider(provider);
+  console.log('start....', ether);
+  return ether;
 };
 export const connectWithAuthCore = async navigation => {
   const supportAuthType = [SupportAuthType.Email];
@@ -183,6 +195,19 @@ export async function getEthereumTransaction(from, to, data, amount) {
   } catch (error) {
     console.log('approve tx', error);
   }
+}
+export async function getSignedMessage(message) {
+  // mock a evm native transaction,
+  // type is 0x2, should work in Ethereum, Polygon and other blockchains which support EIP1559
+  // send 0.01 native
+  try {
+    return await particleAuthCore.evm.personalSign(message);
+  } catch (error) {
+    console.log('approve tx', error?.response?.data);
+  }
+}
+export async function getSignerObjectParticleAuthCore() {
+  return particleAuthCore.evm;
 }
 export const signAndSendBatchTransactionWithGasless = async (
   eoaAddress,

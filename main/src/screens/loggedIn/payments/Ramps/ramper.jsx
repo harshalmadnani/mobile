@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -19,8 +19,15 @@ import {
   fetchOnRampPaymentMethodsBasedOnIP,
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
+import CrossChainModal from '../../../../component/CrossChainModal/index';
+import {
+  connectWitParticleConnect,
+  initializedParticleConnect,
+} from '../../../../utils/particleConnectSDK';
 import {SvgUri} from 'react-native-svg';
 import {Keyboard} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 
 const Ramper = ({navigation}) => {
   const getCurrencySymbol = currencyCode => {
@@ -57,10 +64,13 @@ const Ramper = ({navigation}) => {
     fetchPaymentMethodsBasedOnIP();
   }, []);
 
+  const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
-    navigation.push('QRScreen');
+    setModalVisible(true);
   };
-
+  // const handlePresentModalPress = useCallback(() => {
+  //   bottomSheetModalRef.current?.present();
+  // }, []);
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
       const {fetchedPaymentMethods, fetchedfiat} =
@@ -356,9 +366,7 @@ const Ramper = ({navigation}) => {
             ))}
           </View>
         </View>
-
         {/* Footer: Trade button sticky at the bottom */}
-
         <View
           style={{
             height: 50,
@@ -407,47 +415,10 @@ const Ramper = ({navigation}) => {
         </View>
         {/* <W3mNetworkButton /> */}
         {/* Modal Component */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View>
-                <TouchableOpacity
-                  style={{
-                    alignSelf: 'flex-start',
-                  }}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Icon name="expand-more" size={35} color="#999" />
-                </TouchableOpacity>
-              </View>
-              {/* Button 1 */}
-              <TouchableOpacity
-                style={[styles.button1, styles.buttonClose]}
-                onPress={() => {
-                  navigation.push('LiFi', {value: value});
-                }}>
-                <Text
-                  style={{color: '#000', fontFamily: 'NeueMontreal-Medium'}}>
-                  Deposit from wallet
-                </Text>
-              </TouchableOpacity>
-              {/* Button 2 */}
-              <TouchableOpacity
-                style={[styles.button, styles.buttonOpen, (padding = '1%')]}
-                onPress={() => navigation.push('QRScreen')}>
-                <Text
-                  style={{fontFamily: 'NeueMontreal-Medium', color: '#fff'}}>
-                  Deposit via QR code
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+        <CrossChainModal
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

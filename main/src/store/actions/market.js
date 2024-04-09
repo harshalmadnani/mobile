@@ -8,6 +8,10 @@ import {
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
 import {
+  getAllDinariStocks,
+  getAllDinariStocksPriceChange,
+} from '../../utils/Dinari/DinariApi';
+import {
   getBestCrossSwapRateBuy,
   getDLNTradeCreateBuyOrder,
 } from '../../utils/DLNTradeApi';
@@ -61,24 +65,20 @@ export const getListOfCommoditiesFromMobulaApi = () => {
 export const getListOfStocksFromMobulaApi = () => {
   return async (dispatch, getState) => {
     dispatch(marketsAction.setMarketListFetchLoading(true));
-    const data = await getStocksListData();
-
-    const stockList = [];
-    Object.keys(data).forEach(function (key, index) {
-      console.log('index', index);
-      if (key === '0x407274abb9241da0a1889c1b8ec65359dd9d316d') {
-        stockList.push({
-          ...data[key],
-          symbol: 'Coin',
-          name: 'Coinbase Global Inc',
-          logo: 'https://res.cloudinary.com/xade-finance/image/upload/v1711428857/s6och6simtaaau32xjq3.png',
-        });
-      } else {
-        stockList.push(data[key]);
-      }
+    const data = await getAllDinariStocks(42161);
+    const stockIDs = data.map(x => parseInt(x?.stock?.id));
+    const stockPriceData = await getAllDinariStocksPriceChange(stockIDs);
+    console.log('stocks queryString....', stockPriceData);
+    const stockWithPriceChange = data?.map(stock => {
+      console.log('stock filter', stockPriceData[0]?.stock_id, stock);
+      return {
+        ...stock,
+        priceInfo: stockPriceData?.filter(
+          price => price?.stock_id === stock?.stock?.id,
+        )?.[0],
+      };
     });
-    console.log('key object commodity', stockList.length, stockList);
-    dispatch(marketsAction.setListOfCrypto(stockList));
+    dispatch(marketsAction.setListOfCrypto(stockWithPriceChange));
     dispatch(marketsAction.setMarketListFetchLoading(false));
   };
 };

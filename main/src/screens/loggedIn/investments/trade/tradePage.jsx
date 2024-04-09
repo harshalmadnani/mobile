@@ -42,31 +42,30 @@ const options = {
 };
 import {
   confirmDLNTransaction,
+  confirmDLNTransactionPolToArb,
+  getDLNTradeCreateBuyOrder,
   getDLNTradeCreateBuyOrderTxn,
 } from '../../../../utils/DLNTradeApi';
-import {switchAuthCoreChain} from '../../../../utils/particleCoreSDK';
+import {
+  getAuthCoreProviderEthers,
+  switchAuthCoreChain,
+} from '../../../../utils/particleCoreSDK';
+import {
+  getMarketOrderFeesEstimationFromDinari,
+  placeMarketOrderToDinari,
+} from '../../../../utils/Dinari/DinariApi';
+import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
-  const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
-
-  const openBottomSheet = () => {
-    setBottomSheetVisible(true);
-  };
-
-  const closeBottomSheet = () => {
-    setBottomSheetVisible(false);
-  };
   const [modalVisible, setModalVisible] = useState(false);
-
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
-  const [orderType, setOrderType] = useState('market');
-  const [selectedDropDownValue, setSelectedDropDownValue] = useState('Spot');
   const [value, setValue] = useState('5');
   const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
+  const [stockFee, setStockFee] = useState(0);
+  const [stockDLNRes, setStockDLNRes] = useState(0);
   const [preparingTx, setPreparingTx] = useState(false);
-  const [commingSoon, setCommingSoon] = useState(false);
   const width = Dimensions.get('window').width;
   const state = route.params.state;
   const tradeAsset = route.params.asset;
@@ -84,7 +83,8 @@ const TradePage = ({route}) => {
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
-  const tokensToSell = tradeAsset?.[0]?.contracts_balances;
+  const isStockTrade = useSelector(x => x.market.isStockTrade);
+  const tokensToSell = isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
     if (!bestSwappingBuyTrades) return 'Calculating....';
@@ -93,34 +93,44 @@ const TradePage = ({route}) => {
     return 'CONFIRM';
   };
   useEffect(() => {
-    if (tradeType === 'sell') {
-      setLoading(true);
-      console.log('Token to selll......', tokensToSell);
-      dispatch(
-        getBestDLNCrossSwapRateSell(
-          tokensToSell?.[1],
-          value * Math.pow(10, tokensToSell?.[1]?.decimals),
-        ),
-      );
-      setLoading(false);
+    if (!isStockTrade) {
+      if (tradeType === 'sell') {
+        setLoading(true);
+        console.log(tokensToSell);
+        dispatch(
+          getBestDLNCrossSwapRateSell(
+            tokensToSell?.[0],
+            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+          ),
+        );
+        setLoading(false);
+      } else {
+        getBestPrice();
+      }
     } else {
-      getBestPrice();
+      getCurrentStockTradingPrice();
     }
   }, [tradeType]);
 
   useEffect(() => {
-    if (tradeType === 'sell') {
-      dispatch(
-        getBestDLNCrossSwapRateSell(
-          tokensToSell?.[0],
-          value * Math.pow(10, tokensToSell?.[0]?.decimals),
-        ),
-      );
+    if (!isStockTrade) {
+      if (tradeType === 'sell') {
+        dispatch(
+          getBestDLNCrossSwapRateSell(
+            tokensToSell?.[0],
+            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+          ),
+        );
+      } else {
+        getBestPrice();
+      }
     } else {
-      getBestPrice();
+      getCurrentStockTradingPrice();
     }
   }, [value]);
+
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
+
   const getTradeSigningData = async () => {
     if (bestSwappingBuyTrades) {
       const res = await getDLNTradeCreateBuyOrderTxn(
@@ -160,20 +170,84 @@ const TradePage = ({route}) => {
     );
     setLoading(false);
   };
+  const getCurrentStockTradingPrice = async () => {
+    await switchAuthCoreChain(42161);
+    const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+    const signerObj = await ethersProvider.getSigner();
+    const res = await getDLNTradeCreateBuyOrder(
+      137,
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      value * 1000000,
+      42161,
+      '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      signerObj.address,
+    );
+    const feesDinari = await getMarketOrderFeesEstimationFromDinari(
+      state?.token?.address,
+      '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      signerObj,
+      res?.estimation?.dstChainTokenOut?.recommendedAmount,
+      false,
+    );
+    await switchAuthCoreChain(137);
+    setStockFee(
+      feesDinari / 1000000 +
+        res?.estimation?.costsDetails?.filter(
+          x => x.type === 'DlnProtocolFee',
+        )[0]?.payload?.feeAmount /
+          Math.pow(10, res?.estimation?.dstChainTokenOut?.decimals),
+    );
+    setStockDLNRes(res);
+    console.log(
+      'Feeessss.......',
+      feesDinari,
+      res?.estimation?.costsDetails?.filter(x => x.type === 'DlnProtocolFee')[0]
+        ?.payload?.feeAmount /
+        Math.pow(10, res?.estimation?.dstChainTokenOut?.decimals),
+    );
+  };
+  const orderStockPrice = async () => {
+    console.log('started....', evmInfo);
+    const res = await confirmDLNTransactionPolToArb(
+      tradeType,
+      stockDLNRes,
+      value * 1000000,
+      stockDLNRes?.estimation?.srcChainTokenIn?.address,
+      null,
+      evmInfo?.smartAccount,
+      evmInfo?.address,
+    );
+    // if (res) {
+    //after polling from Poly
+    setTimeout(async () => {
+      console.log('run........');
+      await switchAuthCoreChain(42161);
+      const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+      const signerObj = await ethersProvider.getSigner();
+      const feesDinari = await placeMarketOrderToDinari(
+        state?.token?.address,
+        '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+        signerObj,
+        stockDLNRes?.estimation?.dstChainTokenOut?.amount,
+        false,
+        evmInfo?.smartAccount,
+      );
+      // }
+      await switchAuthCoreChain(137);
+    }, 6000);
+  };
   // Example of logging state changes
   useFocusEffect(
     useCallback(() => {
-      getBestPrice();
+      if (isStockTrade) {
+        getCurrentStockTradingPrice();
+      } else {
+        getBestPrice();
+      }
       return () => {};
     }, []),
   );
   // Log when component mounts
-  console.log(
-    bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
-      x => x.type === 'DlnProtocolFee',
-    )[0]?.payload?.feeAmount,
-    Math.pow(10, bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals),
-  );
   const {height} = Dimensions.get('window');
   return (
     <TouchableWithoutFeedback
@@ -223,7 +297,9 @@ const TradePage = ({route}) => {
                     fontFamily: `Unbounded-Medium`,
                     marginLeft: '5%',
                   }}>
-                  {state.symbol.toUpperCase()}/USD
+                  {state?.symbol?.toUpperCase() ??
+                    state?.stock?.symbol?.toUpperCase()}
+                  /USD
                 </Text>
               </View>
               <TouchableOpacity
@@ -234,76 +310,6 @@ const TradePage = ({route}) => {
                   marginLeft: '30%',
                 }}
                 onPress={() => setModalVisible(true)}>
-                <Modal
-                  animationType="slide"
-                  transparent={true}
-                  visible={modalVisible}
-                  onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                  }}>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      width: '100%',
-                      backgroundColor: '#010101',
-                      padding: 20,
-                      borderTopLeftRadius: 20,
-                      borderTopRightRadius: 20,
-                    }}>
-                    <View
-                      style={{
-                        paddingBottom: '20%',
-                      }}>
-                      <TouchableOpacity
-                        style={{
-                          position: 'absolute',
-                          left: '-5%',
-                          zIndex: 1,
-                        }}
-                        onPress={() => setModalVisible(!modalVisible)}>
-                        <Icon name="close" size={35} color="#fff" />
-                      </TouchableOpacity>
-                    </View>
-                    {items.map((item, index) => (
-                      <View
-                        key={index}
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          marginBottom: '10%',
-                        }}>
-                        <Text
-                          style={{
-                            color: '#fff',
-                            fontSize: 16,
-                            fontFamily: 'Unbounded-Medium',
-                          }}>
-                          {item.left}
-                        </Text>
-                        {item.right !== ' ' && (
-                          <View
-                            style={{
-                              backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                              borderRadius: 5,
-                              padding: 5,
-                            }}>
-                            <Text
-                              style={{
-                                color: '#fff',
-                                fontSize: 8,
-                                fontFamily: 'Unbounded-Medium',
-                              }}>
-                              {item.right}
-                            </Text>
-                          </View>
-                        )}
-                      </View>
-                    ))}
-                  </View>
-                </Modal>
                 <Text
                   style={{
                     color: 'white',
@@ -480,7 +486,8 @@ const TradePage = ({route}) => {
                   fontFamily: 'Unbounded-Bold',
                 }}>
                 {tokensToSell?.[0]?.balance?.toFixed(2)}{' '}
-                {state.symbol.toUpperCase()}{' '}
+                {state?.symbol?.toUpperCase() ??
+                  state?.stock?.symbol?.toUpperCase()}{' '}
               </Text>
               <Text
                 style={{
@@ -527,7 +534,8 @@ const TradePage = ({route}) => {
                       fontFamily: 'Unbounded-Medium',
                       alignSelf: 'center',
                     }}>
-                    {state.symbol.toUpperCase()}
+                    {state?.symbol?.toUpperCase() ||
+                      state?.stock?.symbol?.toUpperCase()}
                   </Text>
                 </View>
               ) : (
@@ -567,116 +575,120 @@ const TradePage = ({route}) => {
                   />
                 </View>
               )}
-              {tradeType === 'buy' ? (
-                <View
-                  style={{
-                    marginTop: 10,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
+              <View>
+                {tradeType === 'buy' ? (
+                  <View
                     style={{
-                      fontSize: 16,
-                      color: '#5C5C5C',
-                      textAlign: 'center',
-                      fontFamily: 'NeueMontreal-Medium',
+                      marginTop: 10,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
                     }}>
-                    You'll get{' '}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#b3b3b3',
-                      textAlign: 'center',
-                      fontFamily: 'Unbounded-Bold',
-                    }}>
-                    {isNaN(
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        ),
-                    )
-                      ? (
-                          bestSwappingBuyTrades?.estimate?.toAmountMin /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.action?.toToken?.decimals,
-                          )
-                        ).toFixed(5)
-                      : (
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.amount /
-                          Math.pow(
-                            10,
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#5C5C5C',
+                        textAlign: 'center',
+                        fontFamily: 'NeueMontreal-Medium',
+                      }}>
+                      You'll get{' '}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#b3b3b3',
+                        textAlign: 'center',
+                        fontFamily: 'Unbounded-Bold',
+                      }}>
+                      {isStockTrade
+                        ? (value / state?.priceInfo?.price)?.toFixed(4)
+                        : isNaN(
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.decimals,
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
+                              ),
                           )
-                        ).toFixed(5)}
-                    {' ' + state?.symbol.toUpperCase()}
-                  </Text>
-
-                  {/* image to allow btc input */}
-                  {/* <Image source={ImageAssets.arrowImg} /> */}
-                </View>
-              ) : (
-                <View
-                  style={{
-                    marginTop: 1,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#5c5c5c',
-                      textAlign: 'center',
-                      fontFamily: 'NeueMontreal-Medium',
-                    }}>
-                    You'll get{' '}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: '#7e7e7e',
-                      textAlign: 'center',
-                      fontFamily: 'Unbounded-Bold',
-                    }}>
-                    $
-                    {isNaN(
-                      bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                        ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        ),
-                    )
-                      ? (
-                          bestSwappingBuyTrades?.estimate?.toAmountMin /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.action?.toToken?.decimals,
-                          )
-                        ).toFixed(5)
-                      : (
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.amount /
-                          Math.pow(
-                            10,
+                        ? (
+                            bestSwappingBuyTrades?.estimate?.toAmountMin /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.action?.toToken?.decimals,
+                            )
+                          ).toFixed(5)
+                        : (
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.decimals,
+                              ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            )
+                          ).toFixed(5)}
+                      {` ${
+                        state?.symbol?.toUpperCase() ??
+                        state?.stock?.symbol?.toUpperCase()
+                      }`}
+                    </Text>
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      marginTop: 1,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#5c5c5c',
+                        textAlign: 'center',
+                        fontFamily: 'NeueMontreal-Medium',
+                      }}>
+                      You'll get{' '}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#7e7e7e',
+                        textAlign: 'center',
+                        fontFamily: 'Unbounded-Bold',
+                      }}>
+                      {`${'$ '}`}
+                      {isStockTrade
+                        ? 0.0
+                        : isNaN(
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
+                              ),
                           )
-                        ).toFixed(5)}
-                  </Text>
-                  {/* image to allow btc input */}
-                  {/* <Image source={ImageAssets.arrowImg} /> */}
-                </View>
-              )}
+                        ? (
+                            bestSwappingBuyTrades?.estimate?.toAmountMin /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.action?.toToken?.decimals,
+                            )
+                          ).toFixed(5)
+                        : (
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            )
+                          ).toFixed(5)}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </View>
           </View>
 
@@ -744,7 +756,8 @@ const TradePage = ({route}) => {
                       ).toFixed(6)
                     : //when same chain
 
-                      bestSwappingBuyTrades?.action?.toToken?.priceUSD || //when cross chain
+                    !isStockTrade
+                    ? bestSwappingBuyTrades?.action?.toToken?.priceUSD || //when cross chain
                       (
                         bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                           ?.amount /
@@ -760,7 +773,8 @@ const TradePage = ({route}) => {
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.decimals,
                           ))
-                      ).toFixed(6)}
+                      ).toFixed(6)
+                    : state?.priceInfo?.price}
                 </Text>
               </View>
 
@@ -788,7 +802,9 @@ const TradePage = ({route}) => {
                     color: '#fff',
                   }}>
                   $
-                  {bestSwappingBuyTrades?.estimation?.costsDetails
+                  {isStockTrade
+                    ? stockFee
+                    : bestSwappingBuyTrades?.estimation?.costsDetails
                     ? tradeType === 'sell'
                       ? (
                           bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
@@ -836,8 +852,11 @@ const TradePage = ({route}) => {
                     color: '#fff',
                   }}>
                   {' '}
-                  {bestSwappingBuyTrades?.order?.approximateFulfillmentDelay ??
-                    bestSwappingBuyTrades?.estimate?.executionDuration}
+                  {isStockTrade
+                    ? '8 '
+                    : bestSwappingBuyTrades?.order
+                        ?.approximateFulfillmentDelay ??
+                      bestSwappingBuyTrades?.estimate?.executionDuration}
                   s
                 </Text>
               </View>
@@ -874,76 +893,84 @@ const TradePage = ({route}) => {
               if (Platform.OS === 'ios') {
                 ReactNativeHapticFeedback.trigger('impactMedium', options);
               }
-              if (!loading && bestSwappingBuyTrades && !preparingTx) {
-                if (tradeType === 'buy' && bestSwappingBuyTrades) {
-                  setPreparingTx(true);
+              if (isStockTrade) {
+                await orderStockPrice();
+              } else {
+                if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                  if (tradeType === 'buy' && bestSwappingBuyTrades) {
+                    setPreparingTx(true);
 
-                  let res;
-                  if (bestSwappingBuyTrades?.transactionRequest) {
-                    res = bestSwappingBuyTrades;
-                  } else {
-                    res = await getTradeSigningData();
-                  }
+                    let res;
+                    if (bestSwappingBuyTrades?.transactionRequest) {
+                      res = bestSwappingBuyTrades;
+                    } else {
+                      res = await getTradeSigningData();
+                    }
 
-                  const signature = await confirmDLNTransaction(
-                    tradeType,
-                    res,
-                    res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.action?.fromAmount,
-                    res?.estimation?.srcChainTokenIn?.address ||
-                      res?.action?.fromToken?.address,
-                    res?.tx ?? res?.transactionRequest,
-                    evmInfo?.smartAccount,
-                    evmInfo?.address,
-                  );
-                  setPreparingTx(false);
-                  if (signature) {
-                    console.log('txn hash....', JSON.stringify(res), signature);
-                    navigation.navigate('PendingTxStatus', {
-                      state: res,
+                    const signature = await confirmDLNTransaction(
                       tradeType,
-                    });
-                  }
-                } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
-                  setPreparingTx(true);
-                  let res;
-                  if (bestSwappingBuyTrades?.transactionRequest) {
-                    res = bestSwappingBuyTrades;
-                  } else {
-                    res = await getTradeSigningData();
-                  }
-                  if (
-                    res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
-                    res?.estimation?.srcChainTokenIn?.chainId !== undefined
-                  ) {
-                    await switchAuthCoreChain(
-                      res?.estimation?.srcChainTokenIn?.chainId,
+                      res,
+                      res?.estimation?.srcChainTokenIn?.amount ||
+                        res?.action?.fromAmount,
+                      res?.estimation?.srcChainTokenIn?.address ||
+                        res?.action?.fromToken?.address,
+                      res?.tx ?? res?.transactionRequest,
+                      evmInfo?.smartAccount,
+                      evmInfo?.address,
                     );
-                  }
-                  const signature = await confirmDLNTransaction(
-                    tradeType,
-                    res,
-                    res?.estimation?.srcChainTokenIn?.amount ||
-                      res?.action?.fromAmount,
-                    res?.estimation?.srcChainTokenIn?.address ||
-                      res?.action?.fromToken?.address,
-                    res?.tx ?? res?.transactionRequest,
-                    evmInfo?.smartAccount,
-                    evmInfo?.address,
-                  );
-                  setPreparingTx(false);
-                  if (signature) {
-                    console.log('txn hash', res, signature);
-                    navigation.navigate('PendingTxStatus', {
-                      state: res,
+                    setPreparingTx(false);
+                    if (signature) {
+                      console.log(
+                        'txn hash....',
+                        JSON.stringify(res),
+                        signature,
+                      );
+                      navigation.navigate('PendingTxStatus', {
+                        state: res,
+                        tradeType,
+                      });
+                    }
+                  } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
+                    setPreparingTx(true);
+                    let res;
+                    if (bestSwappingBuyTrades?.transactionRequest) {
+                      res = bestSwappingBuyTrades;
+                    } else {
+                      res = await getTradeSigningData();
+                    }
+                    if (
+                      res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
+                      res?.estimation?.srcChainTokenIn?.chainId !== undefined
+                    ) {
+                      await switchAuthCoreChain(
+                        res?.estimation?.srcChainTokenIn?.chainId,
+                      );
+                    }
+                    const signature = await confirmDLNTransaction(
                       tradeType,
-                    });
+                      res,
+                      res?.estimation?.srcChainTokenIn?.amount ||
+                        res?.action?.fromAmount,
+                      res?.estimation?.srcChainTokenIn?.address ||
+                        res?.action?.fromToken?.address,
+                      res?.tx ?? res?.transactionRequest,
+                      evmInfo?.smartAccount,
+                      evmInfo?.address,
+                    );
+                    setPreparingTx(false);
+                    if (signature) {
+                      console.log('txn hash', res, signature);
+                      navigation.navigate('PendingTxStatus', {
+                        state: res,
+                        tradeType,
+                      });
+                    }
+                  } else if (
+                    bestSwappingBuyTrades !== null &&
+                    bestSwappingBuyTrades.length === 0
+                  ) {
+                    await getBestPrice();
                   }
-                } else if (
-                  bestSwappingBuyTrades !== null &&
-                  bestSwappingBuyTrades.length === 0
-                ) {
-                  await getBestPrice();
                 }
               }
             } catch (err) {
@@ -961,6 +988,76 @@ const TradePage = ({route}) => {
             {getDisplayText()}
           </Text>
         </TouchableOpacity>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              width: '100%',
+              backgroundColor: '#010101',
+              padding: 20,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}>
+            <View
+              style={{
+                paddingBottom: '20%',
+              }}>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  left: '-5%',
+                  zIndex: 1,
+                }}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Icon name="close" size={35} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            {items.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '10%',
+                }}>
+                <Text
+                  style={{
+                    color: '#fff',
+                    fontSize: 16,
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  {item.left}
+                </Text>
+                {item.right !== ' ' && (
+                  <View
+                    style={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                      borderRadius: 5,
+                      padding: 5,
+                    }}>
+                    <Text
+                      style={{
+                        color: '#fff',
+                        fontSize: 8,
+                        fontFamily: 'Unbounded-Medium',
+                      }}>
+                      {item.right}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
+        </Modal>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

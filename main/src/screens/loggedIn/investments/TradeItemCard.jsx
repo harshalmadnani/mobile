@@ -19,12 +19,21 @@ const options = {
   ignoreAndroidSystemSettings: false,
 };
 import {useNavigation} from '@react-navigation/native';
+import {SvgUri} from 'react-native-svg';
+import {marketsAction} from '../../../store/reducers/market';
 const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
   return (
     <Pressable
       onPress={() => {
+        if (item?.stock) {
+          dispatch(marketsAction.setStockTradeMode(true));
+          console.log('Entering... stock mode');
+        } else {
+          dispatch(marketsAction.setStockTradeMode(false));
+        }
         navigation.navigate('MarketInfo', {item: item});
         if (Platform.OS === 'ios') {
           ReactNativeHapticFeedback.trigger('impactMedium', options);
@@ -52,21 +61,48 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             alignItems: 'center',
           }}>
           <View style={{paddingHorizontal: 10}}>
-            <FastImage
-              style={{width: 42, height: 42, borderRadius: 250}}
-              source={{
-                uri: `${item?.image || item?.logo}`,
-              }}
-            />
+            {item?.stock?.logo_url?.includes('svg') ||
+            item?.token?.image_url?.includes('svg') ? (
+              <View
+                style={{
+                  width: 42,
+                  height: 42,
+                  backgroundColor: 'white',
+                  borderRadius: 250,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <SvgUri
+                  width="26"
+                  height="26"
+                  uri={item?.stock?.logo_url || item?.token?.image_url}
+                />
+              </View>
+            ) : (
+              <FastImage
+                style={{width: 42, height: 42, borderRadius: 250}}
+                source={{
+                  uri: `${
+                    item?.image ||
+                    item?.logo ||
+                    item?.stock?.logo_url ||
+                    item?.token?.image_url
+                  }`,
+                }}
+              />
+            )}
           </View>
 
           <View style={{paddingHorizontal: 10}}>
             <View>
-              <Text style={styles.text1}>{item?.symbol?.toUpperCase()}</Text>
+              <Text style={styles.text1}>
+                {item?.symbol?.toUpperCase() ||
+                  item?.stock?.symbol?.toUpperCase()}
+              </Text>
             </View>
             <View>
               <Text numberOfLines={1} style={[styles.text2, {width: 100}]}>
-                {item?.name}
+                {item?.name || item?.stock?.name}
               </Text>
             </View>
           </View>
@@ -84,26 +120,30 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             <View>
               <Text style={styles.text1}>
                 $
-                {item?.current_price?.toLocaleString() ||
-                  item?.price?.toLocaleString()}
+                {item?.price?.toLocaleString() ??
+                  item?.priceInfo?.price?.toLocaleString()}
               </Text>
             </View>
             <View>
               {(item?.price_change_24h >= 0 ||
-                item?.price_change_percentage_24h >= 0) && (
+                item?.price_change_percentage_24h >= 0 ||
+                item?.priceInfo?.change_percent >= 0) && (
                 <Text style={styles.text3}>
                   +{' '}
                   {item?.price_change_percentage_24h?.toFixed(2) ||
                     item?.price_change_24h?.toFixed(2) ||
+                    item?.priceInfo?.change_percent?.toFixed(2) ||
                     0.0}{' '}
                   %
                 </Text>
               )}
               {(item?.price_change_24h < 0 ||
-                item?.price_change_percentage_24h < 0) && (
+                item?.price_change_percentage_24h < 0 ||
+                item?.priceInfo?.change_percent < 0) && (
                 <Text style={styles.text4}>
                   {item?.price_change_percentage_24h?.toFixed(2) ||
                     item?.price_change_24h?.toFixed(2) ||
+                    item?.priceInfo?.change_percent?.toFixed(2) ||
                     0.0}{' '}
                   %
                 </Text>

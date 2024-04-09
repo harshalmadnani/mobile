@@ -34,6 +34,7 @@ const Investments = ({navigation}) => {
   const height = Dimensions.get('window').height;
 
   const cryptoData = useSelector(x => x.market.listOfCrypto);
+
   const marketListFetchLoading = useSelector(
     x => x.market.marketListFetchLoading,
   );
@@ -50,7 +51,7 @@ const Investments = ({navigation}) => {
       return () => {};
     }, []),
   );
-  console.log(marketListFetchLoading);
+  console.log(cryptoData, marketListFetchLoading);
 
   const onEndReachedFetch = async () => {};
 
@@ -84,7 +85,7 @@ const Investments = ({navigation}) => {
               width: 40,
               height: 40,
               bottom: 10,
-              alignSelf:'center'
+              alignSelf: 'center',
             }}
           />
         </TouchableOpacity>
@@ -161,11 +162,12 @@ const Investments = ({navigation}) => {
               paddingBottom: 16,
               marginBottom: section === 'stocks' ? -2 : 0,
             }}
-            onPress={() => {
+            onPress={async () => {
               setSection('stocks');
               if (Platform.OS === 'ios') {
                 ReactNativeHapticFeedback.trigger('impactMedium', options);
               }
+              // await getAllDinariStocks();
               dispatch(getListOfStocksFromMobulaApi());
             }}>
             <Text
@@ -235,7 +237,7 @@ const Investments = ({navigation}) => {
           {cryptoData && (
             <FlatList
               data={cryptoData}
-              style={{marginBottom: 64}}
+              style={{marginBottom: 100}}
               renderItem={({item}) => (
                 <TradeItemCard navigation={navigation} item={item} />
               )}

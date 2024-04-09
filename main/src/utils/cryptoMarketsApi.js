@@ -39,6 +39,7 @@ export const getAssetMetadata = async assetName => {
   }
 };
 export const getHistoricalData = async (assetName, from) => {
+  console.log('History...', assetName, from);
   try {
     const response = await axios.get(
       `${mobulaBaseURL}${marketRoutes.getHistorical}?asset=${assetName}&from=${from}`,

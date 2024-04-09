@@ -45,7 +45,11 @@
 		<string>bitkeep</string>
 		<string>trust</string>
 		<string>rainbow</string>
-		<string>gnosissafe</string>
+		<string>zerion</string>
+		<string>mathwallet</string>
+		<string>1inch</string>
+		<string>awallet</string>
+		<string>okex</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true />

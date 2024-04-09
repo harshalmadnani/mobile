@@ -14,9 +14,7 @@ import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
 import {useDispatch, useSelector} from 'react-redux';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
-
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -43,6 +41,15 @@ const Portfolio = ({navigation}) => {
   imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
+  // useEffect(() => {
+  //   if (evmInfo?.smartAccount) {
+  //     dispatch(
+  //       getCryptoHoldingForAddressFromMobula(evmInfo?.smartAccount, null),
+  //     );
+  //   } else {
+  //     dispatch(getEvmAddresses());
+  //   }
+  // }, [evmInfo]);
   useEffect(() => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
@@ -57,12 +64,12 @@ const Portfolio = ({navigation}) => {
             interval: 15,
           },
         };
-
+        console.log('portfolio..... sent');
         ws.send(JSON.stringify(payload));
       };
 
       ws.onmessage = event => {
-        // console.log('portfolio.....', event.data?.assets);
+        console.log('portfolio.....', event.data);
         dispatch(portfolioAction.setHoldings(JSON.parse(event?.data)));
       };
 
@@ -78,7 +85,6 @@ const Portfolio = ({navigation}) => {
       ws.close();
     };
   }, [evmInfo]);
-
   const extractUSDCBalanceOnPolygon = holdings => {
     if (!holdings || !holdings?.assets) {
       return '0'; // Return a default value indicating that the balance couldn't be extracted
@@ -473,67 +479,71 @@ const Portfolio = ({navigation}) => {
                     marginTop: 22,
                     width: '100%',
                   }}>
-        <View
-      style={{
-        backgroundColor: '#010101',
-        padding: 35,
-        alignItems: 'center',
-        shadowColor: '#000',
-        width: '100%',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
-      }}>
-      {/* Image component added here */}
-      <Image
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712474035/hnjacvonwztzamqzibpt.png' }}
-        style={{ width: 200, height: 200,alignSelf:'center'}} // Adjust size as needed
-        resizeMode="contain" // Adjust resizeMode as needed
-      />
-      <Text
-        style={{
-          marginBottom: 15,
-          textAlign: 'center',
-          fontFamily: 'Unbounded-Medium',
-          fontSize: 20,
-          color: '#fff',
-        }}>
-        CASH BALANCE
-      </Text>
-      <Text
-        style={{
-          marginBottom: 15,
-          textAlign: 'center',
-          color: '#666',
-          fontSize: 16,
-        }}>
-        Your Cash Balance is the USDC you hold on the Polygon POS chain and is the base currency to settle all transactions on Xade.
-      </Text>
-      <Pressable
-        onPress={() => setModal2Visible(!modal2Visible)}
-        style={{
-          borderRadius: 30,
-          paddingHorizontal: '40%',
-          paddingVertical: '6%',
-          elevation: 2,
-          marginTop: 10,
-          backgroundColor: '#fff',
-        }}>
-        <Text
-          style={{
-            color: 'black',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            fontSize: 14,
-          }}>
-          Close
-        </Text>
-      </Pressable>
-    </View>
+                  <View
+                    style={{
+                      backgroundColor: '#010101',
+                      padding: 35,
+                      alignItems: 'center',
+                      shadowColor: '#000',
+                      width: '100%',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 5,
+                    }}>
+                    {/* Image component added here */}
+                    <Image
+                      source={{
+                        uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712474035/hnjacvonwztzamqzibpt.png',
+                      }}
+                      style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
+                      resizeMode="contain" // Adjust resizeMode as needed
+                    />
+                    <Text
+                      style={{
+                        marginBottom: 15,
+                        textAlign: 'center',
+                        fontFamily: 'Unbounded-Medium',
+                        fontSize: 20,
+                        color: '#fff',
+                      }}>
+                      CASH BALANCE
+                    </Text>
+                    <Text
+                      style={{
+                        marginBottom: 15,
+                        textAlign: 'center',
+                        color: '#666',
+                        fontSize: 16,
+                      }}>
+                      Your Cash Balance is the USDC you hold on the Polygon POS
+                      chain and is the base currency to settle all transactions
+                      on Xade.
+                    </Text>
+                    <Pressable
+                      onPress={() => setModal2Visible(!modal2Visible)}
+                      style={{
+                        borderRadius: 30,
+                        paddingHorizontal: '40%',
+                        paddingVertical: '6%',
+                        elevation: 2,
+                        marginTop: 10,
+                        backgroundColor: '#fff',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'black',
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: 14,
+                        }}>
+                        Close
+                      </Text>
+                    </Pressable>
+                  </View>
                 </View>
               </Modal>
             </View>
@@ -549,9 +559,7 @@ const Portfolio = ({navigation}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   marginTop: 22,
-                }}>
-  
-              </View>
+                }}></View>
             </Modal>
           </View>
           <View

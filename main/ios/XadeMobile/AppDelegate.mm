@@ -1,7 +1,8 @@
 #import "AppDelegate.h"
 #import "RNNotifications.h"
 #import <Firebase.h>
-#import <react_native_particle_auth/react_native_particle_auth-Swift.h>
+#import <react_native_particle_auth/react_native_particle_auth-
+#import <react_native_particle_connect/react_native_particle_connect-Swift.h>
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
@@ -31,26 +32,21 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  // if ([ParticleAuthSchemeManager handleUrl:url] == YES && [ParticleConnectSchemeManager handleUrl:url] == YES) {
-  //   return YES;
-  // } else {
-  //   // other methods
-  // }
-  // return YES;
   if ([ParticleAuthSchemeManager handleUrl:url] == YES) {
     return YES;
   } else {
     // other methods
   }
   return YES;
-  /*
-  if ([ParticleAuthSchemeManager handleUrl:url] == YES) {
-  return YES;
-} else {
-  // other methods
 }
-return YES;
-   */
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  if ([ParticleConnectSchemeManager handleUrl:url] == YES) {
+    return YES;
+  } else {
+    // other methods
+  }
+  return YES;
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

@@ -22,11 +22,14 @@ const MarketChart = props => {
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(true);
   const currentItem = props.item;
+
   const [selectedTab, setSelectedTab] = useState('News');
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
-  const tradingViewWidgetHTML = `
+  const isStockTrade = useSelector(x => x.market.isStockTrade);
+  const tradingViewWidgetHTML = !isStockTrade
+    ? `
   
   <!-- TradingView Widget BEGIN -->
 <div class="tradingview-widget-container">
@@ -47,7 +50,8 @@ const MarketChart = props => {
   </script>
 </div>
 <!-- TradingView Widget END -->
-`;
+`
+    : null;
   // Function to render a single tab item
   const renderTabItem = tabName => (
     <TouchableOpacity
@@ -69,16 +73,20 @@ const MarketChart = props => {
     </TouchableOpacity>
   );
   const holdings = useSelector(x => x.portfolio.holdings);
-  const currentAsset = holdings?.assets?.filter(
-    x => x?.asset?.symbol?.toLowerCase() === currentItem?.symbol?.toLowerCase(),
-  );
+  let currentAsset;
+  if (!isStockTrade) {
+    currentAsset = holdings?.assets?.filter(
+      x =>
+        x?.asset?.symbol?.toLowerCase() === currentItem?.symbol?.toLowerCase(),
+    );
+  }
 
   useFocusEffect(
     useCallback(() => {
-      // async function onFocusFunction() {
-      dispatch(setAssetMetadata(currentItem?.name));
-      // }
-      // onFocusFunction();
+      if (!isStockTrade) {
+        console.log('runnnn', isStockTrade);
+        dispatch(setAssetMetadata(currentItem?.name));
+      }
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
@@ -116,13 +124,14 @@ const MarketChart = props => {
         setLoading(false);
       }
     };
-
-    fetchData();
+    if (!isStockTrade) {
+      fetchData();
+    }
   }, []);
 
   const data = [];
 
-  if (selectedAssetMetaData) {
+  if (selectedAssetMetaData && !isStockTrade) {
     selectedAssetMetaData?.market_cap &&
       data.push({
         label: 'Market Cap',
@@ -142,8 +151,7 @@ const MarketChart = props => {
       });
   }
 
-  if (!selectedAssetMetaData) {
-    // Return null or a placeholder component if selectedAssetMetaData is not available
+  if (!selectedAssetMetaData && !isStockTrade) {
     return null; // or <PlaceholderComponent />;
   }
 
@@ -174,17 +182,19 @@ const MarketChart = props => {
             <Text style={styles.stockHead}>
               {currentItem?.name?.includes('Coinbase') //Temporary Fix
                 ? 'Coinbase'
-                : currentItem?.name}
+                : currentItem?.name || currentItem?.stock?.symbol}
             </Text>
           </View>
         </View>
 
         <View style={styles.coinChart}>
           <View style={styles.chartContainer}>
-            <InvestmentChart assetName={currentItem?.name} />
+            <InvestmentChart
+              assetName={currentItem?.name || currentItem?.stock?.id}
+            />
           </View>
         </View>
-        <View
+        {/* <View
           style={{
             backgroundColor: '#1414141',
             marginTop: '3%',
@@ -222,7 +232,7 @@ const MarketChart = props => {
               </View>
             ))}
           </ScrollView>
-        </View>
+        </View> */}
         <TouchableOpacity
           style={{
             paddingHorizontal: '5%',
@@ -258,7 +268,7 @@ const MarketChart = props => {
                 fontSize: 14,
               }}>
               {currentAsset?.[0]?.token_balance?.toFixed(6) ?? 0.0}
-              {` ${currentItem.symbol}`}
+              {` ${currentItem?.symbol ?? currentItem?.stock?.symbol}`}
             </Text>
           </View>
         </TouchableOpacity>
