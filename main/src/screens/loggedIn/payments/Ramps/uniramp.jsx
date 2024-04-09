@@ -53,7 +53,7 @@ const Uniramp = ({route, navigation}) => {
       />
       <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => navigation.push('Portfolio')}
+          onPress={() => navigation.push('Ramper')}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
@@ -72,10 +72,11 @@ const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
+    marginTop:'5%'
   },
   overlay: {
     position: 'absolute',
-    top: 0,
+    top: '2%',
     left: 0,
     right: 0,
     backgroundColor: '#fff',

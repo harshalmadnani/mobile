@@ -84,14 +84,14 @@ import DinariKycWebview from './screens/stocks/KYCFlow/DinariKycWebview';
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
   enableTimeToInitialDisplay: true,
 });
-// Sentry.init({
-//   dsn: 'https://1b1bbd962e5ed53341f84c3a6389bc8f@o4506999411703808.ingest.us.sentry.io/4506999413407744',
-//   enableAutoSessionTracking: true,
-//   // Sessions close after app is 10 seconds in the background.
-//   sessionTrackingIntervalMillis: 20000,
-//   tracesSampleRate: 1.0,
-//   integrations: [new Sentry.ReactNativeTracing(routingInstrumentation)],
-// });
+Sentry.init({
+  dsn: 'https://1b1bbd962e5ed53341f84c3a6389bc8f@o4506999411703808.ingest.us.sentry.io/4506999413407744',
+  enableAutoSessionTracking: true,
+  // Sessions close after app is 10 seconds in the background.
+  sessionTrackingIntervalMillis: 20000,
+  tracesSampleRate: 1.0,
+  integrations: [new Sentry.ReactNativeTracing(routingInstrumentation)],
+});
 
 function PreLaunchLoad({navigation}) {
   return (

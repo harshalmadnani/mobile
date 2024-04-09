@@ -101,6 +101,7 @@ export default function EnterAmountComponent({navigation, route}) {
       )
         .then(response => {
           if (response.status == 200) {
+            console.log(response);
             return response.text();
           } else return '';
         })

@@ -157,7 +157,7 @@ export default function Component({navigation, route}) {
             type="material"
             color="#fff"
             onPress={() => {
-              navigation.push('Payments');
+              navigation.navigate('Settings');
             }}
           />
         </TouchableOpacity>

@@ -13,10 +13,6 @@ import {
 import InteractiveChart from '../../../../component/charts/Chart';
 import styles from '../investment-styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  getCryptoHoldingForAddressFromMobula,
-  getEvmAddresses,
-} from '../../../../store/actions/portfolio';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
 const options = {
@@ -489,6 +485,7 @@ const Portfolio = ({navigation}) => {
                       padding: 35,
                       alignItems: 'center',
                       shadowColor: '#000',
+                      width: '100%',
                       shadowOffset: {
                         width: 0,
                         height: 2,
@@ -497,6 +494,14 @@ const Portfolio = ({navigation}) => {
                       shadowRadius: 4,
                       elevation: 5,
                     }}>
+                    {/* Image component added here */}
+                    <Image
+                      source={{
+                        uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712474035/hnjacvonwztzamqzibpt.png',
+                      }}
+                      style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
+                      resizeMode="contain" // Adjust resizeMode as needed
+                    />
                     <Text
                       style={{
                         marginBottom: 15,
@@ -554,24 +559,7 @@ const Portfolio = ({navigation}) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   marginTop: 22,
-                }}>
-                <View
-                  style={{
-                    margin: 20,
-                    backgroundColor: '#000',
-                    borderRadius: 20,
-                    padding: 35,
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                    elevation: 5,
-                  }}></View>
-              </View>
+                }}></View>
             </Modal>
           </View>
           <View

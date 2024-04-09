@@ -8,6 +8,7 @@ import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 import {useFocusEffect} from '@react-navigation/native';
+import {getEvmAddresses} from '../../store/actions/portfolio';
 export default InteractiveChart;
 function CustomPriceText() {
   return (
@@ -71,12 +72,16 @@ function InteractiveChart() {
       if (from === null) return; // Early exit if timestamp is not found
 
       try {
-        console.log('wallet history fetch...');
+        console.log('wallet history fetch...', from);
         const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
         const historicalPriceXYPair = data?.balance_history?.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
-        console.log('wallet history......', historicalPriceXYPair.length);
+        console.log(
+          'wallet history......',
+          historicalPriceXYPair[0],
+          historicalPriceXYPair[100],
+        );
         if (historicalPriceXYPair?.length > 0) {
           setPriceList(historicalPriceXYPair);
         }
@@ -85,7 +90,11 @@ function InteractiveChart() {
         console.log(e);
       }
     }
-    init();
+    if (evmInfo?.smartAccount) {
+      init();
+    } else {
+      dispatch(getEvmAddresses());
+    }
   }, [selectedTimeframe]);
   useFocusEffect(
     useCallback(() => {
@@ -97,7 +106,7 @@ function InteractiveChart() {
           const from = selectedTimeframeObject
             ? selectedTimeframeObject.timestamp
             : null;
-          console.log('wallet history fetch...');
+          console.log('from time.....', from);
           const data = await getWalletHistoricalData(
             evmInfo?.smartAccount,
             from,
@@ -105,7 +114,6 @@ function InteractiveChart() {
           const historicalPriceXYPair = data?.balance_history?.map(entry => {
             return {timestamp: entry[0], value: entry[1]};
           });
-          console.log('wallet history......', historicalPriceXYPair?.length);
           if (historicalPriceXYPair?.length > 0) {
             setPriceList(historicalPriceXYPair);
           }
@@ -114,7 +122,11 @@ function InteractiveChart() {
           console.log(e);
         }
       }
-      initialHistoryFetch();
+      if (evmInfo?.smartAccount) {
+        initialHistoryFetch();
+      } else {
+        dispatch(getEvmAddresses());
+      }
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };

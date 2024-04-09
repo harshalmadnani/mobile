@@ -239,9 +239,10 @@ const Ramper = ({navigation}) => {
                   fontSize: getDynamicFontSize(value?.length ?? 0),
                   color: '#fff',
                   textAlign: 'center',
-                  marginTop: 10,
+             
                   fontFamily: 'Unbounded-Medium',
                   maxWidth: '80%',
+                  alignSelf:'center'
                 }}>
                 {getCurrencySymbol(fiat.id)}
               </Text>
@@ -319,7 +320,7 @@ const Ramper = ({navigation}) => {
                 textAlign: 'center',
                 fontFamily: 'NeueMontreal-Medium',
               }}>
-              Choose your preffered deposit method
+              Choose your preferred deposit method
             </Text>
             <Text
               style={{
