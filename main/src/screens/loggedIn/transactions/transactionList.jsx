@@ -16,7 +16,7 @@ import {
   getWalletTransactionForAddressFromDLN,
   getWalletTransactionForAddressFromMobula,
 } from '../../../store/actions/portfolio';
-import { SceneMap, TabView } from 'react-native-tab-view';
+import {SceneMap, TabView} from 'react-native-tab-view';
 
 const width = Dimensions.get('window').width;
 const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
@@ -28,7 +28,7 @@ const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
         paddingVertical: 12,
         paddingHorizontal: 6,
         borderRadius: 100,
-        
+
         backgroundColor: isActive ? '#303030' : '#1d1d1d',
         alignItems: 'center',
         justifyContent: 'center',
@@ -54,13 +54,12 @@ const TransactionList = ({navigation, route}) => {
     x => x.portfolio.evmDLNTradesTxListInfo,
   );
   const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
+  console.log(evmTxListInfo?.length);
   const getAllTxHistory = async () => {
     dispatch(getWalletTransactionForAddressFromMobula(page));
-    // setPage(page + 1);
   };
   const getAllDLNTradeHistory = async () => {
     dispatch(getWalletTransactionForAddressFromDLN(page));
-    // setPage(page + 1);
   };
   const onEndReachedFetch = async () => {
     // if (txType === 'dln') {
@@ -71,7 +70,6 @@ const TransactionList = ({navigation, route}) => {
   };
   useEffect(() => {
     if (txType === 'dln') {
-      // setPage(0);
       getAllDLNTradeHistory();
     } else {
       // setPage(0);
@@ -126,8 +124,8 @@ const TransactionList = ({navigation, route}) => {
           justifyContent: 'space-between',
           paddingHorizontal: '4%',
           width: '90%',
-          backgroundColor:'#1d1d1d',
-          padding:'2%',
+          backgroundColor: '#1d1d1d',
+          padding: '2%',
           borderRadius: 100,
         }}>
         <TransactionFilterButton
@@ -141,14 +139,12 @@ const TransactionList = ({navigation, route}) => {
           onFilterPressed={() => setTxType('dln')}
         />
       </View>
-      {evmTxListInfo?.transactions?.length > 0 ||
+      {evmTxListInfo?.length > 0 ||
       evmDLNTradesTxListInfo?.orders.length > 0 ? (
         <FlatList
-          style={{width: '100%', marginBottom: 64}}
+          style={{width: '100%', marginBottom: 30, flex: 1}}
           data={
-            txType === 'dln'
-              ? evmDLNTradesTxListInfo?.orders
-              : evmTxListInfo?.transactions
+            txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
           }
           renderItem={({item}) =>
             txType === 'transfers' ? (

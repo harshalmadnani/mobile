@@ -77,11 +77,6 @@ function InteractiveChart() {
         const historicalPriceXYPair = data?.balance_history?.map(entry => {
           return {timestamp: entry[0], value: entry[1]};
         });
-        console.log(
-          'wallet history......',
-          historicalPriceXYPair[0],
-          historicalPriceXYPair[100],
-        );
         if (historicalPriceXYPair?.length > 0) {
           setPriceList(historicalPriceXYPair);
         }

@@ -145,7 +145,10 @@ const SuccessTxComponent = ({
           }}>
           You have successfully {isStockTrade ? 'placed order for' : 'bought'}{' '}
           {isStockTrade
-            ? (parseFloat(normalAmount) - 2.5).toFixed(6)
+            ? parseFloat(
+                txQuoteInfo?.estimation?.srcChainTokenIn?.amount / 1000000 -
+                  2.5,
+              ).toFixed(2)
             : normalAmount?.toFixed(6)}
           {isStockTrade
             ? ` USDC of ${stockInfo?.stock?.symbol} stocks`
