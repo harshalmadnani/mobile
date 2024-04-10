@@ -290,7 +290,7 @@ export const confirmDLNTransaction = async (
     txs.push(executeProxyDLN);
   } else {
     console.log('approval address....', smartAccount, txData, tokenAddress);
-    const erc20Abi = new ethers.utils.Interface(erc20);
+    const erc20Abi = new ethers.Interface(erc20);
     const sendData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,
       amount,

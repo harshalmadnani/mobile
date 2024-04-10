@@ -17,9 +17,9 @@ const DinariKycWebview = ({route, navigation}) => {
       try {
         const response = await checkKYCAvailableOrNotForDinari(address);
         console.log(response);
-        if (response != 'PENDING') {
+        if (response === 'PASS') {
           clearInterval(interval);
-          navigation.navigate('MarketInfo');
+          navigation.navigate('Portfolio');
         }
       } catch (error) {
         console.error('Error fetching data:', error);
