@@ -100,7 +100,13 @@ const PendingTxComponent = ({
     </View>
   );
 };
-const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
+const SuccessTxComponent = ({
+  txQuoteInfo,
+  tradeType,
+  normalAmount,
+  isStockTrade,
+  stockInfo,
+}) => {
   const navigation = useNavigation();
   return (
     <View style={{width: '100%'}}>
@@ -127,7 +133,7 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
             marginTop: 24,
             color: '#fff',
           }}>
-          IT’S A SUCCESS!
+          {isStockTrade ? 'Order is Booked' : 'IT’S A SUCCESS!'}
         </Text>
         <Text
           style={{
@@ -137,9 +143,17 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
             marginTop: 24,
             color: '#949494',
           }}>
-          You have successfully bought {normalAmount?.toFixed(6)}{' '}
-          {txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
-            txQuoteInfo?.action?.toToken?.name}
+          You have successfully {isStockTrade ? 'placed order for' : 'bought'}{' '}
+          {isStockTrade
+            ? parseFloat(
+                txQuoteInfo?.estimation?.srcChainTokenIn?.amount / 1000000 -
+                  2.5,
+              ).toFixed(2)
+            : normalAmount?.toFixed(6)}
+          {isStockTrade
+            ? ` USDC of ${stockInfo?.stock?.symbol} stocks`
+            : txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
+              txQuoteInfo?.action?.toToken?.name}
         </Text>
       </View>
       <View style={{marginTop: '15%'}}>
@@ -201,8 +215,8 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                       ))
                   ).toFixed(6)
                 : //when same chain
-
-                  txQuoteInfo?.action?.toToken?.priceUSD || //when cross chain
+                !isStockTrade
+                ? txQuoteInfo?.action?.toToken?.priceUSD || //when cross chain
                   (
                     txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
                     Math.pow(
@@ -214,7 +228,8 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                         10,
                         txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
                       ))
-                  ).toFixed(6)}
+                  ).toFixed(6)
+                : stockInfo?.priceInfo?.price}
             </Text>
           </View>
 
@@ -253,6 +268,8 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
                         txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
                       )
                     ).toFixed(2)
+                  : isStockTrade
+                  ? 2.5
                   : txQuoteInfo?.estimation?.costsDetails?.filter(
                       x => x.type === 'DlnProtocolFee',
                     )[0]?.payload?.feeAmount /
@@ -335,7 +352,7 @@ const SuccessTxComponent = ({txQuoteInfo, tradeType, normalAmount}) => {
   );
 };
 const PendingTxStatusPage = ({route, navigation}) => {
-  const {state, tradeType, signature} = route.params;
+  const {state, tradeType, isStockTrade, stockInfo, signature} = route.params;
   const txQuoteInfo = state;
 
   const [countdown, setCountdown] = useState(
@@ -404,6 +421,8 @@ const PendingTxStatusPage = ({route, navigation}) => {
           txQuoteInfo={txQuoteInfo}
           normalAmount={normalAmount}
           tradeType={tradeType}
+          isStockTrade={isStockTrade}
+          stockInfo={stockInfo}
         />
       ) : (
         <PendingTxComponent

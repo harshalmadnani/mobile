@@ -21,10 +21,10 @@ export const getCryptoHoldingForAddressFromMobula = (smartAccount, asset) => {
     return data;
   };
 };
-export const getWalletTransactionForAddressFromMobula = page => {
+export const getWalletTransactionForAddressFromMobula = () => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
-    const data = await getTransactionsByWallet(evmInfo.smartAccount, page);
+    const data = await getTransactionsByWallet(evmInfo.smartAccount, 0);
     dispatch(portfolioAction.setEvmTxList(data));
   };
 };

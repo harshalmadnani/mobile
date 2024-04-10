@@ -488,30 +488,5 @@ export const placeMarketOrderToDinari = async (
   );
   console.log('Final ARB TX', signature);
 
-  // const txReceipt = await signer.getTransactionReceipt(signature);
-  // const events = txReceipt.logs.map(log =>
-  //   orderProcessor.interface.parseLog(log),
-  // );
-  // const orderEvent = events.find(
-  //   event => event && event.name === 'OrderRequested',
-  // );
-  // if (!orderEvent) throw new Error('no order event');
-  // const orderId = orderEvent.args[0];
-  // const orderAccount = orderEvent.args[1];
-  // console.log(`${orderId} Order ID: ${orderAccount}`);
   return signature;
-
-  // if (!events) throw new Error('no events');
-  // const orderEvent = events.find(
-  //   event => event && event.name === 'OrderRequested',
-  // );
-  // if (!orderEvent) throw new Error('no order event');
-  // const orderId = orderEvent.args[0];
-  // const orderAccount = orderEvent.args[1];
-  // console.log(`Order ID: ${orderId}`);
-  // console.log(`Order Account: ${orderAccount}`);
-
-  // // use order id to get order status (ACTIVE, FULFILLED, CANCELLED)
-  // const orderStatus = await orderProcessor.getOrderStatus(orderId);
-  // console.log(`Order Status: ${orderStatus}`);
 };

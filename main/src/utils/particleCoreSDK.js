@@ -76,7 +76,7 @@ export const getAuthCoreProviderEthers = loginType => {
   });
   // @ts-ignore
   const ether = new ethers.BrowserProvider(provider);
-  console.log('start....', ether);
+  console.log('start....');
   return ether;
 };
 export const connectWithAuthCore = async navigation => {
@@ -226,49 +226,167 @@ export const signAndSendBatchTransactionWithGasless = async (
   if (resultDeploy.status) {
     const isDeploy = resultDeploy.data;
     console.log('isDeploy result', isDeploy);
-  } else {
-    const error = resultDeploy.data;
-    console.log('isDeploy result', error);
-  }
-  const resultAAEnableMode = await particleAA.isAAModeEnable();
-  console.log('Enable result', transactions.length, eoaAddress);
-  try {
-    const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
-      eoaAddress,
-      transactions,
-    );
-    console.log('whole fee  result', wholeFeeQuote);
-    if (!resultAAEnableMode) {
-      particleAA.enableAAMode();
-    }
-    // if (smartAccountAddress === undefined) {
-    //   return;
-    // }
+    if (resultDeploy.data) {
+      const resultAAEnableMode = await particleAA.isAAModeEnable();
+      console.log('Enable result', resultAAEnableMode);
+      try {
+        const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
+          eoaAddress,
+          transactions,
+        );
+        console.log('whole fee  result', wholeFeeQuote);
+        if (!resultAAEnableMode) {
+          particleAA.enableAAMode();
+        }
+        // if (smartAccountAddress === undefined) {
+        //   return;
+        // }
 
-    const verifyingPaymasterGasless = wholeFeeQuote.verifyingPaymasterGasless;
-    if (verifyingPaymasterGasless === undefined) {
-      console.log('gasless is not available');
-      return;
+        const verifyingPaymasterGasless =
+          wholeFeeQuote.verifyingPaymasterGasless;
+        if (verifyingPaymasterGasless === undefined) {
+          console.log('gasless is not available');
+          return;
+        }
+        console.log('startedddd.....verifying', verifyingPaymasterGasless);
+        if (verifyingPaymasterGasless === undefined) {
+          console.log('gasless is not available');
+          return;
+        }
+        const result = await particleAuthCore.evm.batchSendTransactions(
+          transactions,
+          particleAuth.AAFeeMode.gasless(wholeFeeQuote),
+        );
+        if (result.status) {
+          const signature = result.data;
+          console.log('signAndSendTransactionWithGasless result', signature);
+          return signature;
+        } else {
+          const error = result.data;
+          console.log('signAndSendTransactionWithGasless result error', error);
+        }
+      } catch (error) {
+        console.log('error....', error);
+      }
+    } else if (resultDeploy.data === false) {
+      const error = resultDeploy.data;
+      console.log('isDeploy result error', error);
+      const deploySmartAccount =
+        await particleAuthCore.evm.batchSendTransactions(
+          transactions[0],
+          particleAuth.AAFeeMode.gasless(wholeFeeQuote),
+        );
+      if (deploySmartAccount) {
+        setTimeout(async () => {
+          // const deployRecheck = await particleAA.isDeploy(eoaAddress);
+          // console.log('isDeploy result', deployRecheck?.data);
+          // if (!deployRecheck) {
+          // }
+          // const resultAAEnableMode = await particleAA.isAAModeEnable();
+          // console.log('Enable result', resultAAEnableMode);
+          // try {
+          //   const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
+          //     eoaAddress,
+          //     transactions,
+          //   );
+          //   console.log('whole fee  result', wholeFeeQuote);
+          //   if (!resultAAEnableMode) {
+          //     particleAA.enableAAMode();
+          //   }
+          //   // if (smartAccountAddress === undefined) {
+          //   //   return;
+          //   // }
+          //   const verifyingPaymasterGasless =
+          //     wholeFeeQuote.verifyingPaymasterGasless;
+          //   if (verifyingPaymasterGasless === undefined) {
+          //     console.log('gasless is not available');
+          //     return;
+          //   }
+          //   console.log('startedddd.....verifying', verifyingPaymasterGasless);
+          //   if (verifyingPaymasterGasless === undefined) {
+          //     console.log('gasless is not available');
+          //     return;
+          //   }
+          //   const result = await particleAuthCore.evm.batchSendTransactions(
+          //     transactions,
+          //     particleAuth.AAFeeMode.gasless(wholeFeeQuote),
+          //   );
+          //   if (result.status) {
+          //     const signature = result.data;
+          //     console.log(
+          //       'signAndSendTransactionWithGasless result',
+          //       signature,
+          //     );
+          //     return signature;
+          //   } else {
+          //     const error = result.data;
+          //     console.log(
+          //       'signAndSendTransactionWithGasless result error',
+          //       error,
+          //     );
+          //   }
+          // } catch (error) {
+          //   console.log('error....', error);
+          // }
+          const recursiveFunction = async () => {
+            const deployRecheck = await particleAA.isDeploy(eoaAddress);
+            console.log('isDeploy result', deployRecheck?.data);
+            if (!deployRecheck) {
+              await recursiveFunction();
+              return; // Stop the execution of the current function
+            }
+
+            const resultAAEnableMode = await particleAA.isAAModeEnable();
+            console.log('Enable result', resultAAEnableMode);
+            try {
+              const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
+                eoaAddress,
+                transactions,
+              );
+              console.log('whole fee  result', wholeFeeQuote);
+              if (!resultAAEnableMode) {
+                particleAA.enableAAMode();
+              }
+              const verifyingPaymasterGasless =
+                wholeFeeQuote.verifyingPaymasterGasless;
+              if (verifyingPaymasterGasless === undefined) {
+                console.log('gasless is not available');
+                return;
+              }
+              console.log(
+                'startedddd.....verifying',
+                verifyingPaymasterGasless,
+              );
+              if (verifyingPaymasterGasless === undefined) {
+                console.log('gasless is not available');
+                return;
+              }
+              const result = await particleAuthCore.evm.batchSendTransactions(
+                transactions,
+                particleAuth.AAFeeMode.gasless(wholeFeeQuote),
+              );
+              if (result.status) {
+                const signature = result.data;
+                console.log(
+                  'signAndSendTransactionWithGasless result',
+                  signature,
+                );
+                return signature;
+              } else {
+                const error = result.data;
+                console.log(
+                  'signAndSendTransactionWithGasless result error',
+                  error,
+                );
+              }
+            } catch (error) {
+              console.log('error....', error);
+            }
+          };
+          recursiveFunction();
+        }, 8000);
+      }
     }
-    console.log('startedddd.....verifying', verifyingPaymasterGasless);
-    if (verifyingPaymasterGasless === undefined) {
-      console.log('gasless is not available');
-      return;
-    }
-    const result = await particleAuthCore.evm.batchSendTransactions(
-      transactions,
-      particleAuth.AAFeeMode.gasless(wholeFeeQuote),
-    );
-    if (result.status) {
-      const signature = result.data;
-      console.log('signAndSendTransactionWithGasless result', signature);
-      return signature;
-    } else {
-      const error = result.data;
-      console.log('signAndSendTransactionWithGasless result error', error);
-    }
-  } catch (error) {
-    console.log('error....', error);
   }
 };
 export const encodeFunctionForDLN = params => {

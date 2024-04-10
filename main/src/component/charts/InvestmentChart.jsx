@@ -104,8 +104,17 @@ function InteractiveChart({assetName}) {
           const historicalPriceXYPair = data?.map(entry => {
             return {timestamp: entry?.timestamp, value: entry?.open};
           });
-          setPriceList(historicalPriceXYPair);
-          setcurrentPrice(data?.[data?.length - 1]?.open);
+          if (historicalPriceXYPair.length > 0) {
+            setPriceList(historicalPriceXYPair);
+          } else {
+            setPriceList([
+              {timestamp: 0, value: 0},
+              {timestamp: 0, value: 0},
+            ]);
+          }
+          if (historicalPriceXYPair.length > 0) {
+            setcurrentPrice(data?.[data?.length - 1]?.open);
+          }
         }
       } catch (e) {
         console.log(e);
@@ -144,8 +153,19 @@ function InteractiveChart({assetName}) {
             const historicalPriceXYPair = data?.map(entry => {
               return {timestamp: entry?.timestamp, value: entry?.open};
             });
-            setPriceList(historicalPriceXYPair);
-            setcurrentPrice(data?.[data?.length - 1]?.open);
+            if (historicalPriceXYPair.length > 0) {
+              setPriceList(historicalPriceXYPair);
+            } else {
+              setPriceList([
+                {timestamp: 0, value: 0},
+                {timestamp: 0, value: 0},
+              ]);
+            }
+            if (historicalPriceXYPair.length > 0) {
+              setcurrentPrice(data?.[data?.length - 1]?.open);
+            }
+            // setPriceList(historicalPriceXYPair);
+            // setcurrentPrice(data?.[data?.length - 1]?.open);
           }
         } catch (e) {
           console.log(e);

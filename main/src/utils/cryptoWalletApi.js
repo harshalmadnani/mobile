@@ -79,17 +79,15 @@ export const getTransactionsByWallet = async (address, page) => {
     const response = await axios.get(
       `${mobulaBaseURL}${
         marketRoutes.getWalletTransactions
-      }?asset=USDC&wallet=${address}&order=asc&limit=${50}&offset=${
-        0
-        // page ? page * 50 : 50
-      }`,
+      }?asset=USDC&wallet=${address}&order=asc&limit=${50}&offset=${0}`,
       {
         headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
       },
     );
+    console.log('all tx historyy....', response?.data?.data);
     return response?.data?.data;
   } catch (error) {
-    console.log('error  from history api:', error?.response?.data);
+    console.log('error tx history from history api:', error?.response?.data);
     return [];
   }
 };
