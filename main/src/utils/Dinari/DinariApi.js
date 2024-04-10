@@ -116,35 +116,42 @@ export const checkKYCAvailableOrNotForDinari = async evmAddress => {
   }
 };
 export const requestKYCWalletSignatureForDinari = async evmAddress => {
-  try {
-    const response = await axios.post(
-      `${dinariBaseURL}/api/v1/web3/wallet/${evmAddress}/kyc/managed/nonce`,
-      {},
-      {
-        headers: {
-          Authorization: 'Bearer bnod0_h-1dFU_nq5BVZZIXkDmqpXbsrc-8KxT4Gp-w8',
-        },
+  // try {
+  const response = await axios.post(
+    `${dinariBaseURL}/api/v1/web3/wallet/${evmAddress}/kyc/managed/nonce`,
+    {},
+    {
+      headers: {
+        Authorization: 'Bearer bnod0_h-1dFU_nq5BVZZIXkDmqpXbsrc-8KxT4Gp-w8',
       },
-    );
-    console.log('response from dinari get message chart api:', response?.data);
-    if (response?.data) {
-      const signature = await getSignedMessage(response?.data?.message);
+    },
+  );
+  console.log('response from dinari get message chart api:', response?.data);
+  if (response?.data) {
+    const signature = await getSignedMessage(response?.data?.message);
+    console.log('personal sign......', signature);
+    if (signature) {
       const kycInfORes = await requestKYCWalletURLForDinari(
         evmAddress,
         signature?.data?.signature,
         response?.data?.nonce,
       );
       return kycInfORes?.embed_url;
+    } else {
+      return false;
     }
-    // return true;
-  } catch (error) {
-    console.log(
-      'error from dinari get kyc/managed/nonc price api:',
-      evmAddress,
-      error?.response?.data,
-    );
+  } else {
     return false;
   }
+  // return true;
+  // } catch (error) {
+  //   console.log(
+  //     'error from dinari get kyc/managed/nonc price api:',
+  //     evmAddress,
+  //     error?.response?.data,
+  //   );
+  //   return false;
+  // }
 };
 export const requestKYCWalletURLForDinari = async (
   evmAddress,
