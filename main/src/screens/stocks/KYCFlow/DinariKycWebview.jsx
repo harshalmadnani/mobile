@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexDirection: 'row', // Align children horizontally
     alignItems: 'center', // Align items vertically
-    height: '7%',
+    height: '10%',
     paddingHorizontal: 10, // Add some padding on the sides
   },
   overlayText: {

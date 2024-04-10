@@ -133,7 +133,7 @@ export const requestKYCWalletSignatureForDinari = async evmAddress => {
     if (signature) {
       const kycInfORes = await requestKYCWalletURLForDinari(
         evmAddress,
-        signature?.data?.signature,
+        signature?.data,
         response?.data?.nonce,
       );
       return kycInfORes?.embed_url;
