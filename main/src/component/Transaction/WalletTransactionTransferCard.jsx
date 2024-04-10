@@ -69,11 +69,13 @@ const WalletTransactionTransferCard = ({item}) => {
       <View style={{alignItems: 'flex-end'}}>
         {item?.type === 'buy' ? (
           <Text style={[styles.secondaryTitle, {color: '#07F70F', opacity: 1}]}>
-            + {formatCompactNumber(item?.amount)?.toFixed(2)} USDC
+            {/* + {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}
+            +{item?.amount} USDC
           </Text>
         ) : (
           <Text style={[styles.secondaryTitle, {color: '#fff', opacity: 1}]}>
-            - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC
+            {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}
+            -{item?.amount} USDC
           </Text>
         )}
       </View>
