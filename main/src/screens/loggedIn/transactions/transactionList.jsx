@@ -7,6 +7,7 @@ import {
   FlatList,
   SectionList,
   Pressable,
+  ImageBackground 
 } from 'react-native';
 import {Icon, Text} from 'react-native-elements';
 import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
@@ -25,8 +26,8 @@ const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
       onPress={() => onFilterPressed()}
       style={{
         width: '48%',
-        paddingVertical: 12,
-        paddingHorizontal: 6,
+        paddingVertical: '3%',
+        paddingHorizontal: '10%',
         borderRadius: 100,
 
         backgroundColor: isActive ? '#303030' : '#1d1d1d',
@@ -85,6 +86,7 @@ const TransactionList = ({navigation, route}) => {
         justifyContent: 'flex-start',
         alignItems: 'center',
       }}>
+        
       <View
         style={{
           flexDirection: 'row',

@@ -32,7 +32,7 @@ const WalletTransactionTradeCard = ({item}) => {
       style={{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#121212',
+        backgroundColor: '#000',
         width: '95%',
         borderRadius: 12,
         marginVertical: '2%',
@@ -48,14 +48,15 @@ const WalletTransactionTradeCard = ({item}) => {
           flexDirection: 'row',
         }}>
         <Image
-          style={{width: 50, height: 50}}
+          style={{width: 42, height: 42}}
           source={{
             uri: `${mainSwapToken.logoURI}`,
           }}
         />
         <View
           style={{
-            marginLeft: 8,
+            marginLeft: '5%',
+            alignSelf:'center'
           }}>
           <Text style={styles.primaryTitle}>
             {`${
@@ -64,8 +65,9 @@ const WalletTransactionTradeCard = ({item}) => {
                 : 'Sold'
             } ${mainSwapToken?.metadata?.symbol}`}
           </Text>
-          <Text style={styles.secondaryTitle}>
-            {moment.unix(item?.creationTimestamp).format('MMM Do YY')}
+          <Text style={{color:'#8e8e8e',fontSize:14,fontFamily:'NeueMontreal-Medium'}}>
+          {moment.unix(item?.creationTimestamp).format('MMM Do ')} {moment.unix(item?.creationTimestamp).format('h:mm a')
+}
           </Text>
         </View>
       </View>
@@ -99,6 +101,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'Unbounded-Bold',
     color: '#ffffff',
+    
   },
   secondaryTitle: {
     fontSize: 12,
