@@ -77,14 +77,14 @@ fetch(url, {
       </View>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Image
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712653020/q1ulx9hgkakougdwqea5.png' }}
-        style={{ width: 470, height: 470 }}
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712760320/rnpptbg911dxaayttvca.png' }}
+        style={{ width: 280, height: 280 ,marginTop:'10%'}}
       />
     </View>
     <View style={{alignSelf:'flex-start',marginLeft:'5%', justifyContent: 'flex-end',marginBottom:'-50%',flex:1}}>
     <View style={styles.row}>
       <Image
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712667639/n6bg9u0bn6jixqk8utlr.png' }}
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712759373/kpsqcixtiabwkferzpri.png' }}
         style={styles.imageStyle}
       />
       <View style={styles.textContainer}>
@@ -94,7 +94,7 @@ fetch(url, {
     </View>
     <View style={styles.row}>
       <Image
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712667639/n6bg9u0bn6jixqk8utlr.png' }}
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712760002/i8kosnd5t1biiuhe3sg8.png' }}
         style={styles.imageStyle}
       />
       <View style={styles.textContainer}>
@@ -104,7 +104,7 @@ fetch(url, {
     </View>
     <View style={styles.row}>
       <Image
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712667639/n6bg9u0bn6jixqk8utlr.png' }}
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712759983/s81pfoh8z7pcmnfawqyy.png' }}
         style={styles.imageStyle}
       />
       <View style={styles.textContainer}>
