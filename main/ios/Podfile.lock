@@ -3,21 +3,20 @@ PODS:
   - AuthCoreAdapter (1.3.4):
     - ConnectCommon
     - ParticleAuthCore
-  - AWSCore (2.34.0)
-  - AWSKMS (2.34.0):
-    - AWSCore (= 2.34.0)
+  - AWSCore (2.35.0)
+  - AWSKMS (2.35.0):
+    - AWSCore (= 2.35.0)
   - Base58.swift (1.0.2):
     - BigInt
   - BigInt (5.2.0)
   - boost (1.76.0)
   - BVLinearGradient (2.8.3):
     - React-Core
-  - ConnectCommon (0.2.18):
+  - ConnectCommon (0.2.19):
     - BigInt (~> 5.2.0)
     - ParticleNetworkBase
     - RxAlamofire (~> 6.1.1)
     - secp256k1.swift (~> 0.1)
-    - SwiftyJSON (~> 5.0)
     - TweetNacl
   - CryptoSwift (1.8.1)
   - DoubleConversion (1.1.6)
@@ -40,9 +39,9 @@ PODS:
     - GoogleUtilities/Logger (~> 7.8)
   - FirebaseCoreExtension (10.7.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.23.0):
+  - FirebaseCoreInternal (10.24.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseInstallations (10.23.0):
+  - FirebaseInstallations (10.24.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
@@ -99,7 +98,7 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
-  - lottie-ios (4.4.1)
+  - lottie-ios (4.4.2)
   - lottie-react-native (6.7.0):
     - lottie-ios (~> 4.4.1)
     - React-Core
@@ -868,13 +867,13 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Alamofire: f36a35757af4587d8e4f4bfa223ad10be2422b8c
   AuthCoreAdapter: f73f3f2e2ec9e1656771d1c7703f96e47cb8d8f0
-  AWSCore: 35d036e9519377a20fd2783874b5ff44268608bb
-  AWSKMS: a5676e599365976484e9fc83f0f6c36a9c44cb70
+  AWSCore: f644b48f9508301ba5d2692b5a0c418ca47e1673
+  AWSKMS: e31f075a68fd8ae022018f636688bd4174a7d2a6
   Base58.swift: e0e16655f9db843b8cd367593ed6f7d90d136b7f
   BigInt: f668a80089607f521586bbe29513d708491ef2f7
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
-  ConnectCommon: b611c5e9e91c529295b77719319776f482703aa6
+  ConnectCommon: 358f61c57fcaa08bb91d01a547fa45a8be8014a0
   CryptoSwift: b9c701d6f5011df23794dbf7f2e480a77835d83d
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   FBLazyVector: ddb55c55295ea51ed98aa7e2e08add2f826309d5
@@ -882,15 +881,15 @@ SPEC CHECKSUMS:
   Firebase: 0219acf760880eeec8ce479895bd7767466d9f81
   FirebaseCore: e317665b9d744727a97e623edbbed009320afdd7
   FirebaseCoreExtension: f17247ba8c61e4d3c8d136b5e2de3cb4ac6a85b6
-  FirebaseCoreInternal: 6a292e6f0bece1243a737e81556e56e5e19282e3
-  FirebaseInstallations: 42d6ead4605d6eafb3b6683674e80e18eb6f2c35
+  FirebaseCoreInternal: bcb5acffd4ea05e12a783ecf835f2210ce3dc6af
+  FirebaseInstallations: 8f581fca6478a50705d2bd2abd66d306e0f5736e
   FirebaseMessaging: ac9062bcc35ed56e15a0241d8fd317022499baf8
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
-  lottie-ios: e047b1d2e6239b787cc5e9755b988869cf190494
+  lottie-ios: 4445b0bdb583c7a5325529f62246d311ee85fcd0
   lottie-react-native: e3205322282d72e23efb3bff3287d0bd16fb1b01
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   ParticleAA: fb608dcdfb1aabf5ff65d3ff1ae5750054f52fb3

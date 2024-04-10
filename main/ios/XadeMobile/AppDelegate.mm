@@ -39,14 +39,7 @@
   return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  if ([ParticleConnectSchemeManager handleUrl:url] == YES) {
-    return YES;
-  } else {
-    // other methods
-  }
-  return YES;
-}
+
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
