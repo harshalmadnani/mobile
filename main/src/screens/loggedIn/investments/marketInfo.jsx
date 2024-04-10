@@ -83,8 +83,7 @@ const MarketInfo = ({route, navigation, item}) => {
               evmInfo?.address,
             );
             console.log('kyc status', status);
-            // if (status !== 'PENDING' && status) {
-            if (!status) {
+            if (status === 'PASS' && status) {
               navigation.navigate('TradePage', {
                 state: item,
                 asset: [],

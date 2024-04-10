@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import Toast from 'react-native-root-toast';
 import {ImageAssets} from '../../../../../assets';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
@@ -60,7 +61,7 @@ const TradePage = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
-  const [value, setValue] = useState('2');
+  const [value, setValue] = useState('5');
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
@@ -126,7 +127,7 @@ const TradePage = ({route}) => {
         getBestPrice();
       }
     } else {
-      if (value !== '0' && value) {
+      if (value !== '0' && value > '5' && value) {
         getCurrentStockTradingPrice();
       }
     }
@@ -175,22 +176,22 @@ const TradePage = ({route}) => {
   };
   const getCurrentStockTradingPrice = async () => {
     setStockOrderStages('Getting Quotes...');
-    await switchAuthCoreChain(42161);
     const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
     const signerObj = await ethersProvider.getSigner();
     const res = await getDLNTradeCreateBuyOrder(
       137,
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      (parseInt(value) + 2) * 1000000,
+      parseInt(value) * 1000000,
       42161,
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
       signerObj.address,
     );
+    await switchAuthCoreChain(42161);
     const feesDinari = await getMarketOrderFeesEstimationFromDinari(
       state?.token?.address,
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
       signerObj,
-      res?.estimation?.dstChainTokenOut?.recommendedAmount,
+      parseInt(value - 2.5) * 1000000,
       false,
     );
     await switchAuthCoreChain(137);
@@ -203,26 +204,19 @@ const TradePage = ({route}) => {
     );
     setStockDLNRes(res);
     setStockOrderStages('Execute Order');
-    console.log(
-      'Feeessss.......',
-      feesDinari,
-      res?.estimation?.costsDetails?.filter(x => x.type === 'DlnProtocolFee')[0]
-        ?.payload?.feeAmount /
-        Math.pow(10, res?.estimation?.dstChainTokenOut?.decimals),
-    );
   };
   const orderStockPrice = async () => {
     setStockOrderStages('Trading ARB USDC...');
     const res = await confirmDLNTransactionPolToArb(
       tradeType,
       stockDLNRes,
-      (parseInt(value) + 2) * 1000000,
+      parseInt(value) * 1000000,
       stockDLNRes?.estimation?.srcChainTokenIn?.address,
       null,
       evmInfo?.smartAccount,
       evmInfo?.address,
     );
-    // const res = true;
+    setStockOrderStages('Confirming TXN...');
     if (res) {
       //after polling from Poly
       setTimeout(async () => {
@@ -235,7 +229,7 @@ const TradePage = ({route}) => {
           state?.token?.address,
           '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
           signerObj,
-          value * 1000000,
+          (parseInt(value) - 2.5) * 1000000,
           false,
           evmInfo?.smartAccount,
         );
@@ -249,7 +243,7 @@ const TradePage = ({route}) => {
             stockInfo: state,
           });
         }
-      }, 6000);
+      }, 8000);
     }
   };
   // Example of logging state changes
@@ -419,7 +413,18 @@ const TradePage = ({route}) => {
                 if (Platform.OS === 'ios') {
                   ReactNativeHapticFeedback.trigger('impactMedium', options);
                 }
-                setTradeType('sell');
+                if (!isStockTrade) {
+                  setTradeType('sell');
+                } else {
+                  Toast.show('Sell of socks coming soon!', {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
+                }
               }}>
               {tradeType === 'sell' ? (
                 <LinearGradient
@@ -819,7 +824,7 @@ const TradePage = ({route}) => {
                   }}>
                   $
                   {isStockTrade
-                    ? stockFee
+                    ? 2.5
                     : bestSwappingBuyTrades?.estimation?.costsDetails
                     ? tradeType === 'sell'
                       ? (
