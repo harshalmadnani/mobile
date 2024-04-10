@@ -49,6 +49,7 @@ import MainFlowStack from './navigator/MainFlow';
 // import SavingsUnsuccessful from './screens/loggedIn/savings/savingStatus/unsuccessful';
 import Ramper from './screens/loggedIn/payments/Ramps/ramper';
 import LiFi from './screens/loggedIn/payments/Ramps/lifi';
+import PreRegister from './screens/loggedIn/spending/PreRegister';
 import Uniramp from './screens/loggedIn/payments/Ramps/uniramp';
 import SettingsComponent from './screens/settings/settings';
 
@@ -81,6 +82,7 @@ import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxSt
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
 import * as Sentry from '@sentry/react-native';
 import DinariKycWebview from './screens/stocks/KYCFlow/DinariKycWebview';
+import { register } from 'module';
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation({
   enableTimeToInitialDisplay: true,
 });
@@ -687,6 +689,11 @@ function App({navigation, uri}) {
                 <Stack.Screen
                   name="LiFi"
                   component={LiFi}
+                  options={{headerShown: false}}
+                />
+                 <Stack.Screen
+                  name="PreRegister"
+                  component={PreRegister}
                   options={{headerShown: false}}
                 />
                 <Stack.Screen

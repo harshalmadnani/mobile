@@ -2,6 +2,7 @@ import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Pressable, StyleSheet, View} from 'react-native';
 import Portfolio from '../screens/loggedIn/investments/portfolio/portfolio';
+import Spending from '../screens/loggedIn/spending/spending';
 import SettingsComponent from '../screens/settings/settings';
 import Investments from '../screens/loggedIn/investments/investments';
 import FastImage from 'react-native-fast-image';
@@ -89,6 +90,45 @@ function MainFlowStack() {
           name="Investments"
           component={Investments}
         />
+
+<Tab.Screen
+          listeners={() => ({
+            tabPress: () => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+            },
+          })}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({focused, color, size}) =>
+              focused ? (
+                <FastImage
+                  source={require(`./navbar-images/savings-selected.png`)}
+                  style={{
+                    color: '#9D9D9D',
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              ) : (
+                <FastImage
+                  source={require(`./navbar-images/savings.png`)}
+                  style={{
+                    color: '#9D9D9D',
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              ),
+          }}
+          name="Spending"
+          component={Spending}
+        />
+
+
+
+
         <Tab.Screen
           listeners={() => ({
             tabPress: () => {
@@ -123,6 +163,7 @@ function MainFlowStack() {
           name="Settings"
           component={SettingsComponent}
         />
+        
       </Tab.Navigator>
     </View>
   );
