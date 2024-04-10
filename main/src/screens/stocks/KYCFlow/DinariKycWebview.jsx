@@ -19,7 +19,7 @@ const DinariKycWebview = ({route, navigation}) => {
         console.log(response);
         if (response === 'PASS') {
           clearInterval(interval);
-          navigation.navigate('Portfolio');
+          navigation.goBack();
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     justifyContent: 'center',
     fontFamily: 'Unbounded-Medium',
-    marginLeft: '18%',
+    marginLeft: '25%',
   },
   iconButton: {
     justifyContent: 'flex-start',

@@ -8,6 +8,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  Modal,
+  Image
 } from 'react-native';
 import MarketChart from './marketInfo/MarketChart';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,6 +29,7 @@ const MarketInfo = ({route, navigation, item}) => {
   const height = Dimensions.get('window').height;
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const holdings = useSelector(x => x.portfolio.holdings);
+    const [modal2Visible, setModal2Visible] = useState(false);
   let currentAsset;
   const isStockTrade = useSelector(x => x.market.isStockTrade);
   if (!isStockTrade) {
@@ -98,6 +101,11 @@ const MarketInfo = ({route, navigation, item}) => {
                   url,
                   address: evmInfo?.address,
                 });
+
+
+
+
+
               }
             }
           }
