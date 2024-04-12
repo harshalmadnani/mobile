@@ -9,6 +9,7 @@ const initialState = {
   selectedTimeFramePriceInfo: null,
   selectedAssetWalletHolding: null,
   bestSwappingTrades: null,
+  allSwappingTradesQuotes: [],
   tokenBalanceUSD: null,
   marketListFetchLoading: false,
   availableBlockchain: [
@@ -53,6 +54,9 @@ export const marketSlice = createSlice({
     },
     setStockTradeMode: (state, action) => {
       state.isStockTrade = action.payload;
+    },
+    setAllSwappingTradesQuotes: (state, action) => {
+      state.allSwappingTradesQuotes = action.payload;
     },
   },
 });

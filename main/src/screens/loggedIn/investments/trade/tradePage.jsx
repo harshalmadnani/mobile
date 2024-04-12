@@ -85,6 +85,9 @@ const TradePage = ({route}) => {
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
+  const allSwappingTradesQuotes = useSelector(
+    x => x.market.allSwappingTradesQuotes,
+  );
   const isStockTrade = useSelector(x => x.market.isStockTrade);
   const tokensToSell = isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
   const getDisplayText = () => {
@@ -94,6 +97,7 @@ const TradePage = ({route}) => {
     if (preparingTx) return <DotLoading loadingText="CONFIRMING" />;
     return 'CONFIRM';
   };
+  console.log('all trades', allSwappingTradesQuotes);
   useEffect(() => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {

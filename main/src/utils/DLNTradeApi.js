@@ -147,7 +147,7 @@ export const getBestCrossSwapRateBuy = async (
     return res;
   });
   let results = await Promise.all(ratesOfDifferentChainOut);
-
+  const listOfRoutes = [];
   // best rate calculation
   results = results.filter(x => x !== null);
   const bestTradingPrice = results.map(x => {
@@ -164,11 +164,9 @@ export const getBestCrossSwapRateBuy = async (
       chainId: x?.estimation?.dstChainTokenOut?.chainId || 137,
     };
   });
+  console.log('trade list........', bestTradingPrice);
   const bestPrice = Math.max(...bestTradingPrice.map(x => x.fee));
-  console.log(
-    'before filter',
-    bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
-  );
+
   results =
     bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId === 137
       ? results.filter(x => x?.estimate?.toAmountMin !== undefined)
@@ -179,9 +177,9 @@ export const getBestCrossSwapRateBuy = async (
         );
   console.log('after filter', results.length);
   if (results.length > 0) {
-    return results[0];
+    return {bestRate: results[0], allRates: bestTradingPrice};
   } else {
-    return [];
+    return {};
   }
 };
 

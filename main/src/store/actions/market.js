@@ -121,7 +121,7 @@ export const getBestDLNCrossSwapRateBuy = (
 ) => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
-    const bestRate = await getBestCrossSwapRateBuy(
+    const {bestRate, allRates} = await getBestCrossSwapRateBuy(
       blockchains,
       contractAddress,
       value,
@@ -129,6 +129,7 @@ export const getBestDLNCrossSwapRateBuy = (
     );
 
     dispatch(marketsAction.setBestSwappingRates(bestRate));
+    dispatch(marketsAction.setAllSwappingTradesQuotes(allRates));
   };
 };
 export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
