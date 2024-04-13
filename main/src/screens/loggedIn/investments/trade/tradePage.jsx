@@ -89,7 +89,7 @@ const TradePage = ({route}) => {
     x => x.market.allSwappingTradesQuotes,
   );
   const isStockTrade = useSelector(x => x.market.isStockTrade);
-  const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
+  const tokensToSell = isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
     if (!bestSwappingBuyTrades) return 'Calculating....';
@@ -97,7 +97,7 @@ const TradePage = ({route}) => {
     if (preparingTx) return <DotLoading loadingText="CONFIRMING" />;
     return 'CONFIRM';
   };
-  console.log('all trades', state, tokensToSell, tradeAsset);
+  console.log('all trades', allSwappingTradesQuotes);
   useEffect(() => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {
@@ -137,24 +137,6 @@ const TradePage = ({route}) => {
     }
   }, [value]);
 
-  useEffect(() => {
-    if (!isStockTrade) {
-      if (tradeType === 'sell') {
-        dispatch(
-          getBestDLNCrossSwapRateSell(
-            tokensToSell?.[0],
-            value * Math.pow(10, tokensToSell?.[0]?.decimals),
-          ),
-        );
-      } else {
-        getBestPrice();
-      }
-    } else {
-      if (value !== '0' && value > '5' && value) {
-        getCurrentStockTradingPrice();
-      }
-    }
-  }, [selectedAssetMetaData]);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
 
   const getTradeSigningData = async () => {
@@ -182,22 +164,19 @@ const TradePage = ({route}) => {
     }
   };
   const getBestPrice = async () => {
-    console.log('buy rate...', selectedAssetMetaData);
-    if (selectedAssetMetaData) {
-      setLoading(true);
-      dispatch(
-        getBestDLNCrossSwapRateBuy(
-          selectedAssetMetaData?.blockchains?.length > 0
-            ? selectedAssetMetaData?.blockchains
-            : [selectedAssetMetaData?.blockchain],
-          selectedAssetMetaData?.contracts?.length > 0
-            ? selectedAssetMetaData?.contracts
-            : [selectedAssetMetaData?.address],
-          value * 1000000, //USDC
-        ),
-      );
-      setLoading(false);
-    }
+    setLoading(true);
+    dispatch(
+      getBestDLNCrossSwapRateBuy(
+        selectedAssetMetaData?.blockchains?.length > 0
+          ? selectedAssetMetaData?.blockchains
+          : [selectedAssetMetaData?.blockchain],
+        selectedAssetMetaData?.contracts?.length > 0
+          ? selectedAssetMetaData?.contracts
+          : [selectedAssetMetaData?.address],
+        value * 1000000, //USDC
+      ),
+    );
+    setLoading(false);
   };
   const getCurrentStockTradingPrice = async () => {
     setStockOrderStages('Getting Quotes...');

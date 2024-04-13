@@ -19,11 +19,11 @@ import {
   fetchOnRampPaymentMethodsBasedOnIP,
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
-import CrossChainModal from '../../../../component/CrossChainModal/index';
-import {
-  connectWitParticleConnect,
-  initializedParticleConnect,
-} from '../../../../utils/particleConnectSDK';
+// import CrossChainModal from '../../../../component/CrossChainModal/index';
+// import {
+//   connectWitParticleConnect,
+//   initializedParticleConnect,
+// } from '../../../../utils/particleConnectSDK';
 import {SvgUri} from 'react-native-svg';
 import {Keyboard} from 'react-native';
 
@@ -64,8 +64,8 @@ const Ramper = ({navigation}) => {
 
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
-    setModalVisible(true);
-    // navigation.navigate('QRScreen');
+    // setModalVisible(true);
+    navigation.navigate('QRScreen');
   };
   // const handlePresentModalPress = useCallback(() => {
   //   bottomSheetModalRef.current?.present();
@@ -414,11 +414,10 @@ const Ramper = ({navigation}) => {
         </View>
         {/* <W3mNetworkButton /> */}
         {/* Modal Component */}
-        <CrossChainModal
+        {/* <CrossChainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          value={parseFloat(value)}
-        />
+        /> */}
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

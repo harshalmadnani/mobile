@@ -1,130 +1,125 @@
-import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {
-  Polygon,
-  Ethereum,
-  BNBChain,
-  Avalanche,
-  Base,
-  ArbitrumOne,
-  ArbitrumNova,
-} from '@particle-network/chains';
-import {ethers} from 'ethers';
-import erc20 from '../screens/loggedIn/payments/USDC.json';
-import {Env, ParticleInfo} from '@particle-network/rn-auth';
-import Web3 from 'web3';
-import * as particleConnect from '@particle-network/rn-connect';
-import {DappMetaData, WalletType} from '@particle-network/rn-connect';
-import * as particleAuth from '@particle-network/rn-auth';
-import {chainInfoOnId, switchAuthCoreChain} from './particleCoreSDK';
-// import BigNumber from 'bignumber.js';
-const projectId = PROJECT_ID;
-const clientKey = CLIENT_KEY;
-// Get your project id and client from dashboard,
-// https://dashboard.particle.network/
-let newWeb3;
-export const listOfWallet = [
-  {
-    name: WalletType.MetaMask,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-  {
-    name: WalletType.Trust,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-  {
-    name: WalletType.Rainbow,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-  {
-    name: WalletType.ImToken,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-  {
-    name: WalletType.Inch1,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-  {
-    name: WalletType.WalletConnect,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-  {
-    name: WalletType.Phantom,
-    url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
-  },
-];
-export const initializedParticleConnect = () => {
-  // Get your project id and client from dashboard,
-  // https://dashboard.particle.network/
+// import {PROJECT_ID, CLIENT_KEY} from '@env';
+// import {
+//   Polygon,
+//   Ethereum,
+//   BNBChain,
+//   Avalanche,
+//   Base,
+//   ArbitrumOne,
+//   ArbitrumNova,
+// } from '@particle-network/chains';
+// import {Env, ParticleInfo} from '@particle-network/rn-auth';
+// import Web3 from 'web3';
+// import * as particleConnect from '@particle-network/rn-connect';
+// import {DappMetaData, WalletType} from '@particle-network/rn-connect';
+// const projectId = PROJECT_ID;
+// const clientKey = CLIENT_KEY;
+// // Get your project id and client from dashboard,
+// // https://dashboard.particle.network/
+// let newWeb3;
+// export const listOfWallet = [
+//   {
+//     name: WalletType.MetaMask,
+//     url: 'https://static.vecteezy.com/system/resources/previews/013/481/615/original/metamask-crypto-wallet-for-defi-web3-dapps-and-nfts-icon-isolated-on-white-background-vector.jpg',
+//   },
+//   {
+//     name: WalletType.Trust,
+//     url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLEK_NbuGdm3RuJSYgUKQKz8XwUnZyBjwP1sy_wg7T3w&s',
+//   },
+//   {
+//     name: WalletType.Rainbow,
+//     url: 'https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/fc/ee/1e/fcee1eb5-b537-86a5-606e-925f17d7f7b5/AppIcon-0-0-1x_U007emarketing-0-5-0-P3-85-220.png/1200x630wa.png',
+//   },
+//   {
+//     name: WalletType.ImToken,
+//     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
+//   },
+//   {
+//     name: WalletType.Inch1,
+//     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
+//   },
+//   {
+//     name: WalletType.WalletConnect,
+//     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
+//   },
+//   {
+//     name: WalletType.Phantom,
+//     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png',
+//   },
+// ];
+// export const initializedParticleConnect = () => {
+//   // Get your project id and client from dashboard,
+//   // https://dashboard.particle.network/
 
-  ParticleInfo.projectId = projectId; // your project id
-  ParticleInfo.clientKey = clientKey; // your client key
+//   ParticleInfo.projectId = projectId; // your project id
+//   ParticleInfo.clientKey = clientKey; // your client key
 
-  if (ParticleInfo.projectId == '' || ParticleInfo.clientKey == '') {
-    throw new Error(
-      'You need set project info, Get your project id and client from dashboard, https://dashboard.particle.network',
-    );
-  }
+//   if (ParticleInfo.projectId == '' || ParticleInfo.clientKey == '') {
+//     throw new Error(
+//       'You need set project info, Get your project id and client from dashboard, https://dashboard.particle.network',
+//     );
+//   }
 
-  const chainInfo = Polygon;
-  const env = Env.Dev;
-  const metadata = new DappMetaData(
-    'cb6fc19a389caeab31f49d301b87ad73',
-    'https://xade.finance',
-    'https://connect.particle.network/icons/512.png',
-    'Xade Finance',
-    'Xade: The Crypto Neobank',
-    '',
-    '',
-  );
+//   const chainInfo = Polygon;
+//   const env = Env.Dev;
+//   const metadata = new DappMetaData(
+//     'cb6fc19a389caeab31f49d301b87ad73',
+//     'https://xade.finance',
+//     'https://connect.particle.network/icons/512.png',
+//     'Xade Finance',
+//     'Xade: The Crypto Neobank',
+//     '',
+//     '',
+//   );
 
-  // the rpcUrl works for WalletType EvmPrivateKey and SolanaPrivakey
-  // we have default rpc url in native SDK
-  particleConnect.init(chainInfo, env, metadata);
+//   // the rpcUrl works for WalletType EvmPrivateKey and SolanaPrivakey
+//   // we have default rpc url in native SDK
+//   particleConnect.init(chainInfo, env, metadata);
 
-  const chainInfos = [
-    Ethereum,
-    Polygon,
-    BNBChain,
-    Avalanche,
-    Base,
-    ArbitrumOne,
-  ];
-  particleConnect.setWalletConnectV2SupportChainInfos(chainInfos);
-};
+//   const chainInfos = [
+//     Ethereum,
+//     Polygon,
+//     BNBChain,
+//     Avalanche,
+//     Base,
+//     ArbitrumOne,
+//   ];
+//   particleConnect.setWalletConnectV2SupportChainInfos(chainInfos);
+// };
 
-export const connectWitParticleConnect = async walletType => {
-  const result = await particleConnect.connect(walletType);
-  if (result.status) {
-    console.log('connect success');
-    const account = result.data?.publicAddress;
-    console.log('pnaccount = ', account);
-    const provider = new particleConnect.ParticleConnectProvider({
-      projectId,
-      clientKey,
-      walletType,
-      account,
-    });
-    // @ts-ignore
-    newWeb3 = new Web3(provider);
-    return account;
-  } else {
-    const error = result.data;
-    console.log(error);
-  }
-};
-export const disconnectParticleConnect = async (publicAddress, walletType) => {
-  if (publicAddress == undefined) {
-    console.log('publicAddress is underfined, you need connect');
-    return;
-  }
-  const result = await particleConnect.disconnect(walletType, publicAddress);
-  if (result.status) {
-    console.log(result.data);
-  } else {
-    const error = result.data;
-    console.log(error);
-  }
-};
+// export const connectWitParticleConnect = async walletType => {
+//   const result = await particleConnect.connect(walletType);
+//   if (result.status) {
+//     console.log('connect success');
+//     const account = result.data?.publicAddress;
+//     console.log('pnaccount = ', account);
+//     const provider = new particleConnect.ParticleConnectProvider({
+//       projectId,
+//       clientKey,
+//       walletType,
+//       account,
+//     });
+//     // @ts-ignore
+//     newWeb3 = new Web3(provider);
+//     return account;
+//   } else {
+//     const error = result.data;
+//     console.log(error);
+//   }
+// };
+// export const disconnectParticleConnect = async (publicAddress, walletType) => {
+//   if (publicAddress == undefined) {
+//     console.log('publicAddress is underfined, you need connect');
+//     return;
+//   }
+//   const result = await particleConnect.disconnect(walletType, publicAddress);
+//   if (result.status) {
+//     console.log(result.data);
+//   } else {
+//     const error = result.data;
+//     console.log(error);
+//   }
+// };
 // const chainInfoOnId = chainId => {
 //   switch (chainId) {
 //     case 137:
@@ -140,182 +135,17 @@ export const disconnectParticleConnect = async (publicAddress, walletType) => {
 //   console.log(result);
 //   return result;
 // };
-export async function getEthereumTransaction(from, to, data, amount) {
-  // mock a evm native transaction,
-  // type is 0x2, should work in Ethereum, Polygon and other blockchains which support EIP1559
-  // send 0.01 native
-  try {
-    return await particleAuth.EvmService.createTransaction(
-      from,
-      data,
-      amount,
-      to,
-    );
-  } catch (error) {
-    console.log('approve tx', error);
-  }
-}
-export const getConnectProvider = walletType => {
-  const provider = new particleConnect.ParticleConnectProvider({
-    projectId,
-    clientKey,
-    walletType,
-  });
-  // @ts-ignore
-  const web3 = new Web3(provider);
-  console.log('HEre....', web3);
-  return web3;
-};
-export const particleConnectGetChainId = async walletType => {
-  try {
-    const provider = new particleConnect.ParticleConnectProvider({
-      projectId,
-      clientKey,
-      walletType,
-    });
-    // @ts-ignore
-    const web3 = new Web3(provider);
-    const chainId = await web3?.eth.getChainId();
-    console.log('web3.eth.getChainId', chainId);
-    // Toast.show({
-    //   type: 'success',
-    //   text1: 'chainId',
-    //   text2: String(chainId),
-    // });
-  } catch (error) {
-    console.log('web3.eth.getChainId', error);
-    // if (error instanceof Error) {
-    //   Toast.show({type: 'error', text1: error.message});
-    // }
-  }
-};
-export const particleConnectWalletSwitchEthereumChain = async (
-  walletType,
-  id,
-) => {
-  try {
-    const chainInfo = chainInfoOnId(id);
-    const chainId = '0x' + chainInfo.id.toString(16);
-    const provider = new particleConnect.ParticleConnectProvider({
-      projectId,
-      clientKey,
-      walletType,
-    });
-    // @ts-ignore
-    const web3 = new Web3(provider);
-    // @ts-ignore
-    const result = await web3?.currentProvider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{chainId: chainId}],
-    });
-    console.log('web3 wallet_switchEthereumChain', result);
-    // Toast.show({
-    //   type: 'success',
-    //   text1: 'Successfully switched',
-    // });
-  } catch (error) {
-    return error?.message;
-    // console.log('web3 wallet_switchEthereumChain', error);
-    // if (error instanceof Error) {
-    //   Toast.show({type: 'error', text1: error.message});
-    // }
-  }
-};
+// export const getAuthCoreProvider = loginType => {
+//   const provider = new particleAuthCore.ParticleAuthCoreProvider({
+//     projectId,
+//     clientKey,
+//     loginType,
+//   });
+//   // @ts-ignore
+//   const web3 = new Web3(provider);
+//   return web3;
+// };
 
-export const particleConnectExecuteTxSameChain = async (
-  walletType,
-  address,
-  tokenAddress,
-  tx,
-  amount,
-) => {
-  try {
-    const erc20Abi = new ethers.Interface(erc20);
-    console.log('started', tx?.to, amount);
-    const data = erc20Abi.encodeFunctionData('approve', [
-      '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
-      '1309812837182733800',
-    ]);
-    console.log('here.....', address, tokenAddress, data, '0');
-    const approveTx = await getEthereumTransaction(
-      address,
-      tokenAddress,
-      data,
-      '0',
-    );
-
-    console.log('tx to approve....', approveTx);
-    // await switchAuthCoreChain(56);
-    try {
-      const result = await particleConnect.signAndSendTransaction(
-        walletType,
-        address,
-        approveTx,
-      );
-      console.log('web3.eth.sendTransaction', result);
-    } catch (error) {
-      console.log('web3.eth.sendTransaction error', error);
-    }
-
-    // Toast.show({
-    //   type: 'success',
-    //   text1: 'Successfully switched',
-    // });
-  } catch (error) {
-    return error?.message;
-    // console.log('web3 wallet_switchEthereumChain', error);
-    // if (error instanceof Error) {
-    //   Toast.show({type: 'error', text1: error.message});
-    // }
-  }
-};
-export const particleConnectExecuteTxCrossChain = async (
-  walletType,
-  address,
-  tokenAddress,
-  tx,
-  amount,
-) => {
-  try {
-    // const erc20Abi = new ethers.Interface(erc20);
-    // console.log('started', tx?.to, amount);
-    // const data = erc20Abi.encodeFunctionData('approve', [
-    //   '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
-    //   '1309812837182733800',
-    // ]);
-    // console.log('here.....', address, tokenAddress, data, '0');
-    const approveTx = await getEthereumTransaction(
-      address,
-      tokenAddress,
-      data,
-      '0',
-    );
-
-    console.log('tx to approve....', approveTx);
-    // await switchAuthCoreChain(56);
-    try {
-      const result = await particleConnect.signAndSendTransaction(
-        walletType,
-        address,
-        approveTx,
-      );
-      console.log('web3.eth.sendTransaction', result);
-    } catch (error) {
-      console.log('web3.eth.sendTransaction error', error);
-    }
-
-    // Toast.show({
-    //   type: 'success',
-    //   text1: 'Successfully switched',
-    // });
-  } catch (error) {
-    return error?.message;
-    // console.log('web3 wallet_switchEthereumChain', error);
-    // if (error instanceof Error) {
-    //   Toast.show({type: 'error', text1: error.message});
-    // }
-  }
-};
 // export const isLoggedIn = async () => {
 //   try {
 //     const result = await particleAuthCore.isConnected();
