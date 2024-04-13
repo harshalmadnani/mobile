@@ -147,7 +147,6 @@ export const getBestCrossSwapRateBuy = async (
     return res;
   });
   let results = await Promise.all(ratesOfDifferentChainOut);
-  const listOfRoutes = [];
   // best rate calculation
   results = results.filter(x => x !== null);
   const bestTradingPrice = results.map(x => {
@@ -166,7 +165,6 @@ export const getBestCrossSwapRateBuy = async (
   });
   console.log('trade list........', bestTradingPrice);
   const bestPrice = Math.max(...bestTradingPrice.map(x => x.fee));
-
   results =
     bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId === 137
       ? results.filter(x => x?.estimate?.toAmountMin !== undefined)

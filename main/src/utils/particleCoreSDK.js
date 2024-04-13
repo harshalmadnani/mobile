@@ -42,7 +42,7 @@ export const initializedAuthCore = () => {
   particleAA.init(particleAuth.AccountName.BICONOMY_V1(), {});
   console.log('init AA sdk.....');
 };
-const chainInfoOnId = chainId => {
+export const chainInfoOnId = chainId => {
   switch (chainId) {
     case 137:
       return Polygon;
