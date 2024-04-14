@@ -64,7 +64,8 @@ const WalletTransactionTransferCard = ({item}) => {
               : `${item?.to?.substr(0, 4)}....${item?.to?.substr(-4)}`}
           </Text>
           <Text style={{fontFamily:'NeueMontreal-Medium',color:'#8e8e8e'}}>
-          {moment.unix(item?.creationTimestamp).format('h:mm a')}
+          {moment.unix(item?.timestamp / 1000).format('MMM Do')} {moment.unix(item?.timestamp / 1000).format('h:mm a')}
+
           </Text>
         </View>
       </View>
