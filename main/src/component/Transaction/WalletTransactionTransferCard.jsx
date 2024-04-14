@@ -31,29 +31,31 @@ const WalletTransactionTransferCard = ({item}) => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: '#000',
-        width: '98%',
+        width: '90%',
         borderRadius: 12,
         marginVertical: '2%',
-        paddingHorizontal: 8,
-        paddingVertical: 18,
+        paddingHorizontal: '2%',
+        paddingVertical: '5%',
         marginBottom: '0%',
-        marginVertical: '5%',
+        marginVertical: '2%',
         alignSelf: 'center',
-        marginHorizontal: '2%',
+        marginHorizontal: '10%',
       }}>
       <View
         style={{
           flexDirection: 'row',
         }}>
-        <Image
-          style={{width: 50, height: 50}}
-          source={{
-            uri: `${item?.asset?.logo}`,
-          }}
-        />
+    <Image
+  style={{width: 42, height: 42}}
+  source={{
+    uri: item?.type === 'buy'
+      ? 'https://res.cloudinary.com/xade-finance/image/upload/v1713100334/tmgil35hf4ljdgqcgjb0.png'
+      : 'https://res.cloudinary.com/xade-finance/image/upload/v1713100334/kchvdrc9jxqg34m2uskp.png'
+  }}
+/>
         <View
           style={{
-            marginLeft: '3%',
+            marginLeft: '5%',
             alignSelf:'center'
           }}>
           <Text style={styles.primaryTitle}>
