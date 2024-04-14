@@ -9,9 +9,11 @@ import {
   Modal,
   Button,
 } from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
 import FastImage from 'react-native-fast-image';
 import {Icon, Image} from '@rneui/themed';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {setAssetMetadata} from '../../../../store/actions/market';
 
 const options = {
   enableVibrateFallback: true,
@@ -19,6 +21,12 @@ const options = {
 };
 const MyInvestmentItemCard = ({navigation, item}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  let currentAsset;
+  const holdings = useSelector(x => x.portfolio.holdings);
+  currentAsset = holdings?.assets?.filter(
+    x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
+  );
+  const dispatch = useDispatch();
   return (
     <TouchableOpacity
       onPress={e => {
@@ -371,7 +379,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   </Text>
                 </View>
               </View>
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 style={{
                   position: 'absolute', // Positions the button over the content
                   width: '95%',
@@ -390,9 +398,10 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                 }}
                 onPress={() => {
                   setModalVisible(false);
+                  dispatch(setAssetMetadata(item?.name));
                   navigation.navigate('TradePage', {
                     state: item,
-                    asset: item?.name,
+                    asset: currentAsset,
                   });
                   // }
                 }}>
@@ -404,7 +413,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   }}>
                   TRADE {item?.symbol}
                 </Text>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
             </View>
           </Modal>
         </View>
