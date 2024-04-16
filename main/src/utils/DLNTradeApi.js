@@ -11,7 +11,32 @@ const tradeRoutes = {
   createOrder: '/order/create-tx',
   getWallets: 'wallet/portfolio',
 };
-
+export const getUSDCTokenOnChain = chainName => {
+  if (chainName === 1) {
+    return null;
+  } else if (chainName === 137) {
+    return '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359';
+  } else if (chainName === 56) {
+    return '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d';
+  } else if (chainName === 43114) {
+    return '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E';
+  } else if (chainName === 42161) {
+    return '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
+  }
+};
+export const getXadeFeePayerAddressOnChain = chainName => {
+  if (chainName === 1) {
+    return null;
+  } else if (chainName === 137) {
+    return '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58';
+  } else if (chainName === 56) {
+    return '0xc5acad1d0b4e22f60083c0575e8b15220c00ecdf';
+  } else if (chainName === 43114) {
+    return '0xAE7E2dB2146a5cdEd4a5A40E3901f371fC57540e';
+  } else if (chainName === 42161) {
+    return '0xAE7E2dB2146a5cdEd4a5A40E3901f371fC57540e';
+  }
+};
 export const getDLNTradeCreateBuyOrder = async (
   srcChainId,
   srcChainTokenIn,
@@ -54,6 +79,17 @@ export const getDLNTradeCreateBuyOrder = async (
   } catch (error) {
     console.log(
       'error from Trade Quote api:',
+      `${DLNBaseURL}${
+        tradeRoutes.createOrder
+      }?srcChainId=${srcChainId}&srcChainTokenIn=${
+        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : srcChainTokenIn
+      }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
+        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : dstChainTokenOut
+      }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       dstChainId,
       srcChainId,
       error.response?.data,
@@ -195,17 +231,7 @@ export const getDLNTradeCreateBuyOrderTxn = async (
   try {
     let response;
     if (dstChainId === srcChainId) {
-      response = await axios.get(
-        `https://api.dln.trade/v1.0/chain/transaction?chainId=${srcChainId}&tokenIn=${
-          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : srcChainTokenIn
-        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : dstChainTokenOut
-        }&tokenOutRecipient=${smartAccount}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-      );
+      // same chain
     } else {
       response = await axios.get(
         `${DLNBaseURL}${
@@ -224,7 +250,7 @@ export const getDLNTradeCreateBuyOrderTxn = async (
     console.log(dstChainId, response?.data);
     return response?.data;
   } catch (error) {
-    console.log('error  from DLN api:', error);
+    console.log('error  from DLN api:', error?.response?.data);
     return null;
   }
 };
@@ -236,8 +262,10 @@ export const confirmDLNTransaction = async (
   txData,
   smartAccount,
   eoaAddress,
+  onlyTransaction = false,
+  externalTx,
 ) => {
-  let txs = [];
+  let txs = externalTx.length > 0 ? externalTx : [];
 
   if (
     tradeType === 'buy' &&
@@ -245,11 +273,12 @@ export const confirmDLNTransaction = async (
       quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
     !quoteTxReciept?.tokenIn?.address
   ) {
-    console.log('Tx confirming started!!!');
     const erc20Abi = new ethers.Interface(erc20);
     const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
     const sendData = erc20Abi.encodeFunctionData('transfer', [
-      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+      getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
       amount,
     ]);
 
@@ -280,7 +309,9 @@ export const confirmDLNTransaction = async (
     ]);
     const executeProxyDLN = await getEthereumTransaction(
       smartAccount,
-      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+      getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
       dlnProxyTxData,
       '0',
     );
@@ -312,17 +343,21 @@ export const confirmDLNTransaction = async (
     console.log('tx executing swapping part', executeDLNSap);
     txs.push(executeDLNSap);
   }
-  const signature = await signAndSendBatchTransactionWithGasless(
-    eoaAddress,
-    smartAccount,
-    txs,
-  );
-  console.log('Signature Signed...........', signature);
-  if (signature) {
-    console.log('Signature Signed confirmed...........', signature);
-    return signature;
+  if (!onlyTransaction) {
+    const signature = await signAndSendBatchTransactionWithGasless(
+      eoaAddress,
+      smartAccount,
+      txs,
+    );
+    console.log('Signature Signed...........', signature);
+    if (signature) {
+      console.log('Signature Signed confirmed...........', signature);
+      return signature;
+    } else {
+      return false;
+    }
   } else {
-    return false;
+    return txs;
   }
 };
 export const confirmDLNTransactionPolToArb = async (
@@ -345,7 +380,9 @@ export const confirmDLNTransactionPolToArb = async (
     const erc20Abi = new ethers.Interface(erc20);
     const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
     const sendData = erc20Abi.encodeFunctionData('transfer', [
-      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+      getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
       amount,
     ]);
 
@@ -356,17 +393,6 @@ export const confirmDLNTransactionPolToArb = async (
       '0',
     );
     txs.push(sendTX);
-    console.log(
-      'Tx send started!!!',
-      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
-      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
-      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
-      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
-      smartAccount,
-      smartAccount,
-      smartAccount,
-    );
 
     const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
       quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
@@ -380,7 +406,9 @@ export const confirmDLNTransactionPolToArb = async (
     ]);
     const executeProxyDLN = await getEthereumTransaction(
       smartAccount,
-      '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
+      getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
       dlnProxyTxData,
       '0',
     );
@@ -465,4 +493,70 @@ export const getQuoteFromLifi = async (
   } catch (error) {
     console.log('lifi error.....', error?.response?.data);
   }
+};
+export const executeSameChainSellForUSDC = async (
+  tokenInfo,
+  evmInfo,
+  value,
+) => {
+  const usdcNativeToken = getUSDCTokenOnChain(parseInt(tokenInfo?.chainId));
+
+  const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
+    tokenInfo?.chainId,
+    tokenInfo?.address,
+    value,
+    tokenInfo?.chainId,
+    usdcNativeToken,
+    evmInfo?.smartAccount,
+  );
+  return uSDCTxnRate;
+};
+export const executeCrossChainSellForUSDC = async (
+  srcChainId,
+  evmInfo,
+  value,
+) => {
+  const usdcNativeToken = getUSDCTokenOnChain(parseInt(srcChainId));
+  const usdcNativePolyToken = getUSDCTokenOnChain(parseInt(137));
+  console.log(
+    'tx data.......1',
+    srcChainId,
+    usdcNativeToken,
+    value,
+    137,
+    usdcNativePolyToken,
+    evmInfo?.smartAccount,
+  );
+  const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
+    srcChainId,
+    usdcNativeToken,
+    value,
+    137,
+    usdcNativePolyToken,
+    evmInfo?.smartAccount,
+  );
+
+  if (uSDCTxnRate) {
+    console.log(
+      'tx data.......2',
+      srcChainId,
+      usdcNativeToken,
+      value,
+      137,
+      usdcNativePolyToken,
+      uSDCTxnRate?.estimation?.dstChainTokenOut?.amount,
+      evmInfo?.smartAccount,
+    );
+    const res = await getDLNTradeCreateBuyOrderTxn(
+      srcChainId,
+      usdcNativeToken,
+      value,
+      137,
+      usdcNativePolyToken,
+      uSDCTxnRate?.estimation?.dstChainTokenOut?.amount,
+      evmInfo?.smartAccount,
+    );
+    return res;
+  }
+  // return uSDCTxnRate;
 };

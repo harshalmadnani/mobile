@@ -4,7 +4,6 @@ import {
   getForexListData,
   getHistoricalData,
   getMarketAssetData,
-  getStocksListData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
 import {
