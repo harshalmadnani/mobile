@@ -947,7 +947,12 @@ const TradePage = ({route}) => {
               if (isStockTrade) {
                 await orderStockPrice();
               } else {
-                if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                if (
+                  !loading &&
+                  bestSwappingBuyTrades &&
+                  !preparingTx &&
+                  sellOrderStages === 'Place Order'
+                ) {
                   if (tradeType === 'buy' && bestSwappingBuyTrades) {
                     setPreparingTx(true);
 
@@ -1019,14 +1024,14 @@ const TradePage = ({route}) => {
                           parseInt(tokensToSell?.[0]?.chainId),
                         ).toLowerCase()
                       ) {
-                        setSellOrderStages('Preparing USDC Swaps...');
+                        setSellOrderStages('Preparing Tx...');
                         txReceiptOfSameChain =
                           await executeSameChainSellForUSDC(
                             tokensToSell?.[0],
                             evmInfo,
                             value * Math.pow(10, tokensToSell?.[0]?.decimals),
                           );
-                        setSellOrderStages('Executing USDC Swaps...');
+
                         if (txReceiptOfSameChain?.transactionRequest) {
                           await switchAuthCoreChain(
                             parseInt(tokensToSell?.[0].chainId),
@@ -1048,50 +1053,48 @@ const TradePage = ({route}) => {
                             [],
                           );
                         }
-                        setSellOrderStages('Confirming USDC Swaps...');
                       }
                       if (sameChainTx) {
-                        setTimeout(async () => {
-                          setSellOrderStages('Executing Cross Swaps...');
-                          await switchAuthCoreChain(
-                            parseInt(tokensToSell?.[0].chainId),
+                        // setTimeout(async () => {
+                        setSellOrderStages('Executing Tx...');
+                        await switchAuthCoreChain(
+                          parseInt(tokensToSell?.[0].chainId),
+                        );
+                        const crossChainSwapTx =
+                          await executeCrossChainSellForUSDC(
+                            tokensToSell?.[0].chainId,
+                            evmInfo,
+                            sameChainTx.length > 0
+                              ? txReceiptOfSameChain?.estimate?.toAmountMin
+                              : value *
+                                  Math.pow(10, tokensToSell?.[0]?.decimals),
                           );
-                          const crossChainSwapTx =
-                            await executeCrossChainSellForUSDC(
-                              tokensToSell?.[0].chainId,
-                              evmInfo,
-                              sameChainTx.length > 0
-                                ? txReceiptOfSameChain?.estimate?.toAmountMin
-                                : value *
-                                    Math.pow(10, tokensToSell?.[0]?.decimals),
-                            );
-                          if (crossChainSwapTx) {
-                            const finalSignature = await confirmDLNTransaction(
-                              'buy',
-                              crossChainSwapTx,
-                              crossChainSwapTx?.estimation?.srcChainTokenIn
-                                ?.amount ||
-                                crossChainSwapTx?.action?.fromAmount,
-                              crossChainSwapTx?.estimation?.srcChainTokenIn
-                                ?.address ||
-                                crossChainSwapTx?.action?.fromToken?.address,
-                              crossChainSwapTx?.tx ??
-                                crossChainSwapTx?.transactionRequest,
-                              evmInfo?.smartAccount,
-                              evmInfo?.address,
-                              false,
-                              sameChainTx,
-                            );
+                        if (crossChainSwapTx) {
+                          const finalSignature = await confirmDLNTransaction(
+                            'buy',
+                            crossChainSwapTx,
+                            crossChainSwapTx?.estimation?.srcChainTokenIn
+                              ?.amount || crossChainSwapTx?.action?.fromAmount,
+                            crossChainSwapTx?.estimation?.srcChainTokenIn
+                              ?.address ||
+                              crossChainSwapTx?.action?.fromToken?.address,
+                            crossChainSwapTx?.tx ??
+                              crossChainSwapTx?.transactionRequest,
+                            evmInfo?.smartAccount,
+                            evmInfo?.address,
+                            false,
+                            sameChainTx,
+                          );
 
-                            if (finalSignature) {
-                              await switchAuthCoreChain(137);
-                              navigation.navigate('PendingTxStatus', {
-                                state: crossChainSwapTx,
-                                tradeType,
-                              });
-                            }
+                          if (finalSignature) {
+                            await switchAuthCoreChain(137);
+                            navigation.navigate('PendingTxStatus', {
+                              state: crossChainSwapTx,
+                              tradeType,
+                            });
                           }
-                        }, 2000);
+                        }
+                        // }, 2000);
                       }
                     }
                   } else if (

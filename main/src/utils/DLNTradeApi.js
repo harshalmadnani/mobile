@@ -289,13 +289,6 @@ export const confirmDLNTransaction = async (
       '0',
     );
     txs.push(sendTX);
-    console.log(
-      'Tx send started!!!',
-      quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId,
-      quoteTxReciept?.estimation?.tokenIn?.chainId,
-      quoteTxReciept?.estimation?.tokenOut?.chainId,
-    );
 
     const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
       quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
