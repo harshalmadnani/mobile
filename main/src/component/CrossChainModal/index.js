@@ -184,26 +184,30 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           );
         }
       } else {
+        console.log('executing same chain.....');
         const sameChainQuotes = await getQuoteFromLifi(
           asset?.contracts_balances[0]?.chainId,
           '137',
-          asset?.contracts_balances[0]?.address,
+          asset?.contracts_balances[0]?.address ===
+            '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? '0x0000000000000000000000000000000000000000'
+            : asset?.contracts_balances[0]?.address,
           '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
           usdcToTokenValue,
           address,
         );
-        console.log(
-          'sameChainQuotes...',
-          usdcToTokenValue,
-          sameChainQuotes?.data?.transactionRequest,
-        );
-        await particleConnectExecuteTxSameChain(
-          walletType,
-          address,
-          asset?.contracts_balances[0]?.address,
-          sameChainQuotes?.data?.transactionRequest,
-          usdcToTokenValue,
-        );
+        if (sameChainQuotes?.data?.transactionRequest) {
+          await particleConnectExecuteTxSameChain(
+            walletType,
+            address,
+            asset?.contracts_balances[0]?.address ===
+              '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+              ? '0x0000000000000000000000000000000000000000'
+              : asset?.contracts_balances[0]?.address,
+            sameChainQuotes?.data?.transactionRequest,
+            usdcToTokenValue,
+          );
+        }
       }
     }
     setAssetLoading(false);
@@ -360,7 +364,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           {!isLoading && step === 'asset' && (
             <View style={styles.listWrap}>
               {assets.map((asset, i) => {
-                console.log('asset....', JSON.stringify(asset));
                 return (
                   <Pressable
                     key={i}

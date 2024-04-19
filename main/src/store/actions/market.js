@@ -14,6 +14,7 @@ import {
 import {
   getBestCrossSwapRateBuy,
   getDLNTradeCreateBuyOrder,
+  getDLNTradeCreateSellOrder,
 } from '../../utils/DLNTradeApi';
 import {marketsAction} from '../reducers/market';
 
@@ -137,7 +138,7 @@ export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
 
-    const bestRate = await getDLNTradeCreateBuyOrder(
+    const bestRate = await getDLNTradeCreateSellOrder(
       tokenInfo?.chainId,
       tokenInfo?.address,
       value,

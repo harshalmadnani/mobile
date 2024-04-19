@@ -15,7 +15,7 @@ import Web3 from 'web3';
 import * as particleConnect from '@particle-network/rn-connect';
 import {DappMetaData, WalletType} from '@particle-network/rn-connect';
 import * as particleAuth from '@particle-network/rn-auth';
-import {chainInfoOnId, switchAuthCoreChain} from './particleCoreSDK';
+import {chainInfoOnId, getEthereumTransaction} from './particleCoreSDK';
 // import BigNumber from 'bignumber.js';
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
@@ -109,7 +109,7 @@ export const connectWitParticleConnect = async walletType => {
     return account;
   } else {
     const error = result.data;
-    console.log(error);
+    console.log('Particle connect error......', error);
   }
 };
 export const disconnectParticleConnect = async (publicAddress, walletType) => {
@@ -125,36 +125,22 @@ export const disconnectParticleConnect = async (publicAddress, walletType) => {
     console.log(error);
   }
 };
-// const chainInfoOnId = chainId => {
-//   switch (chainId) {
-//     case 137:
-//       return Polygon;
-//     case 56:
-//       return BNBChain;
+// export async function getEthereumTransaction(from, to, data, amount) {
+//   // mock a evm native transaction,
+//   // type is 0x2, should work in Ethereum, Polygon and other blockchains which support EIP1559
+//   // send 0.01 native
+//   try {
+//     console.log('evm tx.....', from, to, data, amount);
+//     return await particleAuth.EvmService.createTransaction(
+//       from,
+//       data,
+//       amount,
+//       to,
+//     );
+//   } catch (error) {
+//     console.log('approve tx', error);
 //   }
-// };
-
-// export const switchAuthCoreChain = async chainId => {
-//   const chainInfo = chainInfoOnId(chainId);
-//   const result = await particleAuthCore.switchChain(chainInfo);
-//   console.log(result);
-//   return result;
-// };
-export async function getEthereumTransaction(from, to, data, amount) {
-  // mock a evm native transaction,
-  // type is 0x2, should work in Ethereum, Polygon and other blockchains which support EIP1559
-  // send 0.01 native
-  try {
-    return await particleAuth.EvmService.createTransaction(
-      from,
-      data,
-      amount,
-      to,
-    );
-  } catch (error) {
-    console.log('approve tx', error);
-  }
-}
+// }
 export const getConnectProvider = walletType => {
   const provider = new particleConnect.ParticleConnectProvider({
     projectId,
@@ -231,26 +217,29 @@ export const particleConnectExecuteTxSameChain = async (
 ) => {
   try {
     const erc20Abi = new ethers.Interface(erc20);
-    console.log('started', tx?.to, amount);
-    const data = erc20Abi.encodeFunctionData('approve', [
-      '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
-      '1309812837182733800',
+    const sendData = erc20Abi.encodeFunctionData('approve', [
+      tx?.to,
+      amount.toString(),
     ]);
-    console.log('here.....', address, tokenAddress, data, '0');
     const approveTx = await getEthereumTransaction(
       address,
       tokenAddress,
-      data,
+      sendData,
       '0',
     );
-
-    console.log('tx to approve....', approveTx);
-    // await switchAuthCoreChain(56);
+    const executeDLNSap = await getEthereumTransaction(
+      address,
+      tx?.to,
+      tx?.data,
+      '0',
+    );
+    console.log('tx executing swapping part', address, tx?.to, tx?.data, '0');
+    // txs.push(executeDLNSap);
     try {
       const result = await particleConnect.signAndSendTransaction(
         walletType,
         address,
-        approveTx,
+        executeDLNSap,
       );
       console.log('web3.eth.sendTransaction', result);
     } catch (error) {
@@ -277,12 +266,9 @@ export const particleConnectExecuteTxCrossChain = async (
   amount,
 ) => {
   try {
-    // const erc20Abi = new ethers.Interface(erc20);
-    // console.log('started', tx?.to, amount);
-    // const data = erc20Abi.encodeFunctionData('approve', [
-    //   '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE',
-    //   '1309812837182733800',
-    // ]);
+    const erc20Abi = new ethers.Interface(erc20);
+    console.log('started', tx?.to, amount);
+    const data = erc20Abi.encodeFunctionData('approve', [tx?.to, amount]);
     // console.log('here.....', address, tokenAddress, data, '0');
     const approveTx = await getEthereumTransaction(
       address,
@@ -292,12 +278,12 @@ export const particleConnectExecuteTxCrossChain = async (
     );
 
     console.log('tx to approve....', approveTx);
-    // await switchAuthCoreChain(56);
+
     try {
-      const result = await particleConnect.signAndSendTransaction(
+      const result = await particleConnect.signAllTransactions(
         walletType,
         address,
-        approveTx,
+        [approveTx],
       );
       console.log('web3.eth.sendTransaction', result);
     } catch (error) {

@@ -278,56 +278,6 @@ export const signAndSendBatchTransactionWithGasless = async (
         );
       if (deploySmartAccount) {
         setTimeout(async () => {
-          // const deployRecheck = await particleAA.isDeploy(eoaAddress);
-          // console.log('isDeploy result', deployRecheck?.data);
-          // if (!deployRecheck) {
-          // }
-          // const resultAAEnableMode = await particleAA.isAAModeEnable();
-          // console.log('Enable result', resultAAEnableMode);
-          // try {
-          //   const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
-          //     eoaAddress,
-          //     transactions,
-          //   );
-          //   console.log('whole fee  result', wholeFeeQuote);
-          //   if (!resultAAEnableMode) {
-          //     particleAA.enableAAMode();
-          //   }
-          //   // if (smartAccountAddress === undefined) {
-          //   //   return;
-          //   // }
-          //   const verifyingPaymasterGasless =
-          //     wholeFeeQuote.verifyingPaymasterGasless;
-          //   if (verifyingPaymasterGasless === undefined) {
-          //     console.log('gasless is not available');
-          //     return;
-          //   }
-          //   console.log('startedddd.....verifying', verifyingPaymasterGasless);
-          //   if (verifyingPaymasterGasless === undefined) {
-          //     console.log('gasless is not available');
-          //     return;
-          //   }
-          //   const result = await particleAuthCore.evm.batchSendTransactions(
-          //     transactions,
-          //     particleAuth.AAFeeMode.gasless(wholeFeeQuote),
-          //   );
-          //   if (result.status) {
-          //     const signature = result.data;
-          //     console.log(
-          //       'signAndSendTransactionWithGasless result',
-          //       signature,
-          //     );
-          //     return signature;
-          //   } else {
-          //     const error = result.data;
-          //     console.log(
-          //       'signAndSendTransactionWithGasless result error',
-          //       error,
-          //     );
-          //   }
-          // } catch (error) {
-          //   console.log('error....', error);
-          // }
           const recursiveFunction = async () => {
             const deployRecheck = await particleAA.isDeploy(eoaAddress);
             console.log('isDeploy result', deployRecheck?.data);

@@ -182,7 +182,6 @@ const TradePage = ({route}) => {
     }
   };
   const getBestPrice = async () => {
-    console.log('buy rate...', selectedAssetMetaData);
     if (selectedAssetMetaData) {
       setLoading(true);
       dispatch(

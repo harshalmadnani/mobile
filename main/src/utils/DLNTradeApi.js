@@ -6,6 +6,7 @@ import {
   getEthereumTransaction,
   signAndSendBatchTransactionWithGasless,
 } from './particleCoreSDK';
+import {getRouteFromSquid} from './SquidCrossChainTradeApi';
 const DLNBaseURL = 'https://api.dln.trade/v1.0/dln';
 const tradeRoutes = {
   createOrder: '/order/create-tx',
@@ -67,43 +68,95 @@ export const getDLNTradeCreateSellOrder = async (
   srcChainTokenInAmount,
   dstChainId,
   dstChainTokenOut,
+  smartAccount,
 ) => {
   try {
     let response;
-    if (dstChainId === 137) {
-      response = await axios.get(
-        `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
-          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : srcChainTokenIn
-        }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : dstChainTokenOut
-        }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+    if (dstChainId === srcChainId) {
+      response = await getQuoteFromLifi(
+        srcChainId,
+        dstChainId,
+        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : srcChainTokenIn,
+        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : dstChainTokenOut,
+        srcChainTokenInAmount,
+        smartAccount,
       );
     } else {
-      response = await axios.get(
-        `${DLNBaseURL}${
-          tradeRoutes.createOrder
-        }?srcChainId=${srcChainId}&srcChainTokenIn=${
-          srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : srcChainTokenIn
-        }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
-          dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : dstChainTokenOut
-        }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+      response = await getRouteFromSquid(
+        smartAccount,
+        srcChainId,
+        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+          : srcChainTokenIn,
+        srcChainTokenInAmount,
+        dstChainId,
+        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+          : dstChainTokenOut,
+        smartAccount,
+        1,
+        1,
+        false,
       );
     }
-
     return response?.data;
   } catch (error) {
-    console.log('error  from DLN api:', dstChainId, error.toString());
+    console.log(
+      'error from Trade Quote api:',
+      dstChainId,
+      srcChainId,
+      error.response?.data,
+    );
     return null;
   }
 };
+// export const getDLNTradeCreateSellOrder = async (
+//   srcChainId,
+//   srcChainTokenIn,
+//   srcChainTokenInAmount,
+//   dstChainId,
+//   dstChainTokenOut,
+// ) => {
+//   try {
+//     let response;
+//     if (dstChainId === 137) {
+//       response = await axios.get(
+//         `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
+//           srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+//             ? '0x0000000000000000000000000000000000000000'
+//             : srcChainTokenIn
+//         }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
+//           dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+//             ? '0x0000000000000000000000000000000000000000'
+//             : dstChainTokenOut
+//         }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+//       );
+//     } else {
+//       response = await axios.get(
+//         `${DLNBaseURL}${
+//           tradeRoutes.createOrder
+//         }?srcChainId=${srcChainId}&srcChainTokenIn=${
+//           srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+//             ? '0x0000000000000000000000000000000000000000'
+//             : srcChainTokenIn
+//         }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
+//           dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+//             ? '0x0000000000000000000000000000000000000000'
+//             : dstChainTokenOut
+//         }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+//       );
+//     }
+
+//     return response?.data;
+//   } catch (error) {
+//     console.log('error  from DLN api:', dstChainId, error.toString());
+//     return null;
+//   }
+// };
 const getChainIdOnChainName = chainName => {
   if (chainName === 'Ethereum') {
     return 1;
