@@ -7,18 +7,17 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-
+import {W3mButton} from '@web3modal/wagmi-react-native';
+import erc20 from '../../screens/loggedIn/payments/USDC.json';
 import {
-  listOfWallet,
-  particleConnectExecuteTxSameChain,
-} from '../../utils/particleConnectSDK';
+  useAccount,
+  useSendTransaction,
+  useWaitForTransaction,
+  usePrepareSendTransaction,
+} from 'wagmi';
+import {ethers} from 'ethers';
 import {getQuoteFromLifi} from '../../utils/DLNTradeApi';
 import {
-  connectWitParticleConnect,
-  initializedParticleConnect,
-} from '../../utils/particleConnectSDK';
-import {
-  getAllSupportedChainsFromSwing,
   getApprovalCallDataFromSwing,
   getQuoteFromSwing,
   getTxCallDataFromSwing,
@@ -29,30 +28,33 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Image} from 'react-native';
 const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   // renders
-  const [address, setAddress] = useState(false);
+  const {address, isConnecting, isDisconnected} = useAccount();
+  const [txInfo, setTxInfo] = useState('wallet');
+  const {config} = usePrepareSendTransaction(txInfo);
+  const {
+    data: sendTxData,
+    isLoading: sendTransactionLoading,
+    isSuccess,
+    sendTransaction,
+  } = useSendTransaction(config);
+  const {data: transactionData} = useWaitForTransaction(txHashToPoll);
   const [assets, setAssets] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [walletLoading, setWalletLoading] = useState(false);
+  // const [walletLoading, setWalletLoading] = useState(false);
   const [assetLoading, setAssetLoading] = useState(false);
   const [step, setStep] = useState('wallet');
-  const [walletType, setWalletType] = useState('wallet');
+  const [readyToExecute, setReadyToExecute] = useState(false);
+  const [txHashToPoll, setTxHashToPoll] = useState(false);
   const [assetType, setAssetType] = useState(false);
   const [supportedChains, setSupportedChains] = useState([]);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
 
-  const connectWithSelectedWallet = async walletType => {
-    setWalletLoading(true);
-    setWalletType(walletType);
-    initializedParticleConnect();
-    const address = await connectWitParticleConnect(walletType);
-    if (address) {
-      const supportedNetwork = await getAllSupportedChainsFromSwing();
-      setSupportedChains(supportedNetwork);
-      setAddress(address);
-      setWalletLoading(false);
-    }
-    setWalletLoading(false);
+  const createApprovalTransaction = (to, amount) => {
+    const erc20Abi = new ethers.Interface(erc20);
+    const approveData = erc20Abi.encodeFunctionData('approve', [to, amount]);
+    return approveData;
   };
+
   const executeSwapFlow = async asset => {
     if (asset?.estimated_balance > value) {
       setAssetType(asset?.asset?.name);
@@ -93,7 +95,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           evmInfo?.smartAccount,
           usdcToTokenValue,
         );
-        // console.log('value usd.....', JSON.stringify(quote));
+
         let bestQuoteTokenOutRoute = quote.routes?.map(x =>
           parseInt(x?.quote?.amount),
         );
@@ -197,21 +199,64 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           address,
         );
         if (sameChainQuotes?.data?.transactionRequest) {
-          await particleConnectExecuteTxSameChain(
-            walletType,
-            address,
-            asset?.contracts_balances[0]?.address ===
-              '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-              ? '0x0000000000000000000000000000000000000000'
-              : asset?.contracts_balances[0]?.address,
-            sameChainQuotes?.data?.transactionRequest,
-            usdcToTokenValue,
+          //Same chain Swaps
+          const approvalData = createApprovalTransaction(
+            sameChainQuotes?.data?.transactionRequest?.to,
+            usdcToTokenValue?.toString(),
           );
+          console.log(
+            'Tx to be executed.....',
+            sameChainQuotes?.data?.transactionRequest,
+          );
+          setTxInfo({
+            to: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+            value: 0,
+            chainId: 137,
+            data: approvalData,
+            onSuccess(data) {
+              console.log('Successfull tx!!!!!!!', data);
+              setReadyToExecute(true);
+            },
+          });
+          // await particleConnectExecuteTxSameChain(
+          //   walletType,
+          //   address,
+          //   asset?.contracts_balances[0]?.address ===
+          //     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          //     ? '0x0000000000000000000000000000000000000000'
+          //     : asset?.contracts_balances[0]?.address,
+          //   sameChainQuotes?.data?.transactionRequest,
+          //   usdcToTokenValue,
+          // );
         }
       }
     }
     setAssetLoading(false);
   };
+  useEffect(() => {
+    if (readyToExecute) {
+      console.log('readyyy!!!!');
+      sendTransaction?.();
+      setReadyToExecute(false);
+      console.log('asset loading!!!!', sendTransactionLoading);
+    }
+  }, [readyToExecute]);
+
+  useEffect(() => {
+    if (sendTxData) {
+      console.log('got data from tx!!!!', sendTxData);
+      setTxHashToPoll(sendTxData);
+      console.log('started polling', txHashToPoll);
+    }
+  }, [sendTxData]);
+
+  useEffect(() => {
+    if (transactionData) {
+      console.log('got data from tx!!!!', transactionData);
+      console.log('started polling', transactionData);
+    }
+  }, [transactionData]);
+
   useEffect(() => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
@@ -257,8 +302,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}>
-      {/* background: #1E1E1ECC;
-       */}
       <View style={styles.centeredView}>
         <View
           style={[
@@ -308,57 +351,56 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           )}
           {!isLoading && step === 'wallet' && (
             <View style={styles.listWrap}>
-              {listOfWallet.map((wallets, i) => {
-                return (
-                  <Pressable
-                    key={i}
-                    style={{
-                      width: '100%',
-                      padding: 12,
-                      //   marginBottom: 8,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                    onPress={async () =>
-                      connectWithSelectedWallet(wallets?.name)
-                    }>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <View
+              <W3mButton />
+              {/* {listOfWallet.map((wallets, i) => {
+                <Pressable
+                  key={i}
+                  style={{
+                    width: '100%',
+                    padding: 12,
+                    //   marginBottom: 8,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                  onPress={async () =>
+                    connectWithSelectedWallet(wallets?.name)
+                  }>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View
+                      style={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 40,
+                        backgroundColor: '#393939',
+                        justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={{uri: wallets?.url}}
                         style={{
-                          height: 40,
-                          width: 40,
-                          borderRadius: 40,
-                          backgroundColor: '#393939',
+                          width: 24,
+                          height: 24,
+                          alignSelf: 'center',
                           justifyContent: 'center',
-                        }}>
-                        <Image
-                          source={{uri: wallets?.url}}
-                          style={{
-                            width: 24,
-                            height: 24,
-                            alignSelf: 'center',
-                            justifyContent: 'center',
-                          }}
-                        />
-                      </View>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontFamily: `NeueMontreal-Semibold`,
-                          fontSize: 16,
-                          lineHeight: 19.2,
-                          marginLeft: 8,
-                        }}>
-                        {wallets?.name}
-                      </Text>
+                        }}
+                      />
                     </View>
-                    {walletType === wallets?.name && walletLoading ? (
-                      <ActivityIndicator size={16} color="#fff" />
-                    ) : null}
-                  </Pressable>
-                );
-              })}
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: `NeueMontreal-Semibold`,
+                        fontSize: 16,
+                        lineHeight: 19.2,
+                        marginLeft: 8,
+                      }}>
+                      {wallets?.name}
+                    </Text>
+                  </View>
+                  {walletType === wallets?.name && walletLoading ? (
+                    <ActivityIndicator size={16} color="#fff" />
+                  ) : null}
+                </Pressable>;
+              })} */}
             </View>
           )}
           {!isLoading && step === 'asset' && (
