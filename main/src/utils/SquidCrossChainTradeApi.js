@@ -11,7 +11,7 @@ export const getChainsSupportedFromSquid = async () => {
       'x-integrator-id': integratorId,
     },
   });
-  return result.data;
+  return result.data?.chains;
 };
 
 export const getTokensSupportedFromSquid = async () => {

@@ -18,6 +18,7 @@ import {
 import {ethers} from 'ethers';
 import {getQuoteFromLifi} from '../../utils/DLNTradeApi';
 import {
+  getAllSupportedChainsFromSwing,
   getApprovalCallDataFromSwing,
   getQuoteFromSwing,
   getTxCallDataFromSwing,
@@ -26,10 +27,12 @@ import LottieView from 'lottie-react-native';
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
 import {useDispatch, useSelector} from 'react-redux';
 import {Image} from 'react-native';
+import {getChainsSupportedFromSquid} from '../../utils/SquidCrossChainTradeApi';
 const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   // renders
   const {address, isConnecting, isDisconnected} = useAccount();
   const [txInfo, setTxInfo] = useState('wallet');
+  const [txHashToPoll, setTxHashToPoll] = useState(false);
   const {config} = usePrepareSendTransaction(txInfo);
   const {
     data: sendTxData,
@@ -44,17 +47,82 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   const [assetLoading, setAssetLoading] = useState(false);
   const [step, setStep] = useState('wallet');
   const [readyToExecute, setReadyToExecute] = useState(false);
-  const [txHashToPoll, setTxHashToPoll] = useState(false);
   const [assetType, setAssetType] = useState(false);
   const [supportedChains, setSupportedChains] = useState([]);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
 
+  console.log(
+    'tx hash....',
+    transactionData,
+    sendTransactionLoading,
+    isSuccess,
+    sendTxData,
+  );
   const createApprovalTransaction = (to, amount) => {
     const erc20Abi = new ethers.Interface(erc20);
     const approveData = erc20Abi.encodeFunctionData('approve', [to, amount]);
     return approveData;
   };
+  useEffect(() => {
+    if (readyToExecute) {
+      console.log('readyyy to tx!!!!');
+      sendTransaction?.();
+      setReadyToExecute(false);
+      console.log('asset loading!!!!', sendTransactionLoading);
+    }
+  }, [readyToExecute]);
 
+  useEffect(() => {
+    if (sendTxData) {
+      console.log('got data from tx!!!!', sendTxData);
+      setTxHashToPoll(sendTxData);
+      console.log('started polling', transactionData);
+    }
+  }, [sendTxData]);
+
+  useEffect(() => {
+    if (transactionData) {
+      console.log('got data from tx!!!!', transactionData);
+      console.log('started polling', transactionData);
+    }
+  }, [transactionData]);
+
+  useEffect(() => {
+    const ws = new W3CWebSocket(
+      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
+    );
+    if (address) {
+      ws.onopen = () => {
+        const payload = {
+          type: 'wallet',
+          authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
+          payload: {
+            wallet: address,
+            interval: 15,
+          },
+        };
+
+        ws.send(JSON.stringify(payload));
+      };
+
+      ws.onmessage = event => {
+        const parsedValue = JSON.parse(event?.data)?.assets;
+        setAssets(parsedValue);
+        setStep('asset');
+      };
+
+      ws.onerror = event => {
+        console.error('WebSocket error:', event);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket connection closed');
+      };
+    }
+    return () => {
+      ws.close();
+    };
+  }, [address]);
   const executeSwapFlow = async asset => {
     if (asset?.estimated_balance > value) {
       setAssetType(asset?.asset?.name);
@@ -63,15 +131,22 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
         (1 / asset?.price)?.toFixed(asset?.contracts_balances[0]?.decimals) *
         Math.pow(10, asset?.contracts_balances[0]?.decimals) *
         value;
-      if (asset?.contracts_balances[0]?.chainId !== '137') {
-        const destinationChain = supportedChains.filter(
+      if (asset?.contracts_balances[0]?.id !== '137') {
+        const chain = await getAllSupportedChainsFromSwing();
+        console.log(chain);
+        const destinationChain = chain.filter(
           x => x?.id === asset?.contracts_balances[0]?.chainId,
         );
-        console.log('destination', destinationChain);
-        //calculation to check usd to btc
+        console.log('destination', JSON.stringify(destinationChain));
 
         console.log(
           'usdc value....',
+          {
+            fromChain: destinationChain[0]?.slug,
+            tokenSymbol: asset?.asset?.symbol,
+            fromTokenAddress: asset?.contracts_balances[0]?.address,
+            fromChainId: destinationChain[0]?.chainId,
+          },
           asset?.price,
           1 / asset?.price,
           value.toFixed(asset?.contracts_balances[0]?.decimals),
@@ -83,7 +158,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
             fromChain: destinationChain[0]?.slug,
             tokenSymbol: asset?.asset?.symbol,
             fromTokenAddress: asset?.contracts_balances[0]?.address,
-            fromChainId: destinationChain[0]?.id,
+            fromChainId: destinationChain[0]?.chainId,
           },
           {
             toChain: 'polygon',
@@ -135,6 +210,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           );
           console.log('Tx to be signed......', executeTransaction);
         } else {
+          console.log();
           const approval = await getApprovalCallDataFromSwing(
             {
               fromChain: destinationChain[0]?.slug,
@@ -153,6 +229,22 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
             usdcToTokenValue,
           );
           if (approval) {
+            console.log(
+              'Setting transactionn....',
+              bestQuoteTokenOutRoute[0]?.route[0],
+              approval?.tx,
+            );
+            // setTxInfo({
+            //   to: approval?.tx[0]?.to,
+            //   data: approval?.tx[0]?.data,
+            //   value: 0,
+            //   chainId: approval?.fromChain?.chainId,
+            //   onSuccess(data) {
+            //     console.log('Successfull tx!!!!!!!', data);
+            //     setReadyToExecute(true);
+            //   },
+            // });
+
             const executeTransaction = await getTxCallDataFromSwing(
               {
                 fromChain: destinationChain[0]?.slug,
@@ -166,24 +258,22 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                 toChainId: '137',
                 toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
               },
-              {
-                bridge: bestQuoteTokenOutRoute[0]?.route[0]?.bridge,
-                tokenAddress:
-                  bestQuoteTokenOutRoute[0]?.route[0]?.bridgeTokenAddress,
-                tokenName: bestQuoteTokenOutRoute[0]?.route[0]?.name,
-                part: bestQuoteTokenOutRoute[0]?.route[0]?.part,
-              },
+              [
+                {
+                  bridge: bestQuoteTokenOutRoute[0]?.route[0]?.bridge,
+                  steps: bestQuoteTokenOutRoute[0]?.route[0]?.steps,
+                  tokenAddress:
+                    bestQuoteTokenOutRoute[0]?.route[0]?.bridgeTokenAddress,
+                  tokenName: bestQuoteTokenOutRoute[0]?.route[0]?.name,
+                  part: bestQuoteTokenOutRoute[0]?.route[0]?.part,
+                },
+              ],
               address,
               evmInfo?.smartAccount,
               usdcToTokenValue,
             );
-            console.log('Tx to be signed......', approval, executeTransaction);
+            // console.log('bestQuoteTokenOutRoute...to be execute', approval);
           }
-          console.log(
-            'bestQuoteTokenOutRoute...',
-            approval,
-            bestQuoteTokenOutRoute,
-          );
         }
       } else {
         console.log('executing same chain.....');
@@ -233,66 +323,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
     }
     setAssetLoading(false);
   };
-  useEffect(() => {
-    if (readyToExecute) {
-      console.log('readyyy!!!!');
-      sendTransaction?.();
-      setReadyToExecute(false);
-      console.log('asset loading!!!!', sendTransactionLoading);
-    }
-  }, [readyToExecute]);
-
-  useEffect(() => {
-    if (sendTxData) {
-      console.log('got data from tx!!!!', sendTxData);
-      setTxHashToPoll(sendTxData);
-      console.log('started polling', txHashToPoll);
-    }
-  }, [sendTxData]);
-
-  useEffect(() => {
-    if (transactionData) {
-      console.log('got data from tx!!!!', transactionData);
-      console.log('started polling', transactionData);
-    }
-  }, [transactionData]);
-
-  useEffect(() => {
-    const ws = new W3CWebSocket(
-      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
-    );
-    if (address) {
-      ws.onopen = () => {
-        const payload = {
-          type: 'wallet',
-          authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
-          payload: {
-            wallet: address,
-            interval: 15,
-          },
-        };
-
-        ws.send(JSON.stringify(payload));
-      };
-
-      ws.onmessage = event => {
-        const parsedValue = JSON.parse(event?.data)?.assets;
-        setAssets(parsedValue);
-        setStep('asset');
-      };
-
-      ws.onerror = event => {
-        console.error('WebSocket error:', event);
-      };
-
-      ws.onclose = () => {
-        console.log('WebSocket connection closed');
-      };
-    }
-    return () => {
-      ws.close();
-    };
-  }, [address]);
 
   return (
     <Modal
