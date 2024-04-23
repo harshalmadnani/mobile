@@ -70,38 +70,21 @@ function InteractiveChart() {
     const from = selectedTimeframeObject
       ? selectedTimeframeObject?.timestamp
       : null;
-    async function init() {
-      if (from === null) return; // Early exit if timestamp is not found
+    if (from === null) return; // Early exit if timestamp is not found
+    // try {
+    console.log('wallet history fetch...', from);
+    let historicalPriceXYPair = estimatedHistory?.map(entry => {
+      return {timestamp: entry[0], value: entry[1]};
+    });
+    historicalPriceXYPair = historicalPriceXYPair.filter(
+      x => x.timestamp >= from,
+    );
 
-      try {
-        console.log('wallet history fetch...', from);
-        // const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
-        // const historicalPriceXYPair = data?.balance_history?.map(entry => {
-        //   return {timestamp: entry[0], value: entry[1]};
-        // });
-        let historicalPriceXYPair = estimatedHistory?.map(entry => {
-          return {timestamp: entry[0], value: entry[1]};
-        });
-        historicalPriceXYPair = historicalPriceXYPair.filter(
-          x => x.timestamp >= from,
-        );
-        console.log(
-          'after filter from time.....',
-          historicalPriceXYPair.length,
-          from,
-        );
-        if (historicalPriceXYPair?.length > 0) {
-          setPriceList(historicalPriceXYPair);
-          setcurrentPrice(historicalPriceXYPair[0]?.value ?? 0);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (estimatedHistory.length) {
-      init();
-    } else {
-      dispatch(getEvmAddresses());
+    if (historicalPriceXYPair?.length > 0) {
+      setPriceList(historicalPriceXYPair);
+      setcurrentPrice(
+        historicalPriceXYPair[historicalPriceXYPair.length - 1]?.value ?? 0,
+      );
     }
   }, [selectedTimeframe]);
   useEffect(() => {
