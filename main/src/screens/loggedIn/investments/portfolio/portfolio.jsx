@@ -41,15 +41,6 @@ const Portfolio = ({navigation}) => {
   imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
-  // useEffect(() => {
-  //   if (evmInfo?.smartAccount) {
-  //     dispatch(
-  //       getCryptoHoldingForAddressFromMobula(evmInfo?.smartAccount, null),
-  //     );
-  //   } else {
-  //     dispatch(getEvmAddresses());
-  //   }
-  // }, [evmInfo]);
   useEffect(() => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
@@ -162,7 +153,7 @@ const Portfolio = ({navigation}) => {
             type="materialicons"
           />
         </TouchableOpacity>
-        {/* Modal Component */}
+
         <Modal
           animationType="slide"
           transparent={true}
