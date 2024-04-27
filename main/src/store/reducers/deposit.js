@@ -4,6 +4,7 @@ import {createSlice} from '@reduxjs/toolkit';
 // This is the initial state of the slice
 const initialState = {
   txToBeExecuted: false,
+  txLoading: false,
 };
 
 export const depositSlice = createSlice({
@@ -13,6 +14,9 @@ export const depositSlice = createSlice({
     // All the reducers go here
     setTxToBeExecuted: (state, action) => {
       state.txToBeExecuted = action.payload;
+    },
+    setTxLoading: (state, action) => {
+      state.txLoading = action.payload;
     },
   },
 });
