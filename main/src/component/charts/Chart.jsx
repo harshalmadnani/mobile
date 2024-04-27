@@ -9,6 +9,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 import {useFocusEffect} from '@react-navigation/native';
 import {getEvmAddresses} from '../../store/actions/portfolio';
+import {w3cwebsocket as W3CWebSocket} from 'websocket';
 export default InteractiveChart;
 function CustomPriceText() {
   return (
@@ -27,6 +28,7 @@ function InteractiveChart() {
   const dispatch = useDispatch();
 
   const [divisionResult, setDivisionResult] = useState('0');
+  const [estimatedHistory, setEstimatedHistory] = useState([]);
   const [currentPrice, setcurrentPrice] = useState('0');
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
   const [priceChange, setpriceChange] = useState('0');
@@ -68,65 +70,85 @@ function InteractiveChart() {
     const from = selectedTimeframeObject
       ? selectedTimeframeObject?.timestamp
       : null;
-    async function init() {
-      if (from === null) return; // Early exit if timestamp is not found
+    if (from === null) return; // Early exit if timestamp is not found
+    // try {
+    console.log('wallet history fetch...', from);
+    let historicalPriceXYPair = estimatedHistory?.map(entry => {
+      return {timestamp: entry[0], value: entry[1]};
+    });
+    historicalPriceXYPair = historicalPriceXYPair.filter(
+      x => x.timestamp >= from,
+    );
 
-      try {
-        console.log('wallet history fetch...', from);
-        const data = await getWalletHistoricalData(evmInfo?.smartAccount, from);
-        const historicalPriceXYPair = data?.balance_history?.map(entry => {
-          return {timestamp: entry[0], value: entry[1]};
-        });
-        if (historicalPriceXYPair?.length > 0) {
-          setPriceList(historicalPriceXYPair);
-        }
-        setcurrentPrice(data?.balance_usd ?? 0);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    if (evmInfo?.smartAccount) {
-      init();
-    } else {
-      dispatch(getEvmAddresses());
+    if (historicalPriceXYPair?.length > 0) {
+      setPriceList(historicalPriceXYPair);
+      setcurrentPrice(
+        historicalPriceXYPair[historicalPriceXYPair.length - 1]?.value ?? 0,
+      );
     }
   }, [selectedTimeframe]);
-  useFocusEffect(
-    useCallback(() => {
-      async function initialHistoryFetch() {
-        try {
-          const selectedTimeframeObject = timeframes.find(
-            timeframe => timeframe?.value === selectedTimeframe,
-          );
-          const from = selectedTimeframeObject
-            ? selectedTimeframeObject.timestamp
-            : null;
-          console.log('from time.....', from);
-          const data = await getWalletHistoricalData(
-            evmInfo?.smartAccount,
-            from,
-          );
-          const historicalPriceXYPair = data?.balance_history?.map(entry => {
-            return {timestamp: entry[0], value: entry[1]};
-          });
-          if (historicalPriceXYPair?.length > 0) {
-            setPriceList(historicalPriceXYPair);
-          }
-          setcurrentPrice(data?.balance_usd ?? 0);
-        } catch (e) {
-          console.log(e);
-        }
+  useEffect(() => {
+    if (estimatedHistory.length) {
+      const selectedTimeframeObject = timeframes.find(
+        timeframe => timeframe?.value === selectedTimeframe,
+      );
+      const from = selectedTimeframeObject
+        ? selectedTimeframeObject.timestamp
+        : null;
+
+      let historicalPriceXYPair = estimatedHistory?.map(entry => {
+        return {timestamp: entry[0], value: entry[1]};
+      });
+      console.log('from time.....', historicalPriceXYPair.length, from);
+      historicalPriceXYPair = historicalPriceXYPair.filter(
+        x => x.timestamp >= from,
+      );
+      console.log(
+        'after filter from time.....',
+        historicalPriceXYPair.length,
+        from,
+      );
+      if (historicalPriceXYPair?.length > 0) {
+        setPriceList(historicalPriceXYPair);
       }
-      if (evmInfo?.smartAccount) {
-        initialHistoryFetch();
-      } else {
-        dispatch(getEvmAddresses());
-      }
-      return () => {
-        // Perform any clean-up tasks here, such as cancelling requests or clearing state
+    }
+  }, [estimatedHistory]);
+
+  useEffect(() => {
+    const ws = new W3CWebSocket(
+      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
+    );
+    if (evmInfo?.smartAccount) {
+      ws.onopen = () => {
+        const payload = {
+          explorer: {wallet: evmInfo?.smartAccount},
+        };
+        ws.send(JSON.stringify(payload));
       };
-    }, [evmInfo]),
-  );
+
+      ws.onmessage = event => {
+        // console.log('Chart Event', JSON.parse(event?.data));
+        try {
+          const parsedData = JSON.parse(event?.data);
+          setcurrentPrice(parsedData?.analysis?.estimated_balance);
+          setEstimatedHistory(parsedData?.analysis?.estimated_history);
+        } catch (error) {
+          console.log('error on parsing.....', error);
+        }
+      };
+
+      ws.onerror = event => {
+        console.log('WebSocket error:', event);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket connection closed');
+      };
+    }
+    return () => {
+      ws.close();
+    };
+  }, [evmInfo]);
   // The currently selected X coordinate position
   useEffect(() => {
     if (priceList?.length > 1 || priceList?.[0]?.value === '0') {

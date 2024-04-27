@@ -1,6 +1,6 @@
 {
   "name": "xademobile",
-  "version": "1.3.7",
+  "version": "1.4.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -18,7 +18,7 @@
     "@gorhom/bottom-sheet": "^4.6.1",
     "@notifee/react-native": "^7.8.2",
     "@particle-network/rn-aa": "^1.3.10",
-    "@particle-network/rn-auth": "^1.3.15",
+    "@particle-network/rn-auth": "^1.3.10",
     "@particle-network/rn-auth-core": "^1.3.10",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-clipboard/clipboard": "^1.11.1",

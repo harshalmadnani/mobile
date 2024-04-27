@@ -44,8 +44,12 @@ const options = {
 import {
   confirmDLNTransaction,
   confirmDLNTransactionPolToArb,
+  executeCrossChainSell,
+  executeCrossChainSellForUSDC,
+  executeSameChainSellForUSDC,
   getDLNTradeCreateBuyOrder,
   getDLNTradeCreateBuyOrderTxn,
+  getUSDCTokenOnChain,
 } from '../../../../utils/DLNTradeApi';
 import {
   getAuthCoreProviderEthers,
@@ -63,6 +67,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
   const [value, setValue] = useState('5');
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
+  const [sellOrderStages, setSellOrderStages] = useState('Place Order');
   const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
   const [stockFee, setStockFee] = useState(0);
@@ -89,6 +94,7 @@ const TradePage = ({route}) => {
     x => x.market.allSwappingTradesQuotes,
   );
   const isStockTrade = useSelector(x => x.market.isStockTrade);
+
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
@@ -97,7 +103,7 @@ const TradePage = ({route}) => {
     if (preparingTx) return <DotLoading loadingText="CONFIRMING" />;
     return 'CONFIRM';
   };
-  console.log('all trades', state, tokensToSell, tradeAsset);
+
   useEffect(() => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {
@@ -941,7 +947,12 @@ const TradePage = ({route}) => {
               if (isStockTrade) {
                 await orderStockPrice();
               } else {
-                if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                if (
+                  !loading &&
+                  bestSwappingBuyTrades &&
+                  !preparingTx &&
+                  sellOrderStages === 'Place Order'
+                ) {
                   if (tradeType === 'buy' && bestSwappingBuyTrades) {
                     setPreparingTx(true);
 
@@ -951,7 +962,6 @@ const TradePage = ({route}) => {
                     } else {
                       res = await getTradeSigningData();
                     }
-
                     const signature = await confirmDLNTransaction(
                       tradeType,
                       res,
@@ -962,6 +972,8 @@ const TradePage = ({route}) => {
                       res?.tx ?? res?.transactionRequest,
                       evmInfo?.smartAccount,
                       evmInfo?.address,
+                      false,
+                      [],
                     );
                     setPreparingTx(false);
                     if (signature) {
@@ -980,35 +992,110 @@ const TradePage = ({route}) => {
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
-                    } else {
-                      res = await getTradeSigningData();
-                    }
-                    if (
-                      res?.estimation?.srcChainTokenIn?.chainId !== 137 &&
-                      res?.estimation?.srcChainTokenIn?.chainId !== undefined
-                    ) {
-                      await switchAuthCoreChain(
-                        res?.estimation?.srcChainTokenIn?.chainId,
-                      );
-                    }
-                    const signature = await confirmDLNTransaction(
-                      tradeType,
-                      res,
-                      res?.estimation?.srcChainTokenIn?.amount ||
-                        res?.action?.fromAmount,
-                      res?.estimation?.srcChainTokenIn?.address ||
-                        res?.action?.fromToken?.address,
-                      res?.tx ?? res?.transactionRequest,
-                      evmInfo?.smartAccount,
-                      evmInfo?.address,
-                    );
-                    setPreparingTx(false);
-                    if (signature) {
-                      console.log('txn hash', res, signature);
-                      navigation.navigate('PendingTxStatus', {
-                        state: res,
+                      setSellOrderStages('Preparing Tx...');
+                      const signature = await confirmDLNTransaction(
                         tradeType,
-                      });
+                        res,
+                        res?.estimation?.srcChainTokenIn?.amount ||
+                          res?.action?.fromAmount,
+                        res?.estimation?.srcChainTokenIn?.address ||
+                          res?.action?.fromToken?.address,
+                        res?.tx ?? res?.transactionRequest,
+                        evmInfo?.smartAccount,
+                        evmInfo?.address,
+                        false,
+                        [],
+                      );
+                      setSellOrderStages('Confirming Tx...');
+                      setPreparingTx(false);
+                      if (signature) {
+                        console.log('txn hash', res, signature);
+                        navigation.navigate('PendingTxStatus', {
+                          state: res,
+                          tradeType,
+                        });
+                      }
+                    } else {
+                      let sameChainTx = [];
+                      let txReceiptOfSameChain;
+                      if (
+                        tokensToSell?.[0]?.address?.toLowerCase() !==
+                        getUSDCTokenOnChain(
+                          parseInt(tokensToSell?.[0]?.chainId),
+                        ).toLowerCase()
+                      ) {
+                        setSellOrderStages('Preparing Tx...');
+                        txReceiptOfSameChain =
+                          await executeSameChainSellForUSDC(
+                            tokensToSell?.[0],
+                            evmInfo,
+                            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+                          );
+
+                        if (txReceiptOfSameChain?.transactionRequest) {
+                          await switchAuthCoreChain(
+                            parseInt(tokensToSell?.[0].chainId),
+                          );
+                          sameChainTx = await confirmDLNTransaction(
+                            tradeType,
+                            txReceiptOfSameChain,
+                            txReceiptOfSameChain?.estimation?.srcChainTokenIn
+                              ?.amount ||
+                              txReceiptOfSameChain?.action?.fromAmount,
+                            txReceiptOfSameChain?.estimation?.srcChainTokenIn
+                              ?.address ||
+                              txReceiptOfSameChain?.action?.fromToken?.address,
+                            txReceiptOfSameChain?.tx ??
+                              txReceiptOfSameChain?.transactionRequest,
+                            evmInfo?.smartAccount,
+                            evmInfo?.address,
+                            true,
+                            [],
+                          );
+                        }
+                      }
+                      if (sameChainTx) {
+                        // setTimeout(async () => {
+                        setSellOrderStages('Executing Tx...');
+                        await switchAuthCoreChain(
+                          parseInt(tokensToSell?.[0].chainId),
+                        );
+                        const crossChainSwapTx =
+                          await executeCrossChainSellForUSDC(
+                            tokensToSell?.[0].chainId,
+                            evmInfo,
+                            sameChainTx.length > 0
+                              ? txReceiptOfSameChain?.estimate?.toAmountMin
+                              : value *
+                                  Math.pow(10, tokensToSell?.[0]?.decimals),
+                          );
+                        if (crossChainSwapTx) {
+                          const finalSignature = await confirmDLNTransaction(
+                            'buy',
+                            crossChainSwapTx,
+                            crossChainSwapTx?.estimation?.srcChainTokenIn
+                              ?.amount || crossChainSwapTx?.action?.fromAmount,
+                            crossChainSwapTx?.estimation?.srcChainTokenIn
+                              ?.address ||
+                              crossChainSwapTx?.action?.fromToken?.address,
+                            crossChainSwapTx?.tx ??
+                              crossChainSwapTx?.transactionRequest,
+                            evmInfo?.smartAccount,
+                            evmInfo?.address,
+                            false,
+                            sameChainTx,
+                          );
+
+                          if (finalSignature) {
+                            await switchAuthCoreChain(137);
+                            navigation.navigate('PendingTxStatus', {
+                              state: crossChainSwapTx,
+                              tradeType,
+                            });
+                          }
+                        }
+                        // }, 2000);
+                      }
                     }
                   } else if (
                     bestSwappingBuyTrades !== null &&
@@ -1030,7 +1117,11 @@ const TradePage = ({route}) => {
               color: '#000',
               textAlign: 'center',
             }}>
-            {isStockTrade ? stockOrderStages : getDisplayText()}
+            {isStockTrade
+              ? stockOrderStages
+              : tradeType === 'sell'
+              ? sellOrderStages
+              : getDisplayText()}
           </Text>
         </TouchableOpacity>
         <Modal

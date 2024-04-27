@@ -4,7 +4,6 @@ import {
   getForexListData,
   getHistoricalData,
   getMarketAssetData,
-  getStocksListData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
 import {
@@ -128,17 +127,21 @@ export const getBestDLNCrossSwapRateBuy = (
       value,
       evmInfo?.smartAccount,
     );
-    // if (bestRate && allRates) {
+
     dispatch(marketsAction.setBestSwappingRates(bestRate));
     dispatch(marketsAction.setAllSwappingTradesQuotes(allRates));
-    // }
   };
 };
 export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
-
-    const bestRate = await getDLNTradeCreateSellOrder(
+    console.log(
+      'Same Chain sell.....',
+      value,
+      tokenInfo,
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+    );
+    const bestRate = await getDLNTradeCreateBuyOrder(
       tokenInfo?.chainId,
       tokenInfo?.address,
       value,

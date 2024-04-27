@@ -42,7 +42,7 @@ export const initializedAuthCore = () => {
   particleAA.init(particleAuth.AccountName.BICONOMY_V1(), {});
   console.log('init AA sdk.....');
 };
-export const chainInfoOnId = chainId => {
+const chainInfoOnId = chainId => {
   switch (chainId) {
     case 137:
       return Polygon;
@@ -214,13 +214,6 @@ export const signAndSendBatchTransactionWithGasless = async (
   smartAccountAddress,
   transactions,
 ) => {
-  console.log(
-    'Eoa address inside function',
-    eoaAddress,
-    smartAccountAddress,
-    transactions,
-  );
-
   const resultDeploy = await particleAA.isDeploy(eoaAddress);
 
   if (resultDeploy.status) {
@@ -234,13 +227,14 @@ export const signAndSendBatchTransactionWithGasless = async (
           eoaAddress,
           transactions,
         );
-        console.log('whole fee  result', wholeFeeQuote);
+
         if (!resultAAEnableMode) {
           particleAA.enableAAMode();
         }
-        // if (smartAccountAddress === undefined) {
-        //   return;
-        // }
+
+        if (smartAccountAddress === undefined) {
+          return;
+        }
 
         const verifyingPaymasterGasless =
           wholeFeeQuote.verifyingPaymasterGasless;
@@ -248,7 +242,7 @@ export const signAndSendBatchTransactionWithGasless = async (
           console.log('gasless is not available');
           return;
         }
-        console.log('startedddd.....verifying', verifyingPaymasterGasless);
+
         if (verifyingPaymasterGasless === undefined) {
           console.log('gasless is not available');
           return;
@@ -270,72 +264,18 @@ export const signAndSendBatchTransactionWithGasless = async (
       }
     } else if (resultDeploy.data === false) {
       const error = resultDeploy.data;
-      console.log('isDeploy result error', error);
+      console.log('isDeploy result error', transactions, error);
+      const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
+        eoaAddress,
+        transactions,
+      );
       const deploySmartAccount =
         await particleAuthCore.evm.batchSendTransactions(
-          transactions[0],
+          transactions,
           particleAuth.AAFeeMode.gasless(wholeFeeQuote),
         );
-      if (deploySmartAccount) {
-        setTimeout(async () => {
-          const recursiveFunction = async () => {
-            const deployRecheck = await particleAA.isDeploy(eoaAddress);
-            console.log('isDeploy result', deployRecheck?.data);
-            if (!deployRecheck) {
-              await recursiveFunction();
-              return; // Stop the execution of the current function
-            }
-
-            const resultAAEnableMode = await particleAA.isAAModeEnable();
-            console.log('Enable result', resultAAEnableMode);
-            try {
-              const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
-                eoaAddress,
-                transactions,
-              );
-              console.log('whole fee  result', wholeFeeQuote);
-              if (!resultAAEnableMode) {
-                particleAA.enableAAMode();
-              }
-              const verifyingPaymasterGasless =
-                wholeFeeQuote.verifyingPaymasterGasless;
-              if (verifyingPaymasterGasless === undefined) {
-                console.log('gasless is not available');
-                return;
-              }
-              console.log(
-                'startedddd.....verifying',
-                verifyingPaymasterGasless,
-              );
-              if (verifyingPaymasterGasless === undefined) {
-                console.log('gasless is not available');
-                return;
-              }
-              const result = await particleAuthCore.evm.batchSendTransactions(
-                transactions,
-                particleAuth.AAFeeMode.gasless(wholeFeeQuote),
-              );
-              if (result.status) {
-                const signature = result.data;
-                console.log(
-                  'signAndSendTransactionWithGasless result',
-                  signature,
-                );
-                return signature;
-              } else {
-                const error = result.data;
-                console.log(
-                  'signAndSendTransactionWithGasless result error',
-                  error,
-                );
-              }
-            } catch (error) {
-              console.log('error....', error);
-            }
-          };
-          recursiveFunction();
-        }, 8000);
-      }
+      console.log('here........', deploySmartAccount);
+      return deploySmartAccount.data;
     }
   }
 };

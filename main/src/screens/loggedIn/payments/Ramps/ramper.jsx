@@ -412,11 +412,10 @@ const Ramper = ({navigation}) => {
         </View>
         {/* <W3mNetworkButton /> */}
         {/* Modal Component */}
-        <CrossChainModal
+        {/* <CrossChainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          value={parseFloat(value)}
-        />
+        /> */}
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

@@ -33,15 +33,15 @@ const WalletTransactionTradeCard = ({item}) => {
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: '#000',
-        width: '95%',
+        width: '90%',
         borderRadius: 12,
         marginVertical: '2%',
-        paddingHorizontal: 8,
-        paddingVertical: 18,
+        paddingHorizontal: '2%',
+        paddingVertical: '5%',
         marginBottom: '0%',
-        marginVertical: '5%',
+        marginVertical: '2%',
         alignSelf: 'center',
-        marginHorizontal: '2%',
+        marginHorizontal: '10%',
       }}>
       <View
         style={{
