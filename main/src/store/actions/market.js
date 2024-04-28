@@ -13,6 +13,7 @@ import {
 import {
   getBestCrossSwapRateBuy,
   getDLNTradeCreateBuyOrder,
+  getDLNTradeCreateSellOrder,
 } from '../../utils/DLNTradeApi';
 import {marketsAction} from '../reducers/market';
 

@@ -19,7 +19,7 @@ import {
   fetchOnRampPaymentMethodsBasedOnIP,
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
-// import CrossChainModal from '../../../../component/CrossChainModal/index';
+import CrossChainModal from '../../../../component/CrossChainModal/index';
 // import {
 //   connectWitParticleConnect,
 //   initializedParticleConnect,
@@ -64,8 +64,8 @@ const Ramper = ({navigation}) => {
 
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
-    // setModalVisible(true);
-    navigation.navigate('QRScreen');
+    console.log('fired');
+    setModalVisible(true);
   };
   // const handlePresentModalPress = useCallback(() => {
   //   bottomSheetModalRef.current?.present();
@@ -125,7 +125,6 @@ const Ramper = ({navigation}) => {
         navigation.push('Uniramp', {txInfo});
       } else {
         setButtonTitle('Error');
-        console.log('error....', txInfo);
         Toast.show(txInfo?.message, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.BOTTOM,
@@ -170,7 +169,6 @@ const Ramper = ({navigation}) => {
       console.log(text, regex.test(text));
     }
   };
-  console.log(value.length, getDynamicFontSize(value?.length));
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -412,12 +410,11 @@ const Ramper = ({navigation}) => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-        {/* <W3mNetworkButton /> */}
-        {/* Modal Component */}
-        {/* <CrossChainModal
+        <CrossChainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-        /> */}
+          value={value}
+        />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
