@@ -22,6 +22,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {depositAction} from '../../store/reducers/deposit';
+import Toast from 'react-native-root-toast';
 const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   // renders
   const {address} = useAccount();
@@ -32,8 +33,9 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
     isLoading: sendTransactionLoading,
     isSuccess,
     sendTransactionAsync,
+    isError: txError,
   } = useSendTransaction(config);
-  const {data: transactionData} = useWaitForTransaction(sendTxData);
+  const {data: transactionData, isError} = useWaitForTransaction(sendTxData);
   const [assets, setAssets] = useState([]);
   const [executionStages, setExecutionStages] = useState(
     'Polling Tx information',
@@ -53,12 +55,28 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
     return approveData;
   };
   useEffect(() => {
-    if (readyToExecute) {
-      sendTransactionAsync?.();
-      setReadyToExecute(false);
-    }
+    const executeTx = async () => {
+      if (readyToExecute) {
+        try {
+          await sendTransactionAsync?.();
+          setReadyToExecute(false);
+        } catch (error) {
+          console.log('error.....signing');
+          dispatch(depositAction.setTxLoading(false));
+        }
+      }
+    };
+    executeTx();
   }, [readyToExecute]);
-
+  useEffect(() => {
+    const executeTx = async () => {
+      if (isError || txError) {
+        console.log('error.....signing');
+        dispatch(depositAction.setTxLoading(false));
+      }
+    };
+    executeTx();
+  }, [isError, txError]);
   useEffect(() => {
     setExecutionStages('Polling Tx information');
     if (transactionData?.status === 'success') {
@@ -84,7 +102,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   useEffect(() => {
     if (sendTxData?.hash) {
       setExecutionStages('Tx successfully sent');
-      console.log('got the hash...........', transactionData);
     }
   }, [sendTxData]);
   useEffect(() => {
@@ -125,6 +142,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   }, [address]);
 
   const executeSwapFlow = async asset => {
+    console.log('Asset......', asset?.estimated_balance, value);
     if (asset?.estimated_balance > value) {
       setAssetType(asset?.asset?.name);
       setAssetLoading(true);
@@ -140,76 +158,8 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
         const destinationChain = chain.filter(
           x => x?.id === asset?.contracts_balances[0]?.chainId,
         );
-        const quote = await getQuoteFromSwing(
-          {
-            fromChain: destinationChain[0]?.slug,
-            tokenSymbol: asset?.asset?.symbol,
-            fromTokenAddress: asset?.contracts_balances[0]?.address,
-            fromChainId: destinationChain[0]?.id,
-          },
-          {
-            toChain: 'polygon',
-            toTokenSymbol: 'USDC',
-            toChainId: '137',
-            toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-          },
-          address,
-          evmInfo?.smartAccount,
-          usdcToTokenValue,
-        );
-        setExecutionStages('Filtering Best Quotes');
-        let bestQuoteTokenOutRoute = quote.routes?.map(x =>
-          parseInt(x?.quote?.amount),
-        );
-        bestQuoteTokenOutRoute = Math.max(...bestQuoteTokenOutRoute);
-        bestQuoteTokenOutRoute = quote.routes.filter(
-          x => parseInt(x?.quote?.amount) === bestQuoteTokenOutRoute,
-        );
-        if (
-          asset?.contracts_balances[0]?.address ===
-          '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-        ) {
-          setExecutionStages('Execute Swap');
-          const executeTransaction = await getTxCallDataFromSwing(
-            {
-              fromChain: destinationChain[0]?.slug,
-              tokenSymbol: asset?.asset?.symbol,
-              fromTokenAddress: '0x0000000000000000000000000000000000000000',
-              fromChainId: destinationChain[0]?.id,
-            },
-            {
-              toChain: 'polygon',
-              toTokenSymbol: 'USDC',
-              toChainId: '137',
-              toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-            },
-            [
-              {
-                bridge: bestQuoteTokenOutRoute[0]?.route[0]?.bridge,
-                tokenAddress:
-                  bestQuoteTokenOutRoute[0]?.route[0]?.bridgeTokenAddress,
-                tokenName: bestQuoteTokenOutRoute[0]?.route[0]?.name,
-                part: bestQuoteTokenOutRoute[0]?.route[0]?.part,
-              },
-            ],
-            address,
-            evmInfo?.smartAccount,
-            usdcToTokenValue,
-          );
-
-          setTxInfo({
-            data: executeTransaction?.tx?.data,
-            to: executeTransaction?.tx?.to,
-            from: executeTransaction?.tx?.from,
-            value: executeTransaction?.tx?.value,
-            gas: executeTransaction?.tx?.gas,
-            chainId: executeTransaction?.fromChain?.chainId,
-            onSuccess(data) {
-              setReadyToExecute(true);
-            },
-          });
-        } else {
-          const approval = await getApprovalCallDataFromSwing(
+        try {
+          const quote = await getQuoteFromSwing(
             {
               fromChain: destinationChain[0]?.slug,
               tokenSymbol: asset?.asset?.symbol,
@@ -223,11 +173,65 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
               toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
             },
             address,
-            bestQuoteTokenOutRoute[0]?.quote?.integration,
+            evmInfo?.smartAccount,
             usdcToTokenValue,
           );
-          if (approval) {
+          setExecutionStages('Filtering Best Quotes');
+          let bestQuoteTokenOutRoute = quote.routes?.map(x =>
+            parseInt(x?.quote?.amount),
+          );
+          bestQuoteTokenOutRoute = Math.max(...bestQuoteTokenOutRoute);
+          bestQuoteTokenOutRoute = quote.routes.filter(
+            x => parseInt(x?.quote?.amount) === bestQuoteTokenOutRoute,
+          );
+          if (
+            asset?.contracts_balances[0]?.address ===
+            '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ) {
+            setExecutionStages('Execute Swap');
             const executeTransaction = await getTxCallDataFromSwing(
+              {
+                fromChain: destinationChain[0]?.slug,
+                tokenSymbol: asset?.asset?.symbol,
+                fromTokenAddress: '0x0000000000000000000000000000000000000000',
+                fromChainId: destinationChain[0]?.id,
+              },
+              {
+                toChain: 'polygon',
+                toTokenSymbol: 'USDC',
+                toChainId: '137',
+                toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+              },
+              [
+                {
+                  bridge: bestQuoteTokenOutRoute[0]?.route[0]?.bridge,
+                  tokenAddress:
+                    bestQuoteTokenOutRoute[0]?.route[0]?.bridgeTokenAddress,
+                  tokenName: bestQuoteTokenOutRoute[0]?.route[0]?.name,
+                  part: bestQuoteTokenOutRoute[0]?.route[0]?.part,
+                },
+              ],
+              address,
+              evmInfo?.smartAccount,
+              usdcToTokenValue,
+            );
+            if (executeTransaction?.tx?.data) {
+              setTxInfo({
+                data: executeTransaction?.tx?.data,
+                to: executeTransaction?.tx?.to,
+                from: executeTransaction?.tx?.from,
+                value: executeTransaction?.tx?.value,
+                gas: executeTransaction?.tx?.gas,
+                chainId: executeTransaction?.fromChain?.chainId,
+                onSuccess(data) {
+                  setReadyToExecute(true);
+                },
+              });
+            } else {
+              dispatch(depositAction.setTxLoading(false));
+            }
+          } else {
+            const approval = await getApprovalCallDataFromSwing(
               {
                 fromChain: destinationChain[0]?.slug,
                 tokenSymbol: asset?.asset?.symbol,
@@ -240,89 +244,160 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                 toChainId: '137',
                 toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
               },
-              [
-                {
-                  bridge: bestQuoteTokenOutRoute[0]?.route[0]?.bridge,
-                  steps: bestQuoteTokenOutRoute[0]?.route[0]?.steps,
-                  tokenAddress:
-                    bestQuoteTokenOutRoute[0]?.route[0]?.bridgeTokenAddress,
-                  tokenName: bestQuoteTokenOutRoute[0]?.route[0]?.name,
-                  part: bestQuoteTokenOutRoute[0]?.route[0]?.part,
-                },
-              ],
               address,
-              evmInfo?.smartAccount,
+              bestQuoteTokenOutRoute[0]?.quote?.integration,
               usdcToTokenValue,
             );
-
-            if (executeTransaction) {
-              setExecutionStages('Execute Approval');
-              dispatch(
-                depositAction.setTxToBeExecuted({
-                  data: executeTransaction?.tx?.data,
-                  to: executeTransaction?.tx?.to,
-                  from: executeTransaction?.tx?.from,
-                  value: executeTransaction?.tx?.value,
-                  gas: executeTransaction?.tx?.gas,
-                  chainId: executeTransaction?.fromChain?.chainId,
-                }),
-              );
-              setTxInfo({
-                to: approval?.tx[0]?.to,
-                data: approval?.tx[0]?.data,
-                value: 0,
-                chainId: approval?.fromChain?.chainId,
-                onSuccess(data) {
-                  setReadyToExecute(true);
+            if (approval) {
+              const executeTransaction = await getTxCallDataFromSwing(
+                {
+                  fromChain: destinationChain[0]?.slug,
+                  tokenSymbol: asset?.asset?.symbol,
+                  fromTokenAddress: asset?.contracts_balances[0]?.address,
+                  fromChainId: destinationChain[0]?.id,
                 },
-              });
+                {
+                  toChain: 'polygon',
+                  toTokenSymbol: 'USDC',
+                  toChainId: '137',
+                  toTokenAddress: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+                },
+                [
+                  {
+                    bridge: bestQuoteTokenOutRoute[0]?.route[0]?.bridge,
+                    steps: bestQuoteTokenOutRoute[0]?.route[0]?.steps,
+                    tokenAddress:
+                      bestQuoteTokenOutRoute[0]?.route[0]?.bridgeTokenAddress,
+                    tokenName: bestQuoteTokenOutRoute[0]?.route[0]?.name,
+                    part: bestQuoteTokenOutRoute[0]?.route[0]?.part,
+                  },
+                ],
+                address,
+                evmInfo?.smartAccount,
+                usdcToTokenValue,
+              );
+
+              if (executeTransaction?.tx?.data) {
+                setExecutionStages('Execute Approval');
+                dispatch(
+                  depositAction.setTxToBeExecuted({
+                    data: executeTransaction?.tx?.data,
+                    to: executeTransaction?.tx?.to,
+                    from: executeTransaction?.tx?.from,
+                    value: executeTransaction?.tx?.value,
+                    gas: executeTransaction?.tx?.gas,
+                    chainId: executeTransaction?.fromChain?.chainId,
+                  }),
+                );
+                setTxInfo({
+                  to: approval?.tx[0]?.to,
+                  data: approval?.tx[0]?.data,
+                  value: 0,
+                  chainId: approval?.fromChain?.chainId,
+                  onSuccess(data) {
+                    setReadyToExecute(true);
+                  },
+                });
+              } else {
+                dispatch(depositAction.setTxLoading(false));
+                Toast.show('Tx may fail, retry is sometime', {
+                  duration: Toast.durations.SHORT,
+                  position: Toast.positions.BOTTOM,
+                  shadow: true,
+                  animation: true,
+                  hideOnPress: true,
+                  delay: 0,
+                });
+              }
             }
           }
+        } catch (error) {
+          dispatch(depositAction.setTxLoading(false));
+          Toast.show('Tx may fail, retry is sometime', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+          });
         }
       } else {
-        const sameChainQuotes = await getQuoteFromLifi(
-          asset?.contracts_balances[0]?.chainId,
-          '137',
-          asset?.contracts_balances[0]?.address ===
-            '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? '0x0000000000000000000000000000000000000000'
-            : asset?.contracts_balances[0]?.address,
-          '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-          usdcToTokenValue,
-          address,
-        );
-        if (sameChainQuotes?.data?.transactionRequest) {
-          //Same chain Swaps
-          const approvalData = createApprovalTransaction(
-            sameChainQuotes?.data?.transactionRequest?.to,
-            usdcToTokenValue?.toString(),
+        try {
+          const sameChainQuotes = await getQuoteFromLifi(
+            asset?.contracts_balances[0]?.chainId,
+            '137',
+            asset?.contracts_balances[0]?.address ===
+              '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+              ? '0x0000000000000000000000000000000000000000'
+              : asset?.contracts_balances[0]?.address,
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            usdcToTokenValue,
+            address,
           );
+          if (sameChainQuotes?.data?.transactionRequest) {
+            //Same chain Swaps
+            const approvalData = createApprovalTransaction(
+              sameChainQuotes?.data?.transactionRequest?.to,
+              usdcToTokenValue?.toString(),
+            );
 
-          dispatch(
-            depositAction.setTxToBeExecuted({
-              to: sameChainQuotes?.data?.transactionRequest?.to,
-              from: sameChainQuotes?.data?.transactionRequest?.from,
+            dispatch(
+              depositAction.setTxToBeExecuted({
+                to: sameChainQuotes?.data?.transactionRequest?.to,
+                from: sameChainQuotes?.data?.transactionRequest?.from,
+                value: 0,
+                chainId: 137,
+                data: sameChainQuotes?.data?.transactionRequest?.data,
+              }),
+            );
+            setTxInfo({
+              to:
+                asset?.contracts_balances[0]?.address ===
+                '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+                  ? '0x0000000000000000000000000000000000000000'
+                  : asset?.contracts_balances[0]?.address,
               value: 0,
               chainId: 137,
-              data: sameChainQuotes?.data?.transactionRequest?.data,
-            }),
-          );
-          setTxInfo({
-            to:
-              asset?.contracts_balances[0]?.address ===
-              '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-                ? '0x0000000000000000000000000000000000000000'
-                : asset?.contracts_balances[0]?.address,
-            value: 0,
-            chainId: 137,
-            data: approvalData,
-            onSuccess(data) {
-              console.log('Successfull tx!!!!!!!', data);
-              setReadyToExecute(true);
-            },
+              data: approvalData,
+              onSuccess(data) {
+                console.log('Successfull tx!!!!!!!', data);
+                setReadyToExecute(true);
+              },
+            });
+          } else {
+            dispatch(depositAction.setTxLoading(false));
+            Toast.show('Something went wrong', {
+              duration: Toast.durations.SHORT,
+              position: Toast.positions.BOTTOM,
+              shadow: true,
+              animation: true,
+              hideOnPress: true,
+              delay: 0,
+            });
+          }
+        } catch (error) {
+          dispatch(depositAction.setTxLoading(false));
+          Toast.show('Something went wrong', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
           });
         }
       }
+    } else {
+      dispatch(depositAction.setTxLoading(false));
+      Toast.show('Not enough balance', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+      });
     }
   };
 

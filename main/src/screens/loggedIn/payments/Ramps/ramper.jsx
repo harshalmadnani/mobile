@@ -410,11 +410,10 @@ const Ramper = ({navigation}) => {
             </LinearGradient>
           </TouchableOpacity>
         </View>
-        {/* <W3mNetworkButton /> */}
-        {/* Modal Component */}
         <CrossChainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
+          value={value}
         />
       </SafeAreaView>
     </TouchableWithoutFeedback>

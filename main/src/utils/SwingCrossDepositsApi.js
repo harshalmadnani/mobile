@@ -62,46 +62,29 @@ export const getApprovalCallDataFromSwing = async (
   bridge,
   tokenAmount,
 ) => {
-  // console.log('Params', {
-  //   fromChain: from.fromChain,
-  //   fromChainId: from.fromChainId,
-  //   tokenSymbol: from.tokenSymbol,
-  //   fromTokenAddress: from.fromTokenAddress,
-
-  //   toChain: to.toChain,
-  //   toChainId: to.toChainId,
-  //   toTokenSymbol: to.toTokenSymbol,
-  //   toTokenAddress: to.toTokenAddress,
-  //   fromAddress: fromUserAddress,
-  //   tokenAmount: tokenAmount,
-  // });
-  try {
-    const result = await axios.get(
-      'https://swap.prod.swing.xyz/v0/transfer/approve',
-      {
-        params: {
-          fromChain: from.fromChain,
-          fromChainId: from.fromChainId,
-          tokenSymbol: from.tokenSymbol,
-          tokenAddress: from.fromTokenAddress,
-          toChain: to.toChain,
-          toChainId: to.toChainId,
-          toTokenSymbol: to.toTokenSymbol,
-          toTokenAddress: to.toTokenAddress,
-          fromAddress: fromUserAddress,
-          tokenAmount: tokenAmount,
-          bridge,
-          //toUserAddress,
-          //projectId: 'xade', // create your project here: https://platform.swing.xyz/
-        },
-        headers: {Accept: 'application/json'},
+  const result = await axios.get(
+    'https://swap.prod.swing.xyz/v0/transfer/approve',
+    {
+      params: {
+        fromChain: from.fromChain,
+        fromChainId: from.fromChainId,
+        tokenSymbol: from.tokenSymbol,
+        tokenAddress: from.fromTokenAddress,
+        toChain: to.toChain,
+        toChainId: to.toChainId,
+        toTokenSymbol: to.toTokenSymbol,
+        toTokenAddress: to.toTokenAddress,
+        fromAddress: fromUserAddress,
+        tokenAmount: tokenAmount,
+        bridge,
+        //toUserAddress,
+        //projectId: 'xade', // create your project here: https://platform.swing.xyz/
       },
-    );
-    console.log('response...', result.data);
-    return result.data;
-  } catch (error) {
-    console.log('response...', error.response?.data);
-  }
+      headers: {Accept: 'application/json'},
+    },
+  );
+  console.log('response...', result.data);
+  return result?.data;
 };
 export const getTxCallDataFromSwing = async (
   from,
@@ -111,84 +94,33 @@ export const getTxCallDataFromSwing = async (
   toUserAddress,
   tokenAmount,
 ) => {
-  console.log(
-    'Execute transactionn....',
-    // JSON.stringify({
-    //   tokenSymbol: from.tokenSymbol,
-    //   fromTokenAddress: from.fromTokenAddress,
-    //   toTokenSymbol: to.toTokenSymbol,
-    //   toTokenAddress: to.toTokenAddress,
-    //   tokenAmount: tokenAmount,
-    //   fromChain: from.fromChain,
-    //   toChain: to.toChain,
-    //   fromUserAddress,
-    //   toUserAddress,
-    //   // projectId: 'xade',
-    //   route: [
-    //     {
-    //       bridge: route[0].bridge,
-    //       bridgeTokenAddress: '',
-    //       name: route[0].tokenName,
-    //       part: route[0].part,
-    //       steps: ['allowance', 'approve', 'send'],
-    //     },
-    //   ],
-    // }),
+  const result = await axios.post(
+    'https://swap.prod.swing.xyz/v0/transfer/send',
+    {
+      tokenSymbol: from.tokenSymbol,
+      fromTokenAddress: from.fromTokenAddress,
+      toTokenSymbol: to.toTokenSymbol,
+      toTokenAddress: to.toTokenAddress,
+      tokenAmount: tokenAmount.toString(),
+      fromChain: from.fromChain,
+      toChain: to.toChain,
+      fromUserAddress,
+      toUserAddress,
+      projectId: 'xade',
+      route: [
+        {
+          bridge: route[0].bridge,
+          bridgeTokenAddress: '',
+          name: route[0].tokenName,
+          part: route[0].part,
+          steps: ['allowance', 'approve', 'send'],
+        },
+      ],
+    },
+    {
+      headers: {Accept: 'application/json'},
+    },
   );
-  try {
-    const result = await axios.post(
-      'https://swap.prod.swing.xyz/v0/transfer/send',
-      {
-        tokenSymbol: from.tokenSymbol,
-        fromTokenAddress: from.fromTokenAddress,
-        toTokenSymbol: to.toTokenSymbol,
-        toTokenAddress: to.toTokenAddress,
-        tokenAmount: tokenAmount.toString(),
-        fromChain: from.fromChain,
-        toChain: to.toChain,
-        fromUserAddress,
-        toUserAddress,
-        projectId: 'xade',
-        route: [
-          {
-            bridge: route[0].bridge,
-            bridgeTokenAddress: '',
-            name: route[0].tokenName,
-            part: route[0].part,
-            steps: ['allowance', 'approve', 'send'],
-          },
-        ],
-      },
-      {
-        headers: {Accept: 'application/json'},
-      },
-    );
-    console.log('response execute...', result.data);
-    return result.data;
-  } catch (error) {
-    console.log('response...', error.data, error.response.data);
-  }
+  console.log('response execute...', result.data?.tx);
+  return result?.data;
 };
-// export const getApprovalCallDataFromSwing = async (
-//   from,
-//   to,
-//   bridge,
-//   fromAddress,
-//   tokenAmount,
-// ) => {
-//   const result = await axios.get(
-//     'https://swap.prod.swing.xyz/v0/transfer/approve',
-//     {
-//       fromChain: from.fromChain,
-//       fromChainId: from.fromChainId,
-//       tokenSymbol: from.tokenSymbol,
-//       tokenAddress: from.fromTokenAddress,
-//       toChain: to.toChain,
-//       toChainId: to.toChainId,
-//       bridge: bridge,
-//       fromAddress,
-//       tokenAmount,
-//     },
-//   );
-//   return result.data;
-// };
