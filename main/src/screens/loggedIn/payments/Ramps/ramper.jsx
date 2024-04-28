@@ -64,6 +64,7 @@ const Ramper = ({navigation}) => {
 
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
+    console.log('fired');
     setModalVisible(true);
   };
   // const handlePresentModalPress = useCallback(() => {
@@ -124,7 +125,6 @@ const Ramper = ({navigation}) => {
         navigation.push('Uniramp', {txInfo});
       } else {
         setButtonTitle('Error');
-        console.log('error....', txInfo);
         Toast.show(txInfo?.message, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.BOTTOM,
@@ -412,10 +412,10 @@ const Ramper = ({navigation}) => {
         </View>
         {/* <W3mNetworkButton /> */}
         {/* Modal Component */}
-        {/* <CrossChainModal
+        <CrossChainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-        /> */}
+        />
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
