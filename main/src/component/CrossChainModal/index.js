@@ -54,6 +54,11 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
     const approveData = erc20Abi.encodeFunctionData('approve', [to, amount]);
     return approveData;
   };
+  const createSendTransaction = (to, amount) => {
+    const erc20Abi = new ethers.Interface(erc20);
+    const approveData = erc20Abi.encodeFunctionData('transfer', [to, amount]);
+    return approveData;
+  };
   useEffect(() => {
     const executeTx = async () => {
       if (readyToExecute) {
@@ -323,49 +328,78 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           });
         }
       } else {
-        try {
-          const sameChainQuotes = await getQuoteFromLifi(
-            asset?.contracts_balances[0]?.chainId,
-            '137',
-            asset?.contracts_balances[0]?.address ===
-              '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-              ? '0x0000000000000000000000000000000000000000'
-              : asset?.contracts_balances[0]?.address,
-            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-            usdcToTokenValue,
-            address,
+        if (
+          asset?.contracts_balances[0]?.address ===
+          '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'
+        ) {
+          const transferData = createSendTransaction(
+            evmInfo?.smartAccount,
+            value,
           );
-          if (sameChainQuotes?.data?.transactionRequest) {
-            //Same chain Swaps
-            const approvalData = createApprovalTransaction(
-              sameChainQuotes?.data?.transactionRequest?.to,
-              usdcToTokenValue?.toString(),
+          setTxInfo({
+            to: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+            value: 0,
+            chainId: 137,
+            data: transferData,
+            onSuccess(data) {
+              setReadyToExecute(true);
+            },
+          });
+        } else {
+          try {
+            const sameChainQuotes = await getQuoteFromLifi(
+              asset?.contracts_balances[0]?.chainId,
+              '137',
+              asset?.contracts_balances[0]?.address ===
+                '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+                ? '0x0000000000000000000000000000000000000000'
+                : asset?.contracts_balances[0]?.address,
+              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+              usdcToTokenValue,
+              address,
             );
+            if (sameChainQuotes?.data?.transactionRequest) {
+              //Same chain Swaps
+              const approvalData = createApprovalTransaction(
+                sameChainQuotes?.data?.transactionRequest?.to,
+                usdcToTokenValue?.toString(),
+              );
 
-            dispatch(
-              depositAction.setTxToBeExecuted({
-                to: sameChainQuotes?.data?.transactionRequest?.to,
-                from: sameChainQuotes?.data?.transactionRequest?.from,
+              dispatch(
+                depositAction.setTxToBeExecuted({
+                  to: sameChainQuotes?.data?.transactionRequest?.to,
+                  from: sameChainQuotes?.data?.transactionRequest?.from,
+                  value: 0,
+                  chainId: 137,
+                  data: sameChainQuotes?.data?.transactionRequest?.data,
+                }),
+              );
+              setTxInfo({
+                to:
+                  asset?.contracts_balances[0]?.address ===
+                  '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+                    ? '0x0000000000000000000000000000000000000000'
+                    : asset?.contracts_balances[0]?.address,
                 value: 0,
                 chainId: 137,
-                data: sameChainQuotes?.data?.transactionRequest?.data,
-              }),
-            );
-            setTxInfo({
-              to:
-                asset?.contracts_balances[0]?.address ===
-                '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-                  ? '0x0000000000000000000000000000000000000000'
-                  : asset?.contracts_balances[0]?.address,
-              value: 0,
-              chainId: 137,
-              data: approvalData,
-              onSuccess(data) {
-                console.log('Successfull tx!!!!!!!', data);
-                setReadyToExecute(true);
-              },
-            });
-          } else {
+                data: approvalData,
+                onSuccess(data) {
+                  console.log('Successfull tx!!!!!!!', data);
+                  setReadyToExecute(true);
+                },
+              });
+            } else {
+              dispatch(depositAction.setTxLoading(false));
+              Toast.show('Something went wrong', {
+                duration: Toast.durations.SHORT,
+                position: Toast.positions.BOTTOM,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
+            }
+          } catch (error) {
             dispatch(depositAction.setTxLoading(false));
             Toast.show('Something went wrong', {
               duration: Toast.durations.SHORT,
@@ -376,16 +410,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
               delay: 0,
             });
           }
-        } catch (error) {
-          dispatch(depositAction.setTxLoading(false));
-          Toast.show('Something went wrong', {
-            duration: Toast.durations.SHORT,
-            position: Toast.positions.BOTTOM,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-          });
         }
       }
     } else {
