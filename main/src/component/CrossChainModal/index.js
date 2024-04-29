@@ -23,6 +23,7 @@ import {Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {depositAction} from '../../store/reducers/deposit';
 import Toast from 'react-native-root-toast';
+import {disconnect} from '@wagmi/core';
 const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   // renders
   const {address} = useAccount();
@@ -66,7 +67,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           await sendTransactionAsync?.();
           setReadyToExecute(false);
         } catch (error) {
-          console.log('error.....signing');
+          console.log(error);
           dispatch(depositAction.setTxLoading(false));
         }
       }
@@ -76,12 +77,12 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   useEffect(() => {
     const executeTx = async () => {
       if (isError || txError) {
-        console.log('error.....signing');
         dispatch(depositAction.setTxLoading(false));
       }
     };
     executeTx();
   }, [isError, txError]);
+
   useEffect(() => {
     setExecutionStages('Polling Tx information');
     if (transactionData?.status === 'success') {
@@ -104,11 +105,13 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
       dispatch(depositAction.setTxLoading(false));
     }
   }, [transactionData]);
+
   useEffect(() => {
     if (sendTxData?.hash) {
       setExecutionStages('Tx successfully sent');
     }
   }, [sendTxData]);
+
   useEffect(() => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
@@ -147,7 +150,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   }, [address]);
 
   const executeSwapFlow = async asset => {
-    console.log('Asset......', asset?.estimated_balance, value);
     if (asset?.estimated_balance > value) {
       setAssetType(asset?.asset?.name);
       setAssetLoading(true);
@@ -220,6 +222,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
               evmInfo?.smartAccount,
               usdcToTokenValue,
             );
+            console.log('execute..........', executeTransaction?.tx?.data);
             if (executeTransaction?.tx?.data) {
               setTxInfo({
                 data: executeTransaction?.tx?.data,
@@ -281,7 +284,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                 evmInfo?.smartAccount,
                 usdcToTokenValue,
               );
-
+              console.log('execute..........', executeTransaction?.tx?.data);
               if (executeTransaction?.tx?.data) {
                 setExecutionStages('Execute Approval');
                 dispatch(
@@ -295,6 +298,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                   }),
                 );
                 setTxInfo({
+                  from: address,
                   to: approval?.tx[0]?.to,
                   data: approval?.tx[0]?.data,
                   value: 0,
@@ -337,6 +341,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
             value,
           );
           setTxInfo({
+            from: address,
             to: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
             value: 0,
             chainId: 137,
@@ -381,6 +386,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                     ? '0x0000000000000000000000000000000000000000'
                     : asset?.contracts_balances[0]?.address,
                 value: 0,
+                from: address,
                 chainId: 137,
                 data: approvalData,
                 onSuccess(data) {
@@ -449,21 +455,46 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
               opacity: 0.7,
             }}
           />
-          <Text
+          <View
             style={{
-              marginTop: 12,
-              marginBottom: 12,
-              color: 'white',
-              fontFamily: `NeueMontreal-Bold`,
-              fontSize: 20,
-              lineHeight: 24,
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
             }}>
-            {!isLoading
-              ? step === 'wallet'
-                ? `Choose your wallet`
-                : `Choose your asset`
-              : null}
-          </Text>
+            <Text
+              style={{
+                marginTop: 12,
+                marginBottom: 12,
+                color: 'white',
+                fontFamily: `NeueMontreal-Bold`,
+                fontSize: 20,
+                lineHeight: 24,
+              }}>
+              {!isLoading && step !== 'wallet'
+                ? step === 'wallet'
+                  ? `Choose your wallet`
+                  : `Choose your asset`
+                : null}
+            </Text>
+            {address && !isLoading && (
+              <Text
+                style={{
+                  marginTop: 12,
+                  marginBottom: 12,
+                  color: 'white',
+                  fontFamily: `NeueMontreal-Medium`,
+                  fontSize: 16,
+                  lineHeight: 24,
+                }}
+                onPress={async () => {
+                  await disconnect();
+                  setStep('wallet');
+                  setAssets([]);
+                }}>
+                disconnect
+              </Text>
+            )}
+          </View>
           {isLoading && (
             <View
               style={{
@@ -497,7 +528,15 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           )}
           {!isLoading && step === 'wallet' && (
             <View style={styles.listWrap}>
-              <W3mButton />
+              <W3mButton
+                size="md"
+                label="Connect"
+                connectStyle={{
+                  backgroundColor: 'black',
+                  width: '100%',
+                  color: 'black',
+                }}
+              />
             </View>
           )}
           {!isLoading && step === 'asset' && (
@@ -613,11 +652,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   listWrap: {
-    // flexDirection: 'row', // Align items in a row
-    // flexWrap: 'wrap', // Allow items to wrap to the next line
-    // justifyContent: 'center', // Align items to the start of the container
-    // padding: 8, // Add some padding around the container
-    marginTop: '4%',
+    // marginTop: '10%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // height: '10%', // Make modal take full width at the bottom
   },
 });
 
