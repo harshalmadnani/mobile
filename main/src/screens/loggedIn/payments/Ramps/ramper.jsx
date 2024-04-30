@@ -10,7 +10,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-root-toast';
@@ -26,6 +26,7 @@ import CrossChainModal from '../../../../component/CrossChainModal/index';
 // } from '../../../../utils/particleConnectSDK';
 import {SvgUri} from 'react-native-svg';
 import {Keyboard} from 'react-native';
+import {depositAction} from '../../../../store/reducers/deposit';
 
 const Ramper = ({navigation}) => {
   const getCurrencySymbol = currencyCode => {
@@ -45,6 +46,7 @@ const Ramper = ({navigation}) => {
   const [selectedId, setSelectedId] = useState('wallet');
   const [modalVisible, setModalVisible] = useState(false);
   const [buttonTitle, setButtonTitle] = useState('Continue');
+  const dispatch = useDispatch();
   const handleTextChange = text => {
     // Optional: Add validation or formatting for numeric input if needed
     const numericText = text.replace(/[^0-9]/g, ''); // This will strip non-numeric characters
@@ -66,6 +68,7 @@ const Ramper = ({navigation}) => {
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
     console.log('fired');
+    dispatch(depositAction.setTxLoading(false));
     setModalVisible(true);
   };
   const fetchPaymentMethodsBasedOnIP = async () => {
