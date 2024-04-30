@@ -83,7 +83,20 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
     };
     executeTx();
   }, [readyToExecute]);
-
+  useEffect(() => {
+    const executeTx = async () => {
+      if (readyToExecute) {
+        try {
+          await sendTransactionAsync?.();
+          setReadyToExecute(false);
+        } catch (error) {
+          console.log(error);
+          dispatch(depositAction.setTxLoading(false));
+        }
+      }
+    };
+    executeTx();
+  }, [readyToExecute]);
   useEffect(() => {
     const executeTx = async () => {
       if (isError || txError) {
@@ -589,7 +602,14 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                   marginBottom: 16,
                 }}
                 onPress={async () => {
-                  open();
+                  try {
+                    console.log('start......');
+                    setModalVisible(false);
+                    await open();
+                    // setModalVisible(true);
+                  } catch (e) {
+                    console.log('error', e);
+                  }
                 }}>
                 <LinearGradient
                   useAngle={true}
@@ -658,7 +678,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                           numberOfLines={1}
                           style={{
                             color: 'white',
-                            fontFamily: `NeueMontreal-SemiBold`,
+                            fontFamily: `NeueMontreal-Medium`,
                             fontSize: 16,
                             lineHeight: 19.2,
                             marginLeft: 8,

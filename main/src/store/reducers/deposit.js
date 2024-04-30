@@ -5,6 +5,7 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialState = {
   txToBeExecuted: false,
   txLoading: false,
+  walletConnectModal: false,
 };
 
 export const depositSlice = createSlice({
@@ -17,6 +18,9 @@ export const depositSlice = createSlice({
     },
     setTxLoading: (state, action) => {
       state.txLoading = action.payload;
+    },
+    setWalletConnectModal: (state, action) => {
+      state.walletConnectModal = action.payload;
     },
   },
 });

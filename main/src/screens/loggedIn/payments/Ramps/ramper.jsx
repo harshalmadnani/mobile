@@ -14,16 +14,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-root-toast';
+import {useWeb3Modal} from '@web3modal/wagmi-react-native';
 import {
   createTransactionOnRamp,
   fetchOnRampPaymentMethodsBasedOnIP,
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
 import CrossChainModal from '../../../../component/CrossChainModal/index';
-// import {
-//   connectWitParticleConnect,
-//   initializedParticleConnect,
-// } from '../../../../utils/particleConnectSDK';
+import {
+  useAccount,
+  useSendTransaction,
+  useWaitForTransaction,
+  usePrepareSendTransaction,
+} from 'wagmi';
 import {SvgUri} from 'react-native-svg';
 import {Keyboard} from 'react-native';
 import {depositAction} from '../../../../store/reducers/deposit';
@@ -39,9 +42,11 @@ const Ramper = ({navigation}) => {
     const symbol = parts.find(part => part.type === 'currency').value;
     return symbol;
   };
-
+  const {address} = useAccount();
   const [value, setValue] = useState('1');
+  const walletConnect = useSelector(x => x.deposit.walletConnectModal);
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const {open, close} = useWeb3Modal();
   const [fiat, setFiat] = useState([]);
   const [selectedId, setSelectedId] = useState('wallet');
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,12 +69,23 @@ const Ramper = ({navigation}) => {
   useEffect(() => {
     fetchPaymentMethodsBasedOnIP();
   }, []);
-
+  useEffect(() => {
+    console.log('firedddddd wallet handler....', address, walletConnect);
+    const depositModalOpener = async () => {
+      if (walletConnect && address) {
+        await close();
+        setModalVisible(true);
+        dispatch(depositAction.setWalletConnectModal(false));
+      }
+    };
+    depositModalOpener();
+  }, [address]);
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
     console.log('fired');
     dispatch(depositAction.setTxLoading(false));
     setModalVisible(true);
+    dispatch(depositAction.setWalletConnectModal(true));
   };
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
