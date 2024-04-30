@@ -80,8 +80,14 @@ const MarketChart = props => {
       x =>
         x?.asset?.symbol?.toLowerCase() === currentItem?.symbol?.toLowerCase(),
     );
+  } else {
+    currentAsset = holdings?.assets?.filter(
+      x =>
+        x?.asset?.symbol?.toLowerCase() ===
+        `${currentItem?.stock?.symbol?.toLowerCase()}.d`,
+    );
   }
-
+  console.log(currentItem, currentAsset);
   useFocusEffect(
     useCallback(() => {
       if (!isStockTrade) {
@@ -276,7 +282,13 @@ const MarketChart = props => {
                 fontFamily: `Unbounded-Bold`,
                 marginTop: '2%',
               }}>
-              $ {currentAsset?.[0]?.estimated_balance?.toFixed(2) ?? 0.0}
+              ${' '}
+              {!isStockTrade
+                ? currentAsset?.[0]?.estimated_balance?.toFixed(2) ?? 0.0
+                : (
+                    currentAsset?.[0]?.token_balance *
+                    currentItem?.priceInfo?.price
+                  ).toFixed(5)}
             </Text>
             <Text
               style={{

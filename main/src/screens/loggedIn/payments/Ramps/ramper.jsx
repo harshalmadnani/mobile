@@ -27,6 +27,7 @@ import {
   useWaitForTransaction,
   usePrepareSendTransaction,
 } from 'wagmi';
+import {useWeb3Modal} from '@web3modal/wagmi-react-native';
 import {SvgUri} from 'react-native-svg';
 import {Keyboard} from 'react-native';
 import {depositAction} from '../../../../store/reducers/deposit';
@@ -43,6 +44,7 @@ const Ramper = ({navigation}) => {
     return symbol;
   };
   const {address} = useAccount();
+  // const {open} = useWeb3Modal();
   const [value, setValue] = useState('1');
   const walletConnect = useSelector(x => x.deposit.walletConnectModal);
   const [paymentMethods, setPaymentMethods] = useState([]);
@@ -82,10 +84,10 @@ const Ramper = ({navigation}) => {
   }, [address]);
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
-    console.log('fired');
-    dispatch(depositAction.setTxLoading(false));
-    setModalVisible(true);
-    dispatch(depositAction.setWalletConnectModal(true));
+    // console.log('fired');
+    // dispatch(depositAction.setTxLoading(false));
+    // setModalVisible(true);
+    // dispatch(depositAction.setWalletConnectModal(true));
   };
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {

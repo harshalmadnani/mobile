@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Text,
   Modal,
-  Image
+  Image,
 } from 'react-native';
 import MarketChart from './marketInfo/MarketChart';
 import LinearGradient from 'react-native-linear-gradient';
@@ -29,7 +29,7 @@ const MarketInfo = ({route, navigation, item}) => {
   const height = Dimensions.get('window').height;
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const holdings = useSelector(x => x.portfolio.holdings);
-    const [modal2Visible, setModal2Visible] = useState(false);
+  const [modal2Visible, setModal2Visible] = useState(false);
   let currentAsset;
   const isStockTrade = useSelector(x => x.market.isStockTrade);
   if (!isStockTrade) {
@@ -85,11 +85,10 @@ const MarketInfo = ({route, navigation, item}) => {
             const status = await checkKYCAvailableOrNotForDinari(
               evmInfo?.address,
             );
-            console.log('kyc status', status);
             if (status === 'PASS' && status) {
               navigation.navigate('TradePage', {
                 state: item,
-                asset: [],
+                asset: currentAsset,
               });
             } else {
               const url = await requestKYCWalletSignatureForDinari(
@@ -101,11 +100,6 @@ const MarketInfo = ({route, navigation, item}) => {
                   url,
                   address: evmInfo?.address,
                 });
-
-
-
-
-
               }
             }
           }

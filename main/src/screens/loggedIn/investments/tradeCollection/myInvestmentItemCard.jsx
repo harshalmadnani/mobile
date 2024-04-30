@@ -27,6 +27,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
   const dispatch = useDispatch();
+  console.log('item......', item?.image);
   return (
     <TouchableOpacity
       onPress={e => {
@@ -54,7 +55,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            // backgroundColor: 'red',
           }}>
           <View style={{paddingHorizontal: 5}}>
             <FastImage
@@ -66,8 +66,10 @@ const MyInvestmentItemCard = ({navigation, item}) => {
           </View>
 
           <View style={{paddingHorizontal: 10}}>
-            <View>
-              <Text style={styles.text1}>{item?.symbol?.toUpperCase()}</Text>
+            <View style={{backgroundColor: 'red'}}>
+              <Text numberOfLines={1} style={styles.text1}>
+                {item?.symbol?.toUpperCase()}
+              </Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
               <View style={{paddingRight: 10}}>
@@ -83,7 +85,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-end',
-              // backgroundColor: 'red'
             }}>
             <View>
               <Text style={styles.text2}>
@@ -434,6 +435,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'NeueMontreal-Bold',
     color: '#ffffff',
+    width: '100%',
   },
   text2: {
     fontSize: 16,
