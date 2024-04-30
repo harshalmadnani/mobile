@@ -61,15 +61,7 @@ const Portfolio = ({navigation}) => {
       };
 
       ws.onmessage = event => {
-        const holdings = JSON.parse(event?.data);
-        let crossBalanceHoldings = [];
-        holdings?.assets.forEach((x, i) => {
-          const crossBalances = x?.contracts_balances;
-          crossBalances?.forEach((y, z) => {
-            crossBalanceHoldings.push({...x, contracts_balances: [y]});
-          });
-        });
-        dispatch(portfolioAction.setHoldings({assets: crossBalanceHoldings}));
+        dispatch(portfolioAction.setHoldings(JSON.parse(event?.data)));
       };
 
       ws.onerror = event => {
