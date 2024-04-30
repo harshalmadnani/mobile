@@ -70,7 +70,7 @@ import LiFi from './screens/loggedIn/payments/Ramps/lifi';
 import PreRegister from './screens/loggedIn/spending/PreRegister';
 import Uniramp from './screens/loggedIn/payments/Ramps/uniramp';
 import SettingsComponent from './screens/settings/settings';
-
+import NFT from './screens/loggedIn/nft'
 import Card from './screens/loggedIn/card';
 
 import RedeemPoints from './screens/loggedIn/redeem/redeem';
@@ -540,6 +540,7 @@ function CreateBankAccount({navigation}) {
   );
 }
 
+
 function ListBankAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
@@ -686,11 +687,18 @@ function App({navigation, uri}) {
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
+                    name="NFT"
+                    component={NFT}
+                    navigation={navigation}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
                     name="QRScreen"
                     component={QRPage}
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
+            
                   <Stack.Screen
                     name="Portfolio"
                     component={MainFlowStack}

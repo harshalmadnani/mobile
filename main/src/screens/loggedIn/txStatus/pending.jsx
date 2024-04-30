@@ -31,7 +31,7 @@ import {REMMITEX_TESTNET_CONTRACT} from '@env';
 
 let web3;
 let provider;
-const successVideo = require('./pending.mov');
+const successVideo = require('./pending.mp4');
 
 const Component = ({route, navigation}) => {
   // Params
@@ -194,16 +194,7 @@ const Component = ({route, navigation}) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <Text
-        style={{
-          color: '#fff',
-          fontSize: 30,
-          marginTop: '20%',
-          textAlign: 'center',
-          fontFamily: `EuclidCircularA-Bold`,
-        }}>
-        Transaction Pending...
-      </Text>
+  
       <View style={{width: '100%', marginTop: '5%'}}>
         <Video
           source={successVideo}

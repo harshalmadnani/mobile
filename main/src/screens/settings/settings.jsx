@@ -302,6 +302,28 @@ const Component = ({navigation}) => {
               />
             </View>
           </TouchableOpacity>
+          <HorizontalRule />
+          <TouchableOpacity
+            style={styles.innerSettings}
+            onPress={() => {
+              navigation.push('NFT');
+            }}>
+            <FastImage
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./sparkles.png')}
+            />
+            <View style={styles.actualSetting}>
+              <Text style={styles.settingsText}>Collectibles</Text>
+              <Icon
+                // style={styles.tup}
+                name={'angle-right'}
+                size={20}
+                color={'#86969A'}
+                type="font-awesome"
+                // style = {{marginRight: '1%'}}
+              />
+            </View>
+          </TouchableOpacity>
           {/* <HorizontalRule /> */}
         </View>
         <View style={[styles.otherSettings, {marginBottom: 20}]}>
