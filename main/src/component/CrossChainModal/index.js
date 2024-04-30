@@ -573,7 +573,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                     style={{
                       color: '#000',
                       fontSize: 14,
-                      fontFamily: 'Unbounded-ExtraBold',
+                      fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Connect your wallet
                   </Text>
@@ -607,7 +607,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                     style={{
                       color: '#000',
                       fontSize: 14,
-                      fontFamily: 'Unbounded-ExtraBold',
+                      fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Send via QR Code
                   </Text>
