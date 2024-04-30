@@ -52,7 +52,8 @@ const Ramper = ({navigation}) => {
   };
   const handlePress = () => {
     if (selectedId === 'wallet') {
-      setModalVisible(true);
+      // setModalVisible(true);
+      // navigation.push('QRScreen');
     }
     // Additional actions based on other selectedId values or conditions
   };
@@ -67,9 +68,6 @@ const Ramper = ({navigation}) => {
     console.log('fired');
     setModalVisible(true);
   };
-  // const handlePresentModalPress = useCallback(() => {
-  //   bottomSheetModalRef.current?.present();
-  // }, []);
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
       const {fetchedPaymentMethods, fetchedfiat} =
@@ -380,6 +378,7 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
+              console.log('waleet.......', selectedId, buttonTitle);
               if (buttonTitle.toLocaleLowerCase() === 'continue') {
                 selectedId === 'wallet'
                   ? onWalletConnectOpen()

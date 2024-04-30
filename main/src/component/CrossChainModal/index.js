@@ -1,7 +1,15 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Modal, Pressable} from 'react-native';
-import {W3mButton} from '@web3modal/wagmi-react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Modal,
+  Pressable,
+  TouchableOpacity,
+} from 'react-native';
+import {useWeb3Modal} from '@web3modal/wagmi-react-native';
 import erc20 from '../../screens/loggedIn/payments/USDC.json';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   useAccount,
   useSendTransaction,
@@ -27,6 +35,7 @@ import {disconnect} from '@wagmi/core';
 const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
   // renders
   const {address} = useAccount();
+  const {open, close} = useWeb3Modal();
   const [txInfo, setTxInfo] = useState({});
   const {config} = usePrepareSendTransaction(txInfo);
   const {
@@ -74,6 +83,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
     };
     executeTx();
   }, [readyToExecute]);
+
   useEffect(() => {
     const executeTx = async () => {
       if (isError || txError) {
@@ -528,15 +538,81 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
           )}
           {!isLoading && step === 'wallet' && (
             <View style={styles.listWrap}>
-              <W3mButton
+              {/* <W3mButton
                 size="md"
-                label="Connect"
+                label="Connect your wallet"
                 connectStyle={{
                   backgroundColor: 'black',
                   width: '100%',
                   color: 'black',
                 }}
-              />
+              /> */}
+              <TouchableOpacity
+                style={{
+                  height: 45,
+                  width: '100%',
+                  borderRadius: 30,
+                  marginBottom: 16,
+                }}
+                onPress={async () => {
+                  open();
+                }}>
+                <LinearGradient
+                  useAngle={true}
+                  angle={150}
+                  colors={['#fff', '#fff']}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 30,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#000',
+                      fontSize: 14,
+                      fontFamily: 'Unbounded-ExtraBold',
+                    }}>
+                    Connect your wallet
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  height: 45,
+                  width: '100%',
+                  borderRadius: 30,
+                  marginBottom: 32,
+                }}
+                onPress={async () => {
+                  navigation.push('QRScreen');
+                  setModalVisible(false);
+                }} // Open modal on press
+              >
+                <LinearGradient
+                  useAngle={true}
+                  angle={150}
+                  colors={['#fff', '#fff']}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 30,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#000',
+                      fontSize: 14,
+                      fontFamily: 'Unbounded-ExtraBold',
+                    }}>
+                    Send via QR Code
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
           )}
           {!isLoading && step === 'asset' && (
@@ -548,7 +624,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                     style={{
                       width: '100%',
                       padding: 12,
-                      //   marginBottom: 8,
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                       alignItems: 'center',
