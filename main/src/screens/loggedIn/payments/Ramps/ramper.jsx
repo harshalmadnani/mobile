@@ -69,23 +69,24 @@ const Ramper = ({navigation}) => {
   useEffect(() => {
     fetchPaymentMethodsBasedOnIP();
   }, []);
-  useEffect(() => {
-    console.log('firedddddd wallet handler....', address, walletConnect);
-    const depositModalOpener = async () => {
-      if (walletConnect && address) {
-        await close();
-        setModalVisible(true);
-        dispatch(depositAction.setWalletConnectModal(false));
-      }
-    };
-    depositModalOpener();
-  }, [address]);
+  // useEffect(() => {
+  //   console.log('firedddddd wallet handler....', address, walletConnect);
+  //   const depositModalOpener = async () => {
+  //     if (walletConnect && address) {
+  //       await close();
+  //       setModalVisible(true);
+  //       dispatch(depositAction.setWalletConnectModal(false));
+  //     }
+  //   };
+  //   depositModalOpener();
+  // }, [address]);
   const bottomSheetModalRef = useRef(null);
   const onWalletConnectOpen = async () => {
-    console.log('fired');
-    dispatch(depositAction.setTxLoading(false));
-    setModalVisible(true);
-    dispatch(depositAction.setWalletConnectModal(true));
+    navigation.push('QRScreen');
+    // console.log('fired');
+    // dispatch(depositAction.setTxLoading(false));
+    // setModalVisible(true);
+    // dispatch(depositAction.setWalletConnectModal(true));
   };
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
@@ -397,7 +398,6 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              console.log('waleet.......', selectedId, buttonTitle);
               if (buttonTitle.toLocaleLowerCase() === 'continue') {
                 selectedId === 'wallet'
                   ? onWalletConnectOpen()
