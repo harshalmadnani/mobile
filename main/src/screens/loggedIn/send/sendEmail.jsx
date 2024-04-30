@@ -226,25 +226,7 @@ const SendEmailComponent = ({navigation}) => {
             onPress={() => navigation.goBack()}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.sendWallet, {marginTop: '7%'}]}
-          onPress={() => navigation.push('QRScreen')}>
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: `EuclidCircularA-Regular`,
-              fontSize: 15,
-            }}>
-            Send through QR Code
-          </Text>
-          <Icon
-            name={'wallet'}
-            size={20}
-            color={'#fff'}
-            type="antdesign"
-            onPress={() => navigation.goBack()}
-          />
-        </TouchableOpacity>
+
       </View>
     </SafeAreaView>
   );

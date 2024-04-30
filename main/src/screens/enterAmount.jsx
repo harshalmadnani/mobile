@@ -162,7 +162,7 @@ export default function EnterAmountComponent({navigation, route}) {
             <FastImage
               style={{width: 50, height: 50}}
               source={{
-                uri: `https://ui-avatars.com/api/?name=${name}&format=png&rounded=true&bold=true&background=ffbd59&color=0C0C0C`,
+                uri: `https://ui-avatars.com/api/?name=${name}&format=png&rounded=true&bold=true&background=FFF&color=0C0C0C`,
               }}
             />
             <View style={{width: '80%', marginLeft: '0%'}}>
@@ -247,14 +247,14 @@ export default function EnterAmountComponent({navigation, route}) {
               fontFamily: `EuclidCircularA-Regular`,
               color: '#898989',
             }}>
-            Estimated gas:{' '}
+            Estimated fees:{' '}
             <Text
               style={{
                 fontSize: 15,
                 fontFamily: `EuclidCircularA-Regular`,
                 color: 'white',
               }}>
-              {gas + ' '}USDC
+              $0.001
             </Text>
           </Text>
           <Text

@@ -12,10 +12,12 @@ import {
   ScrollView,
   Alert,
   Platform,
+
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {Text} from '@rneui/themed';
 import Video from 'react-native-video';
-const successVideo = require('./successful.mov');
+const successVideo = require('./success.mp4');
 import {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SECRET_KEY_REMMITEX, POINTS_KEY} from '@env';
@@ -149,88 +151,170 @@ export default function Component({navigation, route}) {
   const hash = route.params;
   console.log(route.params);
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <TouchableOpacity style={styles.backButton}>
-          <Icon
-            name="arrow-back"
-            type="material"
-            color="#fff"
-            onPress={() => {
-              navigation.navigate('Settings');
-            }}
+    <View style={{ flex: 1,backgroundColor:'#000' }}>
+    <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+      <TouchableOpacity style={styles.backButton}>
+        <Icon
+          name="arrow-back"
+          type="material"
+          color="#fff"
+          onPress={() => {
+            navigation.navigate('Settings');
+          }}
+        />
+      </TouchableOpacity>
+      <View style={{ width: 400, height: 400, alignItems: 'center', justifyContent: 'center',marginTop:'30%' }}>
+        <Video
+          source={successVideo}
+          style={{ width: 500, height: 300 }}
+          resizeMode={'cover'}
+          controls={false}
+          repeat={true}
+          muted={true}
+          ref={ref => {
+            this.player = ref;
+          }}
+        />
+      </View>
+
+      <View style={{marginTop: '5%',width:'100%'}}>
+        <View
+          style={{
+            // flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <LinearGradient
+            colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
           />
-        </TouchableOpacity>
-        <View style={styles.content}>
+        </View>
+        <View
+          style={{
+            justifyContent: 'flex-start',
+            marginVertical: '5%',
+            paddingHorizontal: '8%',
+          }}>
           <View
             style={{
-              width: '80%',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 16,
+              marginBottom: 16,
             }}>
-            <Video
-              source={successVideo}
-              style={{
-                width: Platform.OS == 'ios' ? 300 : 300,
-                height: Platform.OS == 'ios' ? 200 : 200,
-              }}
-              resizeMode={'cover'}
-              controls={false}
-              repeat={true}
-              muted={true}
-              ref={ref => {
-                this.player = ref;
-              }}
-            />
-          </View>
-          {/* </View> */}
-          <Text style={styles.successText}>Success!</Text>
-          {mainnet ? (
-            <Text style={styles.amountText}>
-              You've just earned {points} Xade coins
-            </Text>
-          ) : (
-            <Text style={styles.amountText}>${route.params.amount}</Text>
-          )}
-
-          <Text style={styles.earnedCoinsText2}>
-            You have successfully sent ${route.params.amount} to{' '}
             <Text
               style={{
-                color: 'white',
-                fontFamily: `EuclidCircularA-Medium`,
+                fontSize: 16,
+                fontFamily: 'NeueMontreal-Medium',
+                alignSelf: 'flex-start',
+                color: '#fff',
               }}>
-              {route.params.walletAddress.slice(0, 10)}...
-            </Text>{' '}
-            via RemmiteX {route.params.type == 'v2' ? 'V2' : 'V1'} while just
-            paying ${route.params.fees} in fees
-          </Text>
+              Sent To:
+            </Text>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: 'Unbounded-Medium',
+                alignSelf: 'flex-end',
+                color: '#fff',
+              }}>
+                {route.params.walletAddress.slice(0, 10)}...
+            </Text>
+          </View>
 
-          {/* <TouchableOpacity onClick={this.}>
-          <Text>View Transaction On Block Explorer</Text>
-        </TouchableOpacity> */}
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 16,
+              marginBottom: 16,
+            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: 'NeueMontreal-Medium',
+                alignSelf: 'flex-start',
+                color: '#fff',
+              }}>
+              Amount Sent:
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: 'Unbounded-Medium',
+                alignSelf: 'flex-end',
+                color: '#fff',
+              }}>
+              ${route.params.amount}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 16,
+              marginBottom: 16,
+            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: 'NeueMontreal-Medium',
+                alignSelf: 'flex-start',
+                color: '#fff',
+              }}>
+              Total Fees:
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: 'Unbounded-Medium',
+                alignSelf: 'flex-end',
+                color: '#fff',
+              }}>
+              ${route.params.fees}
+            </Text>
+          </View>
         </View>
-      </ScrollView>
-    </View>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <LinearGradient
+            colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+          />
+        </View>
+      </View>
+    </ScrollView>
+  </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     textAlign: 'center',
+    height:'100%',
     flex: 1,
     alignItems: 'center',
-    // justifyContent: 'center',
-    backgroundColor: '#0c0c0c',
+    backgroundColor:'#000',
     fontFamily: `EuclidCircularA-Medium`,
+    justifyContent:'center',
+    alignContent:'center',
+    alignSelf:'center',
+    alignItems:'center'
   },
   content: {
     alignItems: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
-    marginTop: '30%',
+alignSelf:'center',
+justifyContent:'center'
   },
-  coinImage: {
-    width: 150,
-    height: 150,
-  },
+
   successText: {
     fontSize: 24,
     // fontWeight: 'bold',
@@ -248,12 +332,11 @@ const styles = StyleSheet.create({
   },
   earnedCoinsText2: {
     fontSize: 20,
-    color: 'grey',
+    color: 'white',
     textAlign: 'center',
-    // marginHorizontal: 20,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `NeueMontreal-Medium`,
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: '5%',
   },
   backButton: {
     position: 'absolute',
