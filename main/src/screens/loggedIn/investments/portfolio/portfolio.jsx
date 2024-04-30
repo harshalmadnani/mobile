@@ -51,9 +51,10 @@ const Portfolio = ({navigation}) => {
           type: 'wallet',
           authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
           payload: {
+            // wallets: `${evmInfo?.smartAccount},${evmInfo?.address}`,
             wallets: `${evmInfo?.smartAccount},${evmInfo?.address}`,
             interval: 2,
-            unlistedAssets: true,
+            unlistedAssets: false,
           },
         };
         ws.send(JSON.stringify(payload));

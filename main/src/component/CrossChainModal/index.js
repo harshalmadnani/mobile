@@ -453,7 +453,7 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
         <View
           style={[
             styles.modalView,
-            {backgroundColor: isLoading ? '#000' : '#1E1E1EF2'},
+            {backgroundColor: isLoading ? '#000' : '#000'},
           ]}>
           <View
             style={{
@@ -555,38 +555,6 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                   marginBottom: 16,
                 }}
                 onPress={async () => {
-                  open();
-                }}>
-                <LinearGradient
-                  useAngle={true}
-                  angle={150}
-                  colors={['#fff', '#fff']}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: 30,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      color: '#000',
-                      fontSize: 14,
-                      fontFamily: 'NeueMontreal-Medium',
-                    }}>
-                    Connect your wallet
-                  </Text>
-                </LinearGradient>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  height: 45,
-                  width: '100%',
-                  borderRadius: 30,
-                  marginBottom: 32,
-                }}
-                onPress={async () => {
                   navigation.push('QRScreen');
                   setModalVisible(false);
                 }} // Open modal on press
@@ -610,6 +578,38 @@ const CrossChainModal = ({modalVisible, setModalVisible, value}) => {
                       fontFamily: 'NeueMontreal-Medium',
                     }}>
                     Send via QR Code
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  height: 45,
+                  width: '100%',
+                  borderRadius: 30,
+                  marginBottom: 16,
+                }}
+                onPress={async () => {
+                  open();
+                }}>
+                <LinearGradient
+                  useAngle={true}
+                  angle={150}
+                  colors={['#000', '#000']}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 30,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      color: '#fff',
+                      fontSize: 14,
+                      fontFamily: 'NeueMontreal-Medium',
+                    }}>
+                    Connect your wallet
                   </Text>
                 </LinearGradient>
               </TouchableOpacity>
@@ -712,8 +712,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '100%',
-    // height: '90%', // Make modal take full width at the bottom
-    backgroundColor: '#fff',
+    backgroundColor: 'black',
     borderTopRightRadius: 16, // Only round the top corners
     borderTopLeftRadius: 16,
     padding: 10,
@@ -727,10 +726,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   listWrap: {
-    // marginTop: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    // height: '10%', // Make modal take full width at the bottom
   },
 });
 
