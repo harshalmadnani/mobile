@@ -109,7 +109,7 @@ const AnyTokenListScreen = ({navigation}) => {
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text
                 style={{
-                  fontFamily: `Montreal-Medium`,
+                  fontFamily: `NeueMontreal-Medium`,
                   color: 'white',
                   fontSize: 20,
                 }}>
@@ -117,7 +117,7 @@ const AnyTokenListScreen = ({navigation}) => {
               </Text>
               <Text
                 style={{
-                  fontFamily: `Montreal-Medium`,
+                  fontFamily: `NeueMontreal-Medium`,
                   color: 'white',
                   fontSize: 16,
                   paddingTop: 10,
@@ -128,7 +128,7 @@ const AnyTokenListScreen = ({navigation}) => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text
                 style={{
-                  fontFamily: `Montreal-Medium`,
+                  fontFamily: `NeueMontreal-Medium`,
                   color: 'white',
                   opacity: 0.5,
                   fontSize: 16,
@@ -137,7 +137,7 @@ const AnyTokenListScreen = ({navigation}) => {
               </Text>
               <Text
                 style={{
-                  fontFamily: `Montreal-Medium`,
+                  fontFamily: `NeueMontreal-Medium`,
                   color: 'white',
                   opacity: 0.5,
                   fontSize: 16,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     color: '#ffffff',
-    fontFamily: `NeueMontreal-Medium`,
+    fontFamily: `NeueNeueMontreal-Medium`,
     fontWeight: '500',
     marginLeft: 30,
   },
