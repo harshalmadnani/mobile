@@ -14,6 +14,8 @@ import {enableScreens} from 'react-native-screens';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import createProvider from '../particle-auth';
+import {useDispatch, useSelector} from 'react-redux';
+import {transferAction} from '../store/reducers/transfer';
 
 const buttons = [
   ['1', '2', '3'],
@@ -43,43 +45,13 @@ function renderButtons() {
   });
 }
 export default function EnterAmountComponent({navigation, route}) {
-  let imageUrl;
   let params = route.params;
   let [amount, setAmount] = React.useState('0');
-  let [address, setAddress] = React.useState(1);
   let [name, setName] = React.useState('Unregistered User');
-  let [gas, setGas] = React.useState('Calculating...');
   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0, ...params};
-
-  // console.log('Address: ', address);
-
-  async function calculateGas() {
-    try {
-      web3 = this.createProvider();
-      const gasPrice = Number(await web3.eth.getGasPrice());
-
-      if (global.withAuth) {
-        if (route.params.type == 'v2') {
-          const gasNeeded = Number('51975');
-          const gasFees = 1.1 * 2 * gasNeeded * gasPrice;
-          setGas(
-            Number(web3.utils.fromWei(gasFees.toString(), 'ether'))?.toFixed(3),
-          );
-        } else {
-          const gasNeeded = Number('90000') + Number('60000');
-          const gasFees = 1.2 * gasNeeded * gasPrice;
-          setGas(
-            Number(web3.utils.fromWei(gasFees.toString(), 'ether'))?.toFixed(3),
-          );
-        }
-      } else {
-        setGas('0.2');
-      }
-    } catch (err) {
-      console.err(err);
-    }
-  }
-
+  const recipientAddress = useSelector(x => x.transfer.recipientAddress);
+  const assetInfo = useSelector(x => x.transfer.assetInfo);
+  const dispatch = useDispatch();
   function handleButtonPress(button) {
     if (button !== '' && button !== '⌫' && button !== '.') {
       if (amount != '0') setAmount(amount + button);
@@ -91,31 +63,32 @@ export default function EnterAmountComponent({navigation, route}) {
     }
   }
 
-  useEffect(() => {
-    if (route.params.type == 'email') {
-      fetch(
-        `https://user.api.xade.finance/polygon?address=${route.params.walletAddress?.toLowerCase()}`,
-        {
-          method: 'GET',
-        },
-      )
-        .then(response => {
-          if (response.status == 200) {
-            console.log(response);
-            return response.text();
-          } else return '';
-        })
-        .then(data => {
-          setName(data);
-        });
-    }
+  // useEffect(() => {
+  //   if (route.params.type == 'email') {
+  //     fetch(
+  //       `https://user.api.xade.finance/polygon?address=${route.params.walletAddress?.toLowerCase()}`,
+  //       {
+  //         method: 'GET',
+  //       },
+  //     )
+  //       .then(response => {
+  //         if (response.status == 200) {
+  //           console.log(response);
+  //           return response.text();
+  //         } else return '';
+  //       })
+  //       .then(data => {
+  //         setName(data);
+  //       });
+  //   }
 
-    if (route.params.type == 'wallet') {
-      route.params.emailAddress = 'Not Set';
-    }
+  //   if (route.params.type == 'wallet') {
+  //     route.params.emailAddress = 'Not Set';
+  //   }
 
-    calculateGas();
-  }, []);
+  //   calculateGas();
+  // }, []);
+
   return (
     <SafeAreaView
       style={{
@@ -189,6 +162,7 @@ export default function EnterAmountComponent({navigation, route}) {
             </View>
           </View>
         </View>
+
         <View style={styles.enterAmount}>
           <Text
             style={{
@@ -208,7 +182,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 textAlign: 'center',
                 alignItems: 'center',
               }}>
-              <Text
+              {/* <Text
                 style={{
                   fontSize: 35,
                   color: 'white',
@@ -216,7 +190,7 @@ export default function EnterAmountComponent({navigation, route}) {
                   textAlign: 'center',
                 }}>
                 $
-              </Text>
+              </Text> */}
               <Text
                 style={{
                   fontSize: 40,
@@ -236,7 +210,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 fontFamily: `EuclidCircularA-Regular`,
                 color: 'white',
               }}>
-              {global.withAuth ? 'USDC' : 'MATIC'}
+              {assetInfo?.asset?.symbol}
             </Text>
           </View>
         </View>
@@ -247,14 +221,14 @@ export default function EnterAmountComponent({navigation, route}) {
               fontFamily: `EuclidCircularA-Regular`,
               color: '#898989',
             }}>
-            Estimated fees:{' '}
+            Token Balance:{' '}
             <Text
               style={{
                 fontSize: 15,
                 fontFamily: `EuclidCircularA-Regular`,
                 color: 'white',
               }}>
-              $0.001
+              {assetInfo?.token_balance}
             </Text>
           </Text>
           <Text
@@ -300,11 +274,27 @@ export default function EnterAmountComponent({navigation, route}) {
             );
           })}
           <TouchableOpacity
-            onPress={() =>
-              amount != '' && amount != '0'
-                ? navigation.push('Pending', {...json, amount})
-                : ''
-            }
+            onPress={() => {
+              if (
+                amount !== '' &&
+                amount != '0' &&
+                parseFloat(amount) < parseFloat(assetInfo?.token_balance)
+              ) {
+                console.log(assetInfo?.contracts_balances);
+                console.log(
+                  'amount to be sent....',
+                  parseFloat(amount) *
+                    Math.pow(10, assetInfo?.contracts_balances[0]?.decimals),
+                );
+                dispatch(
+                  transferAction.setTransferAmount(
+                    parseFloat(amount) *
+                      Math.pow(10, assetInfo?.contracts_balances[0]?.decimals),
+                  ),
+                );
+                navigation.navigate('Pending');
+              }
+            }}
             style={styles.confirmButton}>
             <Text
               style={{

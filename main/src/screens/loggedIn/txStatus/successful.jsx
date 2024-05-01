@@ -12,7 +12,6 @@ import {
   ScrollView,
   Alert,
   Platform,
-
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Text} from '@rneui/themed';
@@ -23,6 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SECRET_KEY_REMMITEX, POINTS_KEY} from '@env';
 import CryptoJS from 'react-native-crypto-js';
 import {Icon} from 'react-native-elements';
+import {useSelector} from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
 
 const addPoints = async (userId, transactionAmount) => {
@@ -62,257 +62,273 @@ export default function Component({navigation, route}) {
   const [address, setAddress] = useState('0x');
   const [mainnet, setMainnet] = useState(false);
   const [points, setPoints] = useState(0);
+  const recipientAddress = useSelector(x => x.transfer.recipientAddress);
+  const assetInfo = useSelector(x => x.transfer.assetInfo);
+  const amount = useSelector(x => x.transfer.transferAmount);
   const handleCloseModal = () => {
     setShowModal(false);
   };
   const [fees, setFees] = useState('0');
+  console.log('Amount....', assetInfo);
+  // useEffect(() => {
+  //   async function getAddress() {
+  //     setFees(route.params.fees);
+  //     console.log(fees);
+  //     const _address = await AsyncStorage.getItem('address');
+  //     console.log(_address);
+  //     setAddress(_address);
+  //     if (route.params.type == 'v2') {
+  //       const inputValue = JSON.stringify({
+  //         senderName: global.withAuth
+  //           ? global.loginAccount.name
+  //           : global.connectAccount.name,
+  //         senderAddr: route.params.walletAddress,
+  //         receiver: route.params.emailAddress,
+  //         amount: route.params.amount,
+  //         timestamp: Date.now(),
+  //       });
 
-  useEffect(() => {
-    async function getAddress() {
-      setFees(route.params.fees);
-      console.log(fees);
-      const _address = await AsyncStorage.getItem('address');
-      console.log(_address);
-      setAddress(_address);
-      if (route.params.type == 'v2') {
-        const inputValue = JSON.stringify({
-          senderName: global.withAuth
-            ? global.loginAccount.name
-            : global.connectAccount.name,
-          senderAddr: route.params.walletAddress,
-          receiver: route.params.emailAddress,
-          amount: route.params.amount,
-          timestamp: Date.now(),
-        });
+  //       const encrypted = CryptoJS.AES.encrypt(
+  //         inputValue,
+  //         SECRET_KEY_REMMITEX,
+  //       ).toString();
 
-        const encrypted = CryptoJS.AES.encrypt(
-          inputValue,
-          SECRET_KEY_REMMITEX,
-        ).toString();
-
-        const mainnetJSON = await AsyncStorage.getItem('mainnet');
-        const _mainnet = JSON.parse(mainnetJSON);
-        setMainnet(_mainnet);
-        if (_mainnet) {
-          fetch(`https://amtowe.api.xade.finance/mainnet`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              data: encrypted,
-            }),
-          })
-            .then(res => res.text())
-            .then(json => {
-              console.log(json);
-            });
-        } else {
-          fetch(`https://amtowe.api.xade.finance/testnet`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              data: encrypted,
-            }),
-          })
-            .then(res => res.text())
-            .then(json => {
-              console.log(json);
-            });
-        }
-      }
-      const mainnetJSON = await AsyncStorage.getItem('mainnet');
-      const _mainnet = JSON.parse(mainnetJSON);
-      setMainnet(_mainnet);
-      console.log('Mainnet', _mainnet);
-      if (_mainnet == true) {
-        try {
-          const newPoints = Math.ceil(
-            Number(
-              await addPoints(_address.toLowerCase(), route.params.amount),
-            ),
-          );
-          console.log('Points: ', newPoints);
-          setPoints(
-            Math.ceil(transactionAmount) * 20 > 300
-              ? 300
-              : Math.ceil(transactionAmount) * 20,
-          );
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    }
-    getAddress();
-  }, []);
+  //       const mainnetJSON = await AsyncStorage.getItem('mainnet');
+  //       const _mainnet = JSON.parse(mainnetJSON);
+  //       setMainnet(_mainnet);
+  //       if (_mainnet) {
+  //         fetch(`https://amtowe.api.xade.finance/mainnet`, {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({
+  //             data: encrypted,
+  //           }),
+  //         })
+  //           .then(res => res.text())
+  //           .then(json => {
+  //             console.log(json);
+  //           });
+  //       } else {
+  //         fetch(`https://amtowe.api.xade.finance/testnet`, {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //           },
+  //           body: JSON.stringify({
+  //             data: encrypted,
+  //           }),
+  //         })
+  //           .then(res => res.text())
+  //           .then(json => {
+  //             console.log(json);
+  //           });
+  //       }
+  //     }
+  //     const mainnetJSON = await AsyncStorage.getItem('mainnet');
+  //     const _mainnet = JSON.parse(mainnetJSON);
+  //     setMainnet(_mainnet);
+  //     console.log('Mainnet', _mainnet);
+  //     if (_mainnet == true) {
+  //       try {
+  //         const newPoints = Math.ceil(
+  //           Number(
+  //             await addPoints(_address.toLowerCase(), route.params.amount),
+  //           ),
+  //         );
+  //         console.log('Points: ', newPoints);
+  //         setPoints(
+  //           Math.ceil(transactionAmount) * 20 > 300
+  //             ? 300
+  //             : Math.ceil(transactionAmount) * 20,
+  //         );
+  //       } catch (err) {
+  //         console.log(err);
+  //       }
+  //     }
+  //   }
+  //   getAddress();
+  // }, []);
 
   const hash = route.params;
   console.log(route.params);
   return (
-    <View style={{ flex: 1,backgroundColor:'#000' }}>
-    <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
-      <TouchableOpacity style={styles.backButton}>
-        <Icon
-          name="arrow-back"
-          type="material"
-          color="#fff"
-          onPress={() => {
-            navigation.navigate('Settings');
-          }}
-        />
-      </TouchableOpacity>
-      <View style={{ width: 400, height: 400, alignItems: 'center', justifyContent: 'center',marginTop:'30%' }}>
-        <Video
-          source={successVideo}
-          style={{ width: 500, height: 300 }}
-          resizeMode={'cover'}
-          controls={false}
-          repeat={true}
-          muted={true}
-          ref={ref => {
-            this.player = ref;
-          }}
-        />
-      </View>
-
-      <View style={{marginTop: '5%',width:'100%'}}>
+    <View style={{flex: 1, backgroundColor: '#000'}}>
+      <ScrollView
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <TouchableOpacity style={styles.backButton}>
+          <Icon
+            name="arrow-back"
+            type="material"
+            color="#fff"
+            onPress={() => {
+              navigation.navigate('Settings');
+            }}
+          />
+        </TouchableOpacity>
         <View
           style={{
-            // flex: 1,
-            justifyContent: 'center',
+            width: 400,
+            height: 400,
             alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: '30%',
           }}>
-          <LinearGradient
-            colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+          <Video
+            source={successVideo}
+            style={{width: 500, height: 300}}
+            resizeMode={'cover'}
+            controls={false}
+            repeat={true}
+            muted={true}
+            ref={ref => {
+              this.player = ref;
+            }}
           />
         </View>
-        <View
-          style={{
-            justifyContent: 'flex-start',
-            marginVertical: '5%',
-            paddingHorizontal: '8%',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginBottom: 16,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'NeueMontreal-Medium',
-                alignSelf: 'flex-start',
-                color: '#fff',
-              }}>
-              Sent To:
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: 'Unbounded-Medium',
-                alignSelf: 'flex-end',
-                color: '#fff',
-              }}>
-                {route.params.walletAddress.slice(0, 10)}...
-            </Text>
-          </View>
 
+        <View style={{marginTop: '5%', width: '100%'}}>
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginBottom: 16,
+              // flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
             }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'NeueMontreal-Medium',
-                alignSelf: 'flex-start',
-                color: '#fff',
-              }}>
-              Amount Sent:
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Unbounded-Medium',
-                alignSelf: 'flex-end',
-                color: '#fff',
-              }}>
-              ${route.params.amount}
-            </Text>
+            <LinearGradient
+              colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+            />
           </View>
-
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginBottom: 16,
+              justifyContent: 'flex-start',
+              marginVertical: '5%',
+              paddingHorizontal: '8%',
             }}>
-            <Text
+            <View
               style={{
-                fontSize: 16,
-                fontFamily: 'NeueMontreal-Medium',
-                alignSelf: 'flex-start',
-                color: '#fff',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
+                marginBottom: 16,
               }}>
-              Total Fees:
-            </Text>
-            <Text
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'NeueMontreal-Medium',
+                  alignSelf: 'flex-start',
+                  color: '#fff',
+                }}>
+                Sent To:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontFamily: 'Unbounded-Medium',
+                  alignSelf: 'flex-end',
+                  color: '#fff',
+                }}>
+                {recipientAddress?.slice(0, 10)}...
+              </Text>
+            </View>
+
+            <View
               style={{
-                fontSize: 16,
-                fontFamily: 'Unbounded-Medium',
-                alignSelf: 'flex-end',
-                color: '#fff',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
+                marginBottom: 16,
               }}>
-              ${route.params.fees}
-            </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'NeueMontreal-Medium',
+                  alignSelf: 'flex-start',
+                  color: '#fff',
+                }}>
+                Amount Sent:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'Unbounded-Medium',
+                  alignSelf: 'flex-end',
+                  color: '#fff',
+                }}>
+                {parseFloat(amount) /
+                  Math.pow(10, assetInfo?.contracts_balances?.[0]?.decimals)}
+                {assetInfo?.asset?.symbol}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
+                marginBottom: 16,
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'NeueMontreal-Medium',
+                  alignSelf: 'flex-start',
+                  color: '#fff',
+                }}>
+                Total Fees:
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontFamily: 'Unbounded-Medium',
+                  alignSelf: 'flex-end',
+                  color: '#fff',
+                }}>
+                $ 0
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <LinearGradient
+              colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+            />
           </View>
         </View>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <LinearGradient
-            colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
-          />
-        </View>
-      </View>
-    </ScrollView>
-  </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     textAlign: 'center',
-    height:'100%',
+    height: '100%',
     flex: 1,
     alignItems: 'center',
-    backgroundColor:'#000',
+    backgroundColor: '#000',
     fontFamily: `EuclidCircularA-Medium`,
-    justifyContent:'center',
-    alignContent:'center',
-    alignSelf:'center',
-    alignItems:'center'
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+    alignItems: 'center',
   },
   content: {
     alignItems: 'center',
-alignSelf:'center',
-justifyContent:'center'
+    alignSelf: 'center',
+    justifyContent: 'center',
   },
 
   successText: {

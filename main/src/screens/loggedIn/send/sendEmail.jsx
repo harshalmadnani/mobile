@@ -19,6 +19,8 @@ const REMMITEX_CONTRACT = '0x5c34A74caB1Edfc1d73B8Ae725AdDE50bA067d5B';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
+import {setAddressOnEmail} from '../../../store/actions/transfer';
+import {useDispatch} from 'react-redux';
 
 const width = Dimensions.get('window').width;
 
@@ -26,7 +28,7 @@ const SendEmailComponent = ({navigation}) => {
   const [submitText, setSubmitText] = useState('Continue');
   const [country, setCountry] = useState('1');
   const [text, setText] = useState('');
-
+  const dispatch = useDispatch();
   const validateEmail = text => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(text);
@@ -35,49 +37,20 @@ const SendEmailComponent = ({navigation}) => {
     const emailRegex = /^0x[a-fA-F0-9]{40}$/;
     return emailRegex.test(text);
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSubmitText('Pending...');
-
     const validation = validateEmail(text);
     if (!validation) {
       setSubmitText('Not found');
       return;
     }
-    fetch(
-      `https://email-lookup.api.xade.finance/polygon?email=${text.toLowerCase()}`,
-      {
-        method: 'GET',
-      },
-    )
-      .then(response => {
-        console.log(response);
-        if (response.status == 200) {
-          return response.text();
-        } else return 0;
-      })
-      .then(data => {
-        console.log(data);
-        try {
-          if (data != 0) {
-            navigation.push('EnterAmount', {
-              type: 'email',
-              walletAddress: data,
-              emailAddress: text.toLowerCase(),
-            });
-            setSubmitText('Continue');
-          } else {
-            navigation.push('EnterAmount', {
-              type: 'v2',
-              walletAddress: REMMITEX_CONTRACT,
-              emailAddress: text.toLowerCase(),
-            });
-            setSubmitText('Continue');
-          }
-        } catch (err) {
-          console.log(err);
-        }
-      });
-
+    const res = await dispatch(setAddressOnEmail(text));
+    // console.log('res........', res);
+    if (res) {
+      navigation.push('AnyToken');
+    } else {
+      setSubmitText('Not found');
+    }
     // const validation = validateAddress(text.toLowerCase());
     // if (!validation) {
     //   setSubmitText('Not found');
@@ -173,11 +146,6 @@ const SendEmailComponent = ({navigation}) => {
             }}
           />
         </View>
-        {/* <TouchableOpacity
-          onPress={() => navigation.push('SendMobile')}
-          style={styles.subText}>
-          <Text style={{color: '#4F4CF6'}}>Send to mobile number instead</Text>
-        </TouchableOpacity> */}
         <TouchableOpacity style={styles.confirmButton} onPress={handleSubmit}>
           <Text
             style={{
@@ -226,7 +194,6 @@ const SendEmailComponent = ({navigation}) => {
             onPress={() => navigation.goBack()}
           />
         </TouchableOpacity>
-
       </View>
     </SafeAreaView>
   );

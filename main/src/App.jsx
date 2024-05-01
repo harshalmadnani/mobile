@@ -70,7 +70,7 @@ import LiFi from './screens/loggedIn/payments/Ramps/lifi';
 import PreRegister from './screens/loggedIn/spending/PreRegister';
 import Uniramp from './screens/loggedIn/payments/Ramps/uniramp';
 import SettingsComponent from './screens/settings/settings';
-import NFT from './screens/loggedIn/nft'
+import NFT from './screens/loggedIn/nft';
 import Card from './screens/loggedIn/card';
 
 import RedeemPoints from './screens/loggedIn/redeem/redeem';
@@ -100,6 +100,7 @@ import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxSt
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
 import * as Sentry from '@sentry/react-native';
 import DinariKycWebview from './screens/stocks/KYCFlow/DinariKycWebview';
+import AnyTokenListScreen from './screens/loggedIn/send/AnyTokenList';
 // import {register} from 'module';
 const projectId = 'cb6fc19a389caeab31f49d301b87ad73';
 
@@ -168,22 +169,6 @@ function EnterName({navigation, route}) {
   return (
     <View>
       <Name route={route} navigation={navigation} />
-    </View>
-  );
-}
-
-function OnRamp({navigation}) {
-  return (
-    <View>
-      <FiatAmountComponent navigation={navigation} />
-    </View>
-  );
-}
-
-function FiatAggregator({navigation}) {
-  return (
-    <View>
-      <FiatAggregatorComponent navigation={navigation} />
     </View>
   );
 }
@@ -321,7 +306,9 @@ function MarketSearch({navigation, route}) {
     </View>
   );
 }
-
+function AnyTokenList({navigation, route}) {
+  return <AnyTokenListScreen route={route} navigation={navigation} />;
+}
 function Payments({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -540,7 +527,6 @@ function CreateBankAccount({navigation}) {
   );
 }
 
-
 function ListBankAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
@@ -698,10 +684,16 @@ function App({navigation, uri}) {
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
-            
+
                   <Stack.Screen
                     name="Portfolio"
                     component={MainFlowStack}
+                    navigation={navigation}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="AnyToken"
+                    component={AnyTokenList}
                     navigation={navigation}
                     options={{headerShown: false}}
                   />

@@ -61,7 +61,24 @@ const Portfolio = ({navigation}) => {
       };
 
       ws.onmessage = event => {
-        dispatch(portfolioAction.setHoldings(JSON.parse(event?.data)));
+        const parsedData = JSON.parse(event?.data);
+        const manipulatedHoldingsData = [];
+
+        if (parsedData.assets?.length > 0) {
+          parsedData.assets?.forEach((asset, i) => {
+            asset?.contracts_balances?.forEach(contractBalance =>
+              manipulatedHoldingsData.push({
+                ...asset,
+                token_balance: contractBalance?.balance,
+                estimated_balance: contractBalance?.balance * asset?.price,
+                contracts_balances: [contractBalance],
+              }),
+            );
+          });
+          dispatch(
+            portfolioAction.setHoldings({assets: manipulatedHoldingsData}),
+          );
+        }
       };
 
       ws.onerror = event => {

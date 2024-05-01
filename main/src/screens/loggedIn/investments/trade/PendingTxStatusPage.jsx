@@ -2,10 +2,8 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Dimensions, SafeAreaView, TouchableOpacity} from 'react-native';
 import {Text, View, Image} from 'react-native';
-// import {TouchableOpacity} from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import {Svg, Circle, Text as SvgText} from 'react-native-svg';
-// import { View } from 'react-native-reanimated/lib/typescript/Animated';
 const {BigNumber} = require('bignumber.js');
 const PendingTxComponent = ({
   txQuoteInfo,

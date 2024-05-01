@@ -411,81 +411,68 @@ import {LoginType} from '@particle-network/rn-auth';
 export const prepareTxForSignature = async (from, txData, amount, to) => {
   await EvmService.createTransaction(from, txData, amount, to);
 };
-export const transferUSDCWithParticleAAGasless = async (
+export const transferAnyTokenWithParticleAAGasless = async (
   _amount,
   _recipient,
-  navigation,
   setStatus,
-  isAuth,
+  tokenAddress,
 ) => {
-  const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
   const amount = _amount;
   const recipient = _recipient;
-  if (isAuth) {
-    setStatus('Calculating Gas In USDC...');
-    web3 = getAuthCoreProvider(LoginType.Email);
-    const usdcAbi = new ethers.Interface(usdAbi);
-    let txs = [];
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
+  console.log('tx started...........');
+  setStatus('Calculating Gas In USDC...');
+  const erc20Abi = new ethers.Interface(usdAbi);
+  let txs = [];
+  const eoaAddress = await getUserAddressFromAuthCoreSDK();
+  const smartAccount = await getSmartAccountAddress(eoaAddress);
+  if (tokenAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
     setStatus('Creating Transactions...');
-    try {
-      console.log('eoas', smartAccount, eoaAddress, recipient);
-      // const approveData = usdcAbi.encodeFunctionData('approve', [
-      //   v1Address,
-      //   totalAmount,
-      // ]);
-      // const approveTX = await getEthereumTransaction(
-      //   smartAccount,
-      //   usdcAddress,
-      //   approveData,
-      //   '0',
-      // );
-      // txs.push(approveTX);
-      const sendData = usdcAbi.encodeFunctionData('transfer', [
-        recipient,
-        amount,
-      ]);
-
-      const sendTX = await getEthereumTransaction(
-        smartAccount,
-        usdcAddress,
-        sendData,
-        '0',
-      );
-
-      txs.push(sendTX);
-
-      setStatus('Created Transactions Successfully...');
-
-      setStatus('Waiting For Approval...');
-      console.log('here txs..', txs);
-      const signature = await signAndSendBatchTransactionWithGasless(
-        eoaAddress,
-        smartAccount,
-        txs,
-      );
-      setStatus('Approved!');
-
-      console.log('Signature Signed...........', signature);
-      if (signature) {
-        return {
-          status: true,
-          fees: 0.0,
-        };
-      } else {
-        return {
-          status: false,
-          fees: JSON.stringify('fail'),
-        };
-      }
-    } catch (e) {
-      console.log('Signature Signed...........Error', e);
-      console.error(e);
+    console.log('native transfer.........');
+    const sendTX = await getEthereumTransaction(
+      smartAccount,
+      recipient,
+      '0x',
+      amount,
+    );
+    txs.push(sendTX);
+  } else {
+    setStatus('Creating Transactions...');
+    const sendData = erc20Abi.encodeFunctionData('transfer', [
+      recipient,
+      amount,
+    ]);
+    const sendTX = await getEthereumTransaction(
+      smartAccount,
+      tokenAddress,
+      sendData,
+      '0',
+    );
+    txs.push(sendTX);
+  }
+  try {
+    setStatus('Created Transactions Successfully...');
+    console.log('here txs..', txs);
+    const signature = await signAndSendBatchTransactionWithGasless(
+      eoaAddress,
+      smartAccount,
+      txs,
+    );
+    if (signature) {
+      return {
+        status: true,
+        fees: 0.0,
+      };
+    } else {
       return {
         status: false,
-        fees: JSON.stringify(e),
+        fees: JSON.stringify('fail'),
       };
     }
+  } catch (e) {
+    console.log('Signature Signed...........Error', e);
+    return {
+      status: false,
+      fees: JSON.stringify(e),
+    };
   }
 };

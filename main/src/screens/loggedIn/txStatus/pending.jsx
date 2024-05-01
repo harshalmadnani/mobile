@@ -1,180 +1,57 @@
 import React, {useEffect, useState} from 'react';
-import {
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  Platform,
-  ActivityIndicator,
-} from 'react-native';
+import {View, Platform, ActivityIndicator} from 'react-native';
 import {Text} from 'react-native-elements';
 import Video from 'react-native-video';
 
-// import {signAndSendTransactionConnect} from '../../../particle-connect';
-// import * as particleAuth from 'react-native-particle-auth';
-// import * as particleConnect from 'react-native-particle-connect';
-
-import getOnlyProvider from '../../../particle-auth';
-import createConnectProvider from '../../../particle-connect';
-
-import {
-  transferUSDC,
-  // transferUSDCV2,
-  transferUSDCWithParticleAAGasless,
-  // transferXUSD,
-  // transferXUSDV2,
-} from '../../loggedIn/payments/remmitexv1';
-
-// const Web3 = require('web3');
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {REMMITEX_TESTNET_CONTRACT} from '@env';
+import {transferAnyTokenWithParticleAAGasless} from '../../loggedIn/payments/remmitexv1';
+import {useSelector} from 'react-redux';
+import {switchAuthCoreChain} from '../../../utils/particleCoreSDK';
 
 let web3;
-let provider;
 const successVideo = require('./pending.mp4');
 
 const Component = ({route, navigation}) => {
   // Params
   let [status, setStatus] = useState('Processing Transaction...');
+  const recipientAddress = useSelector(x => x.transfer.recipientAddress);
+  const assetInfo = useSelector(x => x.transfer.assetInfo);
+  const amount = useSelector(x => x.transfer.transferAmount);
+  // const {emailAddress} = route.params;
 
-  const {walletAddress, emailAddress, mobileNumber, type, amount} =
-    route.params;
-
-  console.log('Params:', route.params);
+  // console.log('Params:', route.params);
 
   // const weiVal = Web3.utils.toWei(amount.toString(), 'ether');
 
   useEffect(() => {
-    if (global.withAuth) {
-      authAddress = global.loginAccount?.publicAddress;
-      console.log('Global Account:', global.loginAccount);
-      web3 = this.createProvider();
-    } else {
-      authAddress = global.connectAccount?.publicAddress;
-      console.log('Global Account:', global.connectAccount);
-      console.log('Global Wallet Type:', global.walletType);
-      web3 = this.createConnectProvider();
-    }
-
-    const provider = this.getOnlyProvider();
-
     const transaction = async () => {
-      const mainnetJSON = await AsyncStorage.getItem('mainnet');
-      const mainnet = JSON.parse(mainnetJSON);
-      let status;
-      console.log('Is Auth:', global.withAuth);
-      if (type !== 'v2') {
-        if (mainnet) {
-          try {
-            // const {status, fees} = await transferUSDC(
-            // global.smartAccount,
-            //   amount,
-            //   walletAddress,
-            //   navigation,
-            //   setStatus,
-            //   global.withAuth,
-            // );
-            const {status, fees} = await transferUSDCWithParticleAAGasless(
-              amount * 1000000,
-              walletAddress,
-              navigation,
-              setStatus,
-              global.withAuth,
-            );
-            if (status)
-              navigation.push('Successful', {
-                status,
-                type,
-                emailAddress,
-                walletAddress,
-                amount,
-                fees,
-              });
-            else navigation.push('Unsuccessful', {error: fees});
-          } catch (err) {
-            console.log(err);
-          }
+      try {
+        console.log(assetInfo?.contracts_balances[0]);
+        await switchAuthCoreChain(
+          parseInt(assetInfo?.contracts_balances[0]?.chainId),
+        );
+        const {status, fees} = await transferAnyTokenWithParticleAAGasless(
+          amount,
+          recipientAddress,
+          setStatus,
+          assetInfo?.contracts_balances[0]?.address,
+        );
+        if (status) {
+          await switchAuthCoreChain(parseInt(137));
+          navigation.push('Successful', {
+            status,
+            type: 'v2',
+            emailAddress: 's',
+            recipientAddress,
+            amount,
+            fees: 0,
+          });
         } else {
-          // status = await transferXUSD(
-          //   global.smartAccount,
-          //   provider,
-          //   amount,
-          //   walletAddress,
-          // );
-          // console.log('TX1:', status);
-          // if (status == true)
-          //   navigation.push('Successful', {
-          //     status,
-          //     type,
-          //     emailAddress,
-          //     walletAddress,
-          //     amount,
-          //     fees: 0,
-          //   });
-          // else navigation.push('Unsuccessful');
+          await switchAuthCoreChain(parseInt(137));
+          navigation.push('Unsuccessful', {error: fees});
         }
-      } else {
-        console.log('V2 being nicely executed');
-
-        // if (mainnet == false) {
-        //   console.log('this part fine also');
-        //   if (global.withAuth) {
-        //     authAddress = global.loginAccount.publicAddress;
-        //     console.log('Global Account:', global.loginAccount);
-        //     status = await transferXUSDV2(
-        //       global.smartAccount,
-        //       provider,
-        //       amount,
-        //       REMMITEX_TESTNET_CONTRACT,
-        //     );
-        //     console.log('TX1:', status);
-        //   } else {
-        //     console.log('connecting');
-        //     authAddress = global.connectAccount.publicAddress;
-        //     console.log('Global Account:', global.connectAccount);
-        //     status = await this.signAndSendTransactionConnect(
-        //       REMMITEX_TESTNET_CONTRACT,
-        //       weiVal,
-        //     );
-        //   }
-        //   if (status !== false) {
-        //     navigation.push('Successful', {
-        //       status,
-        //       type,
-        //       emailAddress,
-        //       walletAddress,
-        //       amount,
-        //       fees: 0,
-        //     });
-        //   }
-        // } else {
-        //   try {
-        //     console.log(
-        //       'Reaching to state of calling function',
-        //       global.smartAccount,
-        //     );
-        //     const {status, fees} = await transferUSDCV2(
-        //       global.smartAccount,
-        //       provider,
-        //       amount,
-        //       walletAddress,
-        //       setStatus,
-        //     );
-        //     console.log(fees);
-        //     if (status)
-        //       navigation.push('Successful', {
-        //         status,
-        //         type,
-        //         emailAddress,
-        //         walletAddress,
-        //         amount,
-        //         fees,
-        //       });
-        //     else navigation.push('Unsuccessful', {error: fees});
-        //   } catch (e) {
-        //     console.log(e);
-        //   }
-        // }
+      } catch (err) {
+        console.log(err);
+        await switchAuthCoreChain(parseInt(137));
       }
     };
 
@@ -194,7 +71,6 @@ const Component = ({route, navigation}) => {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-  
       <View style={{width: '100%', marginTop: '5%'}}>
         <Video
           source={successVideo}
@@ -229,7 +105,11 @@ const Component = ({route, navigation}) => {
               fontFamily: `EuclidCircularA-Regular`,
               color: 'white',
             }}>
-            {'\n' + route.params.amount + ' '}USDC
+            {'\n' +
+              amount /
+                Math.pow(10, assetInfo?.contracts_balances[0]?.decimals) +
+              ' '}
+            {assetInfo?.asset?.symbol}
           </Text>
         </Text>
         <Text
@@ -246,7 +126,7 @@ const Component = ({route, navigation}) => {
               fontFamily: `EuclidCircularA-Regular`,
               color: 'white',
             }}>
-            {'\n' + route.params.walletAddress.slice(0, 20)}...
+            {'\n' + recipientAddress.slice(0, 20)}...
           </Text>
         </Text>
         <Text
@@ -264,7 +144,7 @@ const Component = ({route, navigation}) => {
               color: 'white',
             }}>
             {'\n'}
-            {route.params.type == 'v2' ? 'RemmiteX V2' : 'RemmiteX V1'}
+            {'RemmiteX V2'}
           </Text>
         </Text>
       </View>

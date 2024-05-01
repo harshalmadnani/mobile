@@ -2,6 +2,7 @@ import authReducer from './auth';
 import marketReducer from './market';
 import portfolioReducer from './portfolio';
 import depositReducer from './deposit';
+import transferReducer from './transfer';
 const {combineReducers} = require('@reduxjs/toolkit');
 
 export const reducers = combineReducers({
@@ -9,4 +10,5 @@ export const reducers = combineReducers({
   market: marketReducer,
   portfolio: portfolioReducer,
   deposit: depositReducer,
+  transfer: transferReducer,
 });

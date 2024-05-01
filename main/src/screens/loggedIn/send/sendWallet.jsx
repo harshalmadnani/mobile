@@ -19,6 +19,8 @@ const REMMITEX_CONTRACT = '0x5c34A74caB1Edfc1d73B8Ae725AdDE50bA067d5B';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
+import {transferAction} from '../../../store/reducers/transfer';
+import {useDispatch} from 'react-redux';
 
 const width = Dimensions.get('window').width;
 
@@ -35,6 +37,7 @@ const SendWalletComponent = ({navigation}) => {
     const emailRegex = /^0x[a-fA-F0-9]{40}$/;
     return emailRegex.test(text);
   };
+  const dispatch = useDispatch();
   const handleSubmit = () => {
     setSubmitText('Pending...');
 
@@ -43,11 +46,12 @@ const SendWalletComponent = ({navigation}) => {
       setSubmitText('Not found');
       return;
     }
-
-    navigation.push('EnterAmount', {
-      type: 'wallet',
-      walletAddress: text,
-    });
+    dispatch(transferAction.setRecipientAddress(text));
+    // navigation.push('EnterAmount', {
+    //   type: 'wallet',
+    //   walletAddress: text,
+    // });
+    navigation.push('AnyToken');
     setSubmitText('Continue');
   };
   return (
