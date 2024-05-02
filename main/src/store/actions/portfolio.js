@@ -1,5 +1,8 @@
 import axios from 'axios';
-import {getDLNTradeForAddress} from '../../utils/DLNTradeApi';
+import {
+  getAllSameChainTxs,
+  getDLNTradeForAddress,
+} from '../../utils/DLNTradeApi';
 import {
   getCryptoHoldingForAddress,
   getNftsHoldingForAddress,
@@ -31,8 +34,13 @@ export const getWalletTransactionForAddressFromMobula = () => {
 export const getWalletTransactionForAddressFromDLN = page => {
   return async (dispatch, getState) => {
     const evmInfo = getState().portfolio.evmInfo;
-    const data = await getDLNTradeForAddress(evmInfo.smartAccount, page);
-    dispatch(portfolioAction.setEvmDLNTradeList(data));
+    const crossData = await getDLNTradeForAddress(evmInfo.smartAccount, page);
+    const sameData = await getAllSameChainTxs(evmInfo.smartAccount);
+    dispatch(
+      portfolioAction.setEvmDLNTradeList({
+        orders: [...crossData?.orders, ...sameData],
+      }),
+    );
     return data;
   };
 };

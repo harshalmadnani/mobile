@@ -7,7 +7,7 @@ import {
   FlatList,
   SectionList,
   Pressable,
-  ImageBackground 
+  ImageBackground,
 } from 'react-native';
 import {Icon, Text} from 'react-native-elements';
 import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
@@ -55,6 +55,7 @@ const TransactionList = ({navigation, route}) => {
     x => x.portfolio.evmDLNTradesTxListInfo,
   );
   const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
+  console.log('orders...');
   console.log(evmTxListInfo?.length);
   const getAllTxHistory = async () => {
     dispatch(getWalletTransactionForAddressFromMobula(page));
@@ -62,13 +63,7 @@ const TransactionList = ({navigation, route}) => {
   const getAllDLNTradeHistory = async () => {
     dispatch(getWalletTransactionForAddressFromDLN(page));
   };
-  const onEndReachedFetch = async () => {
-    // if (txType === 'dln') {
-    //   getAllDLNTradeHistory();
-    // } else {
-    //   getAllTxHistory();
-    // }
-  };
+  const onEndReachedFetch = async () => {};
   useEffect(() => {
     if (txType === 'dln') {
       getAllDLNTradeHistory();
@@ -86,7 +81,6 @@ const TransactionList = ({navigation, route}) => {
         justifyContent: 'flex-start',
         alignItems: 'center',
       }}>
-        
       <View
         style={{
           flexDirection: 'row',

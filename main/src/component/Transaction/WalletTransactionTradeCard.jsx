@@ -2,18 +2,24 @@ import {StyleSheet, View, Text, Image} from 'react-native';
 import moment from 'moment';
 
 const WalletTransactionTradeCard = ({item}) => {
-  const mainSwapToken =
-    item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
-      ? item?.takeOfferWithMetadata
-      : item?.giveOfferWithMetadata;
-  const secondarySwapToken =
-    item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
-      ? item?.giveOfferWithMetadata
-      : item?.takeOfferWithMetadata;
+  const mainSwapToken = item?.lifiExplorerLink
+    ? item?.sending?.token?.symbol === 'USDC'
+      ? item?.receiving
+      : item?.sending
+    : item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
+    ? item?.takeOfferWithMetadata
+    : item?.giveOfferWithMetadata;
+  const secondarySwapToken = item?.lifiExplorerLink
+    ? item?.sending?.token?.symbol === 'USDC'
+      ? item?.sending
+      : item?.receiving
+    : item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
+    ? item?.giveOfferWithMetadata
+    : item?.takeOfferWithMetadata;
 
   function formatCompactNumber(number) {
     if (number < 1000) {
-      return number;
+      return parseFloat(number)?.toFixed(3);
     } else if (number >= 1000 && number < 1000000) {
       return (number / 1000)?.toFixed(1) + 'K';
     } else if (number >= 1000000 && number < 1000000000) {
@@ -26,7 +32,18 @@ const WalletTransactionTradeCard = ({item}) => {
       return null;
     }
   }
-  console.log(mainSwapToken?.amount?.stringValue, 'main swap token');
+  console.log(
+    formatCompactNumber(
+      secondarySwapToken?.amount?.stringValue ??
+        secondarySwapToken?.amount /
+          Math.pow(
+            10,
+            secondarySwapToken?.decimals ?? secondarySwapToken?.token?.decimals,
+          ),
+    ),
+
+    'main swap token',
+  );
   return (
     <View
       style={{
@@ -47,27 +64,41 @@ const WalletTransactionTradeCard = ({item}) => {
         style={{
           flexDirection: 'row',
         }}>
-        <Image
-          style={{width: 42, height: 42}}
-          source={{
-            uri: `${mainSwapToken.logoURI}`,
-          }}
-        />
+        {mainSwapToken?.logoURI ?? mainSwapToken?.token?.logoURI ? (
+          <Image
+            style={{width: 42, height: 42}}
+            source={{
+              uri: `${mainSwapToken?.logoURI ?? mainSwapToken?.token?.logoURI}`,
+            }}
+          />
+        ) : null}
         <View
           style={{
             marginLeft: '5%',
-            alignSelf:'center'
+            alignSelf: 'center',
           }}>
           <Text style={styles.primaryTitle}>
             {`${
-              item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
+              item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC' ||
+              item?.sending?.token?.symbol === 'USDC'
                 ? 'Bought'
                 : 'Sold'
-            } ${mainSwapToken?.metadata?.symbol}`}
+            } ${
+              mainSwapToken?.metadata?.symbol ?? mainSwapToken?.token?.symbol
+            }`}
           </Text>
-          <Text style={{color:'#8e8e8e',fontSize:14,fontFamily:'NeueMontreal-Medium'}}>
-          {moment.unix(item?.creationTimestamp).format('MMM Do ')} {moment.unix(item?.creationTimestamp).format('h:mm a')
-}
+          <Text
+            style={{
+              color: '#8e8e8e',
+              fontSize: 14,
+              fontFamily: 'NeueMontreal-Medium',
+            }}>
+            {moment
+              .unix(item?.creationTimestamp ?? item?.sending?.timestamp)
+              .format('MMM Do ')}{' '}
+            {moment
+              .unix(item?.creationTimestamp ?? item?.sending?.timestamp)
+              .format('h:mm a')}
           </Text>
         </View>
       </View>
@@ -75,20 +106,39 @@ const WalletTransactionTradeCard = ({item}) => {
       <View style={{alignItems: 'flex-end'}}>
         <Text style={[styles.secondaryTitle, {color: '#07F70F', opacity: 1}]}>
           {'+ '}
-          {(
-            mainSwapToken?.amount?.stringValue /
-            Math.pow(10, mainSwapToken?.decimals)
-          )?.toFixed(2)}
-          {` ${mainSwapToken?.metadata?.symbol?.substring(0, 7)}`}
+          {formatCompactNumber(
+            parseFloat(
+              mainSwapToken?.amount?.stringValue ??
+                mainSwapToken?.amount /
+                  Math.pow(
+                    10,
+                    mainSwapToken?.decimals ?? mainSwapToken?.token?.decimals,
+                  ),
+            )?.toFixed(2),
+          )}
+          {` ${
+            mainSwapToken?.metadata?.symbol?.substring(0, 7) ??
+            mainSwapToken?.token?.symbol?.substring(0, 7)
+          }`}
         </Text>
         <Text style={[styles.secondaryTitle, {opacity: 1}]}>
           {'- '}
           {formatCompactNumber(
-            secondarySwapToken?.amount?.stringValue /
-              Math.pow(10, secondarySwapToken?.decimals),
-          )?.toFixed(2)}
+            parseFloat(
+              secondarySwapToken?.amount?.stringValue ??
+                secondarySwapToken?.amount /
+                  Math.pow(
+                    10,
+                    secondarySwapToken?.decimals ??
+                      secondarySwapToken?.token?.decimals,
+                  ),
+            )?.toFixed(2),
+          )}
 
-          {` ${secondarySwapToken?.metadata?.symbol?.substring(0, 7)}`}
+          {` ${
+            secondarySwapToken?.metadata?.symbol?.substring(0, 7) ??
+            secondarySwapToken?.token?.symbol?.substring(0, 7)
+          }`}
         </Text>
       </View>
     </View>
@@ -101,7 +151,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontFamily: 'Unbounded-Bold',
     color: '#ffffff',
-    
   },
   secondaryTitle: {
     fontSize: 12,

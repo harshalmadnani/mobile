@@ -565,15 +565,6 @@ export const executeCrossChainSellForUSDC = async (
 ) => {
   const usdcNativeToken = getUSDCTokenOnChain(parseInt(srcChainId));
   const usdcNativePolyToken = getUSDCTokenOnChain(parseInt(137));
-  console.log(
-    'tx data.......1',
-    srcChainId,
-    usdcNativeToken,
-    value,
-    137,
-    usdcNativePolyToken,
-    evmInfo?.smartAccount,
-  );
   const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
     srcChainId,
     usdcNativeToken,
@@ -606,4 +597,12 @@ export const executeCrossChainSellForUSDC = async (
     return res;
   }
   // return uSDCTxnRate;
+};
+//https://li.quest/v1/analytics/transfers?integrator=xade-finace&wallet=ds
+export const getAllSameChainTxs = async address => {
+  const result = await axios.get(
+    `https://li.quest/v1/analytics/transfers?integrator=xade-finace&wallet=${address}&status=DONE`,
+  );
+  console.log('same chain result', result?.data?.transfers);
+  return result?.data?.transfers;
 };

@@ -2,7 +2,6 @@ import {StyleSheet, View, Text, Image} from 'react-native';
 import moment from 'moment';
 
 const WalletTransactionTransferCard = ({item}) => {
-  console.log('inside card', item);
   const mainSwapToken =
     item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
       ? item?.takeOfferWithMetadata
@@ -45,27 +44,28 @@ const WalletTransactionTransferCard = ({item}) => {
         style={{
           flexDirection: 'row',
         }}>
-    <Image
-  style={{width: 42, height: 42}}
-  source={{
-    uri: item?.type === 'buy'
-      ? 'https://res.cloudinary.com/xade-finance/image/upload/v1713100334/tmgil35hf4ljdgqcgjb0.png'
-      : 'https://res.cloudinary.com/xade-finance/image/upload/v1713100334/kchvdrc9jxqg34m2uskp.png'
-  }}
-/>
+        <Image
+          style={{width: 42, height: 42}}
+          source={{
+            uri:
+              item?.type === 'buy'
+                ? 'https://res.cloudinary.com/xade-finance/image/upload/v1713100334/tmgil35hf4ljdgqcgjb0.png'
+                : 'https://res.cloudinary.com/xade-finance/image/upload/v1713100334/kchvdrc9jxqg34m2uskp.png',
+          }}
+        />
         <View
           style={{
             marginLeft: '5%',
-            alignSelf:'center'
+            alignSelf: 'center',
           }}>
           <Text style={styles.primaryTitle}>
-          {item?.type === 'buy'
+            {item?.type === 'buy'
               ? ` ${item?.from?.substr(0, 6)}....${item?.from?.substr(-3)}`
               : `${item?.to?.substr(0, 4)}....${item?.to?.substr(-4)}`}
           </Text>
-          <Text style={{fontFamily:'NeueMontreal-Medium',color:'#8e8e8e'}}>
-          {moment.unix(item?.timestamp / 1000).format('MMM Do')} {moment.unix(item?.timestamp / 1000).format('h:mm a')}
-
+          <Text style={{fontFamily: 'NeueMontreal-Medium', color: '#8e8e8e'}}>
+            {moment.unix(item?.timestamp / 1000).format('MMM Do')}{' '}
+            {moment.unix(item?.timestamp / 1000).format('h:mm a')}
           </Text>
         </View>
       </View>
@@ -73,27 +73,51 @@ const WalletTransactionTransferCard = ({item}) => {
       <View style={{alignItems: 'flex-end'}}>
         {item?.type === 'buy' ? (
           <View>
-          <Text style={[styles.secondaryTitle, {color: '#fff', opacity: 1,alignSelf:'flex-end'}]}>
-            {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}
-            +{item?.amount} USD
-          </Text>
-            <Text style={[styles.secondaryTitle, {color: '#62FFA1', opacity: 1,fontFamily:'NeueMontreal-Medium',alignSelf:'flex-end'}]}>
-           Added
-          </Text>
+            <Text
+              style={[
+                styles.secondaryTitle,
+                {color: '#fff', opacity: 1, alignSelf: 'flex-end'},
+              ]}>
+              {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}+
+              {item?.amount} USD
+            </Text>
+            <Text
+              style={[
+                styles.secondaryTitle,
+                {
+                  color: '#62FFA1',
+                  opacity: 1,
+                  fontFamily: 'NeueMontreal-Medium',
+                  alignSelf: 'flex-end',
+                },
+              ]}>
+              Added
+            </Text>
           </View>
-          
         ) : (
           <View>
-          <Text style={[styles.secondaryTitle, {color: '#fff', opacity: 1,alignSelf:'flex-end'}]}>
-            {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}
-            -{item?.amount} USD
-          </Text>
-            <Text style={[styles.secondaryTitle, {color: '#FFB762', opacity: 1,fontFamily:'NeueMontreal-Medium',alignSelf:'flex-end'}]}>
-           Withdrawn
-          </Text>
+            <Text
+              style={[
+                styles.secondaryTitle,
+                {color: '#fff', opacity: 1, alignSelf: 'flex-end'},
+              ]}>
+              {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}-
+              {item?.amount} USD
+            </Text>
+            <Text
+              style={[
+                styles.secondaryTitle,
+                {
+                  color: '#FFB762',
+                  opacity: 1,
+                  fontFamily: 'NeueMontreal-Medium',
+                  alignSelf: 'flex-end',
+                },
+              ]}>
+              Withdrawn
+            </Text>
           </View>
         )}
-       
       </View>
     </View>
   );
@@ -112,7 +136,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     fontFamily: 'Unbounded-Regular',
     color: '#ffffff',
-  
   },
 });
 
