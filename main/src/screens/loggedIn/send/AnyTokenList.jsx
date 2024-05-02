@@ -10,21 +10,24 @@ import {
   StyleSheet,
   FlatList,
   Pressable,
+  Modal,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {transferAction} from '../../../store/reducers/transfer';
+import {useNavigation} from '@react-navigation/native';
 
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
 };
 
-const AnyTokenListScreen = ({navigation}) => {
+const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
   const recipientAddress = useSelector(x => x.transfer.recipientAddress);
+  const navigation = useNavigation();
   //   const manipulatedHoldingsData = [];
 
   //   if (holdings.assets?.length > 0) {
@@ -40,30 +43,38 @@ const AnyTokenListScreen = ({navigation}) => {
   //     });
   //   }
   return (
-    <SafeAreaView
-      style={{
-        width: width,
-        alignSelf: 'flex-start',
-        backgroundColor: '#000000',
-        paddingBottom: 80,
+    <Modal
+      animationType="slide"
+      // transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        setModalVisible(!modalVisible);
       }}>
       <View
         style={{
-          marginTop: '8%',
-          marginLeft: '5%',
-          marginRight: '5%',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
+          width: width,
+          height,
+          alignSelf: 'flex-start',
+          backgroundColor: '#000000',
+          paddingBottom: 80,
         }}>
-        <Text
+        <View
           style={{
-            fontFamily: 'Unbounded-Medium',
-            color: '#fff',
-            fontSize: 20,
+            marginTop: '8%',
+            marginLeft: '5%',
+            marginRight: '5%',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
           }}>
-          Holdings
-        </Text>
-        {/* <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
+          <Text
+            style={{
+              fontFamily: 'Unbounded-Medium',
+              color: '#fff',
+              fontSize: 20,
+            }}>
+            Holdings
+          </Text>
+          {/* <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
           <MyInvestmentItemCard
                 navigation={navigation}
                 item={{
@@ -88,68 +99,66 @@ const AnyTokenListScreen = ({navigation}) => {
             }}
           />
         </TouchableOpacity> */}
+        </View>
+        <FlatList
+          data={holdings?.assets}
+          style={{
+            marginTop: 64,
+            width: '98%',
+          }}
+          renderItem={({item}) => (
+            <Pressable
+              onPress={() => {
+                dispatch(transferAction.setAssetToTransfer(item));
+                setModalVisible(!modalVisible);
+              }}
+              style={{width: '100%', padding: 12}}>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text
+                  style={{
+                    fontFamily: `NeueMontreal-Medium`,
+                    color: 'white',
+                    fontSize: 20,
+                  }}>
+                  {item?.asset?.name}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: `NeueMontreal-Medium`,
+                    color: 'white',
+                    fontSize: 16,
+                    paddingTop: 10,
+                  }}>
+                  ${item?.estimated_balance?.toString()?.slice(0, 5)}
+                </Text>
+              </View>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                <Text
+                  style={{
+                    fontFamily: `NeueMontreal-Medium`,
+                    color: 'white',
+                    opacity: 0.5,
+                    fontSize: 16,
+                  }}>
+                  {item?.token_balance?.toString()?.slice(0, 10)}
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: `NeueMontreal-Medium`,
+                    color: 'white',
+                    opacity: 0.5,
+                    fontSize: 16,
+                  }}>
+                  {` ${item?.asset?.symbol}`}
+                </Text>
+              </View>
+            </Pressable>
+          )}
+          keyExtractor={(item, i) => i.toString()}
+        />
       </View>
-      <FlatList
-        data={holdings?.assets}
-        style={{
-          marginTop: 64,
-          width: '98%',
-        }}
-        renderItem={({item}) => (
-          <Pressable
-            onPress={() => {
-              dispatch(transferAction.setAssetToTransfer(item));
-              navigation.push('EnterAmount', {
-                type: 'wallet',
-                walletAddress: recipientAddress,
-              });
-            }}
-            style={{width: '100%', padding: 12}}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text
-                style={{
-                  fontFamily: `NeueMontreal-Medium`,
-                  color: 'white',
-                  fontSize: 20,
-                }}>
-                {item?.asset?.name}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: `NeueMontreal-Medium`,
-                  color: 'white',
-                  fontSize: 16,
-                  paddingTop: 10,
-                }}>
-                ${item?.estimated_balance?.toString()?.slice(0, 5)}
-              </Text>
-            </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text
-                style={{
-                  fontFamily: `NeueMontreal-Medium`,
-                  color: 'white',
-                  opacity: 0.5,
-                  fontSize: 16,
-                }}>
-                {item?.token_balance?.toString()?.slice(0, 10)}
-              </Text>
-              <Text
-                style={{
-                  fontFamily: `NeueMontreal-Medium`,
-                  color: 'white',
-                  opacity: 0.5,
-                  fontSize: 16,
-                }}>
-                {` ${item?.asset?.symbol}`}
-              </Text>
-            </View>
-          </Pressable>
-        )}
-        keyExtractor={(item, i) => i.toString()}
-      />
-    </SafeAreaView>
+    </Modal>
   );
 };
 

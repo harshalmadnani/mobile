@@ -306,9 +306,9 @@ function MarketSearch({navigation, route}) {
     </View>
   );
 }
-function AnyTokenList({navigation, route}) {
-  return <AnyTokenListScreen route={route} navigation={navigation} />;
-}
+// function AnyTokenList({navigation, route}) {
+//   return <AnyTokenListScreen route={route} navigation={navigation} />;
+// }
 function Payments({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -691,12 +691,12 @@ function App({navigation, uri}) {
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
-                  <Stack.Screen
+                  {/* <Stack.Screen
                     name="AnyToken"
                     component={AnyTokenList}
                     navigation={navigation}
                     options={{headerShown: false}}
-                  />
+                  /> */}
                   <Stack.Screen
                     name="Savings"
                     component={Savings}

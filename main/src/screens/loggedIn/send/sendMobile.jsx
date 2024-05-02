@@ -94,12 +94,15 @@ const SendMobileComponent = ({navigation}) => {
         console.log(data);
         try {
           if (data != 0) {
+            dispatch(transferAction.setRecipientAddress(text));
+            // navigation.push('EnterAmount', {
+            //   type: 'wallet',
+            //   walletAddress: text,
+            // });
             navigation.push('EnterAmount', {
-              type: 'email',
-              walletAddress: data,
-              emailAddress: text.replace('-', ''),
+              type: 'wallet',
+              walletAddress: text,
             });
-            setSubmitText('Continue');
           } else {
             // navigation.push('EnterAmount', {
             //   type: 'v2',

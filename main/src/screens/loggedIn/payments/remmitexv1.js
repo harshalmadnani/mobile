@@ -419,7 +419,6 @@ export const transferAnyTokenWithParticleAAGasless = async (
 ) => {
   const amount = _amount;
   const recipient = _recipient;
-  console.log('tx started...........');
   setStatus('Calculating Gas In USDC...');
   const erc20Abi = new ethers.Interface(usdAbi);
   let txs = [];

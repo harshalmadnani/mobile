@@ -215,13 +215,11 @@ export const signAndSendBatchTransactionWithGasless = async (
   transactions,
 ) => {
   const resultDeploy = await particleAA.isDeploy(eoaAddress);
-
+  console.log('deploy result....', resultDeploy);
   if (resultDeploy.status) {
     const isDeploy = resultDeploy.data;
-    console.log('isDeploy result', isDeploy);
     if (resultDeploy.data) {
       const resultAAEnableMode = await particleAA.isAAModeEnable();
-      console.log('Enable result', resultAAEnableMode);
       try {
         const wholeFeeQuote = await particleAA.rpcGetFeeQuotes(
           eoaAddress,
@@ -280,7 +278,6 @@ export const signAndSendBatchTransactionWithGasless = async (
   }
 };
 export const encodeFunctionForDLN = params => {
-  // const contractInterface = new Web3().eth.Contract();
   const proxyDLN = new ethers.Contract(
     '0xd1cb82a4d5c9086a2a7fdeef24fdb1c0a55bba58',
     [

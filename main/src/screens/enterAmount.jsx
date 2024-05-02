@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  Pressable,
 } from 'react-native';
 // import * as particleAuth from 'react-native-particle-auth';
 import {enableScreens} from 'react-native-screens';
@@ -16,6 +17,8 @@ import FastImage from 'react-native-fast-image';
 import createProvider from '../particle-auth';
 import {useDispatch, useSelector} from 'react-redux';
 import {transferAction} from '../store/reducers/transfer';
+import AnyTokenListScreen from './loggedIn/send/AnyTokenList';
+import {useFocusEffect} from '@react-navigation/native';
 
 const buttons = [
   ['1', '2', '3'],
@@ -48,9 +51,11 @@ export default function EnterAmountComponent({navigation, route}) {
   let params = route.params;
   let [amount, setAmount] = React.useState('0');
   let [name, setName] = React.useState('Unregistered User');
+  let [modalVisible, setModalVisible] = React.useState(false);
   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0, ...params};
   const recipientAddress = useSelector(x => x.transfer.recipientAddress);
   const assetInfo = useSelector(x => x.transfer.assetInfo);
+  const holdings = useSelector(x => x.portfolio.holdings);
   const dispatch = useDispatch();
   function handleButtonPress(button) {
     if (button !== '' && button !== '⌫' && button !== '.') {
@@ -202,7 +207,8 @@ export default function EnterAmountComponent({navigation, route}) {
               </Text>
             </View>
           </View>
-          <View>
+
+          <Pressable onPress={() => setModalVisible(true)}>
             <Text
               style={{
                 marginTop: '2%',
@@ -210,9 +216,9 @@ export default function EnterAmountComponent({navigation, route}) {
                 fontFamily: `EuclidCircularA-Regular`,
                 color: 'white',
               }}>
-              {assetInfo?.asset?.symbol}
+              {assetInfo?.asset?.symbol ?? 'USDC'}
             </Text>
-          </View>
+          </Pressable>
         </View>
         <View style={styles.extradeets}>
           <Text
@@ -228,7 +234,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 fontFamily: `EuclidCircularA-Regular`,
                 color: 'white',
               }}>
-              {assetInfo?.token_balance}
+              {assetInfo?.token_balance ?? 0.0}
             </Text>
           </Text>
           <Text
@@ -244,7 +250,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 fontFamily: `EuclidCircularA-Regular`,
                 color: 'white',
               }}>
-              {route.params.walletAddress.slice(0, 20)}...
+              {recipientAddress?.slice(0, 20)}...
             </Text>
           </Text>
         </View>
@@ -288,8 +294,10 @@ export default function EnterAmountComponent({navigation, route}) {
                 );
                 dispatch(
                   transferAction.setTransferAmount(
-                    parseFloat(amount) *
-                      Math.pow(10, assetInfo?.contracts_balances[0]?.decimals),
+                    (
+                      parseFloat(amount) *
+                      Math.pow(10, assetInfo?.contracts_balances[0]?.decimals)
+                    ).toString(),
                   ),
                 );
                 navigation.navigate('Pending');
@@ -307,6 +315,10 @@ export default function EnterAmountComponent({navigation, route}) {
           </TouchableOpacity>
         </View>
       </View>
+      <AnyTokenListScreen
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </SafeAreaView>
   );
 }

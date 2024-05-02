@@ -20,7 +20,7 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
 import {transferAction} from '../../../store/reducers/transfer';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 const width = Dimensions.get('window').width;
 
@@ -28,7 +28,7 @@ const SendWalletComponent = ({navigation}) => {
   const [submitText, setSubmitText] = useState('Continue');
   const [country, setCountry] = useState('1');
   const [text, setText] = useState('');
-
+  const holdings = useSelector(x => x.portfolio.holdings);
   const validateEmail = text => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(text);
@@ -51,7 +51,19 @@ const SendWalletComponent = ({navigation}) => {
     //   type: 'wallet',
     //   walletAddress: text,
     // });
-    navigation.push('AnyToken');
+    dispatch(
+      transferAction.setAssetToTransfer(
+        holdings.assets.filter(
+          x =>
+            x.contracts_balances[0]?.address ===
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+        )?.[0],
+      ),
+    );
+    navigation.push('EnterAmount', {
+      type: 'wallet',
+      walletAddress: text,
+    });
     setSubmitText('Continue');
   };
   return (

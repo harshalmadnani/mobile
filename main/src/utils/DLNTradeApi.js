@@ -250,6 +250,7 @@ export const getBestCrossSwapRateBuy = async (
         : parseInt(
             x?.estimation?.dstChainTokenOut?.amount || x?.estimate?.toAmountMin,
           ),
+      estimation: x?.estimation,
       chainId: x?.estimation?.dstChainTokenOut?.chainId || 137,
     };
   });
@@ -264,7 +265,7 @@ export const getBestCrossSwapRateBuy = async (
             x?.estimation?.dstChainTokenOut?.chainId ===
             bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId,
         );
-  console.log('after filter', results.length);
+  console.log('after filter', results);
   if (results.length > 0) {
     return {bestRate: results[0], allRates: bestTradingPrice};
   } else {

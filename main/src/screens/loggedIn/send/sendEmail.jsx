@@ -20,15 +20,18 @@ import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import {FloatingLabelInput} from 'react-native-floating-label-input';
 import {setAddressOnEmail} from '../../../store/actions/transfer';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {transferAction} from '../../../store/reducers/transfer';
 
 const width = Dimensions.get('window').width;
 
 const SendEmailComponent = ({navigation}) => {
   const [submitText, setSubmitText] = useState('Continue');
+  const recipientAddress = useSelector(x => x.transfer.recipientAddress);
   const [country, setCountry] = useState('1');
   const [text, setText] = useState('');
   const dispatch = useDispatch();
+  const holdings = useSelector(x => x.portfolio.holdings);
   const validateEmail = text => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(text);
@@ -37,6 +40,7 @@ const SendEmailComponent = ({navigation}) => {
     const emailRegex = /^0x[a-fA-F0-9]{40}$/;
     return emailRegex.test(text);
   };
+
   const handleSubmit = async () => {
     setSubmitText('Pending...');
     const validation = validateEmail(text);
@@ -45,9 +49,29 @@ const SendEmailComponent = ({navigation}) => {
       return;
     }
     const res = await dispatch(setAddressOnEmail(text));
-    // console.log('res........', res);
     if (res) {
-      navigation.push('AnyToken');
+      console.log(
+        'holdings.....',
+        holdings.assets.filter(
+          x =>
+            x.contracts_balances[0]?.address ===
+            '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+        )?.[0]?.contracts_balances,
+      );
+      dispatch(
+        transferAction.setAssetToTransfer(
+          holdings.assets.filter(
+            x =>
+              x.contracts_balances[0]?.address ===
+              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          )?.[0],
+        ),
+      );
+      navigation.push('EnterAmount', {
+        type: 'wallet',
+        walletAddress: recipientAddress,
+      });
+      setSubmitText('Continue');
     } else {
       setSubmitText('Not found');
     }
