@@ -58,6 +58,7 @@ import {
 import {
   getMarketOrderFeesEstimationFromDinari,
   placeMarketOrderToDinari,
+  placeMarketOrderToDinariBuy,
 } from '../../../../utils/Dinari/DinariApi';
 import {LoginType} from '@particle-network/rn-auth';
 
@@ -95,7 +96,8 @@ const TradePage = ({route}) => {
   );
   const isStockTrade = useSelector(x => x.market.isStockTrade);
 
-  const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
+  // const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
+  const tokensToSell = tradeAsset?.[0]?.contracts_balances;
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
     if (!bestSwappingBuyTrades) return 'Calculating....';
@@ -108,7 +110,6 @@ const TradePage = ({route}) => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {
         setLoading(true);
-        console.log(tokensToSell);
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
@@ -255,7 +256,7 @@ const TradePage = ({route}) => {
         await switchAuthCoreChain(42161);
         const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
         const signerObj = await ethersProvider.getSigner();
-        const feesDinari = await placeMarketOrderToDinari(
+        const feesDinari = await placeMarketOrderToDinariBuy(
           state?.token?.address,
           '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
           signerObj,
@@ -284,7 +285,6 @@ const TradePage = ({route}) => {
       } else {
         getBestPrice();
       }
-      return () => {};
     }, []),
   );
   // Log when component mounts
