@@ -219,23 +219,34 @@ export const getMarketOrderFeesEstimationFromDinari = async (
 
   // check the order precision doesn't exceed max decimals
   // applicable to sell and limit orders only
-  if (sellOrder || orderType === 1) {
-    const maxDecimals = await orderProcessor.maxOrderDecimals(
-      assetTokenAddress,
-    );
-    const assetTokenDecimals = await assetToken.decimals();
-    console.log('assetTokenDecimals.....', assetTokenDecimals);
-    const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
-    if (Number(paymentAmount) % allowablePrecision != 0) {
-      throw new Error(
-        `Order amount precision exceeds max decimals of ${maxDecimals}`,
-      );
-    }
-  }
+  // if (sellOrder || orderType === 1) {
+  // const maxDecimals = await orderProcessor.maxOrderDecimals(
+  //   assetTokenAddress,
+  // );
+  // const assetTokenDecimals = await assetToken.decimals();
+  // console.log(
+  //   'assetTokenDecimals.....',
+  //   Number(paymentAmount),
+  //   assetTokenDecimals,
+  // );
+  // const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
+  // if (Number(paymentAmount) % allowablePrecision != 0) {
+  //   throw new Error(
+  //     `Order amount precision exceeds max decimals of ${maxDecimals}`,
+  //   );
+  // }
+  // }
+  console.log(
+    'hereeeee.....',
+    signer.address,
+    false,
+    paymentTokenAddress,
+    paymentAmount,
+  );
   // get fees, fees will be added to buy order deposit or taken from sell order proceeds
   const fees = await orderProcessor.estimateTotalFeesForOrder(
     signer.address,
-    false,
+    sellOrder,
     paymentTokenAddress,
     paymentAmount,
   );
@@ -437,42 +448,59 @@ export const placeMarketOrderToDinariSell = async (
   // check the order precision doesn't exceed max decimals
   // applicable to sell and limit orders only
   if (sellOrder || orderType === 1) {
-    const maxDecimals = await orderProcessor.maxOrderDecimals(
-      assetTokenAddress,
-    );
-    console.log('maxDecimals.....', maxDecimals);
-    const assetTokenDecimals = await assetToken.decimals();
-    console.log('assetTokenDecimals.....', assetTokenDecimals);
-    const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
-    if (Number(paymentAmount) % allowablePrecision != 0) {
-      throw new Error(
-        `Order amount precision exceeds max decimals of ${maxDecimals}`,
-      );
-    }
+    // const maxDecimals = await orderProcessor.maxOrderDecimals(
+    //   assetTokenAddress,
+    // );
+    // console.log('maxDecimals.....', maxDecimals);
+    // const assetTokenDecimals = await assetToken.decimals();
+    // const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
+    // console.log('maxDecimals.....', maxDecimals);
+    // if (Number(paymentAmount) % allowablePrecision != 0) {
+    //   console.log(
+    //     'assetTokenDecimals.....',
+    //     Number(paymentAmount) % allowablePrecision != 0,
+    //     assetTokenDecimals,
+    //   );
+    //   throw new Error(
+    //     `Order amount precision exceeds max decimals of ${maxDecimals}`,
+    //   );
+    // }
   }
   // get fees, fees will be added to buy order deposit or taken from sell order proceeds
-  const fees = await orderProcessor.estimateTotalFeesForOrder(
-    signer.address,
-    false,
-    paymentTokenAddress,
-    paymentAmount,
-  );
-  const totalSpendAmount = parseInt(fees?.toString()) + parseInt(paymentAmount);
-  console.log('final fees.....', parseInt(fees?.toString()), totalSpendAmount);
+  // const fees = await orderProcessor.estimateTotalFeesForOrder(
+  //   signer.address,
+  //   sellOrder,
+  //   paymentTokenAddress,
+  //   paymentAmount,
+  // );
+  // const totalSpendAmount = parseInt(fees?.toString()) + parseInt(paymentAmount);
+  // console.log('final fees.....', parseInt(fees?.toString()), totalSpendAmount);
   // return parseInt(fees?.toString());
   let txs = [];
   // ------------------ Approve Spend ------------------
   const erc20Abi = new ethers.Interface(tokenAbi);
   const orderProcessorInterface = new ethers.Interface(orderProcessorAbi);
-  console.log('abi loaded.....');
+  console.log('abi loaded.....', [
+    signer.address,
+    assetTokenAddress,
+    paymentTokenAddress,
+    sellOrder,
+    orderType,
+    paymentAmount, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+    0, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+    0, // Unused limit price
+    1, // GTC
+    ethers.ZeroAddress, // split recipient
+    0, // split amount
+  ]); // split amount);
   const approveData = erc20Abi.encodeFunctionData('approve', [
     orderProcessorARBContractAddress,
-    totalSpendAmount * 1000000,
+    paymentAmount,
   ]);
   console.log('approve data loaded.....');
   const approveTX = await getEthereumTransaction(
     signer.address,
-    paymentTokenAddress,
+    assetTokenAddress,
     approveData,
     '0',
   );
@@ -486,8 +514,8 @@ export const placeMarketOrderToDinariSell = async (
         paymentTokenAddress,
         sellOrder,
         orderType,
-        0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-        totalSpendAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+        paymentAmount, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+        0, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
         0, // Unused limit price
         1, // GTC
         ethers.ZeroAddress, // split recipient
@@ -503,7 +531,7 @@ export const placeMarketOrderToDinariSell = async (
     '0',
   );
   console.log('executeTx.....', executeTx);
-  txs.push(executeTx);
+  // txs.push(executeTx);
   const signature = await signAndSendBatchTransactionWithGasless(
     signer.address,
     smartAccount,

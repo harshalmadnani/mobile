@@ -67,7 +67,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
           </View>
 
           <View style={{paddingHorizontal: 10}}>
-            <View style={{backgroundColor: 'red'}}>
+            <View style={{}}>
               <Text numberOfLines={1} style={styles.text1}>
                 {item?.symbol?.toUpperCase()}
               </Text>

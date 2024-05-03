@@ -59,6 +59,7 @@ import {
   getMarketOrderFeesEstimationFromDinari,
   placeMarketOrderToDinari,
   placeMarketOrderToDinariBuy,
+  placeMarketOrderToDinariSell,
 } from '../../../../utils/Dinari/DinariApi';
 import {LoginType} from '@particle-network/rn-auth';
 
@@ -66,7 +67,7 @@ const TradePage = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
-  const [value, setValue] = useState('5');
+  const [value, setValue] = useState('10');
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [sellOrderStages, setSellOrderStages] = useState('Place Order');
   const [loading, setLoading] = useState(false);
@@ -98,6 +99,7 @@ const TradePage = ({route}) => {
 
   // const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
   const tokensToSell = tradeAsset?.[0]?.contracts_balances;
+  console.log('token to sell', tradeAsset);
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
     if (!bestSwappingBuyTrades) return 'Calculating....';
@@ -205,6 +207,7 @@ const TradePage = ({route}) => {
       setLoading(false);
     }
   };
+  console.log('run........', bestSwappingBuyTrades);
   const getCurrentStockTradingPrice = async () => {
     setStockOrderStages('Getting Quotes...');
     const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
@@ -222,8 +225,10 @@ const TradePage = ({route}) => {
       state?.token?.address,
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
       signerObj,
-      parseInt(value - 2.5) * 1000000,
-      false,
+      tradeType !== 'sell'
+        ? parseInt(value - 2.5) * 1000000
+        : (parseInt(value) * Math.pow(10, 18))?.toString(),
+      tradeType !== 'sell' ? false : true,
     );
     await switchAuthCoreChain(137);
     setStockFee(
@@ -251,7 +256,6 @@ const TradePage = ({route}) => {
     if (res) {
       //after polling from Poly
       setTimeout(async () => {
-        console.log('run........');
         setStockOrderStages('Placing Stock Order...');
         await switchAuthCoreChain(42161);
         const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
@@ -275,6 +279,32 @@ const TradePage = ({route}) => {
           });
         }
       }, 8000);
+    }
+  };
+  const sellStockPrice = async () => {
+    //after polling from Poly
+    setStockOrderStages('Selling Stock Order...');
+    await switchAuthCoreChain(42161);
+    const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+    const signerObj = await ethersProvider.getSigner();
+    const feesDinari = await placeMarketOrderToDinariSell(
+      state?.token?.address,
+      '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+      signerObj,
+      (parseFloat(value) * Math.pow(10, 18))?.toString(),
+      // (0.004 * Math.pow(10, 18))?.toString(),
+      true,
+      evmInfo?.smartAccount,
+    );
+    setStockOrderStages('Stock Order Placed');
+    await switchAuthCoreChain(137);
+    if (feesDinari) {
+      navigation.navigate('PendingTxStatus', {
+        state: stockDLNRes,
+        tradeType,
+        isStockTrade,
+        stockInfo: state,
+      });
     }
   };
   // Example of logging state changes
@@ -443,18 +473,18 @@ const TradePage = ({route}) => {
                 if (Platform.OS === 'ios') {
                   ReactNativeHapticFeedback.trigger('impactMedium', options);
                 }
-                if (!isStockTrade) {
-                  setTradeType('sell');
-                } else {
-                  Toast.show('Sell of socks coming soon!', {
-                    duration: Toast.durations.SHORT,
-                    position: Toast.positions.BOTTOM,
-                    shadow: true,
-                    animation: true,
-                    hideOnPress: true,
-                    delay: 0,
-                  });
-                }
+                // if (!isStockTrade) {
+                setTradeType('sell');
+                // } else {
+                //   Toast.show('Sell of socks coming soon!', {
+                //     duration: Toast.durations.SHORT,
+                //     position: Toast.positions.BOTTOM,
+                //     shadow: true,
+                //     animation: true,
+                //     hideOnPress: true,
+                //     delay: 0,
+                //   });
+                // }
               }}>
               {tradeType === 'sell' ? (
                 <LinearGradient
@@ -536,7 +566,7 @@ const TradePage = ({route}) => {
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Bold',
                 }}>
-                {tokensToSell?.[0]?.balance?.toFixed(2)}{' '}
+                {tokensToSell?.[0]?.balance?.toString()?.slice(0, 7)}{' '}
                 {state?.symbol?.toUpperCase() ??
                   state?.stock?.symbol?.toUpperCase()}{' '}
               </Text>
@@ -710,7 +740,7 @@ const TradePage = ({route}) => {
                       }}>
                       {`${'$ '}`}
                       {isStockTrade
-                        ? 0.0
+                        ? (value * state?.priceInfo?.price)?.toFixed(4)
                         : isNaN(
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.amount /
@@ -788,23 +818,25 @@ const TradePage = ({route}) => {
                   }}>
                   $
                   {tradeType === 'sell'
-                    ? bestSwappingBuyTrades?.action?.toToken?.priceUSD ||
-                      (
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                        Math.pow(
-                          10,
+                    ? isStockTrade
+                      ? state?.priceInfo?.price
+                      : bestSwappingBuyTrades?.action?.toToken?.priceUSD ||
+                        (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.amount /
+                            ?.amount /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.decimals,
-                          ))
-                      ).toFixed(6)
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            ))
+                        ).toFixed(6)
                     : //when same chain
 
                     !isStockTrade
@@ -945,7 +977,19 @@ const TradePage = ({route}) => {
                 ReactNativeHapticFeedback.trigger('impactMedium', options);
               }
               if (isStockTrade) {
-                await orderStockPrice();
+                if (tradeType === 'sell') {
+                  // await sellStockPrice();
+                  Toast.show('Sell of socks coming soon!', {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
+                } else {
+                  await orderStockPrice();
+                }
               } else {
                 if (
                   !loading &&

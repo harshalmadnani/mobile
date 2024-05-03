@@ -36,6 +36,12 @@ const MarketInfo = ({route, navigation, item}) => {
     currentAsset = holdings?.assets?.filter(
       x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
     );
+  } else {
+    currentAsset = holdings?.assets?.filter(
+      x =>
+        x?.asset?.symbol?.toLowerCase() ===
+        `${item?.stock?.symbol?.toLowerCase()}.d`,
+    );
   }
   return (
     <SafeAreaView
@@ -78,30 +84,26 @@ const MarketInfo = ({route, navigation, item}) => {
               asset: currentAsset,
             });
           } else {
-            // navigation.navigate('TradePage', {
-            //   state: item,
-            //   asset: [],
-            // });
-            const status = await checkKYCAvailableOrNotForDinari(
-              evmInfo?.address,
-            );
-            if (status === 'PASS' && status) {
-              navigation.navigate('TradePage', {
-                state: item,
-                asset: currentAsset,
-              });
-            } else {
-              const url = await requestKYCWalletSignatureForDinari(
-                evmInfo?.address,
-              );
-              if (url) {
-                console.log('redirecting url kyc message......', url);
-                navigation.navigate('DinariKycWebview', {
-                  url,
-                  address: evmInfo?.address,
-                });
-              }
-            }
+            // const status = await checkKYCAvailableOrNotForDinari(
+            //   evmInfo?.address,
+            // );
+            // if (status === 'PASS' && status) {
+            navigation.navigate('TradePage', {
+              state: item,
+              asset: currentAsset,
+            });
+            // } else {
+            //   const url = await requestKYCWalletSignatureForDinari(
+            //     evmInfo?.address,
+            //   );
+            //   if (url) {
+            //     console.log('redirecting url kyc message......', url);
+            //     navigation.navigate('DinariKycWebview', {
+            //       url,
+            //       address: evmInfo?.address,
+            //     });
+            //   }
+            // }
           }
         }}>
         <LinearGradient

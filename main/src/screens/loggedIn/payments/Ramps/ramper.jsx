@@ -14,7 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-root-toast';
-import {useWeb3Modal} from '@web3modal/wagmi-react-native';
+// import {useWeb3Modal} from '@web3modal/wagmi-react-native';
 import {
   createTransactionOnRamp,
   fetchOnRampPaymentMethodsBasedOnIP,
