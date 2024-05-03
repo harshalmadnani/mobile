@@ -78,7 +78,7 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
         <FlatList
           data={holdings?.assets}
           style={{
-            marginTop: 64,
+            marginTop: 16,
             width: '98%',
           }}
           renderItem={({item}) => (
