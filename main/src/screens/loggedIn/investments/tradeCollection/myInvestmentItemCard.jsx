@@ -14,6 +14,7 @@ import FastImage from 'react-native-fast-image';
 import {Icon, Image} from '@rneui/themed';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {setAssetMetadata} from '../../../../store/actions/market';
+import {NetworkChainInfo} from '../../../../utils/constants';
 
 const options = {
   enableVibrateFallback: true,
@@ -27,6 +28,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
   const dispatch = useDispatch();
+
   return (
     <TouchableOpacity
       onPress={e => {
@@ -70,7 +72,20 @@ const MyInvestmentItemCard = ({navigation, item}) => {
               <Text style={styles.text1}>{item?.symbol?.toUpperCase()}</Text>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-              <View style={{paddingRight: 10}}>
+              <View style={{flexDirection: 'row', paddingRight: 10}}>
+                <Image
+                  source={{
+                    uri: NetworkChainInfo.filter(
+                      x => x.chainId === item?.contracts_balances?.[0]?.chainId,
+                    )?.[0]?.logo,
+                  }}
+                  style={{
+                    width: 18,
+                    height: 18,
+                    alignSelf: 'center',
+                    marginRight: 8,
+                  }}
+                />
                 <Text style={styles.text5}>{item?.balance?.toFixed(5)}</Text>
               </View>
             </View>

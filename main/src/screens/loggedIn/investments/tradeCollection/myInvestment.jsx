@@ -50,6 +50,7 @@ const MyInvestments = ({navigation}) => {
               price_change_percentage_24h:
                 item.asset.price_change_percentage_24h, // Example
               image: item.asset.logo, // Assuming there's an 'image' property
+              contracts_balances: item?.contracts_balances,
             }}
           />
         )}

@@ -15,7 +15,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {transferAction} from '../../../store/reducers/transfer';
 import {useNavigation} from '@react-navigation/native';
-
+import {NetworkChainInfo} from '../../../utils/constants';
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -74,31 +74,6 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
             }}>
             Holdings
           </Text>
-          {/* <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
-          <MyInvestmentItemCard
-                navigation={navigation}
-                item={{
-                  ...item?.asset,
-                  balance: item?.token_balance,
-                  current_price: item?.price,
-                  unrealized_pnl: item?.unrealized_pnl,
-                  realized_pnl: item?.realized_pnl,
-                  image: item?.asset?.logo,
-                  price_bought: item?.price_bought,
-                }}
-              />
-          <Image
-            source={{
-              uri: 'https://res.cloudinary.com/dcrfpsiiq/image/upload/v1709493378/x8e21kt9laz3hblka91g.png',
-            }}
-            style={{
-              width: 40,
-              height: 40,
-              bottom: 10,
-              alignSelf: 'center',
-            }}
-          />
-        </TouchableOpacity> */}
         </View>
         <FlatList
           data={holdings?.assets}
@@ -134,15 +109,31 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
                 </Text>
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontFamily: `NeueMontreal-Medium`,
-                    color: 'white',
-                    opacity: 0.5,
-                    fontSize: 16,
-                  }}>
-                  {item?.token_balance?.toString()?.slice(0, 10)}
-                </Text>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image
+                    source={{
+                      uri: NetworkChainInfo.filter(
+                        x =>
+                          x.chainId === item?.contracts_balances?.[0]?.chainId,
+                      )?.[0]?.logo,
+                    }}
+                    style={{
+                      width: 18,
+                      height: 18,
+                      alignSelf: 'center',
+                      marginRight: 8,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontFamily: `NeueMontreal-Medium`,
+                      color: 'white',
+                      opacity: 0.5,
+                      fontSize: 16,
+                    }}>
+                    {item?.token_balance?.toString()?.slice(0, 10)}
+                  </Text>
+                </View>
                 <Text
                   style={{
                     fontFamily: `NeueMontreal-Medium`,

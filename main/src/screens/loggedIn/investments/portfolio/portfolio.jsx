@@ -693,6 +693,7 @@ const Portfolio = ({navigation}) => {
                           realized_pnl: item?.realized_pnl,
                           image: item?.asset?.logo,
                           price_bought: item?.price_bought,
+                          contracts_balances: item?.contracts_balances,
                         }}
                       />
                     ))
