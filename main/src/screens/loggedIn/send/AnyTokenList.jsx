@@ -110,20 +110,39 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
               </View>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Image
-                    source={{
-                      uri: NetworkChainInfo.filter(
-                        x =>
-                          x.chainId === item?.contracts_balances?.[0]?.chainId,
-                      )?.[0]?.logo,
-                    }}
-                    style={{
-                      width: 18,
-                      height: 18,
-                      alignSelf: 'center',
-                      marginRight: 8,
-                    }}
-                  />
+                  <View style={{marginRight: 8}}>
+                    <Image
+                      source={{
+                        uri: NetworkChainInfo.filter(
+                          x =>
+                            x.chainId ===
+                            item?.contracts_balances?.[0]?.chainId,
+                        )?.[0]?.logo,
+                      }}
+                      style={{
+                        width: 18,
+                        height: 18,
+                        alignSelf: 'center',
+                        tintColor: 'gray',
+                      }}
+                    />
+                    <Image
+                      source={{
+                        uri: NetworkChainInfo.filter(
+                          x =>
+                            x.chainId ===
+                            item?.contracts_balances?.[0]?.chainId,
+                        )?.[0]?.logo,
+                      }}
+                      style={{
+                        width: 18,
+                        height: 18,
+                        alignSelf: 'center',
+                        position: 'absolute',
+                        opacity: 0.5,
+                      }}
+                    />
+                  </View>
                   <Text
                     style={{
                       fontFamily: `NeueMontreal-Medium`,
