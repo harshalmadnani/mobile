@@ -84,26 +84,26 @@ const MarketInfo = ({route, navigation, item}) => {
               asset: currentAsset,
             });
           } else {
-            // const status = await checkKYCAvailableOrNotForDinari(
-            //   evmInfo?.address,
-            // );
-            // if (status === 'PASS' && status) {
-            navigation.navigate('TradePage', {
-              state: item,
-              asset: currentAsset,
-            });
-            // } else {
-            //   const url = await requestKYCWalletSignatureForDinari(
-            //     evmInfo?.address,
-            //   );
-            //   if (url) {
-            //     console.log('redirecting url kyc message......', url);
-            //     navigation.navigate('DinariKycWebview', {
-            //       url,
-            //       address: evmInfo?.address,
-            //     });
-            //   }
-            // }
+            const status = await checkKYCAvailableOrNotForDinari(
+              evmInfo?.smartAccount,
+            );
+            if (status === 'PASS' && status) {
+              navigation.navigate('TradePage', {
+                state: item,
+                asset: currentAsset,
+              });
+            } else {
+              const url = await requestKYCWalletSignatureForDinari(
+                evmInfo?.smartAccount,
+              );
+              if (url) {
+                console.log('redirecting url kyc message......', url);
+                navigation.navigate('DinariKycWebview', {
+                  url,
+                  address: evmInfo?.address,
+                });
+              }
+            }
           }
         }}>
         <LinearGradient

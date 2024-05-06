@@ -11,6 +11,7 @@ import {
   orderProcessorARBContractAddress,
   orderProcessorAbi,
 } from './utilsDinari';
+import {signFromSmartAccountWallet} from '../SASigning';
 import tokenAbi from '../../screens/loggedIn/payments/USDC.json';
 import {ethers} from 'ethers';
 const dinariBaseURL = 'https://api-enterprise.sbt.dinari.com';
@@ -128,12 +129,16 @@ export const requestKYCWalletSignatureForDinari = async evmAddress => {
   );
   console.log('response from dinari get message chart api:', response?.data);
   if (response?.data) {
-    const signature = await getSignedMessage(response?.data?.message);
-    console.log('personal sign......', signature?.data?.signature);
+    console.log('started sign......', response?.data?.message);
+    const signature = await signFromSmartAccountWallet(
+      response?.data?.message,
+      evmAddress,
+    );
+    console.log('personal sign......', evmAddress, signature?.signature);
     if (signature) {
       const kycInfORes = await requestKYCWalletURLForDinari(
         evmAddress,
-        signature?.data?.signature,
+        signature?.signature,
         response?.data?.nonce,
       );
       return kycInfORes?.embed_url;
@@ -409,21 +414,196 @@ export const placeMarketOrderToDinariBuy = async (
 
   return signature;
 };
-export const placeMarketOrderToDinariSell = async (
-  assetTokenAddress,
-  paymentTokenAddress,
-  signer,
-  paymentAmount,
-  isSell,
-  smartAccount,
-) => {
-  console.log(`Order Processor Address: ${orderProcessorARBContractAddress}`);
+// export const placeMarketOrderToDinariSell = async (
+//   assetTokenAddress,
+//   paymentTokenAddress,
+//   signer,
+//   paymentAmount,
+//   isSell,
+//   smartAccount,
+// ) => {
+//   console.log(`Order Processor Address: ${orderProcessorARBContractAddress}`);
+
+//   // connect signer to payment token contract
+//   const paymentToken = new ethers.Contract(
+//     paymentTokenAddress,
+//     tokenAbi,
+//     signer,
+//   );
+
+//   // connect signer to asset token contract
+//   const assetToken = new ethers.Contract(assetTokenAddress, tokenAbi, signer);
+
+//   // connect signer to buy processor contract
+//   const orderProcessor = new ethers.Contract(
+//     orderProcessorARBContractAddress,
+//     orderProcessorAbi,
+//     signer,
+//   );
+
+//   // ------------------ Configure Order ------------------
+
+//   // order amount (1000 USDC)
+//   // const orderAmount = BigInt(100_000_000);
+//   console.log('Done.....', signer.address);
+//   const sellOrder = isSell;
+//   // market order
+//   const orderType = Number(0);
+
+//   // check the order precision doesn't exceed max decimals
+//   // applicable to sell and limit orders only
+//   if (sellOrder || orderType === 1) {
+//     // const maxDecimals = await orderProcessor.maxOrderDecimals(
+//     //   assetTokenAddress,
+//     // );
+//     // console.log('maxDecimals.....', maxDecimals);
+//     // const assetTokenDecimals = await assetToken.decimals();
+//     // const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
+//     // console.log('maxDecimals.....', maxDecimals);
+//     // if (Number(paymentAmount) % allowablePrecision != 0) {
+//     //   console.log(
+//     //     'assetTokenDecimals.....',
+//     //     Number(paymentAmount) % allowablePrecision != 0,
+//     //     assetTokenDecimals,
+//     //   );
+//     //   throw new Error(
+//     //     `Order amount precision exceeds max decimals of ${maxDecimals}`,
+//     //   );
+//     // }
+//   }
+//   // get fees, fees will be added to buy order deposit or taken from sell order proceeds
+//   // const fees = await orderProcessor.estimateTotalFeesForOrder(
+//   //   signer.address,
+//   //   sellOrder,
+//   //   paymentTokenAddress,
+//   //   paymentAmount,
+//   // );
+//   // const totalSpendAmount = parseInt(fees?.toString()) + parseInt(paymentAmount);
+//   // console.log('final fees.....', parseInt(fees?.toString()), totalSpendAmount);
+//   // return parseInt(fees?.toString());
+//   let txs = [];
+//   // ------------------ Approve Spend ------------------
+//   const erc20Abi = new ethers.Interface(tokenAbi);
+//   const orderProcessorInterface = new ethers.Interface(orderProcessorAbi);
+//   console.log('abi loaded.....', [
+//     signer.address,
+//     assetTokenAddress,
+//     paymentTokenAddress,
+//     sellOrder,
+//     orderType,
+//     paymentAmount, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+//     0, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+//     0, // Unused limit price
+//     1, // GTC
+//     ethers.ZeroAddress, // split recipient
+//     0, // split amount
+//   ]); // split amount);
+//   const approveData = erc20Abi.encodeFunctionData('approve', [
+//     orderProcessorARBContractAddress,
+//     paymentAmount,
+//   ]);
+//   console.log('approve data loaded.....');
+//   const approveTX = await getEthereumTransaction(
+//     signer.address,
+//     assetTokenAddress,
+//     approveData,
+//     '0',
+//   );
+//   txs.push(approveTX);
+//   const executeData = orderProcessorInterface.encodeFunctionData(
+//     'requestOrder',
+//     [
+//       [
+//         signer.address,
+//         assetTokenAddress,
+//         paymentTokenAddress,
+//         sellOrder,
+//         orderType,
+//         paymentAmount, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+//         0, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+//         0, // Unused limit price
+//         1, // GTC
+//         ethers.ZeroAddress, // split recipient
+//         0, // split amount
+//       ],
+//     ],
+//   );
+//   console.log('execute data loaded.....');
+//   const executeTx = await getEthereumTransaction(
+//     signer.address,
+//     orderProcessorARBContractAddress,
+//     executeData,
+//     '0',
+//   );
+//   console.log('executeTx.....', executeTx);
+//   // txs.push(executeTx);
+//   const signature = await signAndSendBatchTransactionWithGasless(
+//     signer.address,
+//     signer.address,
+//     txs,
+//   );
+//   console.log('Final ARB TX', signature);
+
+//   return signature;
+// };
+async function getContractVersion(contract) {
+  let contractVersion = '1';
+  try {
+    contractVersion = await contract.version();
+  } catch {
+    // do nothing
+  }
+  return contractVersion;
+}
+export const placeMarketOrderToDinariSell = async () => {
+  // ------------------ Setup ------------------
+
+  // permit EIP712 signature data type
+  const permitTypes = {
+    Permit: [
+      {
+        name: 'owner',
+        type: 'address',
+      },
+      {
+        name: 'spender',
+        type: 'address',
+      },
+      {
+        name: 'value',
+        type: 'uint256',
+      },
+      {
+        name: 'nonce',
+        type: 'uint256',
+      },
+      {
+        name: 'deadline',
+        type: 'uint256',
+      },
+    ],
+  };
+
+  // setup values
+  // const privateKey = process.env.PRIVATE_KEY;
+  // if (!privateKey) throw new Error('empty key');
+  // const RPC_URL = process.env.RPC_URL;
+  // if (!RPC_URL) throw new Error('empty rpc url');
+  const assetTokenAddress = '0xed12e3394e78C2B0074aa4479b556043cC84503C'; // SPY
+  const paymentTokenAddress = '0x709CE4CB4b6c2A03a4f938bA8D198910E44c11ff';
+
+  // setup provider and signer
+  const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+  const signerObj = await ethersProvider.getSigner();
+  const chainId = Number((await provider.getNetwork()).chainId);
+  const orderProcessorAddress = '';
+  console.log(`Order Processor Address: ${orderProcessorAddress}`);
 
   // connect signer to payment token contract
   const paymentToken = new ethers.Contract(
     paymentTokenAddress,
     tokenAbi,
-    signer,
+    signerObj,
   );
 
   // connect signer to asset token contract
@@ -431,81 +611,101 @@ export const placeMarketOrderToDinariSell = async (
 
   // connect signer to buy processor contract
   const orderProcessor = new ethers.Contract(
-    orderProcessorARBContractAddress,
+    orderProcessorAddress,
     orderProcessorAbi,
-    signer,
+    signerObj,
   );
 
   // ------------------ Configure Order ------------------
 
-  // order amount (1000 USDC)
-  // const orderAmount = BigInt(100_000_000);
-  console.log('Done.....', signer.address);
-  const sellOrder = isSell;
+  // buy order amount (1000 USDC)
+  // const orderAmount = BigInt(1000_000_000);
+  // sell order amount (10 dShares)
+  const orderAmount = '';
+  // buy order (Change to true for Sell Order)
+  const sellOrder = true;
   // market order
   const orderType = Number(0);
 
   // check the order precision doesn't exceed max decimals
   // applicable to sell and limit orders only
   if (sellOrder || orderType === 1) {
-    // const maxDecimals = await orderProcessor.maxOrderDecimals(
-    //   assetTokenAddress,
-    // );
-    // console.log('maxDecimals.....', maxDecimals);
-    // const assetTokenDecimals = await assetToken.decimals();
-    // const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
-    // console.log('maxDecimals.....', maxDecimals);
-    // if (Number(paymentAmount) % allowablePrecision != 0) {
-    //   console.log(
-    //     'assetTokenDecimals.....',
-    //     Number(paymentAmount) % allowablePrecision != 0,
-    //     assetTokenDecimals,
-    //   );
-    //   throw new Error(
-    //     `Order amount precision exceeds max decimals of ${maxDecimals}`,
-    //   );
-    // }
+    const maxDecimals = await orderProcessor.maxOrderDecimals(
+      assetTokenAddress,
+    );
+    const assetTokenDecimals = await assetToken.decimals();
+    const allowablePrecision = 10 ** (assetTokenDecimals - maxDecimals);
+    if (Number(orderAmount) % allowablePrecision != 0) {
+      throw new Error(
+        `Order amount precision exceeds max decimals of ${maxDecimals}`,
+      );
+    }
   }
+
   // get fees, fees will be added to buy order deposit or taken from sell order proceeds
   // const fees = await orderProcessor.estimateTotalFeesForOrder(
   //   signer.address,
-  //   sellOrder,
+  //   true,
   //   paymentTokenAddress,
-  //   paymentAmount,
+  //   orderAmount,
   // );
-  // const totalSpendAmount = parseInt(fees?.toString()) + parseInt(paymentAmount);
-  // console.log('final fees.....', parseInt(fees?.toString()), totalSpendAmount);
-  // return parseInt(fees?.toString());
-  let txs = [];
-  // ------------------ Approve Spend ------------------
-  const erc20Abi = new ethers.Interface(tokenAbi);
-  const orderProcessorInterface = new ethers.Interface(orderProcessorAbi);
-  console.log('abi loaded.....', [
-    signer.address,
-    assetTokenAddress,
-    paymentTokenAddress,
-    sellOrder,
-    orderType,
-    paymentAmount, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-    0, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
-    0, // Unused limit price
-    1, // GTC
-    ethers.ZeroAddress, // split recipient
-    0, // split amount
-  ]); // split amount);
-  const approveData = erc20Abi.encodeFunctionData('approve', [
-    orderProcessorARBContractAddress,
-    paymentAmount,
-  ]);
-  console.log('approve data loaded.....');
-  const approveTX = await getEthereumTransaction(
-    signer.address,
-    assetTokenAddress,
-    approveData,
-    '0',
+  // const totalSpendAmount = orderAmount + fees;
+  // console.log(`fees: ${ethers.formatUnits(fees, 6)}`);
+
+  // ------------------ Configure Permit ------------------
+
+  // permit nonce for user
+  const nonce = await paymentToken.nonces(signer.address);
+  // 5 minute deadline from current blocktime
+  const blockNumber = await provider.getBlockNumber();
+  const blockTime = (await provider.getBlock(blockNumber))?.timestamp;
+  if (!blockTime) throw new Error('no block time');
+  const deadline = blockTime + 60 * 5;
+
+  // unique signature domain for payment token
+  const permitDomain = {
+    name: await paymentToken.name(),
+    version: await getContractVersion(paymentToken),
+    chainId: chainId,
+    verifyingContract: paymentTokenAddress,
+  };
+
+  // permit message to sign
+  const permitMessage = {
+    owner: signer.address,
+    spender: orderProcessorAddress,
+    value: totalSpendAmount,
+    nonce: nonce,
+    deadline: deadline,
+  };
+
+  // sign permit to spend payment token
+  const permitSignatureBytes = await signerObj.signTypedData(
+    permitDomain,
+    permitTypes,
+    permitMessage,
   );
-  txs.push(approveTX);
-  const executeData = orderProcessorInterface.encodeFunctionData(
+  const permitSignature = ethers.Signature.from(permitSignatureBytes);
+
+  // create selfPermit call data
+  const selfPermitData = orderProcessor.interface.encodeFunctionData(
+    'selfPermit',
+    [
+      paymentTokenAddress,
+      permitMessage.owner,
+      permitMessage.value,
+      permitMessage.deadline,
+      permitSignature.v,
+      permitSignature.r,
+      permitSignature.s,
+    ],
+  );
+
+  // ------------------ Submit Order ------------------
+
+  // create requestOrder call data
+  // see IOrderProcessor.Order struct for order parameters
+  const requestOrderData = orderProcessor.interface.encodeFunctionData(
     'requestOrder',
     [
       [
@@ -514,8 +714,8 @@ export const placeMarketOrderToDinariSell = async (
         paymentTokenAddress,
         sellOrder,
         orderType,
-        paymentAmount, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
-        0, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
+        0, // Asset amount to sell. Ignored for buys. Fees will be taken from proceeds for sells.
+        orderAmount, // Payment amount to spend. Ignored for sells. Fees will be added to this amount for buys.
         0, // Unused limit price
         1, // GTC
         ethers.ZeroAddress, // split recipient
@@ -523,21 +723,27 @@ export const placeMarketOrderToDinariSell = async (
       ],
     ],
   );
-  console.log('execute data loaded.....');
-  const executeTx = await getEthereumTransaction(
-    signer.address,
-    orderProcessorARBContractAddress,
-    executeData,
-    '0',
-  );
-  console.log('executeTx.....', executeTx);
-  // txs.push(executeTx);
-  const signature = await signAndSendBatchTransactionWithGasless(
-    signer.address,
-    smartAccount,
-    txs,
-  );
-  console.log('Final ARB TX', signature);
 
-  return signature;
+  // submit permit + request order multicall transaction
+  const tx = await orderProcessor.multicall([selfPermitData, requestOrderData]);
+  const receipt = await tx.wait();
+  console.log(tx.hash);
+
+  // get order id from event
+  // const events = receipt.logs.map((log: any) =>
+  //   orderProcessor.interface.parseLog(log),
+  // );
+  // if (!events) throw new Error('no events');
+  // const orderEvent = events.find(
+  //   (event: any) => event && event.name === 'OrderRequested',
+  // );
+  // if (!orderEvent) throw new Error('no order event');
+  // const orderId = orderEvent.args[0];
+  // const orderAccount = orderEvent.args[1];
+  // console.log(`Order ID: ${orderId}`);
+  // console.log(`Order Account: ${orderAccount}`);
+
+  // // use order id to get order status (ACTIVE, FULFILLED, CANCELLED)
+  // const orderStatus = await orderProcessor.getOrderStatus(orderId);
+  // console.log(`Order Status: ${orderStatus}`);
 };
