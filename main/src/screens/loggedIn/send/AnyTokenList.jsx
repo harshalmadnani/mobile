@@ -56,7 +56,7 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
           height,
           alignSelf: 'flex-start',
           backgroundColor: '#000000',
-          paddingBottom: 80,
+          paddingBottom: '1%',
         }}>
         <View
           style={{
@@ -72,7 +72,7 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
               color: '#fff',
               fontSize: 20,
             }}>
-            Holdings
+            HOLDINGS
           </Text>
         </View>
         <FlatList

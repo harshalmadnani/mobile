@@ -93,6 +93,28 @@ const TradePage = ({route}) => {
   const allSwappingTradesQuotes = useSelector(
     x => x.market.allSwappingTradesQuotes,
   );
+  const chainNames = {
+    1: 'Ethereum',
+    56: 'BSC',
+    137: 'Polygon',
+    43114: 'Avalanche',
+    250: 'Fantom Opera',
+    42161: 'Arbitrum',
+    10: 'Optimism',
+    42220: 'Celo',
+    1666600000: 'Harmony',
+    128: 'Heco',
+    8453:'Base'
+    // add other chains as necessary
+  };
+
+  // Retrieve the first item's chainId and find the chain name
+
+  const firstItem = Array.isArray(allSwappingTradesQuotes) && allSwappingTradesQuotes.length > 0
+  ? allSwappingTradesQuotes[0]
+  : null;
+  const firstItemChainId = firstItem ? firstItem.chainId : undefined;
+  const chainName = firstItemChainId ? chainNames[firstItemChainId] : 'Unknown Chain';
   const isStockTrade = useSelector(x => x.market.isStockTrade);
 
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
@@ -303,7 +325,7 @@ const TradePage = ({route}) => {
           flexDirection: 'column',
           justifyContent: 'space-between',
         }}>
-        <View>
+        <ScrollView>
           {/* Top bar */}
           <View
             style={{
@@ -911,6 +933,32 @@ const TradePage = ({route}) => {
                   s
                 </Text>
               </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 16,
+                  marginBottom: 16,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'NeueMontreal-Medium',
+                    alignSelf: 'flex-start',
+                    color: '#fff',
+                  }}>
+                  Route
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: 'Unbounded-Medium',
+                    alignSelf: 'flex-end',
+                    color: '#fff',
+                  }}>
+              {chainName}
+                </Text>
+              </View>
             </View>
             <View
               style={{
@@ -926,7 +974,7 @@ const TradePage = ({route}) => {
               />
             </View>
           </View>
-        </View>
+        </ScrollView>
         <TouchableOpacity
           style={{
             backgroundColor: 'white',
