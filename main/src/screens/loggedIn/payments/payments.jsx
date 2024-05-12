@@ -62,8 +62,8 @@ import TransactionReceipt from '../transactions/transactionReceipt';
 import Snackbar from 'react-native-snackbar';
 import ExternalLinkModal from '../externalLink/widget';
 import {useDispatch, useSelector} from 'react-redux';
-import {LoginType} from '@particle-network/rn-auth';
-import {getAuthCoreProvider} from '../../../utils/particleCoreSDK';
+// import {LoginType} from '@particle-network/rn-auth';
+// import {getAuthCoreProvider} from '../../../utils/particleCoreSDK';
 import {useFocusEffect} from '@react-navigation/native';
 import {getCryptoHoldingForAddressFromMobula} from '../../../store/actions/portfolio';
 import {marketSlice, marketsAction} from '../../../store/reducers/market';
@@ -94,7 +94,7 @@ const PaymentsComponent = ({navigation}) => {
   const address = useSelector(x => x.auth.address);
   const mainnet = useSelector(x => x.auth.mainnet);
   const nfts = useSelector(x => x.portfolio.nfts);
-  const web3 = getAuthCoreProvider(LoginType.Email);
+  // const web3 = getAuthCoreProvider(LoginType.Email);
 
   const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
   const [transactionData, setTransactionData] = useState();

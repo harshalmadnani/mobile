@@ -18,11 +18,11 @@ import abi from './remmitex';
 import {
   getAuthCoreProvider,
   getEthereumTransaction,
-  getSmartAccountAddress,
-  getUserAddressFromAuthCoreSDK,
+  // getSmartAccountAddress,
+  // getUserAddressFromAuthCoreSDK,
   signAndSendBatchTransactionWithGasless,
 } from '../../../utils/particleCoreSDK';
-import {LoginType} from '@particle-network/rn-auth';
+// import {LoginType} from '@particle-network/rn-auth';
 // import {evm} from '@particle-network/rn-auth-core';
 
 // const Web3 = require('web3');
@@ -422,17 +422,17 @@ export const transferAnyTokenWithParticleAAGasless = async (
   setStatus('Calculating Gas In USDC...');
   const erc20Abi = new ethers.Interface(usdAbi);
   let txs = [];
-  const eoaAddress = await getUserAddressFromAuthCoreSDK();
-  const smartAccount = await getSmartAccountAddress(eoaAddress);
+  // const eoaAddress = await getUserAddressFromAuthCoreSDK();
+  // const smartAccount = await getSmartAccountAddress(eoaAddress);
   if (tokenAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
     setStatus('Creating Transactions...');
     console.log('native transfer.........');
-    const sendTX = await getEthereumTransaction(
-      smartAccount,
-      recipient,
-      '0x',
-      amount,
-    );
+    // const sendTX = await getEthereumTransaction(
+    //   smartAccount,
+    //   recipient,
+    //   '0x',
+    //   amount,
+    // );
     txs.push(sendTX);
   } else {
     setStatus('Creating Transactions...');
@@ -440,33 +440,33 @@ export const transferAnyTokenWithParticleAAGasless = async (
       recipient,
       amount,
     ]);
-    const sendTX = await getEthereumTransaction(
-      smartAccount,
-      tokenAddress,
-      sendData,
-      '0',
-    );
+    // const sendTX = await getEthereumTransaction(
+    //   smartAccount,
+    //   tokenAddress,
+    //   sendData,
+    //   '0',
+    // );
     txs.push(sendTX);
   }
   try {
     setStatus('Created Transactions Successfully...');
     console.log('here txs..', txs);
-    const signature = await signAndSendBatchTransactionWithGasless(
-      eoaAddress,
-      smartAccount,
-      txs,
-    );
-    if (signature) {
-      return {
-        status: true,
-        fees: 0.0,
-      };
-    } else {
-      return {
-        status: false,
-        fees: JSON.stringify('fail'),
-      };
-    }
+    // const signature = await signAndSendBatchTransactionWithGasless(
+    //   eoaAddress,
+    //   smartAccount,
+    //   txs,
+    // );
+    // if (signature) {
+    //   return {
+    //     status: true,
+    //     fees: 0.0,
+    //   };
+    // } else {
+    //   return {
+    //     status: false,
+    //     fees: JSON.stringify('fail'),
+    //   };
+    // }
   } catch (e) {
     console.log('Signature Signed...........Error', e);
     return {

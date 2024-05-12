@@ -319,93 +319,87 @@ export const confirmDLNTransaction = async (
   onlyTransaction = false,
   externalTx,
 ) => {
-  let txs = externalTx.length > 0 ? externalTx : [];
-
-  if (
-    tradeType === 'buy' &&
-    quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
-    !quoteTxReciept?.tokenIn?.address
-  ) {
-    const erc20Abi = new ethers.Interface(erc20);
-    const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
-    const sendData = erc20Abi.encodeFunctionData('transfer', [
-      getXadeFeePayerAddressOnChain(
-        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
-      ),
-      amount,
-    ]);
-
-    const sendTX = await getEthereumTransaction(
-      smartAccount,
-      tokenAddress,
-      sendData,
-      '0',
-    );
-    txs.push(sendTX);
-
-    const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
-      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
-      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
-      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
-      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
-      smartAccount,
-      smartAccount,
-      smartAccount,
-    ]);
-    const executeProxyDLN = await getEthereumTransaction(
-      smartAccount,
-      getXadeFeePayerAddressOnChain(
-        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
-      ),
-      dlnProxyTxData,
-      '0',
-    );
-
-    txs.push(executeProxyDLN);
-  } else {
-    console.log('approval address....', smartAccount, txData, tokenAddress);
-    const erc20Abi = new ethers.Interface(erc20);
-    const sendData = erc20Abi.encodeFunctionData('approve', [
-      txData?.to,
-      amount,
-    ]);
-
-    const sendTX = await getEthereumTransaction(
-      smartAccount,
-      tokenAddress,
-      sendData,
-      '0',
-    );
-    txs.push(sendTX);
-    console.log('Tx send started amount !!!', amount);
-
-    const executeDLNSap = await getEthereumTransaction(
-      smartAccount,
-      txData?.to,
-      txData?.data,
-      '0',
-    );
-    console.log('tx executing swapping part', executeDLNSap);
-    txs.push(executeDLNSap);
-  }
-  if (!onlyTransaction) {
-    const signature = await signAndSendBatchTransactionWithGasless(
-      eoaAddress,
-      smartAccount,
-      txs,
-    );
-    console.log('Signature Signed...........', signature);
-    if (signature) {
-      console.log('Signature Signed confirmed...........', signature);
-      return signature;
-    } else {
-      return false;
-    }
-  } else {
-    return txs;
-  }
+  // let txs = externalTx.length > 0 ? externalTx : [];
+  // if (
+  //   tradeType === 'buy' &&
+  //   quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
+  //     quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
+  //   !quoteTxReciept?.tokenIn?.address
+  // ) {
+  //   const erc20Abi = new ethers.Interface(erc20);
+  //   const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
+  //   const sendData = erc20Abi.encodeFunctionData('transfer', [
+  //     getXadeFeePayerAddressOnChain(
+  //       quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+  //     ),
+  //     amount,
+  //   ]);
+  //   // const sendTX = await getEthereumTransaction(
+  //   //   smartAccount,
+  //   //   tokenAddress,
+  //   //   sendData,
+  //   //   '0',
+  //   // );
+  //   // txs.push(sendTX);
+  //   // const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+  //   //   quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+  //   //   quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+  //   //   quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+  //   //   quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+  //   //   quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+  //   //   smartAccount,
+  //   //   smartAccount,
+  //   //   smartAccount,
+  //   // ]);
+  //   // const executeProxyDLN = await getEthereumTransaction(
+  //   //   smartAccount,
+  //   //   getXadeFeePayerAddressOnChain(
+  //   //     quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+  //   //   ),
+  //   //   dlnProxyTxData,
+  //   //   '0',
+  //   // );
+  //   // txs.push(executeProxyDLN);
+  // } else {
+  //   // console.log('approval address....', smartAccount, txData, tokenAddress);
+  //   // const erc20Abi = new ethers.Interface(erc20);
+  //   // const sendData = erc20Abi.encodeFunctionData('approve', [
+  //   //   txData?.to,
+  //   //   amount,
+  //   // ]);
+  //   // const sendTX = await getEthereumTransaction(
+  //   //   smartAccount,
+  //   //   tokenAddress,
+  //   //   sendData,
+  //   //   '0',
+  //   // );
+  //   // txs.push(sendTX);
+  //   // console.log('Tx send started amount !!!', amount);
+  //   // const executeDLNSap = await getEthereumTransaction(
+  //   //   smartAccount,
+  //   //   txData?.to,
+  //   //   txData?.data,
+  //   //   '0',
+  //   // );
+  //   // console.log('tx executing swapping part', executeDLNSap);
+  //   // txs.push(executeDLNSap);
+  // }
+  // if (!onlyTransaction) {
+  //   const signature = await signAndSendBatchTransactionWithGasless(
+  //     eoaAddress,
+  //     smartAccount,
+  //     txs,
+  //   );
+  //   console.log('Signature Signed...........', signature);
+  //   if (signature) {
+  //     console.log('Signature Signed confirmed...........', signature);
+  //     return signature;
+  //   } else {
+  //     return false;
+  //   }
+  // } else {
+  //   return txs;
+  // }
 };
 export const confirmDLNTransactionPolToArb = async (
   tradeType,
@@ -416,64 +410,61 @@ export const confirmDLNTransactionPolToArb = async (
   smartAccount,
   eoaAddress,
 ) => {
-  let txs = [];
-  console.log(tradeType);
-  if (
-    tradeType === 'buy' &&
-    quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
-    !quoteTxReciept?.tokenIn?.address
-  ) {
-    const erc20Abi = new ethers.Interface(erc20);
-    const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
-    const sendData = erc20Abi.encodeFunctionData('transfer', [
-      getXadeFeePayerAddressOnChain(
-        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
-      ),
-      amount,
-    ]);
-
-    const sendTX = await getEthereumTransaction(
-      smartAccount,
-      tokenAddress,
-      sendData,
-      '0',
-    );
-    txs.push(sendTX);
-
-    const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
-      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
-      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
-      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
-      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
-      smartAccount,
-      smartAccount,
-      smartAccount,
-    ]);
-    const executeProxyDLN = await getEthereumTransaction(
-      smartAccount,
-      getXadeFeePayerAddressOnChain(
-        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
-      ),
-      dlnProxyTxData,
-      '0',
-    );
-
-    txs.push(executeProxyDLN);
-  }
-  const signature = await signAndSendBatchTransactionWithGasless(
-    eoaAddress,
-    smartAccount,
-    txs,
-  );
-  console.log('Signature Signed...........', eoaAddress, signature);
-  if (signature) {
-    console.log('Signature Signed confirmed...........', signature);
-    return signature;
-  } else {
-    return false;
-  }
+  // let txs = [];
+  // console.log(tradeType);
+  // if (
+  //   tradeType === 'buy' &&
+  //   quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
+  //     quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
+  //   !quoteTxReciept?.tokenIn?.address
+  // ) {
+  //   const erc20Abi = new ethers.Interface(erc20);
+  //   const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
+  //   const sendData = erc20Abi.encodeFunctionData('transfer', [
+  //     getXadeFeePayerAddressOnChain(
+  //       quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+  //     ),
+  //     amount,
+  //   ]);
+  //   // const sendTX = await getEthereumTransaction(
+  //   //   smartAccount,
+  //   //   tokenAddress,
+  //   //   sendData,
+  //   //   '0',
+  //   // );
+  //   // txs.push(sendTX);
+  //   // const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+  //   //   quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+  //   //   quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+  //   //   quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+  //   //   quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+  //   //   quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+  //   //   smartAccount,
+  //   //   smartAccount,
+  //   //   smartAccount,
+  //   // ]);
+  //   // const executeProxyDLN = await getEthereumTransaction(
+  //   //   smartAccount,
+  //   //   getXadeFeePayerAddressOnChain(
+  //   //     quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+  //   //   ),
+  //   //   dlnProxyTxData,
+  //   //   '0',
+  //   // );
+  //   txs.push(executeProxyDLN);
+  // }
+  // // const signature = await signAndSendBatchTransactionWithGasless(
+  // //   eoaAddress,
+  // //   smartAccount,
+  // //   txs,
+  // // );
+  // // console.log('Signature Signed...........', eoaAddress, signature);
+  // // if (signature) {
+  // //   console.log('Signature Signed confirmed...........', signature);
+  // //   return signature;
+  // // } else {
+  // //   return false;
+  // // }
 };
 export const getOrderIdFromDLNTxn = async hash => {
   try {

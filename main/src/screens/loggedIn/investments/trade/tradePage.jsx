@@ -51,15 +51,14 @@ import {
   getDLNTradeCreateBuyOrderTxn,
   getUSDCTokenOnChain,
 } from '../../../../utils/DLNTradeApi';
-import {
-  getAuthCoreProviderEthers,
-  switchAuthCoreChain,
-} from '../../../../utils/particleCoreSDK';
+// import // getAuthCoreProviderEthers,
+// // switchAuthCoreChain,
+// '../../../../utils/particleCoreSDK';
 import {
   getMarketOrderFeesEstimationFromDinari,
   placeMarketOrderToDinari,
 } from '../../../../utils/Dinari/DinariApi';
-import {LoginType} from '@particle-network/rn-auth';
+// import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -206,7 +205,7 @@ const TradePage = ({route}) => {
   };
   const getCurrentStockTradingPrice = async () => {
     setStockOrderStages('Getting Quotes...');
-    const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+    // const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
     const signerObj = await ethersProvider.getSigner();
     const res = await getDLNTradeCreateBuyOrder(
       137,
@@ -216,7 +215,7 @@ const TradePage = ({route}) => {
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
       signerObj.address,
     );
-    await switchAuthCoreChain(42161);
+    // await switchAuthCoreChain(42161);
     const feesDinari = await getMarketOrderFeesEstimationFromDinari(
       state?.token?.address,
       '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
@@ -224,7 +223,7 @@ const TradePage = ({route}) => {
       parseInt(value - 2.5) * 1000000,
       false,
     );
-    await switchAuthCoreChain(137);
+    // await switchAuthCoreChain(137);
     setStockFee(
       feesDinari / 1000000 +
         res?.estimation?.costsDetails?.filter(
@@ -252,8 +251,8 @@ const TradePage = ({route}) => {
       setTimeout(async () => {
         console.log('run........');
         setStockOrderStages('Placing Stock Order...');
-        await switchAuthCoreChain(42161);
-        const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
+        // await switchAuthCoreChain(42161);
+        // const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
         const signerObj = await ethersProvider.getSigner();
         const feesDinari = await placeMarketOrderToDinari(
           state?.token?.address,
@@ -264,7 +263,7 @@ const TradePage = ({route}) => {
           evmInfo?.smartAccount,
         );
         setStockOrderStages('Stock Order Placed');
-        await switchAuthCoreChain(137);
+        // await switchAuthCoreChain(137);
         if (feesDinari) {
           navigation.navigate('PendingTxStatus', {
             state: stockDLNRes,
@@ -1033,9 +1032,9 @@ const TradePage = ({route}) => {
                           );
 
                         if (txReceiptOfSameChain?.transactionRequest) {
-                          await switchAuthCoreChain(
-                            parseInt(tokensToSell?.[0].chainId),
-                          );
+                          // await switchAuthCoreChain(
+                          //   parseInt(tokensToSell?.[0].chainId),
+                          // );
                           sameChainTx = await confirmDLNTransaction(
                             tradeType,
                             txReceiptOfSameChain,
@@ -1057,9 +1056,9 @@ const TradePage = ({route}) => {
                       if (sameChainTx) {
                         // setTimeout(async () => {
                         setSellOrderStages('Executing Tx...');
-                        await switchAuthCoreChain(
-                          parseInt(tokensToSell?.[0].chainId),
-                        );
+                        //await switchAuthCoreChain(
+                        //parseInt(tokensToSell?.[0].chainId),
+                        //)
                         const crossChainSwapTx =
                           await executeCrossChainSellForUSDC(
                             tokensToSell?.[0].chainId,
@@ -1087,7 +1086,7 @@ const TradePage = ({route}) => {
                           );
 
                           if (finalSignature) {
-                            await switchAuthCoreChain(137);
+                            // await switchAuthCoreChain(137);
                             navigation.navigate('PendingTxStatus', {
                               state: crossChainSwapTx,
                               tradeType,

@@ -8,10 +8,9 @@ import {
   getNftsHoldingForAddress,
   getTransactionsByWallet,
 } from '../../utils/cryptoWalletApi';
-import {
-  getSmartAccountAddress,
-  getUserAddressFromAuthCoreSDK,
-} from '../../utils/particleCoreSDK';
+// import // getSmartAccountAddress,
+// // getUserAddressFromAuthCoreSDK,
+// ('../../utils/particleCoreSDK');
 import {portfolioAction} from '../reducers/portfolio';
 
 // getTransactionsByWallet;
@@ -46,8 +45,8 @@ export const getWalletTransactionForAddressFromDLN = page => {
 };
 export const getEvmAddresses = () => {
   return async (dispatch, getState) => {
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
+    // const eoaAddress = await getUserAddressFromAuthCoreSDK();
+    // const smartAccount = await getSmartAccountAddress(eoaAddress);
     console.log(
       'user infoooo.....',
       `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?evmSmartAccount=eq.${smartAccount}`,

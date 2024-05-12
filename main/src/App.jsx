@@ -63,6 +63,7 @@ import MarketInfo from './screens/loggedIn/investments/marketInfo';
 import SavingsPending from './screens/loggedIn/savings/savingStatus/pending';
 import SavingsSuccessful from './screens/loggedIn/savings/savingStatus/successful';
 import PendingTxStatusPage from './screens/loggedIn/investments/trade/PendingTxStatusPage';
+import NewAuthFlow from './screens/loggingIn/NewAuthFlow';
 import MainFlowStack from './navigator/MainFlow';
 // import SavingsUnsuccessful from './screens/loggedIn/savings/savingStatus/unsuccessful';
 import Ramper from './screens/loggedIn/payments/Ramps/ramper';
@@ -597,7 +598,7 @@ function App({navigation, uri}) {
     preLaunchChecks();
   }, []);
   const navigationRef = React.useRef();
-  console.log('Here App');
+
   return (
     <Sentry.ErrorBoundary>
       <WagmiConfig config={wagmiConfig}>
@@ -622,6 +623,11 @@ function App({navigation, uri}) {
                   <Stack.Screen
                     name="LoggedOutHome"
                     component={StaticHomeScreen}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="NewAuthFlow"
+                    component={NewAuthFlow}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
@@ -691,12 +697,6 @@ function App({navigation, uri}) {
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
-                  {/* <Stack.Screen
-                    name="AnyToken"
-                    component={AnyTokenList}
-                    navigation={navigation}
-                    options={{headerShown: false}}
-                  /> */}
                   <Stack.Screen
                     name="Savings"
                     component={Savings}

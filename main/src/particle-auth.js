@@ -10,7 +10,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import Login from './screens/loggingIn/login';
-import {LoginType} from '@particle-network/rn-auth';
+// import {LoginType} from '@particle-network/rn-auth';
 
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
@@ -66,8 +66,8 @@ setChainInfo = async () => {
 login = async () => {
   let scwAddress;
   let mobileLogin;
-  const type = LoginType.Email;
-  const supportAuthType = [LoginType.Phone];
+  const type = 'Email';
+  const supportAuthType = ['Email'];
   const result = await particleAuth.login(type, '', supportAuthType, false);
   // const result = true;
   const account = result.data;

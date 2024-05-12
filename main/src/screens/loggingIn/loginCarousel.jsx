@@ -16,6 +16,7 @@ const {width, height} = Dimensions.get('window');
 import Clipboard from '@react-native-clipboard/clipboard';
 import FastImage from 'react-native-fast-image';
 import BouncyIcon from './BouncyIcon';
+
 class LoginCarousel extends React.Component {
   scrollRef = React.createRef();
   constructor(props) {

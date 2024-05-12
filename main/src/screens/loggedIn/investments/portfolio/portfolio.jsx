@@ -23,6 +23,7 @@ import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // A
 
 import {Icon} from '@rneui/base';
 import {portfolioAction} from '../../../../store/reducers/portfolio';
+import {registerUsernameToDFNS} from '../../../../utils/DFNS/registerFlow';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
 
@@ -703,9 +704,8 @@ const Portfolio = ({navigation}) => {
         </View>
       </ScrollView>
       <TouchableOpacity
-        onPress={() => {
-          navigation.push('Ramper');
-          ReactNativeHapticFeedback.trigger('impactHeavy', options);
+        onPress={async e => {
+          // ReactNativeHapticFeedback.trigger('impactHeavy', options);
         }}
         style={{
           position: 'absolute',

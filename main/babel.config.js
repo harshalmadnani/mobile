@@ -67,7 +67,7 @@ module.exports = {
       ],
     },
   },
-  plugins: [],
+  plugins: [['@babel/plugin-transform-private-methods', {loose: true}]],
   overrides: [
     {
       test: './node_modules/ethers',
