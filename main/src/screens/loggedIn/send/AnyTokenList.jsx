@@ -20,6 +20,7 @@ const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
 };
+import {Icon} from 'react-native-elements';
 
 const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
   const width = Dimensions.get('window').width;
@@ -56,7 +57,7 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
           height,
           alignSelf: 'flex-start',
           backgroundColor: '#000000',
-          paddingBottom: 80,
+          paddingBottom: '1%',
         }}>
         <View
           style={{
@@ -72,8 +73,19 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
               color: '#fff',
               fontSize: 20,
             }}>
-            Holdings
+            HOLDINGS
           </Text>
+          <TouchableOpacity onPress={() => {
+  // Navigation back action goes here
+  navigation.goBack();  // Assuming you're using something like React Navigation
+}}>
+  <Icon
+    name={'close'}
+    size={24}
+    color={'#f0f0f0'}
+    type="materialicons"
+  />
+</TouchableOpacity>
         </View>
         <FlatList
           data={holdings?.assets}

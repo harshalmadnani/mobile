@@ -63,7 +63,7 @@ const Component = ({route, navigation}) => {
       style={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#0C0C0C',
+        backgroundColor: '#000',
         flex: 1,
       }}
       contentContainerStyle={{

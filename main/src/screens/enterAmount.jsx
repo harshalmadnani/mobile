@@ -186,6 +186,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 alignItems: 'flex-end',
                 textAlign: 'center',
                 alignItems: 'center',
+                flexDirection:'row'
               }}>
               {/* <Text
                 style={{
@@ -207,18 +208,24 @@ export default function EnterAmountComponent({navigation, route}) {
               </Text>
             </View>
           </View>
+<Pressable onPress={() => setModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
+  <Text
+    style={{
+      marginTop: '2%',
+      fontSize: 20,
+      fontFamily: `EuclidCircularA-Regular`,
+      color: 'white',
+    }}>
+    {assetInfo?.asset?.symbol ?? 'USDC'}
+  </Text>
+  <Icon
+    name={'expand-more'}
+    size={24}
+    color={'#f0f0f0'}
+    type="materialicons"
+  />
+</Pressable>
 
-          <Pressable onPress={() => setModalVisible(true)}>
-            <Text
-              style={{
-                marginTop: '2%',
-                fontSize: 20,
-                fontFamily: `EuclidCircularA-Regular`,
-                color: 'white',
-              }}>
-              {assetInfo?.asset?.symbol ?? 'USDC'}
-            </Text>
-          </Pressable>
         </View>
         <View style={styles.extradeets}>
           <Text
