@@ -10,12 +10,10 @@ import {
   Button,
   Image,
   TextInput,
-  Linking,
-  Platform,
 } from 'react-native';
 import {Text} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import axios from 'axios';
@@ -26,6 +24,7 @@ import {
   verifyEmailOtp,
 } from '../../utils/supabase/authUtils';
 import {registerUsernameToDFNS} from '../../utils/DFNS/registerFlow';
+import AuthTextInput from '../../component/Input/AuthTextInputs';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 
@@ -33,192 +32,277 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
-  return (
-    <View style={styles.black}>
-      <ScrollView>
-        <View style={styles.mainContent}>
-          <View style={styles.mainPrompt}>
-            <Text style={styles.mainText}>What shall we call{'\n'}you?</Text>
-            <Text style={styles.subText}>Enter your name to continue</Text>
-          </View>
+  const [stages, setStages] = useState('email');
+  const [isLogin, setIsLogin] = useState(false);
 
-          <View style={styles.input}>
-            <Text style={styles.inputText}>{otpSent ? 'Otp' : 'Email'}</Text>
-            <TextInput
-              style={styles.mainInput}
-              placeholderTextColor={'grey'}
-              placeholder={!otpSent ? 'Tap to add email' : 'Tap to add otp'}
-              value={otpSent ? otp : email}
-              onChangeText={newText => {
-                otpSent ? setOtp(newText) : setEmail(newText);
-              }}
+  const getHeadingOnStages = () => {
+    switch (stages) {
+      case 'email':
+        return 'Set up a strong password';
+      case 'password':
+        return 'Set up a strong password';
+      case 'otp':
+        return `Enter the confirmation code that we sent to ${email}`;
+    }
+  };
+  const onPressBack = () => {
+    switch (stages) {
+      case 'email':
+        navigation.navigate('LoggedOutHome');
+      case 'password':
+        setStages('email');
+      case 'otp':
+        setStages('email');
+    }
+  };
+  const getSubHeadingOnStages = () => {
+    switch (stages) {
+      case 'email':
+        return 'Enter your email address to sign in';
+      case 'password':
+        return 'You’ll be able to use it to recover the access\nto your account ';
+      case 'otp':
+        return `Enter the confirmation code that we sent to ${email}`;
+    }
+  };
+  const validateEmail = email => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      );
+  };
+  const validateSpecialCharacter = password => {
+    return String(password)
+      .toLowerCase()
+      .match(/^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/g);
+  };
+  const getConfirmationOnInput = () => {
+    switch (stages) {
+      case 'email':
+        return validateEmail(email);
+      case 'password':
+        return (
+          password === confirmPassword &&
+          validateSpecialCharacter(password) &&
+          password.length > 8
+        );
+      case 'otp':
+        return false;
+    }
+  };
+  const getButtonTitle = () => {
+    switch (stages) {
+      case 'email':
+        return 'Setup password';
+      case 'password':
+        return 'Send code';
+      case 'otp':
+        return 'Confirm code';
+    }
+  };
+  const checkOnEmail = async () => {
+    //check whether it's a user
+    setStages('password');
+  };
+  const SignupFlow = () =>
+    stages === 'password' ? (
+      <View>
+        <View style={{marginTop: 16}}>
+          <Text style={styles.subHeading}>{getSubHeadingOnStages()}</Text>
+          <View style={{marginTop: 16}}>
+            <AuthTextInput
+              value={password}
+              onChange={x => setPassword(x)}
+              placeholder="Set up your new password"
+              width={'100%'}
             />
-            {!otpSent && (
-              <View>
-                <Text style={[{...styles.inputText}, {marginTop: 12}]}>
-                  Password
-                </Text>
-                <TextInput
-                  style={styles.mainInput}
-                  placeholderTextColor={'grey'}
-                  secureTextEntry
-                  placeholder={'Tap to add password'}
-                  value={password}
-                  onChangeText={newText => {
-                    setPassword(newText);
-                  }}
-                />
-              </View>
-            )}
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 8,
+            }}>
+            <View
+              style={{
+                height: 10,
+                width: 10,
+                borderRadius: 10,
+                borderWidth: password.length > 8 ? 0 : 1,
+                borderColor: '#A6A6A6',
+                backgroundColor:
+                  password.length > 8 ? '#B0F291' : 'transparent',
+              }}></View>
+            <Text
+              style={[
+                styles.passwordInstruction,
+                {
+                  color: validateSpecialCharacter(password)
+                    ? '#B0F291'
+                    : '#A6A6A6',
+                },
+              ]}>
+              Include special characters or numbers
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginBottom: 8,
+            }}>
+            <View
+              style={{
+                height: 10,
+                width: 10,
+                borderRadius: 10,
+                borderWidth: password.length > 8 ? 0 : 1,
+                borderColor: '#A6A6A6',
+                backgroundColor:
+                  password.length > 8 ? '#B0F291' : 'transparent',
+              }}></View>
+            <Text
+              style={[
+                styles.passwordInstruction,
+                {
+                  color: password.length > 8 ? '#B0F291' : '#A6A6A6',
+                },
+              ]}>
+              more than 8 characters
+            </Text>
           </View>
         </View>
-      </ScrollView>
-      <View style={styles.bottom}>
+        <View style={{marginTop: 12}}>
+          <AuthTextInput
+            value={confirmPassword}
+            onChange={x => setConfirmPassword(x)}
+            placeholder="Confirm your new password"
+            width={'100%'}
+          />
+        </View>
+      </View>
+    ) : (
+      <View>
+        <Text style={styles.subHeading}>{getHeadingOnStages()}</Text>
+        <View style={{marginTop: 16}}>
+          <AuthTextInput
+            value={email}
+            onChange={x => setEmail(x)}
+            placeholder="Your email"
+            width={'100%'}
+          />
+        </View>
+      </View>
+    );
+
+  return (
+    <SafeAreaView style={styles.black}>
+      <View style={styles.topContent}>
+        <MaterialIcons
+          onPress={() => onPressBack()}
+          name="arrow-back"
+          color={'white'}
+          size={24}
+        />
+        <Text style={styles.heading}>{getHeadingOnStages()}</Text>
+      </View>
+      <View style={styles.mainContent}>
+        {stages === 'email' ? (
+          <View>
+            <Text style={styles.subHeading}>
+              Enter your email address to sign in
+            </Text>
+            <View style={{marginTop: 16}}>
+              <AuthTextInput
+                value={email}
+                onChange={x => setEmail(x)}
+                placeholder="Your email"
+                width={'100%'}
+              />
+            </View>
+          </View>
+        ) : (
+          !isLogin && <SignupFlow />
+        )}
         <TouchableOpacity
-          style={styles.continue}
-          onPress={async e => {
-            otpSent
-              ? await verifyEmailOtp(
-                  otp,
-                  email,
-                  () => setIsError(true),
-                  session => setUserInfo(session),
-                )
-              : await signInWithEmailOtp(
-                  email,
-                  password,
-                  () => setIsError(true),
-                  () => setOtpSent(true),
-                );
-            console.log(userInfo, otpSent);
-            if (otpSent) {
-              const dfnsData = await registerUsernameToDFNS(e, email);
-              console.log('user.....', dfnsData);
-              //save email address
-            }
-            // console.log('otp status...', status);
-            // navigation.navigate('Portfolio');
-            // await registerDB({navigation, name, code});
+          style={[
+            styles.confirmButton,
+            {backgroundColor: getConfirmationOnInput() ? '#FFFFFF' : '#1C1C1C'},
+          ]}
+          onPress={async () => {
+            await checkOnEmail();
           }}>
-          <Text style={styles.continueText}>Let's go!</Text>
+          <Text
+            style={[
+              styles.confirmButtonTitle,
+              {color: getConfirmationOnInput() ? '#0B0B0B' : '#4A4A4A'},
+            ]}>
+            {getButtonTitle()}
+          </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   black: {
     width: '100%',
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#0A0A0A',
     height: '100%',
   },
-
+  topContent: {
+    width: '100%',
+    paddingHorizontal: 12,
+    height: '20%',
+    backgroundColor: '#161616',
+    paddingTop: '16%',
+  },
+  heading: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 700,
+    lineHeight: 28.8,
+    marginTop: 8,
+  },
   mainContent: {
     width: '100%',
-    marginTop: '15%',
+    paddingHorizontal: 12,
+    flex: 1,
+    justifyContent: 'space-between',
   },
-
-  mainPrompt: {
-    marginLeft: '5%',
+  subHeading: {
+    color: '#A6A6A6',
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: 24,
+    marginTop: 12,
   },
-
-  mainText: {
-    color: '#fff',
-    fontFamily: `EuclidCircularA-Regular`,
-    fontSize: 35,
+  passwordInstruction: {
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: 24,
+    marginLeft: 12,
   },
-
-  subText: {
-    marginTop: '5%',
-    color: '#D4D4D4',
-    fontFamily: `EuclidCircularA-Medium`,
-    fontSize: 17,
-  },
-
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 100,
-  },
-
-  avatarSecondary: {
-    width: 70,
-    height: 70,
-    borderRadius: 100,
-  },
-
-  avatarMain: {
-    width: 90,
-    height: 90,
-    borderRadius: 100,
-  },
-
-  input: {
-    marginLeft: '5%',
+  confirmButton: {
     width: '100%',
-    marginTop: '10%',
+    height: 50,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-
-  inputText: {
-    fontSize: 17,
-    fontFamily: `EuclidCircularA-Medium`,
-    color: '#D4D4D4',
-  },
-
-  mainInput: {
-    fontSize: 30,
-    marginTop: '3%',
-    fontFamily: `EuclidCircularA-Regular`,
-    color: '#D4D4D4',
-  },
-
-  tos: {
-    color: '#B9B9B9',
-    fontFamily: 'VelaSans-Bold',
-    textAlign: 'center',
-    fontSize: 10,
-    marginTop: '8%',
-  },
-
-  bottom: {
-    marginBottom: '15%',
-  },
-
-  continue: {
-    width: '88%',
-    marginLeft: '6%',
-    backgroundColor: '#D4D4D4',
-    paddingTop: '3.5%',
-    paddingBottom: '3.5%',
-    marginTop: '5%',
-    borderRadius: 100,
-  },
-
-  continueText: {
-    color: '#0C0C0C',
-    fontFamily: `EuclidCircularA-Medium`,
-    fontSize: 18,
-    textAlign: 'center',
-  },
-
-  skip: {
-    width: '88%',
-    marginLeft: '6%',
-    paddingTop: '3.5%',
-    paddingBottom: '3.5%',
-    marginTop: '2%',
-    borderRadius: 100,
-  },
-
-  skipText: {
-    color: '#F0F0F0',
-    fontFamily: `EuclidCircularA-Medium`,
-    fontSize: 18,
-    textAlign: 'center',
+  confirmButtonTitle: {
+    // font-family: Sk-Modernist;
+    fontSize: 16,
+    fontWeight: 700,
+    lineHeight: 19.2,
   },
 });
 

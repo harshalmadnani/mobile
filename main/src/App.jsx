@@ -39,7 +39,6 @@ import Referrals from './screens/loggedIn/referrals';
 import BottomNavbar from './screens/navbar';
 import StaticHomeScreen from './screens/loggingIn/home';
 import PreLoad from './screens/loggingIn/load';
-import ChooseConnect from './screens/loggingIn/connect';
 import Name from './screens/loggingIn/name';
 import Countdown from './screens/loggedIn/countdown/countdown';
 import QRPage from './screens/loggedIn/qr/qr';
@@ -158,13 +157,13 @@ function PreLaunchLoad({navigation}) {
   );
 }
 
-function ChooseWallet({navigation}) {
-  return (
-    <View>
-      <ChooseConnect navigation={navigation} />
-    </View>
-  );
-}
+// function ChooseWallet({navigation}) {
+//   return (
+//     <View>
+//       <ChooseConnect navigation={navigation} />
+//     </View>
+//   );
+// }
 
 function EnterName({navigation, route}) {
   return (
@@ -642,12 +641,12 @@ function App({navigation, uri}) {
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
-                  <Stack.Screen
+                  {/* <Stack.Screen
                     name="ChooseConnect"
                     component={ChooseWallet}
                     navigation={navigation}
                     options={{headerShown: false}}
-                  />
+                  /> */}
                   <Stack.Screen
                     name="LoggedIn"
                     component={LoggedIn}

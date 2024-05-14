@@ -7,6 +7,8 @@ const initialState = {
   faceID: false,
   isConnected: false,
   address: null,
+  //new flow setup
+  email: null,
 };
 
 export const authSlice = createSlice({
@@ -25,6 +27,9 @@ export const authSlice = createSlice({
     },
     setEOAAddress: (state, action) => {
       state.address = action.payload;
+    },
+    setEmail: (state, action) => {
+      state.email = action.payload;
     },
   },
 });
