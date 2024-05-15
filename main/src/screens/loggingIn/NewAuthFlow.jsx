@@ -10,6 +10,7 @@ import {
   Button,
   Image,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import {Text} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
@@ -23,30 +24,33 @@ import {
   signUpWithEmail,
   verifyEmailOtp,
 } from '../../utils/supabase/authUtils';
-import {registerUsernameToDFNS} from '../../utils/DFNS/registerFlow';
+import {
+  checkUserIsDFNSSignedUp,
+  registerUsernameToDFNS,
+} from '../../utils/DFNS/registerFlow';
 import AuthTextInput from '../../component/Input/AuthTextInputs';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 
 const NewAuthLoginFLow = ({navigation, route}) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('jashan@dsdsds.com');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('123456');
   const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
-  const [stages, setStages] = useState('email');
+  const [stages, setStages] = useState('otp');
   const [isLogin, setIsLogin] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const getHeadingOnStages = () => {
     switch (stages) {
       case 'email':
-        return 'Set up a strong password';
+        return 'Get started with email';
       case 'password':
         return 'Set up a strong password';
       case 'otp':
-        return `Enter the confirmation code that we sent to ${email}`;
+        return `Confirm`;
     }
   };
   const onPressBack = () => {
@@ -92,7 +96,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           password.length > 8
         );
       case 'otp':
-        return false;
+        return otp.length === 6;
     }
   };
   const getButtonTitle = () => {
@@ -107,7 +111,47 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   };
   const checkOnEmail = async () => {
     //check whether it's a user
-    setStages('password');
+    setLoading(true);
+    const status = await checkUserIsDFNSSignedUp(email);
+    if (status) {
+      setLoading(false);
+      setIsLogin(true);
+    } else {
+      setStages('password');
+      setLoading(false);
+      setIsLogin(false);
+    }
+    // setStages('password');
+  };
+
+  const confirmOtp = async () => {
+    // setLoading(true);
+    // const user = await verifyEmailOtp(otp, email);
+    // console.log('status from signup.....', user);
+    // if (user && !isLogin) {
+    try {
+      const response = await registerUsernameToDFNS(email);
+      console.log(JSON.stringify(response));
+      // await getSmartAccountAddress();
+      // if (response) {
+      //   navigation.navigate('EnterName');
+      // }
+    } catch (error) {
+      console.log('error on signup....', error);
+      setLoading(false);
+    }
+    // }
+  };
+
+  const registerYourPassword = async () => {
+    setLoading(true);
+    const status = await signInWithEmailOtp(email, password);
+    console.log('status from signup.....', status);
+    if (status) {
+      setLoading(false);
+      // signInWithEmailOtp(email);
+      setStages('otp');
+    }
   };
   const SignupFlow = () =>
     stages === 'password' ? (
@@ -120,6 +164,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
               onChange={x => setPassword(x)}
               placeholder="Set up your new password"
               width={'100%'}
+              isPassword={true}
             />
           </View>
           <View
@@ -183,6 +228,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
             onChange={x => setConfirmPassword(x)}
             placeholder="Confirm your new password"
             width={'100%'}
+            isPassword={true}
           />
         </View>
       </View>
@@ -191,9 +237,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
         <Text style={styles.subHeading}>{getHeadingOnStages()}</Text>
         <View style={{marginTop: 16}}>
           <AuthTextInput
-            value={email}
-            onChange={x => setEmail(x)}
-            placeholder="Your email"
+            value={otp}
+            onChange={x => setOtp(x)}
+            placeholder="Your otp"
             width={'100%'}
           />
         </View>
@@ -235,15 +281,25 @@ const NewAuthLoginFLow = ({navigation, route}) => {
             {backgroundColor: getConfirmationOnInput() ? '#FFFFFF' : '#1C1C1C'},
           ]}
           onPress={async () => {
-            await checkOnEmail();
+            if (stages === 'email') {
+              await checkOnEmail();
+            } else if (stages === 'password') {
+              await registerYourPassword();
+            } else if (stages === 'otp') {
+              await confirmOtp();
+            }
           }}>
-          <Text
-            style={[
-              styles.confirmButtonTitle,
-              {color: getConfirmationOnInput() ? '#0B0B0B' : '#4A4A4A'},
-            ]}>
-            {getButtonTitle()}
-          </Text>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <Text
+              style={[
+                styles.confirmButtonTitle,
+                {color: getConfirmationOnInput() ? '#0B0B0B' : '#4A4A4A'},
+              ]}>
+              {getButtonTitle()}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
     </SafeAreaView>

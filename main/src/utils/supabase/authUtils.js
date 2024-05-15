@@ -20,18 +20,11 @@ export const signUpWithEmail = async (email, password) => {
     email: email,
     password: password,
   });
-  console.log('response...', error, data);
   if (error) return false;
   if (data?.session) return data?.session;
 };
-export const signInWithEmailOtp = async (
-  email,
-  password,
-  errorCallback,
-  verificationCallback,
-) => {
+export const signInWithEmailOtp = async (email, password) => {
   const session = await signUpWithEmail(email, password);
-  console.log('user registered!!!!!!', session);
   if (session) {
     const {error, data} = await supabase.auth.signInWithOtp({
       email: email,
@@ -42,23 +35,17 @@ export const signInWithEmailOtp = async (
     });
     if (error) {
       console.log('error on signing up.....', error);
-      errorCallback();
       return false;
     }
     if (data?.session === null && data?.user === null) {
-      verificationCallback();
+      // verificationCallback();
       return true;
     }
   } else {
-    errorCallback();
+    return false;
   }
 };
-export const verifyEmailOtp = async (
-  otp,
-  email,
-  errorCallback,
-  verificationCallback,
-) => {
+export const verifyEmailOtp = async (otp, email) => {
   const {
     data: {session},
     error,
@@ -68,10 +55,12 @@ export const verifyEmailOtp = async (
     type: 'email',
   });
   if (error) {
-    errorCallback();
+    console.log('error...', error);
+    return false;
   }
   if (session) {
-    verificationCallback(data);
+    // verificationCallback(data);
+    return session;
   }
 };
 

@@ -14,8 +14,10 @@
   },
   "dependencies": {
     "@aarc-xyz/core": "^0.0.8",
-    "@biconomy/account": "^4.2.0",
+    "@biconomy/account": "^4.4.0",
+    "@dfns/lib-ethersjs6": "^0.4.3",
     "@dfns/sdk": "^0.4.3",
+    "@dfns/sdk-keysigner": "^0.4.3",
     "@dfns/sdk-react-native": "^0.4.3",
     "@ethersproject/shims": "^5.0.0",
     "@gorhom/bottom-sheet": "^4.6.1",

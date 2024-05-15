@@ -21,6 +21,7 @@ const AuthTextInput = ({placeholder, width, value, onChange, isPassword}) => {
         style={[styles.input]}
         placeholder={placeholder}
         placeholderTextColor={'#8B8B8B'}
+        secureTextEntry={isPassword}
       />
     </View>
   );

@@ -1258,10 +1258,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@biconomy/account@^4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@biconomy/account/-/account-4.2.0.tgz#fcd5f17c441f5068dbf5d0703627a93fb0f47e9f"
-  integrity sha512-k7bpr5HstDhYOWQBZgBxOw+FHLpb8wPgokprvQbNKDA4Fc4iyiLKsVb4sLKqeyYm37CnhVp30Zy/eda87ph5DQ==
+"@biconomy/account@^4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@biconomy/account/-/account-4.4.0.tgz#ca665cf220b6348d683dab41d97ae597bd073304"
+  integrity sha512-Bmemv77eNcyHQjphrzP/jE6Yapo9hWnJc23bNrAlqHPYz6ouALTPy57/L3daHxA3cFAdco28+pA36x7gGOw5kw==
   dependencies:
     merkletreejs "^0.3.11"
 
@@ -1287,6 +1287,24 @@
     sha.js "^2.4.11"
     stream-browserify "^3.0.0"
     util "^0.12.4"
+
+"@dfns/lib-ethersjs6@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@dfns/lib-ethersjs6/-/lib-ethersjs6-0.4.3.tgz#64025c68414122beea02986929bada270e7fecab"
+  integrity sha512-1dmKVkabnZzN2PjpKqeUBbNqqqnzmo19aT3C1lNtIgzcUcN7+Zsbv5kTmQWfxghisD2KnvQDtRn0QXyZdRNVHQ==
+  dependencies:
+    buffer "6.0.3"
+    cross-fetch "3.1.6"
+    uuid "9.0.0"
+
+"@dfns/sdk-keysigner@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@dfns/sdk-keysigner/-/sdk-keysigner-0.4.3.tgz#129c6deabdb8ff6f1b3cf6e2a24f179789da2d02"
+  integrity sha512-sptpimRoNFyhQzJxRME9bK5D9xiNvBcMbTxQVU0tHbi/2AayJno17p4hGWoyrnrOf0IB2LtiVrvWp4M+6LPjtA==
+  dependencies:
+    buffer "6.0.3"
+    cross-fetch "3.1.6"
+    uuid "9.0.0"
 
 "@dfns/sdk-react-native@^0.4.3":
   version "0.4.3"
