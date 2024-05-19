@@ -52,6 +52,7 @@
     "bluebird": "^3.7.2",
     "browserify-zlib": "^0.1.4",
     "buffer": "^4.9.2",
+    "crypto": "^1.0.1",
     "d3-shape": "^3.2.0",
     "dns.js": "^1.0.1",
     "dotenv-cli": "^7.0.0",

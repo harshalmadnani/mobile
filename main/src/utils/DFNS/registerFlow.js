@@ -32,8 +32,8 @@ export const registerUsernameToDFNS = async username => {
     const initRes = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
-        appId: 'ap-572qi-hq31j-8ehbm3773si3lck2',
-        username: 'jaz@sssdreptde.xyz',
+        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+        username: username,
       },
       {
         headers: {
@@ -53,7 +53,7 @@ export const registerUsernameToDFNS = async username => {
       `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
       {
         // appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
-        appId: 'ap-572qi-hq31j-8ehbm3773si3lck2',
+        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
         signedChallenge: {firstFactorCredential: attestation},
         temporaryAuthenticationToken: challenge.temporaryAuthenticationToken,
       },
@@ -68,6 +68,33 @@ export const registerUsernameToDFNS = async username => {
       JSON.stringify(attestation, null, 2),
     );
     return completeRes.data;
+  } catch (error) {
+    console.log('error on registering..........', error);
+  } finally {
+  }
+};
+
+export const getDfnsJwt = async username => {
+  try {
+    // Start delegated registration flow. Server needs to obtain the challenge with the appId
+    // and appOrigin of the mobile application. For simplicity, they are included as part of
+    // the request body. Alternatively, they can be sent as headers or with other approaches.
+
+    const res = await axios.post(
+      `https://gull-relevant-secretly.ngrok-free.app/login`,
+      {
+        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+        username: username,
+      },
+      {
+        headers: {
+          'content-type': 'application/json',
+        },
+      },
+    );
+    const jwt = res.data;
+    console.log("jwt.....",jwt)
+    return jwt?.token
   } catch (error) {
     console.log('error on registering..........', error);
   } finally {

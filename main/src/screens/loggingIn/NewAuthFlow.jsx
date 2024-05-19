@@ -26,23 +26,31 @@ import {
 } from '../../utils/supabase/authUtils';
 import {
   checkUserIsDFNSSignedUp,
+  getDfnsJwt,
   registerUsernameToDFNS,
 } from '../../utils/DFNS/registerFlow';
+import {
+  getScwAddress,
+  getSmartAccountAddress,
+} from '../../utils/DFNS/walletFLow';
 import AuthTextInput from '../../component/Input/AuthTextInputs';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
+import {useDispatch} from 'react-redux';
+import {authActions} from '../../store/reducers/auth';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
-  const [email, setEmail] = useState('jashan@dsdsds.com');
+  const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('123456');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
-  const [stages, setStages] = useState('otp');
+  const [stages, setStages] = useState('email');
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const getHeadingOnStages = () => {
     switch (stages) {
       case 'email':
@@ -123,24 +131,43 @@ const NewAuthLoginFLow = ({navigation, route}) => {
     }
     // setStages('password');
   };
-
+  const updateAccountInfoInRedux = async (email, response) => {
+    try {
+      const token = await getDfnsJwt(email);
+      const scw = await getScwAddress(
+        token,
+        response?.wallets.filter(x => x.network === 'Polygon')?.[0]?.id,
+      );
+      dispatch(authActions.setEmail(email));
+      dispatch(authActions.setScw(scw));
+      dispatch(authActions.setWallet(response?.wallets));
+    } catch (error) {
+      console.log('error on final login', error);
+    }
+  };
   const confirmOtp = async () => {
     // setLoading(true);
-    // const user = await verifyEmailOtp(otp, email);
-    // console.log('status from signup.....', user);
-    // if (user && !isLogin) {
-    try {
-      const response = await registerUsernameToDFNS(email);
-      console.log(JSON.stringify(response));
-      // await getSmartAccountAddress();
-      // if (response) {
-      //   navigation.navigate('EnterName');
-      // }
-    } catch (error) {
-      console.log('error on signup....', error);
-      setLoading(false);
+    const user = await verifyEmailOtp(otp, email);
+    console.log('status from signup.....', user);
+    if (user && !isLogin) {
+      try {
+        const response = await registerUsernameToDFNS(email);
+        if (response) {
+          await updateAccountInfoInRedux(email, response);
+          navigation.navigate('EnterName');
+        }
+        // const scw = await getSmartAccountAddress(
+        //   response?.wallets.filter(x => x.network === 'Polygon'),
+        // );
+        // console.log('redux setup signup', scw);
+        // if (response) {
+        //   navigation.navigate('EnterName');
+        // }
+      } catch (error) {
+        console.log('error on signup....', error);
+        setLoading(false);
+      }
     }
-    // }
   };
 
   const registerYourPassword = async () => {

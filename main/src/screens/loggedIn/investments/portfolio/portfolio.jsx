@@ -38,8 +38,8 @@ const Portfolio = ({navigation}) => {
 
   let info;
   let imageUrl;
-  info = global.loginAccount.name;
-  imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
+  // info = global.loginAccount.name;
+  // imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
   useEffect(() => {

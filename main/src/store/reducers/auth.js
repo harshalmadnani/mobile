@@ -9,6 +9,8 @@ const initialState = {
   address: null,
   //new flow setup
   email: null,
+  scw: [],
+  wallets: [],
 };
 
 export const authSlice = createSlice({
@@ -30,6 +32,12 @@ export const authSlice = createSlice({
     },
     setEmail: (state, action) => {
       state.email = action.payload;
+    },
+    setScw: (state, action) => {
+      state.scw = action.payload;
+    },
+    setWallet: (state, action) => {
+      state.wallets = action.payload;
     },
   },
 });
