@@ -25,7 +25,7 @@ import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {err} from 'react-native-svg/lib/typescript/xml';
 import {useDispatch, useSelector} from 'react-redux';
-import {onIsLoginCheckAuthCore} from '../../store/actions/auth';
+import {autoLogin, onIsLoginCheckAuthCore} from '../../store/actions/auth';
 
 var DeviceInfo = require('react-native-device-info');
 
@@ -43,23 +43,19 @@ const PreLoad = ({navigation}) => {
   const [loadingText, setLoadingText] = useState(
     'Prepare to enter a new era of finance...',
   );
-  const mainnetJSON = useSelector(state => state.auth.mainnet);
-  const faceIDJSON = useSelector(x => x.auth.faceID);
-  const connectedJSON = useSelector(x => x.auth.isConnected);
-
-  console.log('here...start', mainnetJSON, faceIDJSON, connectedJSON);
+  const email = useSelector(state => state.auth.email);
+  console.log('here...start', email);
   const dispatch = useDispatch();
   useEffect(() => {
     async function preLoadLog() {
-      dispatch(
-        onIsLoginCheckAuthCore(
-          navigation,
-          mainnetJSON,
-          faceIDJSON,
-          connectedJSON,
-          setLoadingText,
-        ),
-      );
+      if (email) {
+        dispatch(autoLogin(navigation, email));
+      } else {
+        dispatch(authActions.setEmail(null));
+        dispatch(authActions.setScw([]));
+        dispatch(authActions.setWallet([]));
+        navigation.push('LoggedOutHome');
+      }
     }
 
     preLoadLog();

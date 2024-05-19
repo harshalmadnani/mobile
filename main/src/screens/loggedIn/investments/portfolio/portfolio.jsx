@@ -31,7 +31,7 @@ const Portfolio = ({navigation}) => {
   const portfolioHoldingFetch = useSelector(
     x => x.portfolio.portfolioHoldingFetch,
   );
-  const evmInfo = useSelector(x => x.portfolio.evmInfo);
+  const allScw = useSelector(x => x.auth.scw);
   const userInfo = useSelector(x => x.portfolio.userInfo);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,14 +46,14 @@ const Portfolio = ({navigation}) => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
     );
-    if (evmInfo?.smartAccount) {
+    if (allScw?.length) {
+      const scwWallets = allScw.map(x => x.address);
       ws.onopen = () => {
         const payload = {
           type: 'wallet',
           authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
           payload: {
-            // wallets: `${evmInfo?.smartAccount},${evmInfo?.address}`,
-            wallets: `${evmInfo?.smartAccount},${evmInfo?.address}`,
+            wallets: scwWallets.toString(),
             interval: 2,
             unlistedAssets: false,
           },
@@ -93,7 +93,7 @@ const Portfolio = ({navigation}) => {
     return () => {
       ws.close();
     };
-  }, [evmInfo]);
+  }, [allScw]);
   const extractUSDCBalanceOnPolygon = holdings => {
     if (!holdings || !holdings?.assets) {
       return '0'; // Return a default value indicating that the balance couldn't be extracted

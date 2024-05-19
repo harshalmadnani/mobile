@@ -15,9 +15,25 @@ const AuthTextInput = ({placeholder, width, value, onChange, isPassword}) => {
       </Text>
       <TextInput
         value={value}
-        onChangeText={x => onChange(x)}
+        onChangeText={x => {
+          console.log('text entered....', x);
+          // onChange(x);
+          // if (!isPassword) {
+          onChange(x);
+          // }
+        }}
+        onChange={({eventCount, target, text}) => {
+          console.log('text entered on change....', text);
+          // if (isPassword) {
+          //   onChange(text);
+          // }
+        }}
+        autoCapitalize="none"
         onFocus={() => setOnFocus(true)}
-        onBlur={() => setOnFocus(false)}
+        onBlur={() => {
+          console.log('firedd blur');
+          setOnFocus(false);
+        }}
         style={[styles.input]}
         placeholder={placeholder}
         placeholderTextColor={'#8B8B8B'}

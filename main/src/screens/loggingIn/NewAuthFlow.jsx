@@ -122,8 +122,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
     setLoading(true);
     const status = await checkUserIsDFNSSignedUp(email);
     if (status) {
-      setLoading(false);
       setIsLogin(true);
+      await dispatch(autoLogin(navigation, email));
+      setLoading(false);
     } else {
       setStages('password');
       setLoading(false);
@@ -138,6 +139,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
         token,
         response?.wallets.filter(x => x.network === 'Polygon')?.[0]?.id,
       );
+      console.log('redux update.....', scw, response?.wallets, email);
       dispatch(authActions.setEmail(email));
       dispatch(authActions.setScw(scw));
       dispatch(authActions.setWallet(response?.wallets));
@@ -207,8 +209,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
                 borderRadius: 10,
                 borderWidth: password.length > 8 ? 0 : 1,
                 borderColor: '#A6A6A6',
-                backgroundColor:
-                  password.length > 8 ? '#B0F291' : 'transparent',
+                backgroundColor: validateSpecialCharacter(password)
+                  ? '#B0F291'
+                  : 'transparent',
               }}></View>
             <Text
               style={[

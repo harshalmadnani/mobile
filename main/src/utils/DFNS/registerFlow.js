@@ -5,7 +5,7 @@ import {PasskeysSigner} from '@dfns/sdk-react-native';
 export const checkUserIsDFNSSignedUp = async email => {
   try {
     const response = await axios.get(
-      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?email=eq.${email}`,
+      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
       {
         headers: {
           apiKey:
@@ -22,7 +22,26 @@ export const checkUserIsDFNSSignedUp = async email => {
     console.log('error on getting wallet', error);
   }
 };
-
+export const getUserInfoFromDB = async email => {
+  try {
+    const response = await axios.get(
+      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
+      {
+        headers: {
+          apiKey:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+        },
+      },
+    );
+    const userInfo = response.data;
+    console.log('wallets....', userInfo);
+    return userInfo?.[0];
+  } catch (error) {
+    console.log('error on getting wallet', error);
+  }
+};
 export const registerUsernameToDFNS = async username => {
   try {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
@@ -93,8 +112,8 @@ export const getDfnsJwt = async username => {
       },
     );
     const jwt = res.data;
-    console.log("jwt.....",jwt)
-    return jwt?.token
+    console.log('jwt.....', jwt);
+    return jwt?.token;
   } catch (error) {
     console.log('error on registering..........', error);
   } finally {

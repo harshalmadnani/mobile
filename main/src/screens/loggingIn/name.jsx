@@ -31,30 +31,10 @@ const Name = ({navigation, route}) => {
     // const email = global.connectAccount.phoneEmail;
     // const uuid = global.connectAccount.uiud;
 
-    console.log(email);
+    console.log(wallets, scw, email);
     try {
-      // const object = {
-      //   email: email.toLowerCase(),
-      //   phone: 'NULL',
-      //   name: name,
-      //   typeOfLogin: 'connect',
-      //   eoa: address.toLowerCase(),
-      //   scw: address.toLowerCase(),
-      //   id: uuid,
-      // };
-      // const json = JSON.stringify(object || {}, null, 2);
-      // console.log('Request Being Sent:', json);
-
-      // await fetch('https://mongo.api.xade.finance/polygon', {
-      //   method: 'POST',
-      //   body: json,
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      // });
-      // dispatch(getEvmAddresses());
       await axios.post(
-        'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users',
+        'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers',
         {
           email: email,
           referalCode: code,
@@ -73,7 +53,7 @@ const Name = ({navigation, route}) => {
           },
         },
       );
-      //galaxy register
+      // galaxy register
       await appendToGalaxeList(email);
       navigation.push('Portfolio');
     } catch (err) {

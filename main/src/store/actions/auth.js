@@ -13,6 +13,11 @@ import {PNAccount} from '../../Models/PNAccount';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {authActions} from '../reducers/auth';
 import {getEvmAddresses} from '../actions/portfolio';
+import {
+  checkUserIsDFNSSignedUp,
+  getDfnsJwt,
+  getUserInfoFromDB,
+} from '../../utils/DFNS/registerFlow';
 
 export const registerUserToDB = () => {
   return async dispatch => {};
@@ -288,6 +293,26 @@ export const onIsLoginCheckAuthCore = (
     //   navigation.push('LoggedOutHome');
     //   console.log('Navigating To Home');
     // }
+  };
+};
+
+export const autoLogin = (navigation, email) => {
+  return async dispatch => {
+    const status = await checkUserIsDFNSSignedUp(email);
+    if (status) {
+      const token = await getDfnsJwt(email);
+      const user = await getUserInfoFromDB(email);
+      console.log('info from db......', token, user);
+      dispatch(authActions.setEmail(email));
+      dispatch(authActions.setScw(user?.dfnsScw));
+      dispatch(authActions.setWallet(user?.dfnsWallet));
+      navigation.navigate('Portfolio');
+    } else {
+      dispatch(authActions.setEmail(null));
+      dispatch(authActions.setScw([]));
+      dispatch(authActions.setWallet([]));
+      navigation.push('LoggedOutHome');
+    }
   };
 };
 export const logoutRefresh = () => {
