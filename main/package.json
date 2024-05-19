@@ -15,8 +15,9 @@
   "dependencies": {
     "@aarc-xyz/core": "^0.0.8",
     "@biconomy/account": "^4.4.0",
-    "@dfns/lib-ethersjs6": "^0.4.3",
+    "@dfns/lib-viem": "^0.4.3",
     "@dfns/sdk": "^0.4.3",
+    "@dfns/sdk-browser": "^0.4.3",
     "@dfns/sdk-keysigner": "^0.4.3",
     "@dfns/sdk-react-native": "^0.4.3",
     "@ethersproject/shims": "^5.0.0",
@@ -58,6 +59,7 @@
     "dotenv-cli": "^7.0.0",
     "ethers": "6.9.2",
     "events": "3.3.0",
+    "fastestsmallesttextencoderdecoder": "^1.0.22",
     "https-browserify": "^0.0.1",
     "localstorage-polyfill": "^1.0.1",
     "lottie-react-native": "^6.7.0",

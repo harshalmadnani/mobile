@@ -1288,10 +1288,19 @@
     stream-browserify "^3.0.0"
     util "^0.12.4"
 
-"@dfns/lib-ethersjs6@^0.4.3":
+"@dfns/lib-viem@^0.4.3":
   version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@dfns/lib-ethersjs6/-/lib-ethersjs6-0.4.3.tgz#64025c68414122beea02986929bada270e7fecab"
-  integrity sha512-1dmKVkabnZzN2PjpKqeUBbNqqqnzmo19aT3C1lNtIgzcUcN7+Zsbv5kTmQWfxghisD2KnvQDtRn0QXyZdRNVHQ==
+  resolved "https://registry.yarnpkg.com/@dfns/lib-viem/-/lib-viem-0.4.3.tgz#8f250e7467807b9db85ce88017b05cf83ef4a273"
+  integrity sha512-TQ2RoWWFsRPpOBb9XVolBBaU7rv7O/qBVxIkjI6Jt1RdlruzR5AicPXetqs20Zn5Gu3fF+cZNabr9qlxMVYsjg==
+  dependencies:
+    buffer "6.0.3"
+    cross-fetch "3.1.6"
+    uuid "9.0.0"
+
+"@dfns/sdk-browser@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@dfns/sdk-browser/-/sdk-browser-0.4.3.tgz#848543c2cbf8fc0b4278ec474504d415ee85f317"
+  integrity sha512-P7bSbeMAdJ3XTbKHj7LBq5rm89HjD0f/0onOpmY/oScmSCVFLljgF8aImb/u5q8T+LMLQVCkSV2WJJkJhPwCdw==
   dependencies:
     buffer "6.0.3"
     cross-fetch "3.1.6"
@@ -7741,6 +7750,11 @@ fast-xml-parser@^4.0.12, fast-xml-parser@^4.2.4:
   integrity sha512-M2SovcRxD4+vC493Uc2GZVcZaj66CCJhWurC4viynVSTvrpErCShNcDz1lAho6n9REQKvL/ll4A4/fw6Y9z8nw==
   dependencies:
     strnum "^1.0.5"
+
+fastestsmallesttextencoderdecoder@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/fastestsmallesttextencoderdecoder/-/fastestsmallesttextencoderdecoder-1.0.22.tgz#59b47e7b965f45258629cc6c127bf783281c5e93"
+  integrity sha512-Pb8d48e+oIuY4MaM64Cd7OW1gt4nxCHs7/ddPPZ/Ic3sg8yVGM7O9wDvZ7us6ScaUupzM+pfBolwtYhN1IxBIw==
 
 fastq@^1.6.0:
   version "1.17.1"

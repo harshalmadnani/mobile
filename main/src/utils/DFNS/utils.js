@@ -1,24 +1,12 @@
-// import { DfnsApiClient, DfnsDelegatedApiClient } from '@dfns/sdk'
-// import { AsymmetricKeySigner } from '@dfns/sdk-keysigner'
+import {DfnsApiClient, DfnsDelegatedApiClient} from '@dfns/sdk';
+import {PasskeysSigner} from '@dfns/sdk-react-native';
 
-// export const apiClient = (appId ,authToken) => {
-//   const signer = new AsymmetricKeySigner({
-//     credId: process.env.DFNS_CRED_ID!,// env file
-//     privateKey: process.env.DFNS_PRIVATE_KEY!,// env file
-//   })
-
-//   return new DfnsApiClient({
-//     appId,
-//     authToken: authToken ?? process.env.DFNS_AUTH_TOKEN!,
-//     baseUrl: process.env.DFNS_API_URL!,
-//     signer,
-//   })
-// }
-
-// export const delegatedClient = (appId, authToken) => {
-//   return new DfnsDelegatedApiClient({
-//     appId,
-//     authToken,
-//     baseUrl: process.env.DFNS_API_URL!,
-//   })
-// }
+export const dfnsProviderClient = authToken => {
+  const passkey = new PasskeysSigner();
+  return new DfnsApiClient({
+    appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+    authToken: authToken,
+    baseUrl: 'https://api.dfns.io',
+    signer: passkey,
+  });
+};

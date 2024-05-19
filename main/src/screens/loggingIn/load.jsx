@@ -26,6 +26,7 @@ import {ethers} from 'ethers';
 import {err} from 'react-native-svg/lib/typescript/xml';
 import {useDispatch, useSelector} from 'react-redux';
 import {autoLogin, onIsLoginCheckAuthCore} from '../../store/actions/auth';
+import { authActions } from '../../store/reducers/auth';
 
 var DeviceInfo = require('react-native-device-info');
 

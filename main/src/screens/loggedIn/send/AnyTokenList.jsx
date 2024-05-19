@@ -27,6 +27,7 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
   const height = Dimensions.get('window').height;
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
+
   const recipientAddress = useSelector(x => x.transfer.recipientAddress);
   const navigation = useNavigation();
   //   const manipulatedHoldingsData = [];
@@ -46,7 +47,6 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
   return (
     <Modal
       animationType="slide"
-      // transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
@@ -75,20 +75,117 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
             }}>
             HOLDINGS
           </Text>
-          <TouchableOpacity onPress={() => {
-  // Navigation back action goes here
-  navigation.goBack();  // Assuming you're using something like React Navigation
-}}>
-  <Icon
-    name={'close'}
-    size={24}
-    color={'#f0f0f0'}
-    type="materialicons"
-  />
-</TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setModalVisible(false);
+              // navigation.goBack(); // Assuming you're using something like React Navigation
+            }}>
+            <Icon
+              name={'close'}
+              size={24}
+              color={'#f0f0f0'}
+              type="materialicons"
+            />
+          </TouchableOpacity>
         </View>
-        <FlatList
-          data={holdings?.assets}
+        <View
+          style={{
+            marginTop: 16,
+            width: '98%',
+          }}>
+          {holdings?.assets.length > 0
+            ? holdings.assets?.map((item, i) => (
+                <Pressable
+                  key={i}
+                  onPress={() => {
+                    dispatch(transferAction.setAssetToTransfer(item));
+                    setModalVisible(!modalVisible);
+                  }}
+                  style={{width: '100%', padding: 12}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    }}>
+                    <Text
+                      style={{
+                        fontFamily: `NeueMontreal-Medium`,
+                        color: 'white',
+                        fontSize: 20,
+                      }}>
+                      {item?.asset?.name}
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: `NeueMontreal-Medium`,
+                        color: 'white',
+                        fontSize: 16,
+                        paddingTop: 10,
+                      }}>
+                      ${item?.estimated_balance?.toString()?.slice(0, 5)}
+                    </Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View style={{marginRight: 8}}>
+                        <Image
+                          source={{
+                            uri: NetworkChainInfo.filter(
+                              x =>
+                                x.chainId ===
+                                item?.contracts_balances?.[0]?.chainId,
+                            )?.[0]?.logo,
+                          }}
+                          style={{
+                            width: 18,
+                            height: 18,
+                            alignSelf: 'center',
+                            tintColor: 'gray',
+                          }}
+                        />
+                        <Image
+                          source={{
+                            uri: NetworkChainInfo.filter(
+                              x =>
+                                x.chainId ===
+                                item?.contracts_balances?.[0]?.chainId,
+                            )?.[0]?.logo,
+                          }}
+                          style={{
+                            width: 18,
+                            height: 18,
+                            alignSelf: 'center',
+                            position: 'absolute',
+                            opacity: 0.5,
+                          }}
+                        />
+                      </View>
+                      <Text
+                        style={{
+                          fontFamily: `NeueMontreal-Medium`,
+                          color: 'white',
+                          opacity: 0.5,
+                          fontSize: 16,
+                        }}>
+                        {item?.token_balance?.toString()?.slice(0, 10)}
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        fontFamily: `NeueMontreal-Medium`,
+                        color: 'white',
+                        opacity: 0.5,
+                        fontSize: 16,
+                      }}>
+                      {` ${item?.asset?.symbol}`}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))
+            : null}
+        </View>
+        {/* <FlatList
+          data={holdings?.assets.length > 0 ? holdings?.assets : []}
           style={{
             marginTop: 16,
             width: '98%',
@@ -178,7 +275,7 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
             </Pressable>
           )}
           keyExtractor={(item, i) => i.toString()}
-        />
+        /> */}
       </View>
     </Modal>
   );

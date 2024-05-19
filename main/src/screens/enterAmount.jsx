@@ -186,7 +186,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 alignItems: 'flex-end',
                 textAlign: 'center',
                 alignItems: 'center',
-                flexDirection:'row'
+                flexDirection: 'row',
               }}>
               {/* <Text
                 style={{
@@ -208,24 +208,25 @@ export default function EnterAmountComponent({navigation, route}) {
               </Text>
             </View>
           </View>
-<Pressable onPress={() => setModalVisible(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
-  <Text
-    style={{
-      marginTop: '2%',
-      fontSize: 20,
-      fontFamily: `EuclidCircularA-Regular`,
-      color: 'white',
-    }}>
-    {assetInfo?.asset?.symbol ?? 'USDC'}
-  </Text>
-  <Icon
-    name={'expand-more'}
-    size={24}
-    color={'#f0f0f0'}
-    type="materialicons"
-  />
-</Pressable>
-
+          <Pressable
+            onPress={() => setModalVisible(true)}
+            style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text
+              style={{
+                marginTop: '2%',
+                fontSize: 20,
+                fontFamily: `EuclidCircularA-Regular`,
+                color: 'white',
+              }}>
+              {assetInfo?.asset?.symbol ?? 'USDC'}
+            </Text>
+            <Icon
+              name={'expand-more'}
+              size={24}
+              color={'#f0f0f0'}
+              type="materialicons"
+            />
+          </Pressable>
         </View>
         <View style={styles.extradeets}>
           <Text
@@ -293,12 +294,6 @@ export default function EnterAmountComponent({navigation, route}) {
                 amount != '0' &&
                 parseFloat(amount) < parseFloat(assetInfo?.token_balance)
               ) {
-                console.log(assetInfo?.contracts_balances);
-                console.log(
-                  'amount to be sent....',
-                  parseFloat(amount) *
-                    Math.pow(10, assetInfo?.contracts_balances[0]?.decimals),
-                );
                 dispatch(
                   transferAction.setTransferAmount(
                     (

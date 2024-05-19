@@ -3,9 +3,9 @@ import {View, Platform, ActivityIndicator} from 'react-native';
 import {Text} from 'react-native-elements';
 import Video from 'react-native-video';
 
-import {transferAnyTokenWithParticleAAGasless} from '../../loggedIn/payments/remmitexv1';
+// import {transferAnyTokenWithParticleAAGasless} from '../';
 import {useSelector} from 'react-redux';
-// import {switchAuthCoreChain} from '../../../utils/particleCoreSDK';
+import {transferTokenGassless} from '../../../utils/DFNS/walletFLow.js';
 
 let web3;
 const successVideo = require('./pending.mp4');
@@ -16,6 +16,8 @@ const Component = ({route, navigation}) => {
   const recipientAddress = useSelector(x => x.transfer.recipientAddress);
   const assetInfo = useSelector(x => x.transfer.assetInfo);
   const amount = useSelector(x => x.transfer.transferAmount);
+  const dfnsToken = useSelector(x => x.auth.DFNSToken);
+  const wallets = useSelector(x => x.auth.wallets);
   // const {emailAddress} = route.params;
 
   // console.log('Params:', route.params);
@@ -25,18 +27,34 @@ const Component = ({route, navigation}) => {
   useEffect(() => {
     const transaction = async () => {
       try {
-        console.log(assetInfo?.contracts_balances[0]);
-        // await switchAuthCoreChain(
-        //   parseInt(assetInfo?.contracts_balances[0]?.chainId),
-        // );
-        const {status, fees} = await transferAnyTokenWithParticleAAGasless(
-          amount,
-          recipientAddress,
-          setStatus,
+        console.log(assetInfo);
+        console.log(
+          'Here....',
+          dfnsToken,
+          wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+          'wa-5l9lm-9l7gl-8p8psglcvh5jsdrm',
+          137,
+          assetInfo?.contracts_balances[0] ===
+            '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? true
+            : false,
           assetInfo?.contracts_balances[0]?.address,
+          recipientAddress,
+          amount,
         );
-        if (status) {
-          // await switchAuthCoreChain(parseInt(137));
+        const txnHash = await transferTokenGassless(
+          dfnsToken,
+          wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+          137,
+          assetInfo?.contracts_balances[0] ===
+            '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+            ? true
+            : false,
+          assetInfo?.contracts_balances[0]?.address,
+          recipientAddress,
+          amount,
+        );
+        if (txnHash) {
           navigation.push('Successful', {
             status,
             type: 'v2',
@@ -46,15 +64,12 @@ const Component = ({route, navigation}) => {
             fees: 0,
           });
         } else {
-          // await switchAuthCoreChain(parseInt(137));
-          navigation.push('Unsuccessful', {error: fees});
+          navigation.push('Unsuccessful', {error: 0});
         }
       } catch (err) {
         console.log(err);
-        // await switchAuthCoreChain(parseInt(137));
       }
     };
-
     transaction();
   }, []);
 

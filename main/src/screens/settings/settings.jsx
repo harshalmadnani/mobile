@@ -375,6 +375,8 @@ const Component = ({navigation}) => {
             style={styles.innerSettings}
             onPress={async () => {
               dispatch(logoutRefresh());
+
+              // navigation.push('LoggedOutHome');
               await AsyncStorage.setItem('isConnected', JSON.stringify(false));
               navigation.navigate('LoggedOutHome');
             }}>

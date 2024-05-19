@@ -4,7 +4,7 @@ import {transferAction} from '../reducers/transfer';
 export const setAddressOnEmail = email => {
   return async (dispatch, getState) => {
     const response = await axios.get(
-      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?email=eq.${email}`,
+      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
       {
         headers: {
           apiKey:
@@ -16,7 +16,9 @@ export const setAddressOnEmail = email => {
     );
     if (response.data?.length) {
       dispatch(
-        transferAction.setRecipientAddress(response?.data[0]?.evmSmartAccount),
+        transferAction.setRecipientAddress(
+          response?.data[0]?.dfnsScw?.filter(x => x.chainId === 137),
+        ),
       );
       return true;
     } else {

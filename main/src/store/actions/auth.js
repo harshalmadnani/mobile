@@ -304,8 +304,10 @@ export const autoLogin = (navigation, email) => {
       const user = await getUserInfoFromDB(email);
       console.log('info from db......', token, user);
       dispatch(authActions.setEmail(email));
+      dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(user?.dfnsScw));
       dispatch(authActions.setWallet(user?.dfnsWallet));
+      dispatch(authActions.setName(user?.name));
       navigation.navigate('Portfolio');
     } else {
       dispatch(authActions.setEmail(null));
@@ -322,5 +324,8 @@ export const logoutRefresh = () => {
     dispatch(authActions.setFaceID(false));
     dispatch(authActions.setIsConnected(true));
     dispatch(authActions.setEOAAddress(null));
+    dispatch(authActions.setEmail(null));
+    dispatch(authActions.setScw([]));
+    dispatch(authActions.setWallet([]));
   };
 };

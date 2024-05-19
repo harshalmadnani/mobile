@@ -92,7 +92,6 @@ export const registerUsernameToDFNS = async username => {
   } finally {
   }
 };
-
 export const getDfnsJwt = async username => {
   try {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId

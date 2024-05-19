@@ -1,7 +1,7 @@
+import './polyfills';
 import '@walletconnect/react-native-compat';
 import {WagmiConfig} from 'wagmi';
 import {
-  mainnet,
   polygon,
   base,
   celo,
@@ -11,16 +11,27 @@ import {
   optimism,
   arbitrum,
 } from 'viem/chains';
+
 import {
   createWeb3Modal,
   defaultWagmiConfig,
   Web3Modal,
 } from '@web3modal/wagmi-react-native';
+
+import {createPublicClient, http} from 'viem';
+import {mainnet} from 'viem/chains';
+
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootSiblingParent} from 'react-native-root-siblings';
 import {Buffer} from 'buffer';
+
+const publicClient = createPublicClient({
+  chain: mainnet,
+  transport: http(),
+});
+
 global.Buffer = Buffer;
 import './global';
 import {

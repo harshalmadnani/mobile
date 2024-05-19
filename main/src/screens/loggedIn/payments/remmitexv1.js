@@ -22,6 +22,7 @@ import {
   // getUserAddressFromAuthCoreSDK,
   signAndSendBatchTransactionWithGasless,
 } from '../../../utils/particleCoreSDK';
+import axios from 'axios';
 // import {LoginType} from '@particle-network/rn-auth';
 // import {evm} from '@particle-network/rn-auth-core';
 
@@ -422,8 +423,6 @@ export const transferAnyTokenWithParticleAAGasless = async (
   setStatus('Calculating Gas In USDC...');
   const erc20Abi = new ethers.Interface(usdAbi);
   let txs = [];
-  // const eoaAddress = await getUserAddressFromAuthCoreSDK();
-  // const smartAccount = await getSmartAccountAddress(eoaAddress);
   if (tokenAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
     setStatus('Creating Transactions...');
     console.log('native transfer.........');
@@ -436,10 +435,12 @@ export const transferAnyTokenWithParticleAAGasless = async (
     txs.push(sendTX);
   } else {
     setStatus('Creating Transactions...');
-    const sendData = erc20Abi.encodeFunctionData('transfer', [
-      recipient,
-      amount,
-    ]);
+    // const sendData = erc20Abi.encodeFunctionData('transfer', [
+    //   recipient,
+    //   amount,
+    // ]);
+    const res = await axios.post();
+
     // const sendTX = await getEthereumTransaction(
     //   smartAccount,
     //   tokenAddress,

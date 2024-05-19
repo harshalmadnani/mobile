@@ -14,7 +14,8 @@ import FastImage from 'react-native-fast-image';
 import axios from 'axios';
 import {getEvmAddresses} from '../../store/actions/portfolio';
 import {appendToGalaxeList} from '../../utils/galaxeApi';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {authActions} from '../../store/reducers/auth';
 const windowHeight = Dimensions.get('window').height;
 
 const Name = ({navigation, route}) => {
@@ -23,7 +24,7 @@ const Name = ({navigation, route}) => {
   const wallets = useSelector(x => x.auth.wallets);
   const scw = useSelector(x => x.auth.scw);
   const email = useSelector(x => x.auth.email);
-
+  const dispatch = useDispatch();
   const registerDB = async ({navigation, name, code}) => {
     console.log('Here set name', name);
 
@@ -54,6 +55,7 @@ const Name = ({navigation, route}) => {
         },
       );
       // galaxy register
+      dispatch(authActions.setName(name));
       await appendToGalaxeList(email);
       navigation.push('Portfolio');
     } catch (err) {

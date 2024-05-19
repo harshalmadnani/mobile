@@ -29,15 +29,13 @@ import {
   getDfnsJwt,
   registerUsernameToDFNS,
 } from '../../utils/DFNS/registerFlow';
-import {
-  getScwAddress,
-  getSmartAccountAddress,
-} from '../../utils/DFNS/walletFLow';
+import {getScwAddress} from '../../utils/DFNS/walletFLow.js';
 import AuthTextInput from '../../component/Input/AuthTextInputs';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 import {useDispatch} from 'react-redux';
 import {authActions} from '../../store/reducers/auth';
+import {autoLogin} from '../../store/actions/auth';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
   const [email, setEmail] = useState('');
@@ -123,7 +121,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
     const status = await checkUserIsDFNSSignedUp(email);
     if (status) {
       setIsLogin(true);
-      await dispatch(autoLogin(navigation, email));
+      dispatch(autoLogin(navigation, email));
       setLoading(false);
     } else {
       setStages('password');
@@ -141,6 +139,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       );
       console.log('redux update.....', scw, response?.wallets, email);
       dispatch(authActions.setEmail(email));
+      dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(scw));
       dispatch(authActions.setWallet(response?.wallets));
     } catch (error) {
