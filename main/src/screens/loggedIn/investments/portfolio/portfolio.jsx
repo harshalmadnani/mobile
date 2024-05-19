@@ -705,6 +705,8 @@ const Portfolio = ({navigation}) => {
       </ScrollView>
       <TouchableOpacity
         onPress={async e => {
+          navigation.push('Ramper');
+          ReactNativeHapticFeedback.trigger('impactHeavy', options);
           // ReactNativeHapticFeedback.trigger('impactHeavy', options);
         }}
         style={{
