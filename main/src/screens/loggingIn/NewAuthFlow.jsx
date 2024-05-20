@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   heading: {
     color: '#fff',
     fontSize: 24,
-    fontWeight: 700,
+    fontFamily:'Sk-Modernist-Bold',
     lineHeight: 28.8,
     marginTop: '5%',
   },
@@ -397,17 +397,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 400,
     lineHeight: 24,
-    marginTop:'6%'
+    marginTop:'6%',
+    fontFamily:'Sk-Modernist-Regular',
   },
   passwordInstruction: {
     fontSize: 16,
     fontWeight: 400,
     lineHeight: 24,
     marginLeft: 12,
+    fontFamily:'Sk-Modernist-Regular',
   },
   confirmButton: {
     width: '100%',
-    height: 50,
+    height: '10%',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -415,9 +417,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   confirmButtonTitle: {
-    // font-family: Sk-Modernist;
+    fontFamily:'Sk-Modernist-Bold',
     fontSize: 16,
-    fontWeight: 700,
+
     lineHeight: 19.2,
   },
   otpContainer: {
@@ -430,6 +432,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     backgroundColor: '#1C1C1C',
+    fontFamily:'Sk-Modernist-Bold',
     textAlign: 'center',
     color: '#fff',
     fontSize: 18,

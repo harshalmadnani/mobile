@@ -69,6 +69,9 @@
 		D3F60F7AEC2B485597777799 /* Unbounded-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3BBB59E81C6A4C5ABFF834DB /* Unbounded-ExtraBold.otf */; };
 		D68D60C4ED8746079C7664DD /* NeueMontreal-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = F4CA08645E3B41B5B44794AF /* NeueMontreal-Medium.otf */; };
 		F5FD4DDEB39F4BFE9E6DACEF /* Satoshi-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 58122089A2CA4B619844E35E /* Satoshi-Black.otf */; };
+		BC0742EAB30F4986BB81FF2B /* Sk-Modernist-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 930FDCD84FE449D298751E25 /* Sk-Modernist-Bold.otf */; };
+		6BDD7969A2E44CE1AFA23857 /* Sk-Modernist-Mono.otf in Resources */ = {isa = PBXBuildFile; fileRef = 907E0708D8354978BC6F5041 /* Sk-Modernist-Mono.otf */; };
+		6CEC5959260E4C5C903F4928 /* Sk-Modernist-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 1A985FE05A8E417F9C6A62F6 /* Sk-Modernist-Regular.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,6 +165,9 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F4CA08645E3B41B5B44794AF /* NeueMontreal-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NeueMontreal-Medium.otf"; path = "../assets/fonts/NeueMontreal-Medium.otf"; sourceTree = "<group>"; };
 		F575594E495C4DC6A854A043 /* NeueMontreal-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NeueMontreal-Bold.otf"; path = "../assets/fonts/NeueMontreal-Bold.otf"; sourceTree = "<group>"; };
+		930FDCD84FE449D298751E25 /* Sk-Modernist-Bold.otf */ = {isa = PBXFileReference; name = "Sk-Modernist-Bold.otf"; path = "../assets/fonts/Sk-Modernist-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		907E0708D8354978BC6F5041 /* Sk-Modernist-Mono.otf */ = {isa = PBXFileReference; name = "Sk-Modernist-Mono.otf"; path = "../assets/fonts/Sk-Modernist-Mono.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1A985FE05A8E417F9C6A62F6 /* Sk-Modernist-Regular.otf */ = {isa = PBXFileReference; name = "Sk-Modernist-Regular.otf"; path = "../assets/fonts/Sk-Modernist-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,6 +280,9 @@
 				F4CA08645E3B41B5B44794AF /* NeueMontreal-Medium.otf */,
 				6F25A1D64FDB40A5A5D4CBCB /* NeueMontreal-MediumItalic.otf */,
 				726CF56D837040C087B47636 /* NeueMontreal-Regular.otf */,
+				930FDCD84FE449D298751E25 /* Sk-Modernist-Bold.otf */,
+				907E0708D8354978BC6F5041 /* Sk-Modernist-Mono.otf */,
+				1A985FE05A8E417F9C6A62F6 /* Sk-Modernist-Regular.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -496,6 +505,9 @@
 				D68D60C4ED8746079C7664DD /* NeueMontreal-Medium.otf in Resources */,
 				A2F6401341CE439EB28E7647 /* NeueMontreal-MediumItalic.otf in Resources */,
 				60D7AD5B6B7741B18D34E735 /* NeueMontreal-Regular.otf in Resources */,
+				BC0742EAB30F4986BB81FF2B /* Sk-Modernist-Bold.otf in Resources */,
+				6BDD7969A2E44CE1AFA23857 /* Sk-Modernist-Mono.otf in Resources */,
+				6CEC5959260E4C5C903F4928 /* Sk-Modernist-Regular.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

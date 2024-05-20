@@ -83,25 +83,27 @@
 		<string>coinomi</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
-	<true />
+	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<true />
+		<true/>
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true />
+		<true/>
 		<key>NSAllowsLocalNetworking</key>
-		<true />
+		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We use the camera to scan QRs for public addresses</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string />
+	<string/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access in order to open photos of QRs</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>VelaSans-Medium.otf</string>
+		<string>Sk-Modernist-Bold.otf</string>
+		<string>Sk-Modernist-Regular.otf</string>
 		<string>LemonMilk-Regular.otf</string>
 		<string>VelaSans-Bold.otf</string>
 		<string>VelaSans-ExtraBold.otf</string>
@@ -158,6 +160,7 @@
 		<string>NeueMontreal-Medium.otf</string>
 		<string>NeueMontreal-MediumItalic.otf</string>
 		<string>NeueMontreal-Regular.otf</string>
+		<string>Sk-Modernist-Mono.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
@@ -177,6 +180,6 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false />
+	<false/>
 </dict>
 </plist>

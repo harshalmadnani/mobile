@@ -114,6 +114,18 @@
       "sha1": "7dcb59994f2bee1a4ef1f6c079ba0e99b409878b"
     },
     {
+      "path": "assets/fonts/Sk-Modernist-Bold.otf",
+      "sha1": "601747e9fe6bbb14ddbb3b3d2eab4341c6431c36"
+    },
+    {
+      "path": "assets/fonts/Sk-Modernist-Mono.otf",
+      "sha1": "906dae546d574a3363608a8992a11066cdb29149"
+    },
+    {
+      "path": "assets/fonts/Sk-Modernist-Regular.otf",
+      "sha1": "ef74c972fd054800961b2da4053a1a1ee46f7174"
+    },
+    {
       "path": "assets/fonts/Unbounded-Bold.otf",
       "sha1": "2f454410035fea9cf5546d2402ac3e333662c0e5"
     },
