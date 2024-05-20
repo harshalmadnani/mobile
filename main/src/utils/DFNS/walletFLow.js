@@ -70,20 +70,10 @@ export const transferTokenGassless = async (
       chain: getChainOnId(chainId),
       transport: http(),
     });
-    console.log(
-      'wallet created recieved=====',
-      walletClient,
-      // isNative,
-      // tokenAddress,
-      // to,
-      // amount,
-    );
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
-      bundlerUrl: `https://bundler.biconomy.io/api/v2/${
-        getChainOnId(chainId).id
-      }/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f444`,
+      bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
     const scwAddress = await smartAccountClient.getAccountAddress();
     const nonce = await smartAccountClient.getNonce();
@@ -106,8 +96,7 @@ export const transferTokenGassless = async (
         txHash: userOp.userOpHash,
       });
     } else {
-      console.log('tx token send=====', isNative, tokenAddress, to, amount);
-      const userOp = await smartAccountClient.sendTransaction(
+      const userOpResponse = await smartAccountClient.sendTransaction(
         {
           to: tokenAddress,
           data: encodeFunctionData({
@@ -116,14 +105,17 @@ export const transferTokenGassless = async (
             args: [to, amount],
           }),
         },
-        {nonceOptions: {nonceKey: 1}},
         {paymasterServiceData: {mode: PaymasterMode.SPONSORED}},
+        {nonceOptions: {nonceKey: 0, nonceOverride: 1}},
       );
-      console.log(`User operation hash: ${userOp.userOpHash}`);
-      const {transactionHash: txHash, userOperationReceipt} =
-        await userOp.waitForTxHash();
-      console.log(`Transaction hash:`, userOperationReceipt);
-      return txHash;
+      console.log(`User operation hash: ${userOpResponse.userOpHash}`);
+      const {transactionHash} = await userOpResponse.waitForTxHash();
+      const userOpReceipt = await userOpResponse.wait();
+      if (userOpReceipt.success == 'true') {
+        console.log('UserOp receipt', userOpReceipt);
+        console.log('Transaction receipt', userOpReceipt.receipt);
+        return transactionHash;
+      }
     }
   } catch (error) {
     console.log('error on registering..........', error);

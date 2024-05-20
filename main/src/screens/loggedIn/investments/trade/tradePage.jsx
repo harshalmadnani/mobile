@@ -12,7 +12,6 @@ import {
   Keyboard,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
-import {ImageAssets} from '../../../../../assets';
 import {Icon} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
@@ -67,6 +66,7 @@ const TradePage = ({route}) => {
   const [value, setValue] = useState('5');
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [sellOrderStages, setSellOrderStages] = useState('Place Order');
+  const [buyTradeStages, setBuyTradeStages] = useState('Place Order');
   const [loading, setLoading] = useState(false);
   const [convertedValue, setConvertedValue] = useState('token');
   const [stockFee, setStockFee] = useState(0);
@@ -103,17 +103,20 @@ const TradePage = ({route}) => {
     42220: 'Celo',
     1666600000: 'Harmony',
     128: 'Heco',
-    8453:'Base'
+    8453: 'Base',
     // add other chains as necessary
   };
-
+  // console.log('all trades....', allSwappingTradesQuotes);
   // Retrieve the first item's chainId and find the chain name
 
-  const firstItem = Array.isArray(allSwappingTradesQuotes) && allSwappingTradesQuotes.length > 0
-  ? allSwappingTradesQuotes[0]
-  : null;
+  const firstItem =
+    Array.isArray(allSwappingTradesQuotes) && allSwappingTradesQuotes.length > 0
+      ? allSwappingTradesQuotes[0]
+      : null;
   const firstItemChainId = firstItem ? firstItem.chainId : undefined;
-  const chainName = firstItemChainId ? chainNames[firstItemChainId] : 'Unknown Chain';
+  const chainName = firstItemChainId
+    ? chainNames[firstItemChainId]
+    : 'Unknown Chain';
   const isStockTrade = useSelector(x => x.market.isStockTrade);
 
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
@@ -211,6 +214,7 @@ const TradePage = ({route}) => {
   const getBestPrice = async () => {
     if (selectedAssetMetaData) {
       setLoading(true);
+      setBuyTradeStages('Calculating Routes...');
       dispatch(
         getBestDLNCrossSwapRateBuy(
           selectedAssetMetaData?.blockchains?.length > 0
@@ -222,9 +226,20 @@ const TradePage = ({route}) => {
           value * 1000000, //USDC
         ),
       );
+      setBuyTradeStages('Finalizing Routes...');
       setLoading(false);
     }
   };
+  useEffect(() => {
+    console.log('best buy trade...', bestSwappingBuyTrades);
+    if (!isStockTrade && tradeType === 'buy') {
+      if (bestSwappingBuyTrades) {
+        setBuyTradeStages('Confirm');
+      } else {
+        setBuyTradeStages('Retry');
+      }
+    }
+  }, [bestSwappingBuyTrades]);
   const getCurrentStockTradingPrice = async () => {
     setStockOrderStages('Getting Quotes...');
     // const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
@@ -955,7 +970,7 @@ const TradePage = ({route}) => {
                     alignSelf: 'flex-end',
                     color: '#fff',
                   }}>
-              {chainName}
+                  {chainName}
                 </Text>
               </View>
             </View>
@@ -1168,7 +1183,7 @@ const TradePage = ({route}) => {
               ? stockOrderStages
               : tradeType === 'sell'
               ? sellOrderStages
-              : getDisplayText()}
+              : buyTradeStages}
           </Text>
         </TouchableOpacity>
         <Modal

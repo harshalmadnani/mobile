@@ -49,7 +49,6 @@ export const marketSlice = createSlice({
       state.bestSwappingTrades = action.payload;
     },
     setTokenUsdcBalance: (state, action) => {
-      console.log('best rates.....swapping', action.payload);
       state.tokenBalanceUSD = action.payload;
     },
     setStockTradeMode: (state, action) => {

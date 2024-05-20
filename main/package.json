@@ -10,7 +10,7 @@
     "test": "jest",
     "ca": "cd android && ./gradlew clean && ./gradlew --stop &&   npm cache clean --force &&  cd .. && yarn start --reset-cache",
     "build:ios": "react-native bundle --entry-file='index.js' --bundle-output='./ios/main.jsbundle' --dev=false --platform='ios'",
-    "postinstall": "jetify && patch-package"
+    "postinstall": "jetify && npx patch-package"
   },
   "dependencies": {
     "@aarc-xyz/core": "^0.0.8",

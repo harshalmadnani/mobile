@@ -58,7 +58,7 @@ export default function Component({navigation, route}) {
         }}>
         {JSON.stringify(error)}
       </Text>
-      <TouchableOpacity onPress={() => navigation.push('Payments')}>
+      <TouchableOpacity onPress={() => navigation.push('Portfolio')}>
         <Text
           style={{
             color: '#fff',
