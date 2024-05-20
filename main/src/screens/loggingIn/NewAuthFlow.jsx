@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component, useEffect, useState, useCallback, useRef} from 'react';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -39,7 +39,7 @@ import {autoLogin} from '../../store/actions/auth';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otpSent, setOtpSent] = useState(false);
@@ -52,11 +52,11 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const getHeadingOnStages = () => {
     switch (stages) {
       case 'email':
-        return 'Get started with email';
+        return 'Get started with your email';
       case 'password':
         return 'Set up a strong password';
       case 'otp':
-        return `Confirm`;
+        return `Confirm the code`;
     }
   };
   const onPressBack = () => {
@@ -74,9 +74,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       case 'email':
         return 'Enter your email address to sign in';
       case 'password':
-        return 'You’ll be able to use it to recover the access\nto your account ';
+        return 'You\'ll be able to use it to recover the access into your account';
       case 'otp':
-        return `Enter the confirmation code that we sent to ${email}`;
+        return 'Enter the confirmation code that we sent to ' + email;
     }
   };
   const validateEmail = email => {
@@ -102,7 +102,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           password.length > 8
         );
       case 'otp':
-        return otp.length === 6;
+        return otp.join('').length === 6;
     }
   };
   const getButtonTitle = () => {
@@ -148,7 +148,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   };
   const confirmOtp = async () => {
     // setLoading(true);
-    const user = await verifyEmailOtp(otp, email);
+    const user = await verifyEmailOtp(otp.join(''), email);
     console.log('status from signup.....', user);
     if (user && !isLogin) {
       try {
@@ -263,29 +263,56 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       </View>
     ) : (
       <View>
-        <Text style={styles.subHeading}>{getHeadingOnStages()}</Text>
+        <Text style={styles.subHeading}>{getSubHeadingOnStages()}</Text>
         <View style={{marginTop: 16}}>
-          <AuthTextInput
-            value={otp}
-            onChange={x => setOtp(x)}
-            placeholder="Your otp"
-            width={'100%'}
-          />
+          <View style={styles.otpContainer}>
+            {otp.map((digit, index) => (
+              <TextInput
+                key={index}
+                value={digit}
+                onChangeText={text => {
+                  const newOtp = [...otp];
+                  newOtp[index] = text;
+                  setOtp(newOtp);
+                  if (text && index < 5) {
+                    otpRefs.current[index + 1].focus();
+                  }
+                }}
+                onKeyPress={e => {
+                  if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
+                    otpRefs.current[index - 1].focus();
+                  }
+                }}
+                style={styles.otpInput}
+                keyboardType="numeric"
+                maxLength={1}
+                ref={ref => otpRefs.current[index] = ref}
+              />
+            ))}
+          </View>
         </View>
       </View>
     );
 
+  const otpRefs = useRef([]);
+
   return (
     <SafeAreaView style={styles.black}>
-      <View style={styles.topContent}>
+      <ImageBackground
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1715937669/hg82c0askzxxrond4yrz.png' }}
+        style={{width:'100%',flex:0,paddingVertical:'5%'}}
+      >
+        <View style={{marginLeft:'2%'}}>
         <MaterialIcons
           onPress={() => onPressBack()}
           name="arrow-back"
           color={'white'}
           size={24}
+          
         />
         <Text style={styles.heading}>{getHeadingOnStages()}</Text>
-      </View>
+        </View>
+      </ImageBackground>
       <View style={styles.mainContent}>
         {stages === 'email' ? (
           <View>
@@ -295,7 +322,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
             <View style={{marginTop: 16}}>
               <AuthTextInput
                 value={email}
-                onChange={x => setEmail(x)}
+                onChange={x => setEmail(x.toLowerCase())}
                 placeholder="Your email"
                 width={'100%'}
               />
@@ -331,6 +358,11 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           )}
         </TouchableOpacity>
       </View>
+      <ImageBackground
+        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1716199179/k5bchkiquf3uzdawmdf1.png' }}
+        style={styles.backgroundImage}
+        resizeMode="contain"
+      />
     </SafeAreaView>
   );
 };
@@ -338,7 +370,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
 const styles = StyleSheet.create({
   black: {
     width: '100%',
-    backgroundColor: '#0A0A0A',
+    backgroundColor: '#000',
     height: '100%',
   },
   topContent: {
@@ -346,14 +378,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: '20%',
     backgroundColor: '#161616',
-    paddingTop: '16%',
   },
   heading: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 700,
     lineHeight: 28.8,
-    marginTop: 8,
+    marginTop: '5%',
   },
   mainContent: {
     width: '100%',
@@ -366,7 +397,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 400,
     lineHeight: 24,
-    marginTop: 12,
+    marginTop:'6%'
   },
   passwordInstruction: {
     fontSize: 16,
@@ -389,6 +420,44 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     lineHeight: 19.2,
   },
+  otpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 16,
+  },
+  otpInput: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    backgroundColor: '#1C1C1C',
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 18,
+    borderRadius: 8,
+  },
+  button: {
+    marginTop: 16,
+    padding: 16,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#000',
+  },
+  backgroundImage: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 300, // Increased height for a bigger image
+    zIndex: -1, // Ensure background image is behind content
+  },
 });
 
 export default NewAuthLoginFLow;
+
+
+
+
+

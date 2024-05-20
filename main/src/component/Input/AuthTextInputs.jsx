@@ -1,8 +1,17 @@
-import {useState} from 'react';
+import React, {Component, useEffect, useState,useCallback} from 'react';
 import {StyleSheet, View, Text, Image, TextInput} from 'react-native';
 
-const AuthTextInput = ({placeholder, width, value, onChange, isPassword}) => {
+const AuthTextInput = React.memo(({placeholder, width, value, onChange, isPassword}) => {
   const [onFocus, setOnFocus] = useState(false);
+
+  const handleChange = useCallback((text) => {
+    if (placeholder.toLowerCase() === 'email') {
+      onChange(text.toLowerCase());
+    } else {
+      onChange(text);
+    }
+  }, [onChange, placeholder]);
+
   return (
     <View
       style={[
@@ -15,25 +24,9 @@ const AuthTextInput = ({placeholder, width, value, onChange, isPassword}) => {
       </Text>
       <TextInput
         value={value}
-        onChangeText={x => {
-          console.log('text entered....', x);
-          // onChange(x);
-          // if (!isPassword) {
-          onChange(x);
-          // }
-        }}
-        onChange={({eventCount, target, text}) => {
-          console.log('text entered on change....', text);
-          // if (isPassword) {
-          //   onChange(text);
-          // }
-        }}
-        autoCapitalize="none"
+        onChangeText={handleChange}
         onFocus={() => setOnFocus(true)}
-        onBlur={() => {
-          console.log('firedd blur');
-          setOnFocus(false);
-        }}
+        onBlur={() => setOnFocus(false)}
         style={[styles.input]}
         placeholder={placeholder}
         placeholderTextColor={'#8B8B8B'}
@@ -41,7 +34,7 @@ const AuthTextInput = ({placeholder, width, value, onChange, isPassword}) => {
       />
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   inputWrapper: {
@@ -57,19 +50,16 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 14.4,
     color: '#8B8B8B',
-    marginBottom: 4,
   },
   input: {
     width: '100%',
-    height: 16,
     alignSelf: 'flex-end',
-    // font-family: Sk-Modernist;
+    fontFamily: 'NeueMontreal-Medium',
     fontSize: 16,
-    fontWeight: '700',
     lineHeight: 19.2,
     color: '#FFFFFF',
     // text-align: left;
   },
 });
 
-export default AuthTextInput;
+export default React.memo(AuthTextInput);
