@@ -30,22 +30,13 @@ const Component = ({route, navigation}) => {
         console.log(assetInfo);
         console.log(
           'Here....',
-          dfnsToken,
           wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-          'wa-5l9lm-9l7gl-8p8psglcvh5jsdrm',
-          137,
-          assetInfo?.contracts_balances[0] ===
-            '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-            ? true
-            : false,
-          assetInfo?.contracts_balances[0]?.address,
-          recipientAddress,
-          amount,
+          assetInfo?.contracts_balances[0]?.chainId,
         );
         const txnHash = await transferTokenGassless(
           dfnsToken,
           wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-          137,
+          assetInfo?.contracts_balances[0]?.chainId,
           assetInfo?.contracts_balances[0] ===
             '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
             ? true

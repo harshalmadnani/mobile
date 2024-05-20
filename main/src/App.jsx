@@ -26,12 +26,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootSiblingParent} from 'react-native-root-siblings';
 import {Buffer} from 'buffer';
-
 const publicClient = createPublicClient({
-  chain: mainnet,
+  // chain: mainnet,
   transport: http(),
+  chain: polygon,
 });
-
 global.Buffer = Buffer;
 import './global';
 import {

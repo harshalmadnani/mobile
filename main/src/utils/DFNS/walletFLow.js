@@ -2,9 +2,16 @@ import axios from 'axios';
 import {dfnsProviderClient} from './utils';
 import {DfnsWallet} from '@dfns/lib-viem';
 import {PaymasterMode, createSmartAccountClient} from '@biconomy/account';
-import {createWalletClient, encodeFunctionData, http, parseAbi} from 'viem';
+import {
+  createPublicClient,
+  createWalletClient,
+  encodeFunctionData,
+  http,
+  parseAbi,
+} from 'viem';
 import {arbitrum, base, mainnet, polygon} from 'viem/chains';
 import {toAccount} from 'viem/accounts';
+import {entryPointAbi} from './entryPointAbi';
 
 export const getScwAddress = async (authToken, walletId) => {
   try {
@@ -47,6 +54,20 @@ const getChainOnId = chainId => {
       return polygon;
   }
 };
+const readEntryPointContract = async (functionName, args, chainId) => {
+  const instanceClient = createPublicClient({
+    chain: getChainOnId(chainId),
+    transport: http(),
+  });
+  const data = await instanceClient.readContract({
+    address: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
+    abi: entryPointAbi,
+    functionName,
+    args,
+  });
+  console.log('data.....', data);
+  return data;
+};
 export const transferTokenGassless = async (
   authToken,
   walletId,
@@ -72,29 +93,43 @@ export const transferTokenGassless = async (
     });
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
+      provider: walletClient,
       biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
+      rpcUrl:
+        'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
       bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
     const scwAddress = await smartAccountClient.getAccountAddress();
-    const nonce = await smartAccountClient.getNonce();
+    const nonce = await readEntryPointContract(
+      'getNonce',
+      [scwAddress, '0'],
+      chainId,
+    );
     console.log(
       'smart account address created =====',
       nonce?.toString(),
       scwAddress,
     );
     if (isNative) {
-      const userOp = await smartAccountClient.sendTransaction(
+      const userOpResponse = await smartAccountClient.sendTransaction(
         {
           to: to,
           value: amount,
           data: 0,
         },
-        {paymasterServiceData: {mode: PaymasterMode.SPONSORED}},
+        {
+          paymasterServiceData: {mode: PaymasterMode.SPONSORED},
+          nonceOptions: {nonceOverride: parseInt(nonce?.toString())},
+        },
       );
-      console.log(`User operation hash: ${userOp.userOpHash}`);
-      res.json({
-        txHash: userOp.userOpHash,
-      });
+      console.log(`User operation hash: ${userOpResponse.userOpHash}`);
+      const {transactionHash} = await userOpResponse.waitForTxHash();
+      const userOpReceipt = await userOpResponse.wait();
+      if (userOpReceipt.success == 'true') {
+        console.log('UserOp receipt', userOpReceipt);
+        console.log('Transaction receipt', userOpReceipt.receipt);
+        return transactionHash;
+      }
     } else {
       const userOpResponse = await smartAccountClient.sendTransaction(
         {
@@ -107,9 +142,8 @@ export const transferTokenGassless = async (
         },
         {
           paymasterServiceData: {mode: PaymasterMode.SPONSORED},
-          nonceOptions: {nonceOverride: 1},
+          nonceOptions: {nonceOverride: parseInt(nonce?.toString())},
         },
-        // {paymasterServiceData: {mode: PaymasterMode.SPONSORED}},
       );
       console.log(`User operation hash: ${userOpResponse.userOpHash}`);
       const {transactionHash} = await userOpResponse.waitForTxHash();
