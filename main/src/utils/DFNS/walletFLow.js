@@ -105,8 +105,11 @@ export const transferTokenGassless = async (
             args: [to, amount],
           }),
         },
-        {paymasterServiceData: {mode: PaymasterMode.SPONSORED}},
-        {nonceOptions: {nonceKey: 0, nonceOverride: 1}},
+        {
+          paymasterServiceData: {mode: PaymasterMode.SPONSORED},
+          nonceOptions: {nonceOverride: 1},
+        },
+        // {paymasterServiceData: {mode: PaymasterMode.SPONSORED}},
       );
       console.log(`User operation hash: ${userOpResponse.userOpHash}`);
       const {transactionHash} = await userOpResponse.waitForTxHash();
