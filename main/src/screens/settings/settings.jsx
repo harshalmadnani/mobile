@@ -69,11 +69,10 @@ const ruleStyles = StyleSheet.create({
 //   showExternalLinkModal: false,
 // };
 
-let info;
-
 const Component = ({navigation}) => {
   const dispatch = useDispatch();
   const userInfo = useSelector(x => x.portfolio.userInfo);
+  let info = useSelector(x => x.auth.name);
   // const imageUrl = `https://ui-avatars.com/api/?name=${userInfo[0]?.name}&format=png&rounded=true&bold=true&background=000&color=ffbd59`;
   const onShare = async () => {
     try {
@@ -142,9 +141,9 @@ const Component = ({navigation}) => {
                 fontFamily: `Unbounded-Medium`,
                 textAlign: 'center',
               }}>
-              {userInfo?.[0]?.name?.toUpperCase()}
+              {info?.toUpperCase()}
             </Text>
-            <Text
+            {/* <Text
               style={{
                 color: 'grey',
                 fontFamily: `NeueMontreal-Medium`,
@@ -156,7 +155,7 @@ const Component = ({navigation}) => {
                   ? '' + global.loginAccount.phoneEmail
                   : '+' + global.loginAccount.phoneEmail
                 : global.connectAccount?.publicAddress.slice(0, 15) + '...'}
-            </Text>
+            </Text> */}
           </View>
         </View>
 

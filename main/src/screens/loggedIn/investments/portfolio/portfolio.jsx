@@ -26,7 +26,6 @@ import {portfolioAction} from '../../../../store/reducers/portfolio';
 import {registerUsernameToDFNS} from '../../../../utils/DFNS/registerFlow';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
-
   const holdings = useSelector(x => x.portfolio.holdings);
   const portfolioHoldingFetch = useSelector(
     x => x.portfolio.portfolioHoldingFetch,
