@@ -159,3 +159,83 @@ export const transferTokenGassless = async (
   } finally {
   }
 };
+export const getSmartAccountAddress = async (authToken, walletId, chainId) => {
+  try {
+    // Start delegated registration flow. Server needs to obtain the challenge with the appId
+    // and appOrigin of the mobile application. For simplicity, they are included as part of
+    // the request body. Alternatively, they can be sent as headers or with other approaches.
+    let client = dfnsProviderClient(authToken);
+    let dfnsWalletSigner = await DfnsWallet.init({
+      walletId,
+      dfnsClient: client,
+    });
+    const walletClient = createWalletClient({
+      account: toAccount(dfnsWalletSigner),
+      chain: getChainOnId(chainId),
+      transport: http(),
+    });
+    const smartAccountClient = await createSmartAccountClient({
+      signer: walletClient,
+      provider: walletClient,
+      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
+      rpcUrl:
+        'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
+      bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
+    });
+    const scwAddress = await smartAccountClient.getAccountAddress();
+    return scwAddress;
+  } catch (error) {
+    console.log('error on registering..........', error);
+  }
+};
+export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
+  try {
+    // Start delegated registration flow. Server needs to obtain the challenge with the appId
+    // and appOrigin of the mobile application. For simplicity, they are included as part of
+    // the request body. Alternatively, they can be sent as headers or with other approaches.
+    let client = dfnsProviderClient(authToken);
+    let dfnsWalletSigner = await DfnsWallet.init({
+      walletId,
+      dfnsClient: client,
+    });
+    const walletClient = createWalletClient({
+      account: toAccount(dfnsWalletSigner),
+      chain: getChainOnId(chainId),
+      transport: http(),
+    });
+    const smartAccountClient = await createSmartAccountClient({
+      signer: walletClient,
+      provider: walletClient,
+      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
+      rpcUrl:
+        'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
+      bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
+    });
+    const scwAddress = await smartAccountClient.getAccountAddress();
+    const nonce = await readEntryPointContract(
+      'getNonce',
+      [scwAddress, '0'],
+      chainId,
+    );
+    console.log(
+      'smart account address created =====',
+      nonce?.toString(),
+      scwAddress,
+    );
+    const userOpResponse = await smartAccountClient.sendTransaction(txns, {
+      paymasterServiceData: {mode: PaymasterMode.SPONSORED},
+      nonceOptions: {nonceOverride: parseInt(nonce?.toString())},
+    });
+    console.log(`User operation hash: ${userOpResponse.userOpHash}`);
+    const {transactionHash} = await userOpResponse.waitForTxHash();
+    const userOpReceipt = await userOpResponse.wait();
+    if (userOpReceipt.success == 'true') {
+      console.log('UserOp receipt', userOpReceipt);
+      console.log('Transaction receipt', userOpReceipt.receipt);
+      return transactionHash;
+    }
+  } catch (error) {
+    console.log('error on registering..........', error);
+  } finally {
+  }
+};

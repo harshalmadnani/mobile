@@ -1,4 +1,10 @@
-import React, {Component, useEffect, useState, useCallback, useRef} from 'react';
+import React, {
+  Component,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -74,7 +80,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       case 'email':
         return 'Enter your email address to sign in';
       case 'password':
-        return 'You\'ll be able to use it to recover the access into your account';
+        return "You'll be able to use it to recover the access into your account";
       case 'otp':
         return 'Enter the confirmation code that we sent to ' + email;
     }
@@ -108,7 +114,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const getButtonTitle = () => {
     switch (stages) {
       case 'email':
-        return 'Setup password';
+        return 'Enter';
       case 'password':
         return 'Send code';
       case 'otp':
@@ -181,136 +187,145 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       setStages('otp');
     }
   };
-  const SignupFlow = () =>
-    stages === 'password' ? (
+  const signupFlow = () => {
+    return (
       <View>
-        <View style={{marginTop: 16}}>
-          <Text style={styles.subHeading}>{getSubHeadingOnStages()}</Text>
-          <View style={{marginTop: 16}}>
-            <AuthTextInput
-              value={password}
-              onChange={x => setPassword(x)}
-              placeholder="Set up your new password"
-              width={'100%'}
-              isPassword={true}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 8,
-            }}>
-            <View
-              style={{
-                height: 10,
-                width: 10,
-                borderRadius: 10,
-                borderWidth: password.length > 8 ? 0 : 1,
-                borderColor: '#A6A6A6',
-                backgroundColor: validateSpecialCharacter(password)
-                  ? '#B0F291'
-                  : 'transparent',
-              }}></View>
-            <Text
-              style={[
-                styles.passwordInstruction,
-                {
-                  color: validateSpecialCharacter(password)
-                    ? '#B0F291'
-                    : '#A6A6A6',
-                },
-              ]}>
-              Include special characters or numbers
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginBottom: 8,
-            }}>
-            <View
-              style={{
-                height: 10,
-                width: 10,
-                borderRadius: 10,
-                borderWidth: password.length > 8 ? 0 : 1,
-                borderColor: '#A6A6A6',
-                backgroundColor:
-                  password.length > 8 ? '#B0F291' : 'transparent',
-              }}></View>
-            <Text
-              style={[
-                styles.passwordInstruction,
-                {
-                  color: password.length > 8 ? '#B0F291' : '#A6A6A6',
-                },
-              ]}>
-              more than 8 characters
-            </Text>
-          </View>
-        </View>
-        <View style={{marginTop: 12}}>
-          <AuthTextInput
-            value={confirmPassword}
-            onChange={x => setConfirmPassword(x)}
-            placeholder="Confirm your new password"
-            width={'100%'}
-            isPassword={true}
-          />
-        </View>
-      </View>
-    ) : (
-      <View>
-        <Text style={styles.subHeading}>{getSubHeadingOnStages()}</Text>
-        <View style={{marginTop: 16}}>
-          <View style={styles.otpContainer}>
-            {otp.map((digit, index) => (
-              <TextInput
-                key={index}
-                value={digit}
-                onChangeText={text => {
-                  const newOtp = [...otp];
-                  newOtp[index] = text;
-                  setOtp(newOtp);
-                  if (text && index < 5) {
-                    otpRefs.current[index + 1].focus();
-                  }
-                }}
-                onKeyPress={e => {
-                  if (e.nativeEvent.key === 'Backspace' && index > 0 && !otp[index]) {
-                    otpRefs.current[index - 1].focus();
-                  }
-                }}
-                style={styles.otpInput}
-                keyboardType="numeric"
-                maxLength={1}
-                ref={ref => otpRefs.current[index] = ref}
+        {stages === 'password' ? (
+          <View>
+            <View style={{marginTop: 16}}>
+              <Text style={styles.subHeading}>{getSubHeadingOnStages()}</Text>
+              <View style={{marginTop: 16}}>
+                <AuthTextInput
+                  value={password}
+                  onChange={x => setPassword(x)}
+                  placeholder="Set up your new password"
+                  width={'100%'}
+                  isPassword={true}
+                />
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: 8,
+                }}>
+                <View
+                  style={{
+                    height: 10,
+                    width: 10,
+                    borderRadius: 10,
+                    borderWidth: password.length > 8 ? 0 : 1,
+                    borderColor: '#A6A6A6',
+                    backgroundColor: validateSpecialCharacter(password)
+                      ? '#B0F291'
+                      : 'transparent',
+                  }}></View>
+                <Text
+                  style={[
+                    styles.passwordInstruction,
+                    {
+                      color: validateSpecialCharacter(password)
+                        ? '#B0F291'
+                        : '#A6A6A6',
+                    },
+                  ]}>
+                  Include special characters or numbers
+                </Text>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                }}>
+                <View
+                  style={{
+                    height: 10,
+                    width: 10,
+                    borderRadius: 10,
+                    borderWidth: password.length > 8 ? 0 : 1,
+                    borderColor: '#A6A6A6',
+                    backgroundColor:
+                      password.length > 8 ? '#B0F291' : 'transparent',
+                  }}></View>
+                <Text
+                  style={[
+                    styles.passwordInstruction,
+                    {
+                      color: password.length > 8 ? '#B0F291' : '#A6A6A6',
+                    },
+                  ]}>
+                  more than 8 characters
+                </Text>
+              </View>
+            </View>
+            <View style={{marginTop: 12}}>
+              <AuthTextInput
+                value={confirmPassword}
+                onChange={x => setConfirmPassword(x)}
+                placeholder="Confirm your new password"
+                width={'100%'}
+                isPassword={true}
               />
-            ))}
+            </View>
           </View>
-        </View>
+        ) : (
+          <View>
+            <Text style={styles.subHeading}>{getSubHeadingOnStages()}</Text>
+            <View style={{marginTop: 16}}>
+              <View style={styles.otpContainer}>
+                {otp.map((digit, index) => (
+                  <TextInput
+                    key={index}
+                    value={digit}
+                    onChangeText={text => {
+                      const newOtp = [...otp];
+                      newOtp[index] = text;
+                      setOtp(newOtp);
+                      if (text && index < 5) {
+                        otpRefs.current[index + 1].focus();
+                      }
+                    }}
+                    onKeyPress={e => {
+                      if (
+                        e.nativeEvent.key === 'Backspace' &&
+                        index > 0 &&
+                        !otp[index]
+                      ) {
+                        otpRefs.current[index - 1].focus();
+                      }
+                    }}
+                    style={styles.otpInput}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    ref={ref => (otpRefs.current[index] = ref)}
+                  />
+                ))}
+              </View>
+            </View>
+          </View>
+        )}
       </View>
     );
+  };
 
   const otpRefs = useRef([]);
 
   return (
     <SafeAreaView style={styles.black}>
       <ImageBackground
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1715937669/hg82c0askzxxrond4yrz.png' }}
-        style={{width:'100%',flex:0,paddingVertical:'5%'}}
-      >
-        <View style={{marginLeft:'2%'}}>
-        <MaterialIcons
-          onPress={() => onPressBack()}
-          name="arrow-back"
-          color={'white'}
-          size={24}
-          
-        />
-        <Text style={styles.heading}>{getHeadingOnStages()}</Text>
+        source={{
+          uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1715937669/hg82c0askzxxrond4yrz.png',
+        }}
+        style={{width: '100%', flex: 0, paddingVertical: '5%'}}>
+        <View style={{marginLeft: '2%'}}>
+          <MaterialIcons
+            onPress={() => onPressBack()}
+            name="arrow-back"
+            color={'white'}
+            size={24}
+          />
+          <Text style={styles.heading}>{getHeadingOnStages()}</Text>
         </View>
       </ImageBackground>
       <View style={styles.mainContent}>
@@ -329,7 +344,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
             </View>
           </View>
         ) : (
-          !isLogin && <SignupFlow />
+          !isLogin && signupFlow()
         )}
         <TouchableOpacity
           style={[
@@ -359,7 +374,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
         </TouchableOpacity>
       </View>
       <ImageBackground
-        source={{ uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1716199179/k5bchkiquf3uzdawmdf1.png' }}
+        source={{
+          uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1716199179/k5bchkiquf3uzdawmdf1.png',
+        }}
         style={styles.backgroundImage}
         resizeMode="contain"
       />
@@ -382,7 +399,7 @@ const styles = StyleSheet.create({
   heading: {
     color: '#fff',
     fontSize: 24,
-    fontFamily:'Sk-Modernist-Bold',
+    fontFamily: 'Sk-Modernist-Bold',
     lineHeight: 28.8,
     marginTop: '5%',
   },
@@ -397,15 +414,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 400,
     lineHeight: 24,
-    marginTop:'6%',
-    fontFamily:'Sk-Modernist-Regular',
+    marginTop: '6%',
+    fontFamily: 'Sk-Modernist-Regular',
   },
   passwordInstruction: {
     fontSize: 16,
     fontWeight: 400,
     lineHeight: 24,
     marginLeft: 12,
-    fontFamily:'Sk-Modernist-Regular',
+    fontFamily: 'Sk-Modernist-Regular',
   },
   confirmButton: {
     width: '100%',
@@ -417,7 +434,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   confirmButtonTitle: {
-    fontFamily:'Sk-Modernist-Bold',
+    fontFamily: 'Sk-Modernist-Bold',
     fontSize: 16,
 
     lineHeight: 19.2,
@@ -432,7 +449,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     backgroundColor: '#1C1C1C',
-    fontFamily:'Sk-Modernist-Bold',
+    fontFamily: 'Sk-Modernist-Bold',
     textAlign: 'center',
     color: '#fff',
     fontSize: 18,
@@ -459,8 +476,3 @@ const styles = StyleSheet.create({
 });
 
 export default NewAuthLoginFLow;
-
-
-
-
-

@@ -7,6 +7,7 @@ import {
   signAndSendBatchTransactionWithGasless,
 } from './particleCoreSDK';
 import {getRouteFromSquid} from './SquidCrossChainTradeApi';
+import {getSmartAccountAddress, tradeTokenGasless} from './DFNS/walletFLow';
 const DLNBaseURL = 'https://api.dln.trade/v1.0/dln';
 const tradeRoutes = {
   createOrder: '/order/create-tx',
@@ -267,7 +268,26 @@ export const getBestCrossSwapRateBuy = async (
         );
   console.log('after filter', results);
   if (results.length > 0) {
-    return {bestRate: results[0], allRates: bestTradingPrice};
+    return {
+      bestRate: results[0],
+      allRates: [
+        {
+          fee: isNaN(
+            parseInt(
+              results[0]?.estimation?.dstChainTokenOut?.amount ||
+                results[0]?.estimate?.toAmountMin,
+            ),
+          )
+            ? 0
+            : parseInt(
+                results[0]?.estimation?.dstChainTokenOut?.amount ||
+                  results[0]?.estimate?.toAmountMin,
+              ),
+          estimation: results[0]?.estimation ?? results[0]?.estimate,
+          chainId: results[0]?.estimation?.dstChainTokenOut?.chainId || 137,
+        },
+      ],
+    };
   } else {
     return {};
   }
@@ -314,18 +334,69 @@ export const confirmDLNTransaction = async (
   amount,
   tokenAddress,
   txData,
-  smartAccount,
+  smartAccountLegacy,
   eoaAddress,
   onlyTransaction = false,
   externalTx,
+  dfnsToken,
+  walletId,
 ) => {
-  // let txs = externalTx.length > 0 ? externalTx : [];
+  let txs = externalTx.length > 0 ? externalTx : [];
+  let chainId = 137;
+  let smartAccount = smartAccountLegacy;
   // if (
   //   tradeType === 'buy' &&
   //   quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
   //     quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
   //   !quoteTxReciept?.tokenIn?.address
   // ) {
+  if (
+    tradeType === 'buy' &&
+    quoteTxReciept?.estimation?.srcChainTokenIn?.chainId !==
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId &&
+    !quoteTxReciept?.tokenIn?.address
+  ) {
+    chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId;
+    smartAccount = await getSmartAccountAddress(dfnsToken, walletId, chainId);
+  } else {
+    chainId = 137;
+    smartAccount = await getSmartAccountAddress(dfnsToken, walletId, chainId);
+    console.log(
+      'approval address....',
+      chainId,
+      smartAccount,
+      txData,
+      tokenAddress,
+    );
+    const erc20Abi = new ethers.Interface(erc20);
+    const approvalData = erc20Abi.encodeFunctionData('approve', [
+      txData?.to,
+      amount,
+    ]);
+    const approvalTx = {
+      to: tokenAddress,
+      data: approvalData,
+    };
+    txs.push(approvalTx);
+    const executeTx = {
+      to: txData?.to,
+      data: txData?.data,
+    };
+    txs.push(executeTx);
+  }
+  if (!onlyTransaction) {
+    const txnHash = await tradeTokenGasless(dfnsToken, walletId, chainId, txs);
+    console.log('Signature Signed...........', txnHash);
+    if (txnHash) {
+      console.log('Signature Signed confirmed...........', txnHash);
+      return txnHash;
+    } else {
+      return false;
+    }
+  } else {
+    return txs;
+  }
+
   //   const erc20Abi = new ethers.Interface(erc20);
   //   const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
   //   const sendData = erc20Abi.encodeFunctionData('transfer', [

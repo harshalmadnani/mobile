@@ -92,6 +92,8 @@ const TradePage = ({route}) => {
   const allSwappingTradesQuotes = useSelector(
     x => x.market.allSwappingTradesQuotes,
   );
+  const dfnsToken = useSelector(x => x.auth.DFNSToken);
+  const wallets = useSelector(x => x.auth.wallets);
   const chainNames = {
     1: 'Ethereum',
     56: 'BSC',
@@ -108,7 +110,6 @@ const TradePage = ({route}) => {
   };
   // console.log('all trades....', allSwappingTradesQuotes);
   // Retrieve the first item's chainId and find the chain name
-
   const firstItem =
     Array.isArray(allSwappingTradesQuotes) && allSwappingTradesQuotes.length > 0
       ? allSwappingTradesQuotes[0]
@@ -240,6 +241,7 @@ const TradePage = ({route}) => {
       }
     }
   }, [bestSwappingBuyTrades]);
+
   const getCurrentStockTradingPrice = async () => {
     setStockOrderStages('Getting Quotes...');
     // const ethersProvider = getAuthCoreProviderEthers(LoginType.Email);
@@ -271,6 +273,7 @@ const TradePage = ({route}) => {
     setStockDLNRes(res);
     setStockOrderStages('Execute Order');
   };
+
   const orderStockPrice = async () => {
     setStockOrderStages('Trading ARB USDC...');
     const res = await confirmDLNTransactionPolToArb(
@@ -1009,15 +1012,13 @@ const TradePage = ({route}) => {
               if (isStockTrade) {
                 await orderStockPrice();
               } else {
-                if (
-                  !loading &&
-                  bestSwappingBuyTrades &&
-                  !preparingTx &&
-                  sellOrderStages === 'Place Order'
-                ) {
-                  if (tradeType === 'buy' && bestSwappingBuyTrades) {
+                if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                  if (
+                    tradeType === 'buy' &&
+                    bestSwappingBuyTrades &&
+                    buyTradeStages === 'Confirm'
+                  ) {
                     setPreparingTx(true);
-
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
@@ -1033,9 +1034,11 @@ const TradePage = ({route}) => {
                         res?.action?.fromToken?.address,
                       res?.tx ?? res?.transactionRequest,
                       evmInfo?.smartAccount,
-                      evmInfo?.address,
+                      wallets?.filter(x => x.network === 'Polygon')[0]?.address,
                       false,
                       [],
+                      dfnsToken,
+                      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
                     );
                     setPreparingTx(false);
                     if (signature) {

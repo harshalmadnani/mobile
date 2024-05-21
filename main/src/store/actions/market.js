@@ -120,12 +120,12 @@ export const getBestDLNCrossSwapRateBuy = (
   value,
 ) => {
   return async (dispatch, getState) => {
-    const evmInfo = getState().portfolio.evmInfo;
+    const allScw = getState().auth.scw;
     const {bestRate, allRates} = await getBestCrossSwapRateBuy(
       blockchains,
       contractAddress,
       value,
-      evmInfo?.smartAccount,
+      allScw?.filter(x => x.chainId === 137)?.[0]?.address, //used for same chain
     );
 
     dispatch(marketsAction.setBestSwappingRates(bestRate));
