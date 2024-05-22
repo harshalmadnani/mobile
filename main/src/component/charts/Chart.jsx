@@ -38,6 +38,7 @@ function InteractiveChart() {
     return (width / 750) * size;
   };
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
+  const allScw = useSelector(x => x.auth.scw);
   const [priceList, setPriceList] = useState([
     {timestamp: 0, value: 0},
     {timestamp: 0, value: 0},
@@ -118,10 +119,11 @@ function InteractiveChart() {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
     );
-    if (evmInfo?.smartAccount) {
+    if (allScw?.length) {
+      const scwWallets = allScw.map(x => x.address);
       ws.onopen = () => {
         const payload = {
-          explorer: {wallet: evmInfo?.smartAccount},
+          explorer: {wallets: scwWallets?.toString()},
         };
         ws.send(JSON.stringify(payload));
       };

@@ -6,6 +6,7 @@ import {
   getMarketAssetData,
 } from '../../utils/cryptoMarketsApi';
 import {getCryptoHoldingForAddress} from '../../utils/cryptoWalletApi';
+import {getSmartAccountAddress} from '../../utils/DFNS/walletFLow';
 import {
   getAllDinariStocks,
   getAllDinariStocksPriceChange,
@@ -113,7 +114,18 @@ export const setHistoricalDataOfSelectedTimeFrame = (
     );
   };
 };
-
+const getNameChainId = chain => {
+  switch (chain) {
+    case '137':
+      return 'Polygon';
+    case '1':
+      return 'Ethereum';
+    case '42161':
+      return 'ArbitrumOne';
+    case '8453':
+      return 'Base';
+  }
+};
 export const getBestDLNCrossSwapRateBuy = (
   blockchains,
   contractAddress,
@@ -132,24 +144,34 @@ export const getBestDLNCrossSwapRateBuy = (
     dispatch(marketsAction.setAllSwappingTradesQuotes(allRates));
   };
 };
-export const getBestDLNCrossSwapRateSell = (tokenInfo, value) => {
+
+export const getBestDLNCrossSwapRateSell = (
+  tokenInfo,
+  value,
+  authToken,
+  wallets,
+) => {
   return async (dispatch, getState) => {
-    const evmInfo = getState().portfolio.evmInfo;
-    console.log(
-      'Same Chain sell.....',
-      value,
-      tokenInfo,
-      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+    // const evmInfo = getState().portfolio.evmInfo;
+    // const evmInfo = getState().portfolio.evmInfo;
+    const chainName = getNameChainId(tokenInfo?.chainId);
+    console.log('chain....', chainName, tokenInfo?.chainId);
+    const walletInfo = wallets?.filter(x => x.network === chainName)[0];
+    console.log('chain....', authToken, walletInfo);
+    const scw = await getSmartAccountAddress(
+      authToken,
+      walletInfo?.id,
+      tokenInfo?.chainId,
     );
+    console.log('chain....', scw);
     const bestRate = await getDLNTradeCreateBuyOrder(
       tokenInfo?.chainId,
       tokenInfo?.address,
       value,
       '137',
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      evmInfo?.smartAccount,
+      scw,
     );
-    console.log('best rates.....sell', JSON.stringify(bestRate));
     dispatch(marketsAction.setBestSwappingRates(bestRate ?? []));
   };
 };

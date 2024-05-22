@@ -220,9 +220,9 @@ export const getBestCrossSwapRateBuy = async (
   blockchainsContractAddress = blockchainsContractAddress.filter(
     x =>
       x.blockchains === 'Ethereum' ||
-      x.blockchains === 'BNB Smart Chain (BEP20)' ||
+      // x.blockchains === 'BNB Smart Chain (BEP20)' ||
       x.blockchains === 'Polygon' ||
-      x.blockchains === 'Avalanche C-Chain' ||
+      x.blockchains === 'Base' ||
       x.blockchains === 'Arbitrum',
   );
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {

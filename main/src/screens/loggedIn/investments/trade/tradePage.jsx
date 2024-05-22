@@ -133,11 +133,12 @@ const TradePage = ({route}) => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {
         setLoading(true);
-        console.log(tokensToSell);
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
             value * Math.pow(10, tokensToSell?.[0]?.decimals),
+            dfnsToken,
+            wallets,
           ),
         );
         setLoading(false);
@@ -156,6 +157,8 @@ const TradePage = ({route}) => {
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
             value * Math.pow(10, tokensToSell?.[0]?.decimals),
+            dfnsToken,
+            wallets,
           ),
         );
       } else {
@@ -175,6 +178,8 @@ const TradePage = ({route}) => {
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
             value * Math.pow(10, tokensToSell?.[0]?.decimals),
+            dfnsToken,
+            wallets,
           ),
         );
       } else {
@@ -232,10 +237,9 @@ const TradePage = ({route}) => {
     }
   };
   useEffect(() => {
-    console.log('best buy trade...', bestSwappingBuyTrades);
     if (!isStockTrade && tradeType === 'buy') {
       if (bestSwappingBuyTrades) {
-        setBuyTradeStages('Confirm');
+        setBuyTradeStages('Place Order');
       } else {
         setBuyTradeStages('Retry');
       }
@@ -1016,7 +1020,7 @@ const TradePage = ({route}) => {
                   if (
                     tradeType === 'buy' &&
                     bestSwappingBuyTrades &&
-                    buyTradeStages === 'Confirm'
+                    buyTradeStages === 'Place order'
                   ) {
                     setPreparingTx(true);
                     let res;
@@ -1052,7 +1056,11 @@ const TradePage = ({route}) => {
                         tradeType,
                       });
                     }
-                  } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
+                  } else if (
+                    tradeType === 'sell' &&
+                    bestSwappingBuyTrades &&
+                    sellOrderStages === 'Place Order'
+                  ) {
                     setPreparingTx(true);
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
@@ -1067,9 +1075,12 @@ const TradePage = ({route}) => {
                           res?.action?.fromToken?.address,
                         res?.tx ?? res?.transactionRequest,
                         evmInfo?.smartAccount,
-                        evmInfo?.address,
+                        wallets?.filter(x => x.network === 'Polygon')[0]
+                          ?.address,
                         false,
                         [],
+                        dfnsToken,
+                        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
                       );
                       setSellOrderStages('Confirming Tx...');
                       setPreparingTx(false);
