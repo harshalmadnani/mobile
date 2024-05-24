@@ -40,7 +40,7 @@ export const getScwAddress = async (authToken, walletId) => {
   } finally {
   }
 };
-const getChainOnId = chainId => {
+export const getChainOnId = chainId => {
   switch (chainId) {
     case 137:
       return polygon;
@@ -171,16 +171,16 @@ export const getSmartAccountAddress = async (authToken, walletId, chainId) => {
     });
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
-      chain: getChainOnId(chainId),
+      chain: getChainOnId(parseInt(chainId)),
       transport: http(),
     });
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
       biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
-      rpcUrl:
-        'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
-      bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
+      // rpcUrl:
+      //   'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
+      bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
     const scwAddress = await smartAccountClient.getAccountAddress();
     return scwAddress;

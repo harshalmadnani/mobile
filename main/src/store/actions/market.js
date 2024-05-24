@@ -114,7 +114,7 @@ export const setHistoricalDataOfSelectedTimeFrame = (
     );
   };
 };
-const getNameChainId = chain => {
+export const getNameChainId = chain => {
   switch (chain) {
     case '137':
       return 'Polygon';
@@ -126,6 +126,7 @@ const getNameChainId = chain => {
       return 'Base';
   }
 };
+
 export const getBestDLNCrossSwapRateBuy = (
   blockchains,
   contractAddress,
@@ -154,14 +155,14 @@ export const getBestDLNCrossSwapRateSell = (
   return async (dispatch, getState) => {
     // const evmInfo = getState().portfolio.evmInfo;
     // const evmInfo = getState().portfolio.evmInfo;
-    const chainName = getNameChainId(tokenInfo?.chainId);
+    const chainName = getNameChainId(tokenInfo?.chainId?.toString());
     console.log('chain....', chainName, tokenInfo?.chainId);
     const walletInfo = wallets?.filter(x => x.network === chainName)[0];
     console.log('chain....', authToken, walletInfo);
     const scw = await getSmartAccountAddress(
       authToken,
       walletInfo?.id,
-      tokenInfo?.chainId,
+      tokenInfo?.chainId?.toString(),
     );
     console.log('chain....', scw);
     const bestRate = await getDLNTradeCreateBuyOrder(

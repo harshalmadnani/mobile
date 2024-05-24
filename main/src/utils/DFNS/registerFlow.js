@@ -47,7 +47,7 @@ export const registerUsernameToDFNS = async username => {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
-
+    console.log('register started..........');
     const initRes = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
@@ -67,26 +67,25 @@ export const registerUsernameToDFNS = async username => {
     const attestation = await passkeys.create(challenge);
     console.log('attestation==========');
 
-    // // Finish delegated registration
-    const completeRes = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
-      {
-        // appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
-        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
-        signedChallenge: {firstFactorCredential: attestation},
-        temporaryAuthenticationToken: challenge.temporaryAuthenticationToken,
-      },
-      {
-        headers: {
-          'content-type': 'application/json',
-        },
-      },
-    );
-    console.log(
-      'signup confirmed==========',
-      JSON.stringify(attestation, null, 2),
-    );
-    return completeRes.data;
+    // // // Finish delegated registration
+    // const completeRes = await axios.post(
+    //   `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
+    //   {
+    //     appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+    //     signedChallenge: {firstFactorCredential: attestation},
+    //     temporaryAuthenticationToken: challenge.temporaryAuthenticationToken,
+    //   },
+    //   {
+    //     headers: {
+    //       'content-type': 'application/json',
+    //     },
+    //   },
+    // );
+    // console.log(
+    //   'signup confirmed==========',
+    //   JSON.stringify(attestation, null, 2),
+    // );
+    // return completeRes.data;
   } catch (error) {
     console.log('error on registering..........', error);
   } finally {

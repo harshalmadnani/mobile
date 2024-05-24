@@ -300,7 +300,8 @@ export const getDLNTradeCreateBuyOrderTxn = async (
   dstChainId,
   dstChainTokenOut,
   dstChainTokenOutAmount,
-  smartAccount,
+  smartAccountSrc,
+  smartAccountDst,
 ) => {
   try {
     let response;
@@ -318,7 +319,7 @@ export const getDLNTradeCreateBuyOrderTxn = async (
           dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
             ? '0x0000000000000000000000000000000000000000'
             : dstChainTokenOut
-        }&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccount}&srcChainOrderAuthorityAddress=${smartAccount}&dstChainOrderAuthorityAddress=${smartAccount}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+        }&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccountDst}&srcChainOrderAuthorityAddress=${smartAccountSrc}&dstChainOrderAuthorityAddress=${smartAccountSrc}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       );
     }
     console.log(dstChainId, response?.data);
@@ -339,7 +340,8 @@ export const confirmDLNTransaction = async (
   onlyTransaction = false,
   externalTx,
   dfnsToken,
-  walletId,
+  walletIdSrc,
+  walletIdDst,
 ) => {
   let txs = externalTx.length > 0 ? externalTx : [];
   let chainId = 137;
@@ -357,10 +359,62 @@ export const confirmDLNTransaction = async (
     !quoteTxReciept?.tokenIn?.address
   ) {
     chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId;
-    smartAccount = await getSmartAccountAddress(dfnsToken, walletId, chainId);
+    smartAccount = await getSmartAccountAddress(
+      dfnsToken,
+      walletIdSrc,
+      chainId,
+    );
+    const smartAccountDst = await getSmartAccountAddress(
+      dfnsToken,
+      walletIdDst,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId ?? 137,
+    );
+    const erc20Abi = new ethers.Interface(erc20);
+    const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
+    const sendData = erc20Abi.encodeFunctionData('transfer', [
+      getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
+      amount,
+    ]);
+
+    // const sendTX = await getEthereumTransaction(
+    //   smartAccount,
+    //   tokenAddress,
+    //   sendData,
+    //   '0',
+    // );
+    const sendTX = {
+      to: tokenAddress,
+      data: sendData,
+    };
+    txs.push(sendTX);
+    const dlnProxyTxData = proxyDlnAbi.encodeFunctionData('placeOrder', [
+      quoteTxReciept?.estimation?.srcChainTokenIn?.address, // USDC
+      quoteTxReciept?.estimation?.srcChainTokenIn?.amount, // 25,000 USDC
+      quoteTxReciept?.estimation?.dstChainTokenOut?.address,
+      quoteTxReciept?.estimation?.dstChainTokenOut?.amount, // 249,740 DOGE
+      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId, // BNB Chain
+      smartAccountDst,
+      smartAccount,
+      smartAccountDst,
+    ]);
+
+    const executeProxyDLN = {
+      to: getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
+      data: dlnProxyTxData,
+    };
+    txs.push(executeProxyDLN);
+    console.log('smartAccountDst...........', smartAccountDst);
   } else {
-    chainId = 137;
-    smartAccount = await getSmartAccountAddress(dfnsToken, walletId, chainId);
+    chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId ?? 137;
+    smartAccount = await getSmartAccountAddress(
+      dfnsToken,
+      walletIdSrc,
+      chainId,
+    );
     console.log(
       'approval address....',
       chainId,
@@ -385,7 +439,12 @@ export const confirmDLNTransaction = async (
     txs.push(executeTx);
   }
   if (!onlyTransaction) {
-    const txnHash = await tradeTokenGasless(dfnsToken, walletId, chainId, txs);
+    const txnHash = await tradeTokenGasless(
+      dfnsToken,
+      walletIdSrc,
+      chainId,
+      txs,
+    );
     console.log('Signature Signed...........', txnHash);
     if (txnHash) {
       console.log('Signature Signed confirmed...........', txnHash);
@@ -622,8 +681,9 @@ export const executeSameChainSellForUSDC = async (
 };
 export const executeCrossChainSellForUSDC = async (
   srcChainId,
-  evmInfo,
+  smartAccountSrc,
   value,
+  smartAccountDst,
 ) => {
   const usdcNativeToken = getUSDCTokenOnChain(parseInt(srcChainId));
   const usdcNativePolyToken = getUSDCTokenOnChain(parseInt(137));
@@ -633,7 +693,7 @@ export const executeCrossChainSellForUSDC = async (
     value,
     137,
     usdcNativePolyToken,
-    evmInfo?.smartAccount,
+    smartAccountSrc,
   );
 
   if (uSDCTxnRate) {
@@ -645,7 +705,8 @@ export const executeCrossChainSellForUSDC = async (
       137,
       usdcNativePolyToken,
       uSDCTxnRate?.estimation?.dstChainTokenOut?.amount,
-      evmInfo?.smartAccount,
+      smartAccountSrc,
+      smartAccountDst,
     );
     const res = await getDLNTradeCreateBuyOrderTxn(
       srcChainId,
@@ -654,7 +715,8 @@ export const executeCrossChainSellForUSDC = async (
       137,
       usdcNativePolyToken,
       uSDCTxnRate?.estimation?.dstChainTokenOut?.amount,
-      evmInfo?.smartAccount,
+      smartAccountSrc,
+      smartAccountDst,
     );
     return res;
   }

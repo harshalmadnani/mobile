@@ -23,7 +23,6 @@ import MyInvestmentItemCard from '../tradeCollection/myInvestmentItemCard'; // A
 
 import {Icon} from '@rneui/base';
 import {portfolioAction} from '../../../../store/reducers/portfolio';
-import {registerUsernameToDFNS} from '../../../../utils/DFNS/registerFlow';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -52,9 +51,11 @@ const Portfolio = ({navigation}) => {
           type: 'wallet',
           authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
           payload: {
-            wallets: scwWallets.toString(),
+            wallets: `${scwWallets.toString()},0xB96789a3a46ad14330893aC9d1DD7DCBe12DE105`,
+            type: 'portfolio',
             interval: 2,
             unlistedAssets: false,
+            blockchains: `137,42161,8453,1`,
           },
         };
         ws.send(JSON.stringify(payload));
@@ -82,7 +83,11 @@ const Portfolio = ({navigation}) => {
       };
 
       ws.onerror = event => {
-        console.log('WebSocket error:', event);
+        try {
+          console.log('WebSocket error:', event);
+        } catch (error) {
+          console.log('WebSocket error:', event);
+        }
       };
 
       ws.onclose = () => {

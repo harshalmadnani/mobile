@@ -20,6 +20,7 @@ export const getCryptoHoldingForAddressFromMobula = (smartAccount, asset) => {
     const data = await getCryptoHoldingForAddress(smartAccount, asset);
     dispatch(portfolioAction.setPortfolioHoldingFetch(false));
     dispatch(portfolioAction.setHoldings(data?.data));
+
     return data;
   };
 };

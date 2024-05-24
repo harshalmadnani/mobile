@@ -20,6 +20,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   getBestDLNCrossSwapRateBuy,
   getBestDLNCrossSwapRateSell,
+  getIdChainName,
+  getNameChainId,
 } from '../../../../store/actions/market';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -57,6 +59,10 @@ import {
   getMarketOrderFeesEstimationFromDinari,
   placeMarketOrderToDinari,
 } from '../../../../utils/Dinari/DinariApi';
+import {
+  getChainOnId,
+  getSmartAccountAddress,
+} from '../../../../utils/DFNS/walletFLow';
 // import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
@@ -193,8 +199,9 @@ const TradePage = ({route}) => {
   }, [selectedAssetMetaData]);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
 
-  const getTradeSigningData = async () => {
+  const getTradeSigningData = async (smartAccountSrc, smartAccountDst) => {
     if (bestSwappingBuyTrades) {
+      console.log('here....', smartAccountSrc, smartAccountDst);
       const res = await getDLNTradeCreateBuyOrderTxn(
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
@@ -210,7 +217,8 @@ const TradePage = ({route}) => {
           bestSwappingBuyTrades?.estimation?.tokenOut?.address,
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
           bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
-        evmInfo?.smartAccount,
+        smartAccountSrc,
+        smartAccountDst,
       );
       return res;
     } else {
@@ -1016,18 +1024,65 @@ const TradePage = ({route}) => {
               if (isStockTrade) {
                 await orderStockPrice();
               } else {
+                console.log(
+                  'here buy flow',
+                  !loading,
+                  bestSwappingBuyTrades,
+                  !preparingTx,
+                  tradeType,
+                  buyTradeStages,
+                );
                 if (!loading && bestSwappingBuyTrades && !preparingTx) {
                   if (
                     tradeType === 'buy' &&
                     bestSwappingBuyTrades &&
-                    buyTradeStages === 'Place order'
+                    buyTradeStages === 'Place Order'
                   ) {
                     setPreparingTx(true);
+                    let smartAccountSrc;
+                    let smartAccountDst;
+                    let walletDstId;
+                    let walletSrcId;
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
                     } else {
-                      res = await getTradeSigningData();
+                      const dstChainName = getNameChainId(
+                        (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.chainId ?? 137
+                        )?.toString(),
+                      );
+                      walletDstId = wallets.filter(
+                        x => x.network === dstChainName,
+                      )?.[0]?.id;
+                      const srcChainName = getNameChainId(
+                        (
+                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.chainId ?? 137
+                        )?.toString(),
+                      );
+                      walletSrcId = wallets.filter(
+                        x => x.network === srcChainName,
+                      )?.[0]?.id;
+                      smartAccountDst = await getSmartAccountAddress(
+                        dfnsToken,
+                        wallets.filter(x => x.network === dstChainName)?.[0]
+                          ?.id,
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.chainId ?? 137,
+                      );
+                      smartAccountSrc = await getSmartAccountAddress(
+                        dfnsToken,
+                        wallets.filter(x => x.network === srcChainName)?.[0]
+                          ?.id,
+                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          ?.chainId ?? 137,
+                      );
+                      res = await getTradeSigningData(
+                        smartAccountSrc,
+                        smartAccountDst,
+                      );
                     }
                     const signature = await confirmDLNTransaction(
                       tradeType,
@@ -1042,7 +1097,8 @@ const TradePage = ({route}) => {
                       false,
                       [],
                       dfnsToken,
-                      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                      walletSrcId,
+                      walletDstId,
                     );
                     setPreparingTx(false);
                     if (signature) {
@@ -1094,6 +1150,42 @@ const TradePage = ({route}) => {
                     } else {
                       let sameChainTx = [];
                       let txReceiptOfSameChain;
+                      let smartAccountSrc;
+                      let smartAccountDst;
+                      let walletDstId;
+                      let walletSrcId;
+                      const dstChainName = getNameChainId(
+                        (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.chainId ?? 137
+                        )?.toString(),
+                      );
+                      walletDstId = wallets.filter(
+                        x => x.network === dstChainName,
+                      )?.[0]?.id;
+                      const srcChainName = getNameChainId(
+                        (
+                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.chainId ?? 137
+                        )?.toString(),
+                      );
+                      walletSrcId = wallets.filter(
+                        x => x.network === srcChainName,
+                      )?.[0]?.id;
+                      smartAccountDst = await getSmartAccountAddress(
+                        dfnsToken,
+                        wallets.filter(x => x.network === dstChainName)?.[0]
+                          ?.id,
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.chainId ?? 137,
+                      );
+                      smartAccountSrc = await getSmartAccountAddress(
+                        dfnsToken,
+                        wallets.filter(x => x.network === srcChainName)?.[0]
+                          ?.id,
+                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          ?.chainId ?? 137,
+                      );
                       if (
                         tokensToSell?.[0]?.address?.toLowerCase() !==
                         getUSDCTokenOnChain(
@@ -1104,14 +1196,19 @@ const TradePage = ({route}) => {
                         txReceiptOfSameChain =
                           await executeSameChainSellForUSDC(
                             tokensToSell?.[0],
-                            evmInfo,
+                            smartAccountSrc,
                             value * Math.pow(10, tokensToSell?.[0]?.decimals),
                           );
-
+                        console.log(
+                          'stages starting.........sell',
+                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.chainId ?? 137,
+                          smartAccountSrc,
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.chainId ?? 137,
+                          smartAccountDst,
+                        );
                         if (txReceiptOfSameChain?.transactionRequest) {
-                          // await switchAuthCoreChain(
-                          //   parseInt(tokensToSell?.[0].chainId),
-                          // );
                           sameChainTx = await confirmDLNTransaction(
                             tradeType,
                             txReceiptOfSameChain,
@@ -1123,10 +1220,13 @@ const TradePage = ({route}) => {
                               txReceiptOfSameChain?.action?.fromToken?.address,
                             txReceiptOfSameChain?.tx ??
                               txReceiptOfSameChain?.transactionRequest,
-                            evmInfo?.smartAccount,
+                            smartAccountSrc,
                             evmInfo?.address,
                             true,
                             [],
+                            dfnsToken,
+                            walletSrcId,
+                            walletDstId,
                           );
                         }
                       }
@@ -1139,11 +1239,12 @@ const TradePage = ({route}) => {
                         const crossChainSwapTx =
                           await executeCrossChainSellForUSDC(
                             tokensToSell?.[0].chainId,
-                            evmInfo,
+                            smartAccountSrc,
                             sameChainTx.length > 0
                               ? txReceiptOfSameChain?.estimate?.toAmountMin
                               : value *
                                   Math.pow(10, tokensToSell?.[0]?.decimals),
+                            smartAccountDst,
                           );
                         if (crossChainSwapTx) {
                           const finalSignature = await confirmDLNTransaction(
@@ -1156,10 +1257,13 @@ const TradePage = ({route}) => {
                               crossChainSwapTx?.action?.fromToken?.address,
                             crossChainSwapTx?.tx ??
                               crossChainSwapTx?.transactionRequest,
-                            evmInfo?.smartAccount,
+                            smartAccountDst,
                             evmInfo?.address,
                             false,
                             sameChainTx,
+                            dfnsToken,
+                            walletSrcId,
+                            walletDstId,
                           );
 
                           if (finalSignature) {

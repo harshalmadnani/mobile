@@ -17,6 +17,8 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {Text} from '@rneui/themed';
 import {Icon} from 'react-native-elements';
@@ -42,16 +44,17 @@ const windowHeight = Dimensions.get('window').height;
 import {useDispatch} from 'react-redux';
 import {authActions} from '../../store/reducers/auth';
 import {autoLogin} from '../../store/actions/auth';
+import {Passkey} from 'react-native-passkey';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState('sadasdsadsdsdas@fma.com');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
-  const [stages, setStages] = useState('email');
+  const [stages, setStages] = useState('otp');
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -123,16 +126,21 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   };
   const checkOnEmail = async () => {
     //check whether it's a user
-    setLoading(true);
-    const status = await checkUserIsDFNSSignedUp(email);
-    if (status) {
-      setIsLogin(true);
-      dispatch(autoLogin(navigation, email));
-      setLoading(false);
+    const isSupported = Passkey.isSupported();
+    if (isSupported) {
+      setLoading(true);
+      const status = await checkUserIsDFNSSignedUp(email);
+      if (status) {
+        setIsLogin(true);
+        dispatch(autoLogin(navigation, email));
+        setLoading(false);
+      } else {
+        setStages('password');
+        setLoading(false);
+        setIsLogin(false);
+      }
     } else {
-      setStages('password');
-      setLoading(false);
-      setIsLogin(false);
+      console.log('false.........no passkeys');
     }
     // setStages('password');
   };
@@ -154,27 +162,27 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   };
   const confirmOtp = async () => {
     // setLoading(true);
-    const user = await verifyEmailOtp(otp.join(''), email);
-    console.log('status from signup.....', user);
-    if (user && !isLogin) {
-      try {
-        const response = await registerUsernameToDFNS(email);
-        if (response) {
-          await updateAccountInfoInRedux(email, response);
-          navigation.navigate('EnterName');
-        }
-        // const scw = await getSmartAccountAddress(
-        //   response?.wallets.filter(x => x.network === 'Polygon'),
-        // );
-        // console.log('redux setup signup', scw);
-        // if (response) {
-        //   navigation.navigate('EnterName');
-        // }
-      } catch (error) {
-        console.log('error on signup....', error);
-        setLoading(false);
+    // const user = await verifyEmailOtp(otp.join(''), email);
+    // if (user && !isLogin) {
+    try {
+      // console.log('status from signup.....', user);
+      const response = await registerUsernameToDFNS(email);
+      if (response) {
+        await updateAccountInfoInRedux(email, response);
+        navigation.navigate('EnterName');
       }
+      // const scw = await getSmartAccountAddress(
+      //   response?.wallets.filter(x => x.network === 'Polygon'),
+      // );
+      // console.log('redux setup signup', scw);
+      // if (response) {
+      //   navigation.navigate('EnterName');
+      // }
+    } catch (error) {
+      console.log('error on signup....', error);
+      setLoading(false);
     }
+    // }
   };
 
   const registerYourPassword = async () => {
@@ -312,75 +320,85 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const otpRefs = useRef([]);
 
   return (
-    <SafeAreaView style={styles.black}>
-      <ImageBackground
-        source={{
-          uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1715937669/hg82c0askzxxrond4yrz.png',
-        }}
-        style={{width: '100%', flex: 0, paddingVertical: '5%'}}>
-        <View style={{marginLeft: '2%'}}>
-          <MaterialIcons
-            onPress={() => onPressBack()}
-            name="arrow-back"
-            color={'white'}
-            size={24}
-          />
-          <Text style={styles.heading}>{getHeadingOnStages()}</Text>
-        </View>
-      </ImageBackground>
-      <View style={styles.mainContent}>
-        {stages === 'email' ? (
-          <View>
-            <Text style={styles.subHeading}>
-              Enter your email address to sign in
-            </Text>
-            <View style={{marginTop: 16}}>
-              <AuthTextInput
-                value={email}
-                onChange={x => setEmail(x.toLowerCase())}
-                placeholder="Your email"
-                width={'100%'}
-              />
-            </View>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      style={{padding: 8, flex: 1, backgroundColor: '#000'}}>
+      <SafeAreaView style={styles.black}>
+        <ImageBackground
+          source={{
+            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1715937669/hg82c0askzxxrond4yrz.png',
+          }}
+          style={{width: '100%', flex: 0, paddingVertical: '5%'}}>
+          <View style={{marginLeft: '2%'}}>
+            <MaterialIcons
+              onPress={() => onPressBack()}
+              name="arrow-back"
+              color={'white'}
+              size={24}
+            />
+            <Text style={styles.heading}>{getHeadingOnStages()}</Text>
           </View>
-        ) : (
-          !isLogin && signupFlow()
-        )}
-        <TouchableOpacity
-          style={[
-            styles.confirmButton,
-            {backgroundColor: getConfirmationOnInput() ? '#FFFFFF' : '#1C1C1C'},
-          ]}
-          onPress={async () => {
-            if (stages === 'email') {
-              await checkOnEmail();
-            } else if (stages === 'password') {
-              await registerYourPassword();
-            } else if (stages === 'otp') {
-              await confirmOtp();
-            }
-          }}>
-          {loading ? (
-            <ActivityIndicator />
+        </ImageBackground>
+        <View style={styles.mainContent}>
+          {stages === 'email' ? (
+            <View>
+              <Text style={styles.subHeading}>
+                Enter your email address to sign in
+              </Text>
+              <View style={{marginTop: 16}}>
+                <AuthTextInput
+                  value={email}
+                  onChange={x => setEmail(x.toLowerCase())}
+                  placeholder="Your email"
+                  width={'100%'}
+                />
+              </View>
+            </View>
           ) : (
-            <Text
-              style={[
-                styles.confirmButtonTitle,
-                {color: getConfirmationOnInput() ? '#0B0B0B' : '#4A4A4A'},
-              ]}>
-              {getButtonTitle()}
-            </Text>
+            !isLogin && signupFlow()
           )}
-        </TouchableOpacity>
-      </View>
-      <ImageBackground
-        source={{
-          uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1716199179/k5bchkiquf3uzdawmdf1.png',
-        }}
-        style={styles.backgroundImage}
-        resizeMode="contain"
-      />
-    </SafeAreaView>
+          <TouchableOpacity
+            style={[
+              styles.confirmButton,
+              {
+                backgroundColor: getConfirmationOnInput()
+                  ? '#FFFFFF'
+                  : '#1C1C1C',
+              },
+            ]}
+            onPress={async () => {
+              if (stages === 'email') {
+                await checkOnEmail();
+              } else if (stages === 'password') {
+                await registerYourPassword();
+              } else if (stages === 'otp') {
+                await confirmOtp();
+              }
+            }}>
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              <Text
+                style={[
+                  styles.confirmButtonTitle,
+                  {color: getConfirmationOnInput() ? '#0B0B0B' : '#4A4A4A'},
+                ]}>
+                {getButtonTitle()}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
+        <ImageBackground
+          source={{
+            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1716199179/k5bchkiquf3uzdawmdf1.png',
+          }}
+          style={styles.backgroundImage}
+          resizeMode="contain"
+        />
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -122,20 +122,26 @@ function InteractiveChart() {
     if (allScw?.length) {
       const scwWallets = allScw.map(x => x.address);
       ws.onopen = () => {
-        const payload = {
-          explorer: {wallets: scwWallets?.toString()},
-        };
-        ws.send(JSON.stringify(payload));
+        try {
+          const payload = {
+            explorer: {
+              wallets: `${scwWallets.toString()},0xB96789a3a46ad14330893aC9d1DD7DCBe12DE105`,
+              blockchains: `137,42161`,
+            },
+          };
+          ws.send(JSON.stringify(payload));
+        } catch (error) {
+          console.log('error on sending parsing.....', error);
+        }
       };
 
       ws.onmessage = event => {
-        // console.log('Chart Event', JSON.parse(event?.data));
         try {
           const parsedData = JSON.parse(event?.data);
           setcurrentPrice(parsedData?.analysis?.estimated_balance);
           setEstimatedHistory(parsedData?.analysis?.estimated_history);
         } catch (error) {
-          console.log('error on parsing.....', error);
+          console.log('error on parsing.....charts', error);
         }
       };
 
