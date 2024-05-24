@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {dfnsProviderClient} from './utils';
+import {dfnsProviderClient, iosStagingAppId} from './utils';
 import {DfnsWallet} from '@dfns/lib-viem';
 import {PaymasterMode, createSmartAccountClient} from '@biconomy/account';
 import {
@@ -12,6 +12,7 @@ import {
 import {arbitrum, base, mainnet, polygon} from 'viem/chains';
 import {toAccount} from 'viem/accounts';
 import {entryPointAbi} from './entryPointAbi';
+import { Platform } from 'react-native';
 
 export const getScwAddress = async (authToken, walletId) => {
   try {
@@ -22,7 +23,7 @@ export const getScwAddress = async (authToken, walletId) => {
     const res = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/wallets/scw`,
       {
-        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+        appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         walletId,
         authToken,
       },

@@ -1,6 +1,7 @@
-import {apiClient} from './utils';
+import {androidStagingAppId, apiClient, iosStagingAppId} from './utils';
 import axios from 'axios';
 import {PasskeysSigner} from '@dfns/sdk-react-native';
+import {Platform} from 'react-native';
 
 export const checkUserIsDFNSSignedUp = async email => {
   try {
@@ -51,7 +52,7 @@ export const registerUsernameToDFNS = async username => {
     const initRes = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
-        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+        appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
       },
       {
@@ -68,24 +69,24 @@ export const registerUsernameToDFNS = async username => {
     console.log('attestation==========');
 
     // // // Finish delegated registration
-    // const completeRes = await axios.post(
-    //   `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
-    //   {
-    //     appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
-    //     signedChallenge: {firstFactorCredential: attestation},
-    //     temporaryAuthenticationToken: challenge.temporaryAuthenticationToken,
-    //   },
-    //   {
-    //     headers: {
-    //       'content-type': 'application/json',
-    //     },
-    //   },
-    // );
-    // console.log(
-    //   'signup confirmed==========',
-    //   JSON.stringify(attestation, null, 2),
-    // );
-    // return completeRes.data;
+    const completeRes = await axios.post(
+      `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
+      {
+        appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
+        signedChallenge: {firstFactorCredential: attestation},
+        temporaryAuthenticationToken: challenge.temporaryAuthenticationToken,
+      },
+      {
+        headers: {
+          'content-type': 'application/json',
+        },
+      },
+    );
+    console.log(
+      'signup confirmed==========',
+      JSON.stringify(attestation, null, 2),
+    );
+    return completeRes.data;
   } catch (error) {
     console.log('error on registering..........', error);
   } finally {
@@ -100,7 +101,7 @@ export const getDfnsJwt = async username => {
     const res = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/login`,
       {
-        appId: 'ap-35g4l-pmp4e-8h8afn39lfupofch',
+        appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
       },
       {
