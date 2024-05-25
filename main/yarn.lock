@@ -1425,6 +1425,15 @@
     cross-fetch "3.1.6"
     uuid "9.0.0"
 
+"@dfns/sdk-browser@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@dfns/sdk-browser/-/sdk-browser-0.4.3.tgz#848543c2cbf8fc0b4278ec474504d415ee85f317"
+  integrity sha512-P7bSbeMAdJ3XTbKHj7LBq5rm89HjD0f/0onOpmY/oScmSCVFLljgF8aImb/u5q8T+LMLQVCkSV2WJJkJhPwCdw==
+  dependencies:
+    buffer "6.0.3"
+    cross-fetch "3.1.6"
+    uuid "9.0.0"
+
 "@dfns/sdk-react-native@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@dfns/sdk-react-native/-/sdk-react-native-0.4.3.tgz#40d6406984b3273f065586dc2fef66544def7753"
@@ -12753,10 +12762,10 @@ react-native-ratings@^8.1.0:
   dependencies:
     lodash "^4.17.15"
 
-react-native-reanimated@^3.8.0:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.8.1.tgz#45c13d4bedebef8df3d5a8756f25072de65960d7"
-  integrity sha512-EdM0vr3JEaNtqvstqESaPfOBy0gjYBkr1iEolWJ82Ax7io8y9OVUIphgsLKTB36CtR1XtmBw0RZVj7KArc7ZVA==
+react-native-reanimated@^3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.11.0.tgz#d4265d4e0232623f5958ed60e1686ca884fc3452"
+  integrity sha512-BNw/XDgUfs8UhfY1X6IniU8kWpnotWGyt8qmQviaHisTi5lvwnaOdXQKfN1KGONx6ekdFRHRP5EFwLi0UajwKA==
   dependencies:
     "@babel/plugin-transform-arrow-functions" "^7.0.0-0"
     "@babel/plugin-transform-nullish-coalescing-operator" "^7.0.0-0"
