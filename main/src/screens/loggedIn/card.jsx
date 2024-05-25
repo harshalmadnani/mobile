@@ -16,20 +16,20 @@ import {
 
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
-import {
-  SpritzApiClient,
-  Environment,
-} from '../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
+// import {
+//   SpritzApiClient,
+//   Environment,
+// } from '../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
 
-import {
-  BankAccountType,
-  BankAccountSubType,
-  VirtualCardType,
-} from '../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
+// import {
+//   BankAccountType,
+//   BankAccountSubType,
+//   VirtualCardType,
+// } from '../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {SpritzCard} from '@spritz-finance/react-native-secure-elements';
+// import {SpritzCard} from '@spritz-finance/react-native-secure-elements';
 
 import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
 import CardTransactions from './card/transaction';
@@ -67,10 +67,10 @@ const Card = ({navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [showExternalLinkModal, setShowExternalLinkModal] = useState('');
 
-  const client = SpritzApiClient.initialize({
-    environment: Environment.Production,
-    integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
-  });
+  // const client = SpritzApiClient.initialize({
+  //   environment: Environment.Production,
+  //   integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+  // });
 
   // particleAuth.init(
   //   particleAuth.ChainInfo.PolygonMainnet,
@@ -189,14 +189,14 @@ const Card = ({navigation}) => {
   }
 
   async function createVirtualCard() {
-    try {
-      const virtualCard = await client.virtualCard.create(
-        VirtualCardType.USVirtualDebitCard,
-      );
-      setVirtualCardRenderSecret(virtualCard.renderSecret);
-    } catch (e) {
-      console.log(e);
-    }
+    // try {
+    //   const virtualCard = await client.virtualCard.create(
+    //     VirtualCardType.USVirtualDebitCard,
+    //   );
+    //   setVirtualCardRenderSecret(virtualCard.renderSecret);
+    // } catch (e) {
+    //   console.log(e);
+    // }
   }
 
   async function fetchRecentPayments() {
@@ -324,23 +324,6 @@ const Card = ({navigation}) => {
         colors={['#00D1FF', '#4E5FFF']}
         style={styles.cardContainer}>
         {/* <View style={styles.cardContainer}> */}
-        <SpritzCard
-          environment={Environment.Staging}
-          apiKey={apiKey}
-          renderSecret={virtualCardRenderSecret}
-          background={false}
-          description={false}
-          // color={'red'}
-          // apiKey={'ak_YmNmOTg5ZjMtMmQ5NS00ODBkLThiMmUtY2MxYmYwZWM3NzMw'}
-          // renderSecret={
-          //   'U2FsdGVkX1+Y2OTwL309Ey4HUvP+nIChHiFTjVKt0FHZeQNZ/tOHcfotlSUB0oG62ja5cVrte6liweze1Y+BBPLUOtjlS6Dah6oxWXa0XQhBPtcto2mZiJduDaGFbPLxj0AHTZLUexTAZ967swgH24123W7CBuKjg032ovHrQpF31j5+xqsaqC/OTNjqkjw+'
-          // }
-          onCopyText={text => {
-            Clipboard.setString(text);
-            Snackbar.show({text: 'Copied to clipboard'});
-          }}
-          onDetailsLoaded={() => console.log('Card details loaded')}
-        />
         <View
           style={{
             position: 'absolute',
@@ -350,7 +333,6 @@ const Card = ({navigation}) => {
           }}>
           <LogoSvg />
         </View>
-
         <View
           style={{
             position: 'absolute',
@@ -360,7 +342,6 @@ const Card = ({navigation}) => {
           }}>
           <ChipSvg />
         </View>
-
         <View
           style={{
             position: 'absolute',
