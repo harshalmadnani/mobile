@@ -1,27 +1,11 @@
+const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
+
 /**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
  *
- * @format
+ * @type {import('metro-config').MetroConfig}
  */
-const {
-  createSentryMetroSerializer,
-} = require('@sentry/react-native/dist/js/tools/sentryMetroSerializer');
-module.exports = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
+const config = {};
 
-  resolver: {
-    extraNodeModules: require('node-libs-react-native'),
-  },
-
-  serializer: {
-    customSerializer: createSentryMetroSerializer(),
-  },
-};
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);
