@@ -1,4 +1,5 @@
 import {androidStagingAppId, apiClient, iosStagingAppId} from './utils';
+import {XadePasskeysSigner} from './XadePassKeySigner';
 import axios from 'axios';
 import {PasskeysSigner} from '@dfns/sdk-react-native';
 import {BrowserKeySigner, WebAuthnSigner} from '@dfns/sdk-browser';
@@ -67,7 +68,7 @@ export const registerUsernameToDFNS = async username => {
     // if (challenge.allowCredentials.key.length === 0 || keyPair === undefined) {
     //   console.log('The user does not have a key credential');
     // }
-    const passkeys = new PasskeysSigner();
+    const passkeys = new XadePasskeysSigner();
     // const passkeys = new WebAuthnSigner();
     console.log('pass key initialized........', passkeys);
     const attestation = await passkeys.create(challenge);

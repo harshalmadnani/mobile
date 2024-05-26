@@ -166,7 +166,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
     // const user = await verifyEmailOtp(otp.join(''), email);
     // if (user && !isLogin) {
     try {
-      const response = await registerUsernameToDFNS('emadddssaasidssdldsd@fdf.com');
+      const response = await registerUsernameToDFNS(
+        'emadffddddssaascdfgdsdfdfdidxsdssssdldsd@fdf.com',
+      );
       if (response) {
         await updateAccountInfoInRedux(email, response);
         navigation.navigate('EnterName');
