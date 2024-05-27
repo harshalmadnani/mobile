@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parser: 'babel-eslint',
-  extends: '@react-native',
+  extends: 'airbnb',
   rules: {
     indent: ['warn', 4],
     'react/jsx-indent': ['warn', 4, {checkAttributes: true}],

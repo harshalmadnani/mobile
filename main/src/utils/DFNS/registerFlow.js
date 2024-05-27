@@ -1,8 +1,6 @@
 import {androidStagingAppId, apiClient, iosStagingAppId} from './utils';
-import {XadePasskeysSigner} from './XadePassKeySigner';
 import axios from 'axios';
 import {PasskeysSigner} from '@dfns/sdk-react-native';
-import {BrowserKeySigner, WebAuthnSigner} from '@dfns/sdk-browser';
 import {Platform} from 'react-native';
 
 export const checkUserIsDFNSSignedUp = async email => {
@@ -50,7 +48,7 @@ export const registerUsernameToDFNS = async username => {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
-    console.log('register started..........', Platform.OS === 'ios');
+    console.log('register started..........');
     const initRes = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
@@ -65,12 +63,8 @@ export const registerUsernameToDFNS = async username => {
     );
     const challenge = initRes.data;
     console.log('challenge api call done.....', challenge);
-    // if (challenge.allowCredentials.key.length === 0 || keyPair === undefined) {
-    //   console.log('The user does not have a key credential');
-    // }
-    const passkeys = new XadePasskeysSigner();
-    // const passkeys = new WebAuthnSigner();
-    console.log('pass key initialized........', passkeys);
+    const passkeys = new PasskeysSigner();
+    console.log('pass key initialized........');
     const attestation = await passkeys.create(challenge);
     console.log('attestation==========');
 

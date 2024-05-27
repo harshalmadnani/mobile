@@ -54,7 +54,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
-  const [stages, setStages] = useState('otp');
+  const [stages, setStages] = useState('email');
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -127,7 +127,6 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const checkOnEmail = async () => {
     //check whether it's a user
     const isSupported = Passkey.isSupported();
-    console.log('is supported', isSupported);
     if (isSupported) {
       setLoading(true);
       const status = await checkUserIsDFNSSignedUp(email);
@@ -163,28 +162,26 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   };
   const confirmOtp = async () => {
     setLoading(true);
-    // const user = await verifyEmailOtp(otp.join(''), email);
-    // if (user && !isLogin) {
-    try {
-      const response = await registerUsernameToDFNS(
-        'emadffssddddddssscvddvsfaasddcxddssdssscdsscjdfgdsdddfdfdiddxsdsssssdldsd@fdf.com',
-      );
-      if (response) {
-        await updateAccountInfoInRedux(email, response);
-        navigation.navigate('EnterName');
+    const user = await verifyEmailOtp(otp.join(''), email);
+    if (user && !isLogin) {
+      try {
+        const response = await registerUsernameToDFNS(email);
+        if (response) {
+          await updateAccountInfoInRedux(email, response);
+          navigation.navigate('EnterName');
+        }
+        // const scw = await getSmartAccountAddress(
+        //   response?.wallets.filter(x => x.network === 'Polygon'),
+        // );
+        // console.log('redux setup signup', scw);
+        // if (response) {
+        //   navigation.navigate('EnterName');
+        // }
+      } catch (error) {
+        console.log('error on signup....', error);
+        setLoading(false);
       }
-      // const scw = await getSmartAccountAddress(
-      //   response?.wallets.filter(x => x.network === 'Polygon'),
-      // );
-      // console.log('redux setup signup', scw);
-      // if (response) {
-      //   navigation.navigate('EnterName');
-      // }
-    } catch (error) {
-      console.log('error on signup....', error);
-      setLoading(false);
     }
-    // }
   };
 
   const registerYourPassword = async () => {
