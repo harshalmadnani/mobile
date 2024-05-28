@@ -48,7 +48,7 @@ export const registerUsernameToDFNS = async username => {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
-    console.log('register started..........', username);
+    console.log('register started..........1', username);
     const initRes = await axios.post(
       `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
@@ -62,7 +62,7 @@ export const registerUsernameToDFNS = async username => {
       },
     );
     const challenge = initRes.data;
-    console.log('challenge api call done.....', challenge);
+    console.log('challenge api call done.....1', challenge);
     const passkeys = new PasskeysSigner();
     console.log('pass key initialized........');
     const attestation = await passkeys.create(challenge);

@@ -164,6 +164,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
     setLoading(true);
     const user = await verifyEmailOtp(otp.join(''), email);
     if (user && !isLogin) {
+      console.log('error on final register');
       try {
         const response = await registerUsernameToDFNS(email);
         if (response) {
