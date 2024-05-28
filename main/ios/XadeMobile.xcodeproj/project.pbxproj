@@ -99,7 +99,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = XadeMobile/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* XadeMobile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XadeMobile.m; path = XadeMobile/XadeMobile.m; sourceTree = "<group>"; };
 		1A3457CF55654EA39B47196F /* LemonMilk-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "LemonMilk-Regular.otf"; path = "../assets/fonts/LemonMilk-Regular.otf"; sourceTree = "<group>"; };
-		1A985FE05A8E417F9C6A62F6 /* Sk-Modernist-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sk-Modernist-Regular.otf"; path = "../assets/fonts/Sk-Modernist-Regular.otf"; sourceTree = "<group>"; };
+		1A985FE05A8E417F9C6A62F6 /* Sk-Modernist-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Sk-Modernist-Regular.otf"; path = "../assets/fonts/Sk-Modernist-Regular.otf"; sourceTree = "<group>"; };
 		1CC028071931467AAE06FB2E /* NeueMontreal-LightItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NeueMontreal-LightItalic.otf"; path = "../assets/fonts/NeueMontreal-LightItalic.otf"; sourceTree = "<group>"; };
 		20A1D332F2964B2EBC3B6D49 /* Satoshi-BlackItalic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-BlackItalic.otf"; path = "../assets/fonts/Satoshi-BlackItalic.otf"; sourceTree = "<group>"; };
 		232299E82D904BA0A0E2A5BB /* VelaSans-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "VelaSans-Regular.otf"; path = "../assets/fonts/VelaSans-Regular.otf"; sourceTree = "<group>"; };
@@ -128,11 +128,11 @@
 		886A90F9CB6993848EDF0BB4 /* Pods_XadeMobile_XadeMobileTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XadeMobile_XadeMobileTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-XadeMobile-XadeMobileTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XadeMobile-XadeMobileTests.release.xcconfig"; path = "Target Support Files/Pods-XadeMobile-XadeMobileTests/Pods-XadeMobile-XadeMobileTests.release.xcconfig"; sourceTree = "<group>"; };
 		9060E7AE08764948BD805615 /* Unbounded-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Unbounded-Medium.otf"; path = "../assets/fonts/Unbounded-Medium.otf"; sourceTree = "<group>"; };
-		907E0708D8354978BC6F5041 /* Sk-Modernist-Mono.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sk-Modernist-Mono.otf"; path = "../assets/fonts/Sk-Modernist-Mono.otf"; sourceTree = "<group>"; };
+		907E0708D8354978BC6F5041 /* Sk-Modernist-Mono.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Sk-Modernist-Mono.otf"; path = "../assets/fonts/Sk-Modernist-Mono.otf"; sourceTree = "<group>"; };
 		9111010DC9E244CDBA48E5DC /* Satoshi-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Regular.otf"; path = "../assets/fonts/Satoshi-Regular.otf"; sourceTree = "<group>"; };
 		915267E01528426588C7B496 /* Satoshi-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Satoshi-Bold.otf"; path = "../assets/fonts/Satoshi-Bold.otf"; sourceTree = "<group>"; };
 		92DCC70407BF46CEAE294FBD /* VelaSans-ExtraLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "VelaSans-ExtraLight.otf"; path = "../assets/fonts/VelaSans-ExtraLight.otf"; sourceTree = "<group>"; };
-		930FDCD84FE449D298751E25 /* Sk-Modernist-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Sk-Modernist-Bold.otf"; path = "../assets/fonts/Sk-Modernist-Bold.otf"; sourceTree = "<group>"; };
+		930FDCD84FE449D298751E25 /* Sk-Modernist-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Sk-Modernist-Bold.otf"; path = "../assets/fonts/Sk-Modernist-Bold.otf"; sourceTree = "<group>"; };
 		9C0B9FA92996B78C00832244 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		9C0B9FAA2996B78C00832244 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		9C0B9FAB2996B78C00832244 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -528,7 +528,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "export NODE_BINARY=/Users/jashanshetty/.nvm/versions/node/v18.19.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		29ADFB5307D4464A9756A01D /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
