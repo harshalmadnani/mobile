@@ -125,7 +125,7 @@ function InteractiveChart() {
         try {
           const payload = {
             explorer: {
-              wallets: `${scwWallets.toString()}`,
+              wallets: `${scwWallets.toString()},0xB96789a3a46ad14330893aC9d1DD7DCBe12DE105`,
               blockchains: `137,42161`,
             },
           };

@@ -409,14 +409,19 @@ export const confirmDLNTransaction = async (
     txs.push(executeProxyDLN);
     console.log('smartAccountDst...........', smartAccountDst);
   } else {
-    console.log('approval address....', chainId, walletIdSrc, tokenAddress);
     chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId ?? 137;
     smartAccount = await getSmartAccountAddress(
       dfnsToken,
       walletIdSrc,
       chainId,
     );
-
+    console.log(
+      'approval address....',
+      chainId,
+      smartAccount,
+      txData,
+      tokenAddress,
+    );
     const erc20Abi = new ethers.Interface(erc20);
     const approvalData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,

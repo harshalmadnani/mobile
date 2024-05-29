@@ -51,7 +51,7 @@ const Portfolio = ({navigation}) => {
           type: 'wallet',
           authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
           payload: {
-            wallets: `${scwWallets.toString()}`,
+            wallets: `${scwWallets.toString()},0xB96789a3a46ad14330893aC9d1DD7DCBe12DE105`,
             type: 'portfolio',
             interval: 2,
             unlistedAssets: false,

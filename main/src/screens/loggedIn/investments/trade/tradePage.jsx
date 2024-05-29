@@ -1084,12 +1084,6 @@ const TradePage = ({route}) => {
                         smartAccountDst,
                       );
                     }
-                    console.log(
-                      'trade start...',
-                      walletSrcId,
-                      walletDstId,
-                      tradeType,
-                    );
                     const signature = await confirmDLNTransaction(
                       tradeType,
                       res,
@@ -1103,8 +1097,8 @@ const TradePage = ({route}) => {
                       false,
                       [],
                       dfnsToken,
-                      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-                      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                      walletSrcId,
+                      walletDstId,
                     );
                     setPreparingTx(false);
                     if (signature) {
