@@ -54,7 +54,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
-  const [stages, setStages] = useState('otp');
+  const [stages, setStages] = useState('email');
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
