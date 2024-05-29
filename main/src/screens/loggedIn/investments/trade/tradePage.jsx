@@ -1103,8 +1103,10 @@ const TradePage = ({route}) => {
                       false,
                       [],
                       dfnsToken,
-                      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-                      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                      walletSrcId ??
+                        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                      walletDstId ??
+                        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
                     );
                     setPreparingTx(false);
                     if (signature) {
