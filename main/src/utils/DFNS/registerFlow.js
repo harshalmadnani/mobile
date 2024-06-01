@@ -48,9 +48,13 @@ export const registerUsernameToDFNS = async username => {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
-    console.log('register started..........1', username);
+    console.log(
+      'register started..........1',
+      'http://api-dfns.xade.finance',
+      username,
+    );
     const initRes = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/register/init`,
+      `http://api-dfns.xade.finance/register/init`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
@@ -70,7 +74,7 @@ export const registerUsernameToDFNS = async username => {
 
     // // // Finish delegated registration
     const completeRes = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
+      `http://api-dfns.xade.finance/register/complete`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         signedChallenge: {firstFactorCredential: attestation},
@@ -99,7 +103,7 @@ export const getDfnsJwt = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const res = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/login`,
+      `http://api-dfns.xade.finance/login`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,

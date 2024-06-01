@@ -46,6 +46,7 @@ const Portfolio = ({navigation}) => {
     );
     if (allScw?.length) {
       const scwWallets = allScw.map(x => x.address);
+      console.log('portfolio all scw', scwWallets);
       ws.onopen = () => {
         const payload = {
           type: 'wallet',

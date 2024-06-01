@@ -121,12 +121,13 @@ function InteractiveChart() {
     );
     if (allScw?.length) {
       const scwWallets = allScw.map(x => x.address);
+      console.log('charts all scw', scwWallets);
       ws.onopen = () => {
         try {
           const payload = {
             explorer: {
               wallets: `${scwWallets.toString()}`,
-              blockchains: `137,42161`,
+              // blockchains: `137,42161`,
             },
           };
           ws.send(JSON.stringify(payload));

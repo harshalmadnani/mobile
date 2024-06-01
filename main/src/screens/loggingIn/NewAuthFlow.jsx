@@ -37,7 +37,7 @@ import {
   getDfnsJwt,
   registerUsernameToDFNS,
 } from '../../utils/DFNS/registerFlow';
-import {getScwAddress} from '../../utils/DFNS/walletFLow.js';
+import {getAllScwAddress, getScwAddress} from '../../utils/DFNS/walletFLow.js';
 import AuthTextInput from '../../component/Input/AuthTextInputs';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
@@ -147,10 +147,8 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const updateAccountInfoInRedux = async (email, response) => {
     try {
       const token = await getDfnsJwt(email);
-      const scw = await getScwAddress(
-        token,
-        response?.wallets.filter(x => x.network === 'Polygon')?.[0]?.id,
-      );
+      // const scw = await getScwAddress(token, response?.wallets);
+      const scw = await getAllScwAddress(token, response?.wallets);
       console.log('redux update.....', scw, response?.wallets, email);
       dispatch(authActions.setEmail(email));
       dispatch(authActions.setDfnsToken(token));

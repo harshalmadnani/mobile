@@ -10,7 +10,7 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:xade.finance?mode=developer</string>
+		<string>webcredentials:xade.finance</string>
 	</array>
 </dict>
 </plist>

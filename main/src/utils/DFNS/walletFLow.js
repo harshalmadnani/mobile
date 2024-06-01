@@ -12,16 +12,54 @@ import {
 import {arbitrum, base, mainnet, polygon} from 'viem/chains';
 import {toAccount} from 'viem/accounts';
 import {entryPointAbi} from './entryPointAbi';
-import { Platform } from 'react-native';
-
+import {Platform} from 'react-native';
+export const getPaymasterKeyOnName = chain => {
+  switch (chain) {
+    case 'Polygon':
+      return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
+    case 'Ethereum':
+      return 'ulygsZ3qd.607cfa98-67a7-4dce-99f0-f9b7552b70d6';
+    case 'Base':
+      return 'PsoPGd6TZ.7cfbc00c-7cee-4bf8-815c-2cab0db4a8e1';
+    case 'ArbitrumOne':
+      return '3OjDX_U5v.7a176ce5-e0bb-4906-8186-729255e8ef7c';
+    default:
+      return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
+  }
+};
+export const getIdOnChain = chain => {
+  switch (chain) {
+    case 'Polygon':
+      return '137';
+    case 'Ethereum':
+      return '1';
+    case 'ArbitrumOne':
+      return '42161';
+    case 'Base':
+      return '8453';
+  }
+};
+export const getProviderOnName = chain => {
+  switch (chain) {
+    case 'Polygon':
+      return polygon;
+    case 'Ethereum':
+      return mainnet;
+    case 'Base':
+      return base;
+    case 'ArbitrumOne':
+      return arbitrum;
+    default:
+      return polygon;
+  }
+};
 export const getScwAddress = async (authToken, walletId) => {
   try {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
-
     const res = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/wallets/scw`,
+      `http://api-dfns.xade.finance/wallets/scw`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         walletId,
@@ -40,6 +78,39 @@ export const getScwAddress = async (authToken, walletId) => {
     console.log('error on registering..........', error);
   } finally {
   }
+};
+export const getAllScwAddress = async (authToken, walletIds) => {
+  const result = await Promise.all(
+    walletIds.map(async (x, i) => {
+      let client = dfnsProviderClient(authToken);
+      let dfnsWWalletSigner = await DfnsWallet.init({
+        walletId: x?.id,
+        dfnsClient: client,
+      });
+      const walletClient = createWalletClient({
+        account: toAccount(dfnsWWalletSigner),
+        chain: getProviderOnName(x?.network),
+        transport: http(),
+      });
+      const smartAccountClient = await createSmartAccountClient({
+        signer: walletClient,
+        biconomyPaymasterApiKey: getPaymasterKeyOnName(x?.network),
+        bundlerUrl: `https://bundler.biconomy.io/api/v2/${getIdOnChain(
+          x?.network,
+        )}/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f444`,
+      });
+      console.log('smart account client created =====', smartAccountClient);
+
+      const scwAddress = await smartAccountClient.getAccountAddress();
+      console.log('smart account address created =====', scwAddress);
+      return {
+        address: scwAddress,
+        chainId: getIdOnChain(x?.network),
+      };
+    }),
+  );
+  console.log('smart account address all........', result);
+  return result;
 };
 export const getChainOnId = chainId => {
   switch (chainId) {

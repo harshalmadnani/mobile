@@ -32,7 +32,7 @@ const Name = ({navigation, route}) => {
     // const email = global.connectAccount.phoneEmail;
     // const uuid = global.connectAccount.uiud;
 
-    console.log(wallets, scw, email);
+    console.log('register....', wallets, scw, email);
     try {
       await axios.post(
         'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers',
@@ -59,7 +59,7 @@ const Name = ({navigation, route}) => {
       await appendToGalaxeList(email);
       navigation.push('Portfolio');
     } catch (err) {
-      console.log(err);
+      console.log('register final start', wallets, scw, email, err);
     }
   };
   return (
