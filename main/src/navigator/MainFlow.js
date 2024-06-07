@@ -103,6 +103,40 @@ function MainFlowStack() {
             tabBarIcon: ({focused, color, size}) =>
               focused ? (
                 <FastImage
+                  source={require(`./navbar-images/savings-selected.png`)}
+                  style={{
+                    color: '#9D9D9D',
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              ) : (
+                <FastImage
+                  source={require(`./navbar-images/savings.png`)}
+                  style={{
+                    color: '#9D9D9D',
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              ),
+          }}
+          name="Spending"
+          component={Spending}
+        />
+        <Tab.Screen
+          listeners={() => ({
+            tabPress: () => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+            },
+          })}
+          options={{
+            tabBarLabel: 'Home',
+            tabBarIcon: ({focused, color, size}) =>
+              focused ? (
+                <FastImage
                   source={require(`./navbar-images/profile-selected.png`)}
                   style={{
                     color: '#9D9D9D',

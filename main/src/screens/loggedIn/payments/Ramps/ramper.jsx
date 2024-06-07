@@ -21,6 +21,7 @@ import {
   getQuoteForCefiOnRamps,
 } from '../../../../utils/OnrampApis';
 import CrossChainModal from '../../../../component/CrossChainModal/index';
+import CouponModal from '../../../../component/CouponModal/index';
 import {
   useAccount,
   useSendTransaction,
@@ -50,6 +51,7 @@ const Ramper = ({navigation}) => {
   const [fiat, setFiat] = useState([]);
   const [selectedId, setSelectedId] = useState('wallet');
   const [modalVisible, setModalVisible] = useState(false);
+  const [couponModal, setCouponModal] = useState(false);
   const [buttonTitle, setButtonTitle] = useState('Continue');
   const dispatch = useDispatch();
   const handleTextChange = text => {
@@ -88,17 +90,32 @@ const Ramper = ({navigation}) => {
     // setModalVisible(true);
     // dispatch(depositAction.setWalletConnectModal(true));
   };
+  const onCouponFlow = async () => {
+    // navigation.push('QRScreen');
+    // console.log('fired');
+    // dispatch(depositAction.setTxLoading(false));
+    setCouponModal(true);
+    // dispatch(depositAction.setWalletConnectModal(true));
+  };
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
       const {fetchedPaymentMethods, fetchedfiat} =
         await fetchOnRampPaymentMethodsBasedOnIP();
       // Optionally, add a custom payment method
-      fetchedPaymentMethods.push({
-        id: 'wallet',
-        name: 'Wallet',
-        image:
-          'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image
-      });
+      fetchedPaymentMethods.push(
+        {
+          id: 'wallet',
+          name: 'Wallet',
+          image:
+            'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image
+        },
+        {
+          id: 'coupon',
+          name: 'Coupon',
+          image:
+            'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image},
+        },
+      );
       setFiat(fetchedfiat);
       setPaymentMethods(fetchedPaymentMethods);
     } catch (error) {
@@ -401,6 +418,8 @@ const Ramper = ({navigation}) => {
               if (buttonTitle.toLocaleLowerCase() === 'continue') {
                 selectedId === 'wallet'
                   ? onWalletConnectOpen()
+                  : selectedId === 'coupon'
+                  ? await onCouponFlow()
                   : await onRampContinue();
               }
             }} // Open modal on press
@@ -431,6 +450,11 @@ const Ramper = ({navigation}) => {
         <CrossChainModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
+          value={value}
+        />
+        <CouponModal
+          modalVisible={couponModal}
+          setModalVisible={setCouponModal}
           value={value}
         />
       </SafeAreaView>

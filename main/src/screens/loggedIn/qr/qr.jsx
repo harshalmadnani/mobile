@@ -30,8 +30,10 @@ function QRCode() {
   //   info = global.connectAccount.name;
   // }
   const name = useSelector(x => x.auth.name);
-  const scw = useSelector(x => x.auth.scw).filter(x => x.chainId === 137)?.[0]
+  const scw = useSelector(x => x.auth.scw).filter(x => x.chainId === '137')?.[0]
     ?.address;
+
+  console.log('address....', scw?.length);
   const qrUrl = String(scw);
 
   return (

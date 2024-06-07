@@ -1,40 +1,49 @@
-import React, {Component, useEffect, useState,useCallback} from 'react';
+import React, {Component, useEffect, useState, useCallback} from 'react';
 import {StyleSheet, View, Text, Image, TextInput} from 'react-native';
 
-const AuthTextInput = React.memo(({placeholder, width, value, onChange, isPassword}) => {
-  const [onFocus, setOnFocus] = useState(false);
+const AuthTextInput = React.memo(
+  ({placeholder, width, value, onChange, isPassword, backgroundColor}) => {
+    const [onFocus, setOnFocus] = useState(false);
 
-  const handleChange = useCallback((text) => {
-    if (placeholder.toLowerCase() === 'email') {
-      onChange(text.toLowerCase());
-    } else {
-      onChange(text);
-    }
-  }, [onChange, placeholder]);
+    const handleChange = useCallback(
+      text => {
+        if (placeholder.toLowerCase() === 'email') {
+          onChange(text.toLowerCase());
+        } else {
+          onChange(text);
+        }
+      },
+      [onChange, placeholder],
+    );
 
-  return (
-    <View
-      style={[
-        styles.inputWrapper,
-        {borderWidth: 1, borderColor: onFocus ? 'white' : '#1C1C1C'},
-        {width},
-      ]}>
-      <Text style={styles.inputWrapperLabelText}>
-        {value?.length > 0 ? placeholder : ''}
-      </Text>
-      <TextInput
-        value={value}
-        onChangeText={handleChange}
-        onFocus={() => setOnFocus(true)}
-        onBlur={() => setOnFocus(false)}
-        style={[styles.input]}
-        placeholder={placeholder}
-        placeholderTextColor={'#8B8B8B'}
-        secureTextEntry={isPassword}
-      />
-    </View>
-  );
-});
+    return (
+      <View
+        style={[
+          styles.inputWrapper,
+          {
+            borderWidth: 1,
+            borderColor: onFocus ? 'white' : '#1C1C1C',
+            backgroundColor: backgroundColor || '#1C1C1C',
+          },
+          {width},
+        ]}>
+        <Text style={styles.inputWrapperLabelText}>
+          {value?.length > 0 ? placeholder : ''}
+        </Text>
+        <TextInput
+          value={value}
+          onChangeText={handleChange}
+          onFocus={() => setOnFocus(true)}
+          onBlur={() => setOnFocus(false)}
+          style={[styles.input]}
+          placeholder={placeholder}
+          placeholderTextColor={'#8B8B8B'}
+          secureTextEntry={isPassword}
+        />
+      </View>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   inputWrapper: {
