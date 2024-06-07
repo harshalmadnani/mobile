@@ -102,20 +102,12 @@ const Ramper = ({navigation}) => {
       const {fetchedPaymentMethods, fetchedfiat} =
         await fetchOnRampPaymentMethodsBasedOnIP();
       // Optionally, add a custom payment method
-      fetchedPaymentMethods.push(
-        {
-          id: 'wallet',
-          name: 'Wallet',
-          image:
-            'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image
-        },
-        {
-          id: 'coupon',
-          name: 'Coupon',
-          image:
-            'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image},
-        },
-      );
+      fetchedPaymentMethods.push({
+        id: 'wallet',
+        name: 'Wallet',
+        image:
+          'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://walletconnect.com&size=64', // Ensure you have permission to use this image
+      });
       setFiat(fetchedfiat);
       setPaymentMethods(fetchedPaymentMethods);
     } catch (error) {
