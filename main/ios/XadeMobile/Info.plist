@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSFaceIDUsageDescription</key>
-	<string>We use Face ID for authenticating logins.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -111,6 +109,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We use the camera to scan QRs for public addresses</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>We use Face ID for authenticating logins.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string />
 	<key>NSPhotoLibraryUsageDescription</key>

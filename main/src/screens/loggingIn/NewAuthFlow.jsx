@@ -127,6 +127,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const checkOnEmail = async () => {
     //check whether it's a user
     const isSupported = Passkey.isSupported();
+    console.log('is supported', isSupported);
     if (isSupported) {
       setLoading(true);
       const status = await checkUserIsDFNSSignedUp(email);
@@ -180,9 +181,20 @@ const NewAuthLoginFLow = ({navigation, route}) => {
         console.log('error on signup....', error);
         setLoading(false);
       }
+      // const scw = await getSmartAccountAddress(
+      //   response?.wallets.filter(x => x.network === 'Polygon'),
+      // );
+      // console.log('redux setup signup', scw);
+      // if (response) {
+      //   navigation.navigate('EnterName');
+      // }
+      // } catch (error) {
+      //   console.log('error on signup....', error);
+      //   setLoading(false);
+      // }
+      // }
     }
   };
-
   const registerYourPassword = async () => {
     setLoading(true);
     const status = await signInWithEmailOtp(email, password);
