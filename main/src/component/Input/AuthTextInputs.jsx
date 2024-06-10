@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
+    paddingBottom: 12,
   },
   inputWrapperLabelText: {
     // font-family: Sk-Modernist;
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19.2,
     color: '#FFFFFF',
+    // padding: 12,
     // text-align: left;
   },
 });

@@ -1,4 +1,5 @@
-import {DfnsApiClient, DfnsDelegatedApiClient} from '@dfns/sdk';
+// import {DfnsApiClient, DfnsDelegatedApiClient} from '@dfns/sdk';
+import {DfnsApiClient} from '@dfns/sdk';
 import {PasskeysSigner} from '@dfns/sdk-react-native';
 import {Platform} from 'react-native';
 

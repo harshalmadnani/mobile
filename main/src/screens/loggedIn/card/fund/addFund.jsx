@@ -13,22 +13,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Icon} from 'react-native-elements';
 import {Picker} from '@react-native-picker/picker';
-import {
-  BankAccountType,
-  BankAccountSubType,
-  PaymentNetwork,
-} from '@spritz-finance/api-client';
-import '@ethersproject/shims';
+// import {
+//   BankAccountType,
+//   BankAccountSubType,
+//   PaymentNetwork,
+// } from '@spritz-finance/api-client';
+// import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
-import {
-  SpritzApiClient,
-  Environment,
-} from '../../../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
+// import {
+//   SpritzApiClient,
+//   Environment,
+// } from '../../../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
 import Snackbar from 'react-native-snackbar';
 import LinearGradient from 'react-native-linear-gradient';
 import {paymentsLoad} from '../../payments/utils';
-import SpritzAbi from './Spritz';
+// import SpritzAbi from './Spritz';
 // import { ethers } from 'ethers';
 // import Web3 from 'web3';
 
@@ -39,11 +39,11 @@ import SpritzAbi from './Spritz';
 // const web3 = new Web3(new Web3.providers.HttpProvider(EthereumNodeUrl));
 
 const AddFund = ({navigation}) => {
-  const client = SpritzApiClient.initialize({
-    environment: Environment.Production,
-    // apiKey: SPRITZ_API_KEY,
-    integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
-  });
+  // const client = SpritzApiClient.initialize({
+  //   environment: Environment.Production,
+  //   // apiKey: SPRITZ_API_KEY,
+  //   integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+  // });
   const [loading, setLoading] = useState(false);
   const [bankAccountList, setBankAccountList] = useState([]);
   const [selectedBankAccount, setSelectedBankAccount] = useState(null);
@@ -69,7 +69,7 @@ const AddFund = ({navigation}) => {
       const paymentRequestData = {
         amount: parseInt(selectedAmount),
         accountId: selectedBankAccount,
-        network: PaymentNetwork.Polygon,
+        // network: PaymentNetwork.Polygon,
       };
 
       console.log(paymentRequestData);

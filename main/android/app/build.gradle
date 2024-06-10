@@ -1,9 +1,11 @@
 apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 apply plugin: "kotlin-android"
-apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-parcelize"
+// apply plugin: "kotlin-android-extensions"
 apply plugin: 'com.google.gms.google-services'
-import com.android.build.OutputFile
+// import com.android.build.OutputFile
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -15,8 +17,8 @@ react {
     // root = file("../")
     //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
     // reactNativeDir = file("../node_modules/react-native")
-    //   The folder where the react-native Codegen package is. Default is ../node_modules/react-native-codegen
-    // codegenDir = file("../node_modules/react-native-codegen")
+    //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
+    // codegenDir = file("../node_modules/@react-native/codegen")
     //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
     // cliFile = file("../node_modules/react-native/cli.js")
 
@@ -80,15 +82,15 @@ def enableProguardInReleaseBuilds = true
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-/**
- * Private function to get the list of Native Architectures you want to build.
- * This reads the value from reactNativeArchitectures in your gradle.properties
- * file and works together with the --active-arch-only flag of react-native run-android.
- */
-def reactNativeArchitectures() {
-    def value = project.getProperties().get("reactNativeArchitectures")
-    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-}
+// /**
+//  * Private function to get the list of Native Architectures you want to build.
+//  * This reads the value from reactNativeArchitectures in your gradle.properties
+//  * file and works together with the --active-arch-only flag of react-native run-android.
+//  */
+// def reactNativeArchitectures() {
+//     def value = project.getProperties().get("reactNativeArchitectures")
+//     return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+// }
 
 apply from: new File(["node", "--print", "require.resolve('@sentry/react-native/package.json')"].execute().text.trim(), "../sentry.gradle")
 android {
@@ -98,35 +100,41 @@ android {
         all*.exclude module: 'bcprov-jdk15on'
         all*.exclude module: 'commons-codec'
     }
-
+    buildFeatures {
+        viewBinding = true
+    }
     ndkVersion rootProject.ext.ndkVersion
 
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    // compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.org.xadefinance"
     defaultConfig {
         applicationId "com.org.xadefinance"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 130026
-        versionName "1.4.3"
+        versionCode 130029
+        versionName "1.4.7"
         manifestPlaceholders["PN_PROJECT_ID"] = "260df770-44b4-4afd-a408-0a9f2b9944a9"
         manifestPlaceholders["PN_PROJECT_CLIENT_KEY"] = "c2HUrCSv7ymat5zCKhD41B9BA8bsRIFJgAXM0Jlm"
         manifestPlaceholders["PN_APP_ID"] = "f84832a5-f295-4f30-a1b7-18aa0a616d16"
+        
+        resConfigs "en", "es"
     }
 
     dataBinding {
         enabled = true
     }
 
-    splits {
-        abi {
-            reset()
-            enable enableSeparateBuildPerCPUArchitecture
-            universalApk true  // If true, also generate a universal APK
-            include (*reactNativeArchitectures())
-        }
-    }
+    // splits {
+    //     abi {
+    //         reset()
+    //         enable enableSeparateBuildPerCPUArchitecture
+    //         universalApk true  // If true, also generate a universal APK
+    //         include (*reactNativeArchitectures())
+    //     }
+    // }
     signingConfigs {
         release {
             if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
@@ -151,26 +159,27 @@ android {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
+            minifyEnabled true
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 
     // applicationVariants are e.g. debug, release
-    applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            // For each separate APK per architecture, set a unique version code as described here:
-            // https://developer.android.com/studio/build/configure-apk-splits.html
-            // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
-            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
-            def abi = output.getFilter(OutputFile.ABI)
-            if (abi != null) {  // null for the universal-debug, universal-release variants
-                output.versionCodeOverride =
-                        defaultConfig.versionCode * 1000 + versionCodes.get(abi)
-            }
+    // applicationVariants.all { variant ->
+    //     variant.outputs.each { output ->
+    //         // For each separate APK per architecture, set a unique version code as described here:
+    //         // https://developer.android.com/studio/build/configure-apk-splits.html
+    //         // Example: versionCode 1 will generate 1001 for armeabi-v7a, 1002 for x86, etc.
+    //         def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+    //         def abi = output.getFilter(OutputFile.ABI)
+    //         if (abi != null) {  // null for the universal-debug, universal-release variants
+    //             output.versionCodeOverride =
+    //                     defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+    //         }
 
-        }
-    }
+    //     }
+    // }
 }
 
 dependencies {
@@ -180,15 +189,16 @@ dependencies {
     implementation ("androidx.credentials:credentials:1.2.0-rc01")
     implementation 'com.google.firebase:firebase-analytics'
     implementation("com.facebook.react:react-android")
+    implementation("com.facebook.react:flipper-integration:0.73.7")
     implementation project(':react-native-vector-icons')
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
-    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
-        exclude group:'com.squareup.okhttp3', module:'okhttp'
-    }
+    // implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    // debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
+    // debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+    //     exclude group:'com.squareup.okhttp3', module:'okhttp'
+    // }
 
-    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
+    // debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

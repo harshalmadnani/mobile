@@ -1,6 +1,8 @@
 import {androidStagingAppId, apiClient, iosStagingAppId} from './utils';
+import {XadePasskeysSigner} from './XadePassKeySigner';
 import axios from 'axios';
 import {PasskeysSigner} from '@dfns/sdk-react-native';
+import {BrowserKeySigner, WebAuthnSigner} from '@dfns/sdk-browser';
 import {Platform} from 'react-native';
 
 export const checkUserIsDFNSSignedUp = async email => {
@@ -48,13 +50,9 @@ export const registerUsernameToDFNS = async username => {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
-    console.log(
-      'register started..........1',
-      'http://api-dfns.xade.finance',
-      username,
-    );
+
     const initRes = await axios.post(
-      `http://api-dfns.xade.finance/register/init`,
+      `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
@@ -74,7 +72,7 @@ export const registerUsernameToDFNS = async username => {
 
     // // // Finish delegated registration
     const completeRes = await axios.post(
-      `http://api-dfns.xade.finance/register/complete`,
+      `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         signedChallenge: {firstFactorCredential: attestation},
@@ -103,7 +101,7 @@ export const getDfnsJwt = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const res = await axios.post(
-      `http://api-dfns.xade.finance/login`,
+      `https://gull-relevant-secretly.ngrok-free.app/login`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
