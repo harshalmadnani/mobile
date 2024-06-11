@@ -141,7 +141,9 @@ const Name = ({navigation, route}) => {
           <Text
             style={{color: '#fff', fontFamily: 'VelaSans-Bold'}}
             onPress={() => {
-              Linking.openURL(`https://www.xade.finance/privacy-policy`);
+              Linking.openURL(
+                `https://doc-hosting.flycricket.io/xade-finance/71b299b1-566a-4058-8eca-bf1e342b7c81/privacy`,
+              );
             }}>
             {'\n'}Privacy Policy
           </Text>
