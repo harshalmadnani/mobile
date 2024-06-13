@@ -53,14 +53,15 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <application
-        xmlns:tools="http://schemas.android.com/tools"
+      xmlns:tools="http://schemas.android.com/tools"
       android:name=".MainApplication"
       android:label="@string/app_name"
-        android:fullBackupContent="true"
-        tools:replace="android:fullBackupContent"
+      android:fullBackupContent="true"
+      tools:replace="android:fullBackupContent"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@drawable/ic_arrow_back_white"
-      android:theme="@style/AppTheme">
+      android:theme="@style/AppTheme"
+      android:usesCleartextTraffic="true">
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
