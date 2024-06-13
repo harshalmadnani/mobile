@@ -59,7 +59,7 @@ export const getScwAddress = async (authToken, walletId) => {
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
     const res = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/wallets/scw`,
+      `http://api-dfns.xade.finance/wallets/scw`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         walletId,
