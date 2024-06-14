@@ -148,6 +148,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const updateAccountInfoInRedux = async (email, response) => {
     try {
       const token = await getDfnsJwt(email);
+      // const scw = await getScwAddress(token, response?.wallets);
       const scw = await getAllScwAddress(token, response?.wallets);
       console.log('redux update.....', scw, response?.wallets, email);
       dispatch(authActions.setEmail(email));
