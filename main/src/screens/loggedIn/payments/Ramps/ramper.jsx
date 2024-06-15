@@ -144,7 +144,7 @@ const Ramper = ({navigation}) => {
         quote?.fiatAmount,
         quote?.payment,
         '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-        allScw?.filter(x => x.chainId === 137)?.[0]?.address,
+        allScw?.filter(x => x.chainId === '137')?.[0]?.address,
       );
       console.log('ramp tx error', txInfo);
       if (!txInfo?.error) {

@@ -176,7 +176,15 @@ function InteractiveChart() {
   }, [priceList]);
 
   return (
-    <LineChart.Provider data={priceList}>
+    <LineChart.Provider
+      data={
+        priceList.length > 0
+          ? priceList
+          : [
+              {timestamp: 0, value: 0},
+              {timestamp: 0, value: 0},
+            ]
+      }>
       <View
         style={{
           backgroundColor: '#000',

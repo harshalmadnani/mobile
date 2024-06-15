@@ -302,7 +302,7 @@ const Component = ({navigation}) => {
             </View>
           </TouchableOpacity>
           <HorizontalRule />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
               navigation.push('NFT');
@@ -322,7 +322,7 @@ const Component = ({navigation}) => {
                 // style = {{marginRight: '1%'}}
               />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* <HorizontalRule /> */}
         </View>
         <View style={[styles.otherSettings, {marginBottom: 20}]}>

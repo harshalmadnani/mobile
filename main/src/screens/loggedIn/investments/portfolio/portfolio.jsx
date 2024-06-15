@@ -120,7 +120,7 @@ const Portfolio = ({navigation}) => {
   };
 
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
-
+  console.log(holdings?.assets[0]?.cross_chain_balances?.Polygon);
   return (
     <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
       <View
@@ -414,7 +414,7 @@ const Portfolio = ({navigation}) => {
         </Modal>
 
         <View style={{alignItems: 'center'}}>
-          <InteractiveChart />
+          {/* <InteractiveChart /> */}
           <View
             style={{
               flexDirection: 'row',
@@ -627,7 +627,7 @@ const Portfolio = ({navigation}) => {
                     textShadowOffset: {width: -1, height: 1},
                     textShadowRadius: 10,
                   }}>
-                  {userInfo?.[0]?.points}{' '}
+                  {userInfo?.[0]?.points ?? 0}{' '}
                 </Text>
                 <Text style={{fontSize: 16, color: '#fff'}}>Xade Shards</Text>
               </View>
@@ -683,8 +683,12 @@ const Portfolio = ({navigation}) => {
                 backgroundColor: '#000',
                 paddingBottom: '30%',
               }}>
-              {holdings?.assets?.filter(item => item.token_balance > 0)
-                ?.length > 0
+              {holdings?.assets?.filter(
+                item =>
+                  item.token_balance > 0 &&
+                  item?.cross_chain_balances?.Polygon?.address !==
+                    '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+              )?.length > 0
                 ? holdings?.assets
                     ?.filter(item => item?.token_balance > 0)
                     ?.map((item, i) => (

@@ -12318,7 +12318,7 @@ react-native-floating-label-input@^1.4.2:
   resolved "https://registry.yarnpkg.com/react-native-floating-label-input/-/react-native-floating-label-input-1.4.3.tgz#4945ea61e9733e8922a0601cde4a7f248c0ce867"
   integrity sha512-+M4jxs5KiqzXGiFeUi+G69tpgQFDUknGpWbiRtiQVREvwFA5rkZW3HiETzx0zxYhhr7Jgb47thh+DOzkwwcQnA==
 
-react-native-gesture-handler@*, react-native-gesture-handler@^2.15.0:
+react-native-gesture-handler@*, react-native-gesture-handler@^2.16.2:
   version "2.16.2"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-2.16.2.tgz#032bd2a07334292d7f6cff1dc9d1ec928f72e26d"
   integrity sha512-vGFlrDKlmyI+BT+FemqVxmvO7nqxU33cgXVsn6IKAFishvlG3oV2Ds67D5nPkHMea8T+s1IcuMm0bF8ntZtAyg==
@@ -12463,7 +12463,7 @@ react-native-ratings@^8.1.0:
   dependencies:
     lodash "^4.17.15"
 
-react-native-reanimated@^3.11.0:
+react-native-reanimated@^3.12.0:
   version "3.12.0"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.12.0.tgz#2c768d43971bb19e425c436c892bf68c74b9ccab"
   integrity sha512-Bwa4jKL/QttnV8pQYiX+1N5a6XgL8yZtMyH+7UbEaW7ZeNCv1Pxp2PmYu/bP3LafCkmS9Yj/hY2adYNKe58g9A==
@@ -12681,7 +12681,7 @@ react-native-video@^5.2.1:
     prop-types "^15.7.2"
     shaka-player "^2.5.9"
 
-react-native-wagmi-charts@^2.3.2:
+react-native-wagmi-charts@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-native-wagmi-charts/-/react-native-wagmi-charts-2.5.1.tgz#7a14b9d076e2144a6d4e747f8fb3aa54dd65d139"
   integrity sha512-lWMj3wC83jOKS7AgVCO9zAV1UYYJ9MIPrR+kAWspdK2KVqiB+ecG3ke7vxutG0lB7XXHjOgh76WxDdQ6KHWWKg==
