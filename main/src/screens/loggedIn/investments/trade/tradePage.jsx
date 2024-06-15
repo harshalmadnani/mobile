@@ -85,6 +85,7 @@ const TradePage = ({route}) => {
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
+  const allScw = useSelector(x => x.auth.scw);
   const items = [
     {left: 'SPOT MARKET', right: ' '},
     {left: 'SPOT LIMIT', right: 'COMING SOON'},
@@ -1024,20 +1025,13 @@ const TradePage = ({route}) => {
               if (isStockTrade) {
                 await orderStockPrice();
               } else {
-                console.log(
-                  'here buy flow',
-                  !loading,
-                  bestSwappingBuyTrades,
-                  !preparingTx,
-                  tradeType,
-                  buyTradeStages,
-                );
                 if (!loading && bestSwappingBuyTrades && !preparingTx) {
                   if (
                     tradeType === 'buy' &&
                     bestSwappingBuyTrades &&
                     buyTradeStages === 'Place Order'
                   ) {
+                    setLoading(true);
                     setPreparingTx(true);
                     let smartAccountSrc;
                     let smartAccountDst;
@@ -1047,10 +1041,11 @@ const TradePage = ({route}) => {
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
                     } else {
+                      setBuyTradeStages('Preparing Tx...');
                       const dstChainName = getNameChainId(
                         (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.chainId ?? 137
+                            ?.chainId ?? '137'
                         )?.toString(),
                       );
                       walletDstId = wallets.filter(
@@ -1059,37 +1054,35 @@ const TradePage = ({route}) => {
                       const srcChainName = getNameChainId(
                         (
                           bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.chainId ?? 137
+                            ?.chainId ?? '137'
                         )?.toString(),
                       );
                       walletSrcId = wallets.filter(
                         x => x.network === srcChainName,
                       )?.[0]?.id;
-                      smartAccountDst = await getSmartAccountAddress(
-                        dfnsToken,
-                        wallets.filter(x => x.network === dstChainName)?.[0]
-                          ?.id,
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.chainId ?? 137,
-                      );
-                      smartAccountSrc = await getSmartAccountAddress(
-                        dfnsToken,
-                        wallets.filter(x => x.network === srcChainName)?.[0]
-                          ?.id,
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.chainId ?? 137,
-                      );
+                      smartAccountDst = allScw.filter(
+                        x =>
+                          x.chainId ===
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId?.toString() ??
+                          '137',
+                      )?.[0]?.address;
+                      smartAccountSrc = allScw.filter(
+                        x =>
+                          x.chainId ===
+                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId?.toString() ??
+                          '137',
+                      )?.[0]?.address;
                       res = await getTradeSigningData(
                         smartAccountSrc,
                         smartAccountDst,
                       );
+                      console.log(
+                        'addresses',
+                        smartAccountDst,
+                        smartAccountSrc,
+                      );
                     }
-                    console.log(
-                      'trade start...',
-                      walletSrcId,
-                      walletDstId,
-                      tradeType,
-                    );
+                    setBuyTradeStages('Executing tx routes...');
                     const signature = await confirmDLNTransaction(
                       tradeType,
                       res,
@@ -1107,14 +1100,13 @@ const TradePage = ({route}) => {
                         wallets?.filter(x => x.network === 'Polygon')[0]?.id,
                       walletDstId ??
                         wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                      smartAccountSrc,
+                      smartAccountDst,
                     );
                     setPreparingTx(false);
+                    setLoading(false);
+                    setBuyTradeStages('Confirming tx routes...');
                     if (signature) {
-                      console.log(
-                        'txn hash....',
-                        JSON.stringify(res),
-                        signature,
-                      );
                       navigation.navigate('PendingTxStatus', {
                         state: res,
                         tradeType,

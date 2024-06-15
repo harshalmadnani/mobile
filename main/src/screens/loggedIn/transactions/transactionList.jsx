@@ -52,7 +52,6 @@ const TransactionList = ({navigation, route}) => {
   const [txType, setTxType] = useState('transfers');
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
-  const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const dispatch = useDispatch();
   const evmDLNTradesTxListInfo = useSelector(
     x => x.portfolio.evmDLNTradesTxListInfo,
@@ -76,7 +75,7 @@ const TransactionList = ({navigation, route}) => {
       // setPage(0);
       getAllTxHistory();
     }
-  }, [txType, evmInfo]);
+  }, [txType]);
   console.log('evmDLNTradesTxListInfo', evmDLNTradesTxListInfo);
   return (
     <SafeAreaView

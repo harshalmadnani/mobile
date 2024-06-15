@@ -342,6 +342,8 @@ export const confirmDLNTransaction = async (
   dfnsToken,
   walletIdSrc,
   walletIdDst,
+  smartAccountSrc,
+  smartAccountDst,
 ) => {
   let txs = externalTx.length > 0 ? externalTx : [];
   let chainId = 137;
@@ -359,16 +361,18 @@ export const confirmDLNTransaction = async (
     !quoteTxReciept?.tokenIn?.address
   ) {
     chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId;
-    smartAccount = await getSmartAccountAddress(
-      dfnsToken,
-      walletIdSrc,
-      chainId,
-    );
-    const smartAccountDst = await getSmartAccountAddress(
-      dfnsToken,
-      walletIdDst,
-      quoteTxReciept?.estimation?.dstChainTokenOut?.chainId ?? 137,
-    );
+    smartAccount = smartAccountSrc;
+    // const smartAccountDst=
+    // smartAccount = await getSmartAccountAddress(
+    //   dfnsToken,
+    //   walletIdSrc,
+    //   chainId,
+    // );
+    // const smartAccountDst = await getSmartAccountAddress(
+    //   dfnsToken,
+    //   walletIdDst,
+    //   quoteTxReciept?.estimation?.dstChainTokenOut?.chainId ?? 137,
+    // );
     const erc20Abi = new ethers.Interface(erc20);
     const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
     const sendData = erc20Abi.encodeFunctionData('transfer', [
@@ -409,14 +413,9 @@ export const confirmDLNTransaction = async (
     txs.push(executeProxyDLN);
     console.log('smartAccountDst...........', smartAccountDst);
   } else {
+    chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId ?? '137';
+    smartAccount = smartAccountSrc;
     console.log('approval address....', chainId, walletIdSrc, tokenAddress);
-    chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId ?? 137;
-    smartAccount = await getSmartAccountAddress(
-      dfnsToken,
-      walletIdSrc,
-      chainId,
-    );
-
     const erc20Abi = new ethers.Interface(erc20);
     const approvalData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,
