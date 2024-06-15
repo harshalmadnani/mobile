@@ -26,22 +26,43 @@ export const getCryptoHoldingForAddressFromMobula = (smartAccount, asset) => {
 };
 export const getWalletTransactionForAddressFromMobula = () => {
   return async (dispatch, getState) => {
-    const evmInfo = getState().portfolio.evmInfo;
-    const data = await getTransactionsByWallet(evmInfo.smartAccount, 0);
-    dispatch(portfolioAction.setEvmTxList(data));
+    const allScw = getState().auth.scw;
+    const data = await getTransactionsByWallet(
+      allScw.map(x => x.address)?.toString(),
+      0,
+    );
+    console.log('tx....', data);
+    // dispatch(portfolioAction.setEvmTxList(data));
+    dispatch(portfolioAction.setEvmTxList(data?.transactions));
   };
 };
 export const getWalletTransactionForAddressFromDLN = page => {
   return async (dispatch, getState) => {
-    const evmInfo = getState().portfolio.evmInfo;
-    const crossData = await getDLNTradeForAddress(evmInfo.smartAccount, page);
-    const sameData = await getAllSameChainTxs(evmInfo.smartAccount);
+    // const evmInfo = getState().portfolio.evmInfo;
+    const allScw = getState().auth.scw;
+    console.log('scw all....', allScw);
+    let crossData = await Promise.all(
+      allScw.map(
+        async x =>
+          await getDLNTradeForAddress(x.address, parseInt(x.chainId), page),
+      ),
+    );
+    crossData = crossData
+      ?.map(x => {
+        return x?.orders.length > 0 ? {...x?.orders} : null;
+      })
+      ?.filter(x => x !== null);
+    console.log('scw all....', crossData);
+    const sameData = await getAllSameChainTxs(
+      allScw?.filter(x => x.chainId === '137')?.[0]?.address,
+    );
+    console.log('scw all....1', [...crossData, ...sameData]);
     dispatch(
       portfolioAction.setEvmDLNTradeList({
-        orders: [...crossData?.orders, ...sameData],
+        orders: [...crossData, ...sameData],
       }),
     );
-    return data;
+    // return data;
   };
 };
 export const getEvmAddresses = () => {

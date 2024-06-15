@@ -716,7 +716,6 @@ const Portfolio = ({navigation}) => {
         onPress={async e => {
           navigation.push('Ramper');
           ReactNativeHapticFeedback.trigger('impactHeavy', options);
-          // ReactNativeHapticFeedback.trigger('impactHeavy', options);
         }}
         style={{
           position: 'absolute',

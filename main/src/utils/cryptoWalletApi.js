@@ -79,7 +79,7 @@ export const getTransactionsByWallet = async (address, page) => {
     const response = await axios.get(
       `${mobulaBaseURL}${
         marketRoutes.getWalletTransactions
-      }?asset=USDC&wallet=${address}&order=asc&limit=${50}&offset=${0}`,
+      }?asset=USDC&wallets=${address}&order=asc&limit=${100}&offset=${0}`,
       {
         headers: {Authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99'},
       },

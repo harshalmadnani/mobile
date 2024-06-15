@@ -9,6 +9,7 @@ import {
   Pressable,
   ImageBackground,
 } from 'react-native';
+
 import {Icon, Text} from 'react-native-elements';
 import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
 import WalletTransactionTradeCard from '../../../component/Transaction/WalletTransactionTradeCard';
@@ -18,6 +19,7 @@ import {
   getWalletTransactionForAddressFromMobula,
 } from '../../../store/actions/portfolio';
 import {SceneMap, TabView} from 'react-native-tab-view';
+import LottieView from 'lottie-react-native';
 
 const width = Dimensions.get('window').width;
 const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
@@ -49,19 +51,22 @@ const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
 const TransactionList = ({navigation, route}) => {
   const [txType, setTxType] = useState('transfers');
   const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
   const dispatch = useDispatch();
   const evmDLNTradesTxListInfo = useSelector(
     x => x.portfolio.evmDLNTradesTxListInfo,
   );
   const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
-  console.log('orders...');
-  console.log(evmTxListInfo?.length);
   const getAllTxHistory = async () => {
-    dispatch(getWalletTransactionForAddressFromMobula(page));
+    setLoading(true);
+    await dispatch(getWalletTransactionForAddressFromMobula(page));
+    setLoading(false);
   };
   const getAllDLNTradeHistory = async () => {
-    dispatch(getWalletTransactionForAddressFromDLN(page));
+    setLoading(true);
+    await dispatch(getWalletTransactionForAddressFromDLN(page));
+    setLoading(false);
   };
   const onEndReachedFetch = async () => {};
   useEffect(() => {
@@ -72,7 +77,7 @@ const TransactionList = ({navigation, route}) => {
       getAllTxHistory();
     }
   }, [txType, evmInfo]);
-
+  console.log('evmDLNTradesTxListInfo', evmDLNTradesTxListInfo);
   return (
     <SafeAreaView
       style={{
@@ -135,8 +140,7 @@ const TransactionList = ({navigation, route}) => {
           onFilterPressed={() => setTxType('dln')}
         />
       </View>
-      {evmTxListInfo?.length > 0 ||
-      evmDLNTradesTxListInfo?.orders.length > 0 ? (
+      {!loading ? (
         <FlatList
           style={{width: '100%', marginBottom: 30, flex: 1}}
           data={
@@ -152,7 +156,25 @@ const TransactionList = ({navigation, route}) => {
           onEndReached={async () => await onEndReachedFetch()}
           keyExtractor={(item, i) => i?.toString()}
         />
-      ) : null}
+      ) : (
+        <View
+          style={{
+            justifyContent: 'center',
+            height: '80%',
+            width: '100%',
+          }}>
+          <LottieView
+            source={require('../../../../assets/lottie/iosLottieLoader.json')}
+            style={{
+              width: 20,
+              height: 20,
+              alignSelf: 'center',
+            }}
+            autoPlay
+            loop
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

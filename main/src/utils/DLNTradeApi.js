@@ -607,12 +607,12 @@ export const getStatusFromDLNOrderId = async id => {
     console.log('response.........', response?.data?.state);
   } catch (error) {}
 };
-export const getDLNTradeForAddress = async (smartAccount, page) => {
+export const getDLNTradeForAddress = async (smartAccount, chainId, page) => {
   const res = await axios.post(
     'https://stats-api.dln.trade/api/Orders/filteredList',
     {
-      giveChainIds: [137, 56, 43114, 1],
-      takeChainIds: [137, 56, 43114, 1],
+      giveChainIds: [chainId],
+      takeChainIds: [chainId],
       orderStates: ['ClaimedUnlock', 'Created', 'Fulfilled', 'SentUnlock'],
       externalCallStates: [],
       filter: '',
