@@ -634,7 +634,7 @@ const TradePage = ({route}) => {
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Bold',
                 }}>
-                {tokensToSell?.[0]?.balance?.toFixed(2)}{' '}
+                {tokensToSell?.[0]?.balance?.toFixed(7)}{' '}
                 {state?.symbol?.toUpperCase() ??
                   state?.stock?.symbol?.toUpperCase()}{' '}
               </Text>
@@ -1163,11 +1163,15 @@ const TradePage = ({route}) => {
                     bestSwappingBuyTrades &&
                     sellOrderStages === 'Place Order'
                   ) {
+                    //same chain
                     setPreparingTx(true);
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
                       setSellOrderStages('Preparing Tx...');
+                      const smartAccountSrc = allScw.filter(
+                        x => x.chainId === '137',
+                      )?.[0]?.address;
                       ReactNativeHapticFeedback.trigger('impactHeavy', options);
                       const signature = await confirmDLNTransaction(
                         tradeType,
@@ -1184,6 +1188,8 @@ const TradePage = ({route}) => {
                         [],
                         dfnsToken,
                         wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                        smartAccountSrc,
+                        smartAccountSrc,
                       );
                       setSellOrderStages('Confirming Tx...');
                       ReactNativeHapticFeedback.trigger('impactHeavy', options);
@@ -1220,20 +1226,32 @@ const TradePage = ({route}) => {
                       walletSrcId = wallets.filter(
                         x => x.network === srcChainName,
                       )?.[0]?.id;
-                      smartAccountDst = await getSmartAccountAddress(
-                        dfnsToken,
-                        wallets.filter(x => x.network === dstChainName)?.[0]
-                          ?.id,
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.chainId ?? 137,
-                      );
-                      smartAccountSrc = await getSmartAccountAddress(
-                        dfnsToken,
-                        wallets.filter(x => x.network === srcChainName)?.[0]
-                          ?.id,
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.chainId ?? 137,
-                      );
+                      smartAccountDst = allScw.filter(
+                        x =>
+                          x.chainId ===
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId?.toString() ??
+                          '137',
+                      )?.[0]?.address;
+                      smartAccountSrc = allScw.filter(
+                        x =>
+                          x.chainId ===
+                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId?.toString() ??
+                          '137',
+                      )?.[0]?.address;
+                      // smartAccountDst = await getSmartAccountAddress(
+                      //   dfnsToken,
+                      //   wallets.filter(x => x.network === dstChainName)?.[0]
+                      //     ?.id,
+                      // bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                      //   ?.chainId ?? 137,
+                      // );
+                      // smartAccountSrc = await getSmartAccountAddress(
+                      //   dfnsToken,
+                      //   wallets.filter(x => x.network === srcChainName)?.[0]
+                      //     ?.id,
+                      //   bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                      //     ?.chainId ?? 137,
+                      // );
                       if (
                         tokensToSell?.[0]?.address?.toLowerCase() !==
                         getUSDCTokenOnChain(
@@ -1279,6 +1297,8 @@ const TradePage = ({route}) => {
                             dfnsToken,
                             walletSrcId,
                             walletDstId,
+                            smartAccountSrc,
+                            smartAccountSrc,
                           );
                         }
                       }
@@ -1320,6 +1340,8 @@ const TradePage = ({route}) => {
                             dfnsToken,
                             walletSrcId,
                             walletDstId,
+                            smartAccountSrc,
+                            smartAccountDst,
                           );
 
                           if (finalSignature) {
