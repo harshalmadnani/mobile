@@ -683,12 +683,10 @@ const Portfolio = ({navigation}) => {
                 backgroundColor: '#000',
                 paddingBottom: '30%',
               }}>
-              {holdings?.assets?.filter(
-                item =>
-                  item.token_balance > 0 &&
-                  item?.cross_chain_balances?.Polygon?.address !==
-                    '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-              )?.length > 0
+              {/* && item?.cross_chain_balances?.Polygon?.address !==
+              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', */}
+              {holdings?.assets?.filter(item => item.token_balance > 0)
+                ?.length > 0
                 ? holdings?.assets
                     ?.filter(item => item?.token_balance > 0)
                     ?.map((item, i) => (

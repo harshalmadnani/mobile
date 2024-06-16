@@ -50,6 +50,7 @@ export const getDLNTradeCreateBuyOrder = async (
   try {
     let response;
     if (dstChainId === srcChainId) {
+      console.log('src token in amount....', srcChainTokenInAmount);
       response = await getQuoteFromLifi(
         srcChainId,
         dstChainId,
@@ -220,7 +221,7 @@ export const getBestCrossSwapRateBuy = async (
   blockchainsContractAddress = blockchainsContractAddress.filter(
     x =>
       x.blockchains === 'Ethereum' ||
-      // x.blockchains === 'BNB Smart Chain (BEP20)' ||
+      x.blockchains === 'BNB Smart Chain (BEP20)' ||
       x.blockchains === 'Polygon' ||
       x.blockchains === 'Base' ||
       x.blockchains === 'Arbitrum',

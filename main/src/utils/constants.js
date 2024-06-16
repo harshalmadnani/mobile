@@ -5570,3 +5570,21 @@ export const NetworkChainInfo = [
     coverage: ['metadata', 'market'],
   },
 ];
+export const getRouteOnNetwork = symbol => {
+  switch (symbol) {
+    case 'BTC':
+      return 'Polygon';
+    case 'ETH':
+      return 'Polygon';
+    case 'BNB':
+      return 'BNB Smart Chain (BEP20)';
+    case 'Solana':
+      return 'Polygon';
+    case 'XRP':
+      return 'BNB Smart Chain (BEP20)';
+    case 'Doge':
+      return 'BNB Smart Chain (BEP20)';
+    default:
+      return false;
+  }
+};

@@ -120,13 +120,28 @@ export const getNameChainId = chain => {
       return 'Polygon';
     case '1':
       return 'Ethereum';
+    // case '56':
+    //   return 'BNB Smart Chain (BEP20)';
     case '42161':
       return 'ArbitrumOne';
     case '8453':
       return 'Base';
   }
 };
-
+export const getNetworkOnChainId = chain => {
+  switch (chain) {
+    case '137':
+      return 'Polygon';
+    case '1':
+      return 'Ethereum';
+    case '56':
+      return 'BNB Smart Chain (BEP20)';
+    case '42161':
+      return 'Arbitrum';
+    case '8453':
+      return 'Base';
+  }
+};
 export const getBestDLNCrossSwapRateBuy = (
   blockchains,
   contractAddress,
@@ -138,7 +153,7 @@ export const getBestDLNCrossSwapRateBuy = (
       blockchains,
       contractAddress,
       value,
-      allScw?.filter(x => x.chainId === 137)?.[0]?.address, //used for same chain
+      allScw?.filter(x => x.chainId === '137')?.[0]?.address, //used for same chain
     );
 
     dispatch(marketsAction.setBestSwappingRates(bestRate));

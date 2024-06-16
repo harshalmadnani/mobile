@@ -20,8 +20,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   getBestDLNCrossSwapRateBuy,
   getBestDLNCrossSwapRateSell,
-  getIdChainName,
   getNameChainId,
+  getNetworkOnChainId,
 } from '../../../../store/actions/market';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
@@ -63,6 +63,7 @@ import {
   getChainOnId,
   getSmartAccountAddress,
 } from '../../../../utils/DFNS/walletFLow';
+import {getRouteOnNetwork} from '../../../../utils/constants';
 // import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
@@ -128,6 +129,15 @@ const TradePage = ({route}) => {
   const isStockTrade = useSelector(x => x.market.isStockTrade);
 
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
+  console.log(
+    'BTC.......',
+    // holdings?.assets?.[0],
+    tokensToSell,
+    // holdings?.assets?.filter(
+    //   x => x?.asset?.symbol === selectedAssetMetaData?.symbol,
+    // ),
+    // tokensToSell,
+  );
   const getDisplayText = () => {
     if (loading) return <DotLoading loadingText="Calculating" />;
     if (!bestSwappingBuyTrades) return 'Calculating....';
@@ -226,17 +236,36 @@ const TradePage = ({route}) => {
       console.log('Here... no tx data');
     }
   };
+  console.log(bestSwappingBuyTrades?.estimate?.toAmountMin);
+
   const getBestPrice = async () => {
     if (selectedAssetMetaData) {
       setLoading(true);
       setBuyTradeStages('Calculating Routes...');
+      const getAllottedBlockchain = getRouteOnNetwork(
+        selectedAssetMetaData?.symbol,
+      );
       dispatch(
         getBestDLNCrossSwapRateBuy(
-          selectedAssetMetaData?.blockchains?.length > 0
-            ? selectedAssetMetaData?.blockchains
+          tokensToSell?.length > 0
+            ? [getNetworkOnChainId(tokensToSell?.[0]?.chainId)]
+            : selectedAssetMetaData?.blockchains?.length > 0
+            ? getAllottedBlockchain
+              ? [getAllottedBlockchain]
+              : selectedAssetMetaData?.blockchains
             : [selectedAssetMetaData?.blockchain],
-          selectedAssetMetaData?.contracts?.length > 0
-            ? selectedAssetMetaData?.contracts
+          tokensToSell?.length > 0
+            ? [tokensToSell?.[0]?.address]
+            : selectedAssetMetaData?.contracts?.length > 0
+            ? getAllottedBlockchain
+              ? [
+                  selectedAssetMetaData?.contracts[
+                    selectedAssetMetaData?.blockchains?.indexOf(
+                      getAllottedBlockchain,
+                    )
+                  ],
+                ]
+              : selectedAssetMetaData?.contracts
             : [selectedAssetMetaData?.address],
           value * 1000000, //USDC
         ),
@@ -249,8 +278,16 @@ const TradePage = ({route}) => {
     if (!isStockTrade && tradeType === 'buy') {
       if (bestSwappingBuyTrades) {
         setBuyTradeStages('Place Order');
-      } else {
-        setBuyTradeStages('Retry');
+      } else if (!loading) {
+        // Toast.show('Amount too low', {
+        //   duration: Toast.durations.LONG,
+        //   position: Toast.positions.BOTTOM,
+        //   shadow: true,
+        //   animation: true,
+        //   hideOnPress: true,
+        //   delay: 0,
+        // });
+        setBuyTradeStages('Amount too low');
       }
     }
   }, [bestSwappingBuyTrades]);
@@ -495,8 +532,17 @@ const TradePage = ({route}) => {
                 if (Platform.OS === 'ios') {
                   ReactNativeHapticFeedback.trigger('impactMedium', options);
                 }
-                if (!isStockTrade) {
+                if (!isStockTrade && tokensToSell?.length > 0) {
                   setTradeType('sell');
+                } else if (!isStockTrade && !tokensToSell?.length) {
+                  Toast.show('No asset to sell!', {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
                 } else {
                   Toast.show('Sell of socks coming soon!', {
                     duration: Toast.durations.SHORT,
@@ -1041,7 +1087,7 @@ const TradePage = ({route}) => {
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
                     } else {
-                      setBuyTradeStages('Preparing Tx...');
+                      setBuyTradeStages('Executing tx route...');
                       const dstChainName = getNameChainId(
                         (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
@@ -1082,7 +1128,7 @@ const TradePage = ({route}) => {
                         smartAccountSrc,
                       );
                     }
-                    setBuyTradeStages('Executing tx routes...');
+                    setBuyTradeStages('Confirming tx ...');
                     const signature = await confirmDLNTransaction(
                       tradeType,
                       res,
@@ -1103,9 +1149,9 @@ const TradePage = ({route}) => {
                       smartAccountSrc,
                       smartAccountDst,
                     );
+                    setBuyTradeStages('Confirmed tx...');
                     setPreparingTx(false);
                     setLoading(false);
-                    setBuyTradeStages('Confirming tx routes...');
                     if (signature) {
                       navigation.navigate('PendingTxStatus', {
                         state: res,
@@ -1122,6 +1168,7 @@ const TradePage = ({route}) => {
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       res = bestSwappingBuyTrades;
                       setSellOrderStages('Preparing Tx...');
+                      ReactNativeHapticFeedback.trigger('impactHeavy', options);
                       const signature = await confirmDLNTransaction(
                         tradeType,
                         res,
@@ -1139,6 +1186,7 @@ const TradePage = ({route}) => {
                         wallets?.filter(x => x.network === 'Polygon')[0]?.id,
                       );
                       setSellOrderStages('Confirming Tx...');
+                      ReactNativeHapticFeedback.trigger('impactHeavy', options);
                       setPreparingTx(false);
                       if (signature) {
                         console.log('txn hash', res, signature);
@@ -1157,7 +1205,7 @@ const TradePage = ({route}) => {
                       const dstChainName = getNameChainId(
                         (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.chainId ?? 137
+                            ?.chainId ?? '137'
                         )?.toString(),
                       );
                       walletDstId = wallets.filter(
@@ -1193,6 +1241,10 @@ const TradePage = ({route}) => {
                         ).toLowerCase()
                       ) {
                         setSellOrderStages('Preparing Tx...');
+                        ReactNativeHapticFeedback.trigger(
+                          'impactHeavy',
+                          options,
+                        );
                         txReceiptOfSameChain =
                           await executeSameChainSellForUSDC(
                             tokensToSell?.[0],
@@ -1233,6 +1285,10 @@ const TradePage = ({route}) => {
                       if (sameChainTx) {
                         // setTimeout(async () => {
                         setSellOrderStages('Executing Tx...');
+                        ReactNativeHapticFeedback.trigger(
+                          'impactHeavy',
+                          options,
+                        );
                         //await switchAuthCoreChain(
                         //parseInt(tokensToSell?.[0].chainId),
                         //)
