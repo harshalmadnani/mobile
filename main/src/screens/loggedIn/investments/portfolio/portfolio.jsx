@@ -414,7 +414,7 @@ const Portfolio = ({navigation}) => {
         </Modal>
 
         <View style={{alignItems: 'center'}}>
-          {/* <InteractiveChart /> */}
+          <InteractiveChart />
           <View
             style={{
               flexDirection: 'row',

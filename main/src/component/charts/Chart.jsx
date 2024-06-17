@@ -1,37 +1,21 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-// import * as React from 'react'
+import React, {useEffect, useState} from 'react';
 import {Dimensions, Text, TouchableOpacity, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styles from '../../screens/loggedIn/investments/investment-styles';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 import {useFocusEffect} from '@react-navigation/native';
-import {getEvmAddresses} from '../../store/actions/portfolio';
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
-export default InteractiveChart;
-function CustomPriceText() {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Text style={styles.stockPrice}>$</Text>
-      <LineChart.PriceText style={styles.stockPrice} />
-    </View>
-  );
-}
+
 function InteractiveChart() {
   const dispatch = useDispatch();
 
   const [divisionResult, setDivisionResult] = useState('0');
   const [estimatedHistory, setEstimatedHistory] = useState([]);
-  const [currentPrice, setcurrentPrice] = useState('0');
+  const [currentPrice, setCurrentPrice] = useState('0');
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
-  const [priceChange, setpriceChange] = useState('0');
+  const [priceChange, setPriceChange] = useState('0');
   const [touchActive, setTouchActive] = useState(false);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
@@ -72,8 +56,7 @@ function InteractiveChart() {
       ? selectedTimeframeObject?.timestamp
       : null;
     if (from === null) return; // Early exit if timestamp is not found
-    // try {
-    console.log('wallet history fetch...', from);
+
     let historicalPriceXYPair = estimatedHistory?.map(entry => {
       return {timestamp: entry[0], value: entry[1]};
     });
@@ -83,11 +66,12 @@ function InteractiveChart() {
 
     if (historicalPriceXYPair?.length > 0) {
       setPriceList(historicalPriceXYPair);
-      setcurrentPrice(
+      setCurrentPrice(
         historicalPriceXYPair[historicalPriceXYPair.length - 1]?.value ?? 0,
       );
     }
   }, [selectedTimeframe]);
+
   useEffect(() => {
     if (estimatedHistory.length) {
       const selectedTimeframeObject = timeframes.find(
@@ -100,14 +84,8 @@ function InteractiveChart() {
       let historicalPriceXYPair = estimatedHistory?.map(entry => {
         return {timestamp: entry[0], value: entry[1]};
       });
-      console.log('from time.....', historicalPriceXYPair.length, from);
       historicalPriceXYPair = historicalPriceXYPair.filter(
         x => x.timestamp >= from,
-      );
-      console.log(
-        'after filter from time.....',
-        historicalPriceXYPair.length,
-        from,
       );
       if (historicalPriceXYPair?.length > 0) {
         setPriceList(historicalPriceXYPair);
@@ -121,28 +99,26 @@ function InteractiveChart() {
     );
     if (allScw?.length) {
       const scwWallets = allScw.map(x => x.address);
-      console.log('charts all scw', scwWallets);
       ws.onopen = () => {
         try {
           const payload = {
             explorer: {
               wallets: `${scwWallets.toString()}`,
-              // blockchains: `137,42161`,
             },
           };
           ws.send(JSON.stringify(payload));
         } catch (error) {
-          console.log('error on sending parsing.....', error);
+          console.log('Error on sending parsing.....', error);
         }
       };
 
       ws.onmessage = event => {
         try {
           const parsedData = JSON.parse(event?.data);
-          setcurrentPrice(parsedData?.analysis?.estimated_balance);
+          setCurrentPrice(parsedData?.analysis?.estimated_balance);
           setEstimatedHistory(parsedData?.analysis?.estimated_history);
         } catch (error) {
-          console.log('error on parsing.....charts', error);
+          console.log('Error on parsing.....charts', error);
         }
       };
 
@@ -158,7 +134,7 @@ function InteractiveChart() {
       ws.close();
     };
   }, [evmInfo]);
-  // The currently selected X coordinate position
+
   useEffect(() => {
     if (priceList?.length > 1 || priceList?.[0]?.value === '0') {
       const result =
@@ -168,10 +144,10 @@ function InteractiveChart() {
       const test =
         priceList[priceList?.length - 1]?.value - priceList[0]?.value;
       setDivisionResult(result);
-      setpriceChange(test); // Use the correct function name for setting state
+      setPriceChange(test);
     } else {
       setDivisionResult('0');
-      setpriceChange('0'); // Use the correct function name for setting state
+      setPriceChange('0');
     }
   }, [priceList]);
 
@@ -185,14 +161,18 @@ function InteractiveChart() {
               {timestamp: 0, value: 0},
             ]
       }>
-      <View
-        style={{
-          backgroundColor: '#000',
-          alignItems: 'stretch',
-        }}>
+      <View style={{backgroundColor: '#000', alignItems: 'stretch'}}>
         <View style={styles.portfoioPriceContainer}>
           {touchActive ? (
-            <CustomPriceText />
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text style={styles.stockPrice}>$</Text>
+              <LineChart.PriceText style={styles.stockPrice} />
+            </View>
           ) : (
             <View
               style={{
@@ -211,7 +191,7 @@ function InteractiveChart() {
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center', // Vertically center
+              alignItems: 'center',
               justifyContent: 'center',
               marginTop: '1%',
             }}>
@@ -262,7 +242,6 @@ function InteractiveChart() {
                   }}
                 />
               </LineChart>
-              {/* </LineChart.Provider> */}
             </GestureHandlerRootView>
           ) : null}
         </View>
@@ -305,3 +284,5 @@ function InteractiveChart() {
     </LineChart.Provider>
   );
 }
+
+export default InteractiveChart;

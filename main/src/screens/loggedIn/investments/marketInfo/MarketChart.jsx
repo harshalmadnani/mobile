@@ -203,9 +203,9 @@ const MarketChart = props => {
 
         <View style={styles.coinChart}>
           <View style={styles.chartContainer}>
-            {/* <InvestmentChart
+            <InvestmentChart
               assetName={currentItem?.name || currentItem?.stock?.id}
-            /> */}
+            />
           </View>
         </View>
         {isStockTrade ? null : (
