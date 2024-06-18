@@ -20,7 +20,11 @@ export const checkUserIsDFNSSignedUp = async email => {
     );
     const userInfo = response.data;
     console.log('wallets....', userInfo);
-    return userInfo?.[0]?.isDLNSignedUp;
+    return userInfo.length > 0
+      ? userInfo?.[0]?.isDLNSignedUp
+        ? userInfo?.[0]?.isDLNSignedUp
+        : 'no-passkey'
+      : userInfo?.[0]?.isDLNSignedUp;
   } catch (error) {
     console.log('error on getting wallet', error);
   }
@@ -52,7 +56,7 @@ export const registerUsernameToDFNS = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const initRes = await axios.post(
-      `http://api-dfns.xade.finance/register/init`,
+      `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,

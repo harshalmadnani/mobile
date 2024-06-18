@@ -25,19 +25,12 @@ const Name = ({navigation, route}) => {
   const scw = useSelector(x => x.auth.scw);
   const email = useSelector(x => x.auth.email);
   const dispatch = useDispatch();
-  const registerDB = async ({navigation, name, code}) => {
-    console.log('Here set name', name);
-
-    // const address = global.connectAccount?.publicAddress;
-    // const email = global.connectAccount.phoneEmail;
-    // const uuid = global.connectAccount.uiud;
-
+  const updateUserDB = async ({navigation, name, code}) => {
     console.log('register....', wallets, scw, email);
     try {
-      await axios.post(
-        'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers',
+      await axios.patch(
+        `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
         {
-          email: email,
           referalCode: code,
           dfnsScw: scw,
           dfnsWallet: wallets,
@@ -151,8 +144,8 @@ const Name = ({navigation, route}) => {
         <TouchableOpacity
           style={styles.continue}
           onPress={async () => {
+            await updateUserDB({navigation, name, code});
             navigation.navigate('Portfolio');
-            await registerDB({navigation, name, code});
           }}>
           <Text style={styles.continueText}>Let's go!</Text>
         </TouchableOpacity>

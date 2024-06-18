@@ -46,6 +46,7 @@ import {useDispatch} from 'react-redux';
 import {authActions} from '../../store/reducers/auth';
 import {autoLogin} from '../../store/actions/auth';
 import {Passkey} from 'react-native-passkey';
+import Toast from 'react-native-root-toast';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
   const [email, setEmail] = useState('');
@@ -128,13 +129,11 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const checkOnEmail = async () => {
     //check whether it's a user
     const isSupported = Passkey.isSupported();
-    console.log('is supported', isSupported);
     if (isSupported) {
       setLoading(true);
       const status = await checkUserIsDFNSSignedUp(email);
-      if (status) {
+      if (status && status !== 'no-passkey') {
         setIsLogin(false);
-
         const {error, data} = await supabase.auth.signInWithOtp({
           email: email,
           options: {
@@ -150,6 +149,23 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           setIsSignIn(true);
         }
         setLoading(false);
+      } else if (status && status === 'no-passkey') {
+        console.log('register again!!!!!');
+        const {error, data} = await supabase.auth.signInWithOtp({
+          email: email,
+          options: {
+            shouldCreateUser: false,
+          },
+        });
+        if (error) {
+          setLoading(false);
+        }
+        if (data) {
+          console.log('Otp sent successfully');
+          setStages('otp');
+          setLoading(false);
+          setIsLogin(false);
+        }
       } else {
         setStages('password');
         setLoading(false);
@@ -164,7 +180,6 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       const token = await getDfnsJwt(email);
       console.log('wallets created.....', response?.wallets);
       const scw = await getAllScwAddress(token, response?.wallets);
-      // console.log('redux update.....', scw, response?.wallets, email);
       dispatch(authActions.setEmail(email));
       dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(scw));
@@ -180,6 +195,14 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       if (user) {
         dispatch(autoLogin(navigation, email));
       } else {
+        Toast.show('OTP input is incorrect', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
         setLoading(false);
       }
     } else {
@@ -198,14 +221,47 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       }
     }
   };
+  const registerDB = async () => {
+    try {
+      await axios.post(
+        'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers',
+        {
+          email: email,
+          referalCode: '',
+          dfnsScw: [],
+          dfnsWallet: [],
+          points: 0,
+          name: '',
+          isDLNSignedUp: false,
+        },
+        {
+          headers: {
+            apiKey:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+            Authorization:
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+          },
+        },
+      );
+      return true;
+      // galaxy register
+      // dispatch(authActions.setName(name));
+      // await appendToGalaxeList(email);
+      // navigation.push('Portfolio');
+    } catch (err) {
+      return false;
+      // console.log('register final start', wallets, scw, email, err);
+    }
+  };
   const registerYourPassword = async () => {
     setLoading(true);
     const status = await signInWithEmailOtp(email, password);
-    console.log('status from signup.....', status);
     if (status) {
       setLoading(false);
-      // signInWithEmailOtp(email);
-      setStages('otp');
+      const res = await registerDB();
+      if (res) {
+        setStages('otp');
+      }
     }
   };
   const signupFlow = () => {
