@@ -9,7 +9,7 @@ import {
   http,
   parseAbi,
 } from 'viem';
-import {arbitrum, base, mainnet, polygon} from 'viem/chains';
+import {arbitrum, base, bsc, mainnet, polygon} from 'viem/chains';
 import {toAccount} from 'viem/accounts';
 import {entryPointAbi} from './entryPointAbi';
 import {Platform} from 'react-native';
@@ -17,8 +17,8 @@ export const getPaymasterKeyOnName = chain => {
   switch (chain) {
     case 'Polygon':
       return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
-    case 'Ethereum':
-      return 'ulygsZ3qd.607cfa98-67a7-4dce-99f0-f9b7552b70d6';
+    case 'Bsc':
+      return 'PtenFME78.7ec6feef-5f51-4cfd-ae5a-a2efe0ae712d';
     case 'Base':
       return 'PsoPGd6TZ.7cfbc00c-7cee-4bf8-815c-2cab0db4a8e1';
     case 'ArbitrumOne':
@@ -31,8 +31,8 @@ export const getIdOnChain = chain => {
   switch (chain) {
     case 'Polygon':
       return '137';
-    case 'Ethereum':
-      return '1';
+    case 'Bsc':
+      return '56';
     case 'ArbitrumOne':
       return '42161';
     case 'Base':
@@ -43,8 +43,8 @@ export const getProviderOnName = chain => {
   switch (chain) {
     case 'Polygon':
       return polygon;
-    case 'Ethereum':
-      return mainnet;
+    case 'Bsc':
+      return bsc;
     case 'Base':
       return base;
     case 'ArbitrumOne':
@@ -99,7 +99,11 @@ export const getAllScwAddress = async (authToken, walletIds) => {
           x?.network,
         )}/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f444`,
       });
-      console.log('smart account client created =====', smartAccountClient);
+      console.log(
+        'smart account client created =====',
+        x?.network,
+        smartAccountClient,
+      );
 
       const scwAddress = await smartAccountClient.getAccountAddress();
       console.log('smart account address created =====', scwAddress);
@@ -116,8 +120,8 @@ export const getChainOnId = chainId => {
   switch (chainId) {
     case 137:
       return polygon;
-    case 1:
-      return mainnet;
+    case 56:
+      return bsc;
     case 8453:
       return base;
     case 42161:
@@ -278,10 +282,10 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
-      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
-      rpcUrl:
-        'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
-      bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
+      biconomyPaymasterApiKey: '3OjDX_U5v.7a176ce5-e0bb-4906-8186-729255e8ef7c',
+      // rpcUrl:
+      //   'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
+      bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId?.toString()}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
     const scwAddress = await smartAccountClient.getAccountAddress();
     const nonce = await readEntryPointContract(

@@ -118,10 +118,8 @@ export const getNameChainId = chain => {
   switch (chain) {
     case '137':
       return 'Polygon';
-    case '1':
-      return 'Ethereum';
-    // case '56':
-    //   return 'BNB Smart Chain (BEP20)';
+    case '56':
+      return 'Bsc';
     case '42161':
       return 'ArbitrumOne';
     case '8453':
@@ -132,8 +130,8 @@ export const getNetworkOnChainId = chain => {
   switch (chain) {
     case '137':
       return 'Polygon';
-    case '1':
-      return 'Ethereum';
+    // case '1':
+    //   return 'Ethereum';
     case '56':
       return 'BNB Smart Chain (BEP20)';
     case '42161':

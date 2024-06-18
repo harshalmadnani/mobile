@@ -30,6 +30,7 @@ import {getEvmAddresses} from '../../store/actions/portfolio';
 import {
   signInWithEmailOtp,
   signUpWithEmail,
+  supabase,
   verifyEmailOtp,
 } from '../../utils/supabase/authUtils';
 import {
@@ -51,10 +52,10 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userInfo, setUserInfo] = useState(false);
   const [stages, setStages] = useState('email');
+  const [isSignIn, setIsSignIn] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -132,8 +133,22 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       setLoading(true);
       const status = await checkUserIsDFNSSignedUp(email);
       if (status) {
-        setIsLogin(true);
-        dispatch(autoLogin(navigation, email));
+        setIsLogin(false);
+
+        const {error, data} = await supabase.auth.signInWithOtp({
+          email: email,
+          options: {
+            // set this to false if you do not want the user to be automatically signed up
+            shouldCreateUser: false,
+          },
+        });
+        if (error) {
+          setLoading(false);
+        }
+        if (data) {
+          setStages('otp');
+          setIsSignIn(true);
+        }
         setLoading(false);
       } else {
         setStages('password');
@@ -143,14 +158,13 @@ const NewAuthLoginFLow = ({navigation, route}) => {
     } else {
       console.log('false.........no passkeys');
     }
-    // setStages('password');
   };
   const updateAccountInfoInRedux = async (email, response) => {
     try {
       const token = await getDfnsJwt(email);
-      // const scw = await getScwAddress(token, response?.wallets);
+      console.log('wallets created.....', response?.wallets);
       const scw = await getAllScwAddress(token, response?.wallets);
-      console.log('redux update.....', scw, response?.wallets, email);
+      // console.log('redux update.....', scw, response?.wallets, email);
       dispatch(authActions.setEmail(email));
       dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(scw));
@@ -162,37 +176,26 @@ const NewAuthLoginFLow = ({navigation, route}) => {
   const confirmOtp = async () => {
     setLoading(true);
     const user = await verifyEmailOtp(otp.join(''), email);
-    if (user && !isLogin) {
-      console.log('error on final register');
-      try {
-        const response = await registerUsernameToDFNS(email);
-        if (response) {
-          await updateAccountInfoInRedux(email, response);
-          navigation.navigate('EnterName');
-        }
-        // const scw = await getSmartAccountAddress(
-        //   response?.wallets.filter(x => x.network === 'Polygon'),
-        // );
-        // console.log('redux setup signup', scw);
-        // if (response) {
-        //   navigation.navigate('EnterName');
-        // }
-      } catch (error) {
-        console.log('error on signup....', error);
+    if (isSignIn) {
+      if (user) {
+        dispatch(autoLogin(navigation, email));
+      } else {
         setLoading(false);
       }
-      // const scw = await getSmartAccountAddress(
-      //   response?.wallets.filter(x => x.network === 'Polygon'),
-      // );
-      // console.log('redux setup signup', scw);
-      // if (response) {
-      //   navigation.navigate('EnterName');
-      // }
-      // } catch (error) {
-      //   console.log('error on signup....', error);
-      //   setLoading(false);
-      // }
-      // }
+    } else {
+      if (user && !isLogin) {
+        console.log('error on final register');
+        try {
+          const response = await registerUsernameToDFNS(email);
+          if (response) {
+            await updateAccountInfoInRedux(email, response);
+            navigation.navigate('EnterName');
+          }
+        } catch (error) {
+          console.log('error on signup....', error);
+          setLoading(false);
+        }
+      }
     }
   };
   const registerYourPassword = async () => {

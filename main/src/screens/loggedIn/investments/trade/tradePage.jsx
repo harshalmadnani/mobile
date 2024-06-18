@@ -153,7 +153,7 @@ const TradePage = ({route}) => {
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
-            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+            parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
             dfnsToken,
             wallets,
           ),
@@ -173,7 +173,7 @@ const TradePage = ({route}) => {
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
-            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+            parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
             dfnsToken,
             wallets,
           ),
@@ -194,7 +194,7 @@ const TradePage = ({route}) => {
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
-            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+            parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
             dfnsToken,
             wallets,
           ),
@@ -217,7 +217,7 @@ const TradePage = ({route}) => {
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
           bestSwappingBuyTrades?.estimation?.tokenIn?.address,
-        value *
+        parseFloat(value) *
           Math.pow(
             10,
             bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
@@ -1163,10 +1163,10 @@ const TradePage = ({route}) => {
                     bestSwappingBuyTrades &&
                     sellOrderStages === 'Place Order'
                   ) {
-                    //same chain
                     setPreparingTx(true);
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
+                      //same chain
                       res = bestSwappingBuyTrades;
                       setSellOrderStages('Preparing Tx...');
                       const smartAccountSrc = allScw.filter(
@@ -1238,20 +1238,19 @@ const TradePage = ({route}) => {
                             bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId?.toString() ??
                           '137',
                       )?.[0]?.address;
-                      // smartAccountDst = await getSmartAccountAddress(
-                      //   dfnsToken,
-                      //   wallets.filter(x => x.network === dstChainName)?.[0]
-                      //     ?.id,
-                      // bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                      //   ?.chainId ?? 137,
-                      // );
-                      // smartAccountSrc = await getSmartAccountAddress(
-                      //   dfnsToken,
-                      //   wallets.filter(x => x.network === srcChainName)?.[0]
-                      //     ?.id,
-                      //   bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                      //     ?.chainId ?? 137,
-                      // );
+                      console.log(
+                        'All wallet info',
+                        walletSrcId,
+                        walletDstId,
+                        srcChainName,
+                        dstChainName,
+                        smartAccountSrc,
+                        smartAccountDst,
+                        value,
+                        Math.pow(10, tokensToSell?.[0]?.decimals),
+                        parseFloat(value) *
+                          Math.pow(10, tokensToSell?.[0]?.decimals),
+                      );
                       if (
                         tokensToSell?.[0]?.address?.toLowerCase() !==
                         getUSDCTokenOnChain(
@@ -1267,92 +1266,86 @@ const TradePage = ({route}) => {
                           await executeSameChainSellForUSDC(
                             tokensToSell?.[0],
                             smartAccountSrc,
-                            value * Math.pow(10, tokensToSell?.[0]?.decimals),
+                            parseFloat(value) *
+                              Math.pow(10, tokensToSell?.[0]?.decimals),
                           );
                         console.log(
                           'stages starting.........sell',
-                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.chainId ?? 137,
-                          smartAccountSrc,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.chainId ?? 137,
-                          smartAccountDst,
+                          txReceiptOfSameChain,
                         );
                         if (txReceiptOfSameChain?.transactionRequest) {
-                          sameChainTx = await confirmDLNTransaction(
-                            tradeType,
-                            txReceiptOfSameChain,
-                            txReceiptOfSameChain?.estimation?.srcChainTokenIn
-                              ?.amount ||
-                              txReceiptOfSameChain?.action?.fromAmount,
-                            txReceiptOfSameChain?.estimation?.srcChainTokenIn
-                              ?.address ||
-                              txReceiptOfSameChain?.action?.fromToken?.address,
-                            txReceiptOfSameChain?.tx ??
-                              txReceiptOfSameChain?.transactionRequest,
-                            smartAccountSrc,
-                            evmInfo?.address,
-                            true,
-                            [],
-                            dfnsToken,
-                            walletSrcId,
-                            walletDstId,
-                            smartAccountSrc,
-                            smartAccountSrc,
-                          );
+                          // sameChainTx = await confirmDLNTransaction(
+                          //   tradeType,
+                          //   txReceiptOfSameChain,
+                          //   txReceiptOfSameChain?.estimation?.srcChainTokenIn
+                          //     ?.amount ||
+                          //     txReceiptOfSameChain?.action?.fromAmount,
+                          //   txReceiptOfSameChain?.estimation?.srcChainTokenIn
+                          //     ?.address ||
+                          //     txReceiptOfSameChain?.action?.fromToken?.address,
+                          //   txReceiptOfSameChain?.tx ??
+                          //     txReceiptOfSameChain?.transactionRequest,
+                          //   smartAccountSrc,
+                          //   evmInfo?.address,
+                          //   false,
+                          //   [],
+                          //   dfnsToken,
+                          //   walletSrcId,
+                          //   walletDstId,
+                          //   smartAccountSrc,
+                          //   smartAccountSrc,
+                          // );
+                          sameChainTx = true;
                         }
                       }
                       if (sameChainTx) {
-                        // setTimeout(async () => {
-                        setSellOrderStages('Executing Tx...');
-                        ReactNativeHapticFeedback.trigger(
-                          'impactHeavy',
-                          options,
-                        );
-                        //await switchAuthCoreChain(
-                        //parseInt(tokensToSell?.[0].chainId),
-                        //)
-                        const crossChainSwapTx =
-                          await executeCrossChainSellForUSDC(
-                            tokensToSell?.[0].chainId,
-                            smartAccountSrc,
-                            sameChainTx.length > 0
-                              ? txReceiptOfSameChain?.estimate?.toAmountMin
-                              : value *
-                                  Math.pow(10, tokensToSell?.[0]?.decimals),
-                            smartAccountDst,
+                        setTimeout(async () => {
+                          setSellOrderStages('Executing Tx...');
+                          ReactNativeHapticFeedback.trigger(
+                            'impactHeavy',
+                            options,
                           );
-                        if (crossChainSwapTx) {
-                          const finalSignature = await confirmDLNTransaction(
-                            'buy',
-                            crossChainSwapTx,
-                            crossChainSwapTx?.estimation?.srcChainTokenIn
-                              ?.amount || crossChainSwapTx?.action?.fromAmount,
-                            crossChainSwapTx?.estimation?.srcChainTokenIn
-                              ?.address ||
-                              crossChainSwapTx?.action?.fromToken?.address,
-                            crossChainSwapTx?.tx ??
-                              crossChainSwapTx?.transactionRequest,
-                            smartAccountDst,
-                            evmInfo?.address,
-                            false,
-                            sameChainTx,
-                            dfnsToken,
-                            walletSrcId,
-                            walletDstId,
-                            smartAccountSrc,
-                            smartAccountDst,
-                          );
+                          const crossChainSwapTx =
+                            await executeCrossChainSellForUSDC(
+                              tokensToSell?.[0].chainId,
+                              smartAccountSrc,
+                              // sameChainTx.length > 0
+                              txReceiptOfSameChain?.estimate?.toAmountMin,
+                              // : parseFloat(value) *
+                              //     Math.pow(10, tokensToSell?.[0]?.decimals),
+                              smartAccountDst,
+                            );
+                          if (crossChainSwapTx) {
+                            const finalSignature = await confirmDLNTransaction(
+                              'buy',
+                              crossChainSwapTx,
+                              crossChainSwapTx?.estimation?.srcChainTokenIn
+                                ?.amount ||
+                                crossChainSwapTx?.action?.fromAmount,
+                              crossChainSwapTx?.estimation?.srcChainTokenIn
+                                ?.address ||
+                                crossChainSwapTx?.action?.fromToken?.address,
+                              crossChainSwapTx?.tx ??
+                                crossChainSwapTx?.transactionRequest,
+                              smartAccountDst,
+                              evmInfo?.address,
+                              false,
+                              [],
+                              dfnsToken,
+                              walletSrcId,
+                              walletDstId,
+                              smartAccountSrc,
+                              smartAccountDst,
+                            );
 
-                          if (finalSignature) {
-                            // await switchAuthCoreChain(137);
-                            navigation.navigate('PendingTxStatus', {
-                              state: crossChainSwapTx,
-                              tradeType,
-                            });
+                            if (finalSignature) {
+                              navigation.navigate('PendingTxStatus', {
+                                state: crossChainSwapTx,
+                                tradeType,
+                              });
+                            }
                           }
-                        }
-                        // }, 2000);
+                        }, 2000);
                       }
                     }
                   } else if (

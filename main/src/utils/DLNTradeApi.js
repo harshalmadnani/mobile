@@ -363,19 +363,17 @@ export const confirmDLNTransaction = async (
   ) {
     chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId;
     smartAccount = smartAccountSrc;
-    // const smartAccountDst=
-    // smartAccount = await getSmartAccountAddress(
-    //   dfnsToken,
-    //   walletIdSrc,
-    //   chainId,
-    // );
-    // const smartAccountDst = await getSmartAccountAddress(
-    //   dfnsToken,
-    //   walletIdDst,
-    //   quoteTxReciept?.estimation?.dstChainTokenOut?.chainId ?? 137,
-    // );
     const erc20Abi = new ethers.Interface(erc20);
     const proxyDlnAbi = new ethers.Interface(ProxyDLNAbi);
+    console.log(
+      getXadeFeePayerAddressOnChain(
+        quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
+      ),
+      chainId,
+      smartAccount,
+      amount,
+      tokenAddress,
+    );
     const sendData = erc20Abi.encodeFunctionData('transfer', [
       getXadeFeePayerAddressOnChain(
         quoteTxReciept?.estimation?.srcChainTokenIn?.chainId,
@@ -414,9 +412,11 @@ export const confirmDLNTransaction = async (
     txs.push(executeProxyDLN);
     console.log('smartAccountDst...........', smartAccountDst);
   } else {
-    chainId = quoteTxReciept?.estimation?.srcChainTokenIn?.chainId ?? '137';
+    chainId =
+      quoteTxReciept?.estimation?.srcChainTokenIn?.chainId ??
+      quoteTxReciept?.action?.fromChainId ??
+      '137';
     smartAccount = smartAccountSrc;
-    console.log('approval address....', chainId, walletIdSrc, tokenAddress);
     const erc20Abi = new ethers.Interface(erc20);
     const approvalData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,
@@ -432,6 +432,7 @@ export const confirmDLNTransaction = async (
       data: txData?.data,
     };
     txs.push(executeTx);
+    console.log('same chain tx......', walletIdSrc, chainId, txs);
   }
   if (!onlyTransaction) {
     const txnHash = await tradeTokenGasless(
@@ -659,18 +660,26 @@ export const getQuoteFromLifi = async (
 };
 export const executeSameChainSellForUSDC = async (
   tokenInfo,
-  evmInfo,
+  smartAccount,
   value,
 ) => {
   const usdcNativeToken = getUSDCTokenOnChain(parseInt(tokenInfo?.chainId));
-
+  console.log(
+    'lifi quote : ',
+    tokenInfo?.chainId,
+    tokenInfo?.address,
+    value,
+    tokenInfo?.chainId,
+    usdcNativeToken,
+    smartAccount,
+  );
   const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
     tokenInfo?.chainId,
     tokenInfo?.address,
     value,
     tokenInfo?.chainId,
     usdcNativeToken,
-    evmInfo?.smartAccount,
+    smartAccount,
   );
   return uSDCTxnRate;
 };
