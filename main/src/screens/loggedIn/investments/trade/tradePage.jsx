@@ -143,7 +143,6 @@ const TradePage = ({route}) => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {
         setLoading(true);
-        console.log('fired when trade type changes');
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
