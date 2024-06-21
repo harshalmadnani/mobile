@@ -12,7 +12,10 @@ function InteractiveChart() {
   const dispatch = useDispatch();
 
   const [divisionResult, setDivisionResult] = useState('0');
-  const [estimatedHistory, setEstimatedHistory] = useState([]);
+  const [estimatedHistory, setEstimatedHistory] = useState([
+    {timestamp: 0, value: 0},
+    {timestamp: 0, value: 0},
+  ]);
   const [currentPrice, setCurrentPrice] = useState('0');
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
   const [priceChange, setPriceChange] = useState('0');
@@ -103,6 +106,7 @@ function InteractiveChart() {
         try {
           const payload = {
             explorer: {
+              // wallet: `${scwWallets[0]}`,
               wallets: `${scwWallets.toString()}`,
             },
           };
@@ -118,6 +122,10 @@ function InteractiveChart() {
           setCurrentPrice(parsedData?.analysis?.estimated_balance);
           setEstimatedHistory(parsedData?.analysis?.estimated_history);
         } catch (error) {
+          setEstimatedHistory([
+            {timestamp: 0, value: 0},
+            {timestamp: 0, value: 0},
+          ]);
           console.log('Error on parsing.....charts', error);
         }
       };
@@ -133,7 +141,7 @@ function InteractiveChart() {
     return () => {
       ws.close();
     };
-  }, [evmInfo]);
+  }, [allScw]);
 
   useEffect(() => {
     if (priceList?.length > 1 || priceList?.[0]?.value === '0') {

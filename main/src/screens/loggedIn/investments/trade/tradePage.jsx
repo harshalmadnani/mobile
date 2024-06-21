@@ -25,19 +25,7 @@ import {
 } from '../../../../store/actions/market';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-const DotLoading = ({loadingText}) => {
-  const [dots, setDots] = useState('');
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots(prevDots => (prevDots.length < 3 ? prevDots + '.' : ''));
-    }, 500); // Change dot every 500 ms
-
-    return () => clearInterval(interval);
-  }, []);
-
-  return <Text>{loadingText + dots}</Text>;
-};
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -64,6 +52,7 @@ import {
   getSmartAccountAddress,
 } from '../../../../utils/DFNS/walletFLow';
 import {getRouteOnNetwork} from '../../../../utils/constants';
+import {ActivityIndicator} from 'react-native';
 // import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
@@ -131,31 +120,36 @@ const TradePage = ({route}) => {
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
   console.log(
     'BTC.......',
+    tradeType,
+    bestSwappingBuyTrades?.action?.toToken?.priceUSD,
+    bestSwappingBuyTrades?.action?.toToken,
+    tokensToSell?.[0],
     // holdings?.assets?.[0],
-    tokensToSell,
+    // JSON.stringify(bestSwappingBuyTrades),
     // holdings?.assets?.filter(
     //   x => x?.asset?.symbol === selectedAssetMetaData?.symbol,
     // ),
     // tokensToSell,
   );
-  const getDisplayText = () => {
-    if (loading) return <DotLoading loadingText="Calculating" />;
-    if (!bestSwappingBuyTrades) return 'Calculating....';
-    if (bestSwappingBuyTrades.length === 0) return 'Try Again';
-    if (preparingTx) return <DotLoading loadingText="CONFIRMING" />;
-    return 'CONFIRM';
-  };
+  // const getDisplayText = () => {
+  //   if (loading) return <DotLoading loadingText="Calculating" />;
+  //   if (!bestSwappingBuyTrades) return 'Calculating....';
+  //   if (bestSwappingBuyTrades.length === 0) return 'Try Again';
+  //   if (preparingTx) return <DotLoading loadingText="CONFIRMING" />;
+  //   return 'CONFIRM';
+  // };
 
   useEffect(() => {
     if (!isStockTrade) {
       if (tradeType === 'sell') {
         setLoading(true);
+        console.log('fired when trade type changes');
         dispatch(
           getBestDLNCrossSwapRateSell(
             tokensToSell?.[0],
             parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
-            dfnsToken,
-            wallets,
+            allScw.filter(x => x.chainId === tokensToSell?.[0]?.chainId)?.[0]
+              ?.address,
           ),
         );
         setLoading(false);
@@ -168,45 +162,60 @@ const TradePage = ({route}) => {
   }, [tradeType]);
 
   useEffect(() => {
-    if (!isStockTrade) {
-      if (tradeType === 'sell') {
-        dispatch(
-          getBestDLNCrossSwapRateSell(
-            tokensToSell?.[0],
+    const fetchNewQuotes = async () => {
+      setLoading(true);
+      if (!isStockTrade) {
+        if (tradeType === 'sell' && parseFloat(value) > 0) {
+          console.log(
+            'fired when value changes',
             parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
-            dfnsToken,
-            wallets,
-          ),
-        );
+          );
+          dispatch(
+            getBestDLNCrossSwapRateSell(
+              tokensToSell?.[0],
+              parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+              allScw.filter(x => x.chainId === tokensToSell?.[0]?.chainId)?.[0]
+                ?.address,
+            ),
+          );
+        } else {
+          getBestPrice();
+        }
       } else {
-        getBestPrice();
+        if (value !== '0' && value > '5' && value) {
+          getCurrentStockTradingPrice();
+        }
       }
-    } else {
-      if (value !== '0' && value > '5' && value) {
-        getCurrentStockTradingPrice();
-      }
-    }
+      setLoading(false);
+    };
+    fetchNewQuotes();
   }, [value]);
 
   useEffect(() => {
-    if (!isStockTrade) {
-      if (tradeType === 'sell') {
-        dispatch(
-          getBestDLNCrossSwapRateSell(
-            tokensToSell?.[0],
-            parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
-            dfnsToken,
-            wallets,
-          ),
-        );
+    const fetchNewQuotes = async () => {
+      setLoading(true);
+      if (!isStockTrade) {
+        if (tradeType === 'sell') {
+          console.log('fired when meta changes');
+          dispatch(
+            getBestDLNCrossSwapRateSell(
+              tokensToSell?.[0],
+              parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+              allScw.filter(x => x.chainId === tokensToSell?.[0]?.chainId)?.[0]
+                ?.address,
+            ),
+          );
+        } else {
+          getBestPrice();
+        }
       } else {
-        getBestPrice();
+        if (value !== '0' && value > '5' && value) {
+          getCurrentStockTradingPrice();
+        }
       }
-    } else {
-      if (value !== '0' && value > '5' && value) {
-        getCurrentStockTradingPrice();
-      }
-    }
+      setLoading(false);
+    };
+    fetchNewQuotes();
   }, [selectedAssetMetaData]);
   const evmInfo = useSelector(x => x.portfolio.evmInfo);
 
@@ -236,7 +245,6 @@ const TradePage = ({route}) => {
       console.log('Here... no tx data');
     }
   };
-  console.log(bestSwappingBuyTrades?.estimate?.toAmountMin);
 
   const getBestPrice = async () => {
     if (selectedAssetMetaData) {
@@ -886,7 +894,7 @@ const TradePage = ({route}) => {
                   }}>
                   $
                   {tradeType === 'sell'
-                    ? bestSwappingBuyTrades?.action?.toToken?.priceUSD ||
+                    ? bestSwappingBuyTrades?.action?.fromToken?.priceUSD ||
                       (
                         bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                           ?.amount /
@@ -1072,11 +1080,7 @@ const TradePage = ({route}) => {
                 await orderStockPrice();
               } else {
                 if (!loading && bestSwappingBuyTrades && !preparingTx) {
-                  if (
-                    tradeType === 'buy' &&
-                    bestSwappingBuyTrades &&
-                    buyTradeStages === 'Place Order'
-                  ) {
+                  if (tradeType === 'buy' && bestSwappingBuyTrades) {
                     setLoading(true);
                     setPreparingTx(true);
                     let smartAccountSrc;
@@ -1085,9 +1089,11 @@ const TradePage = ({route}) => {
                     let walletSrcId;
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
+                      smartAccountSrc = allScw.filter(
+                        x => x.chainId === '137',
+                      )?.[0]?.address;
                       res = bestSwappingBuyTrades;
                     } else {
-                      setBuyTradeStages('Executing tx route...');
                       const dstChainName = getNameChainId(
                         (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
@@ -1122,11 +1128,6 @@ const TradePage = ({route}) => {
                         smartAccountSrc,
                         smartAccountDst,
                       );
-                      console.log(
-                        'addresses',
-                        smartAccountDst,
-                        smartAccountSrc,
-                      );
                     }
                     setBuyTradeStages('Confirming tx ...');
                     const signature = await confirmDLNTransaction(
@@ -1158,12 +1159,9 @@ const TradePage = ({route}) => {
                         tradeType,
                       });
                     }
-                  } else if (
-                    tradeType === 'sell' &&
-                    bestSwappingBuyTrades &&
-                    sellOrderStages === 'Place Order'
-                  ) {
+                  } else if (tradeType === 'sell' && bestSwappingBuyTrades) {
                     setPreparingTx(true);
+                    setLoading(true);
                     let res;
                     if (bestSwappingBuyTrades?.transactionRequest) {
                       //same chain
@@ -1274,27 +1272,6 @@ const TradePage = ({route}) => {
                           txReceiptOfSameChain,
                         );
                         if (txReceiptOfSameChain?.transactionRequest) {
-                          // sameChainTx = await confirmDLNTransaction(
-                          //   tradeType,
-                          //   txReceiptOfSameChain,
-                          //   txReceiptOfSameChain?.estimation?.srcChainTokenIn
-                          //     ?.amount ||
-                          //     txReceiptOfSameChain?.action?.fromAmount,
-                          //   txReceiptOfSameChain?.estimation?.srcChainTokenIn
-                          //     ?.address ||
-                          //     txReceiptOfSameChain?.action?.fromToken?.address,
-                          //   txReceiptOfSameChain?.tx ??
-                          //     txReceiptOfSameChain?.transactionRequest,
-                          //   smartAccountSrc,
-                          //   evmInfo?.address,
-                          //   false,
-                          //   [],
-                          //   dfnsToken,
-                          //   walletSrcId,
-                          //   walletDstId,
-                          //   smartAccountSrc,
-                          //   smartAccountSrc,
-                          // );
                           sameChainTx = true;
                         }
                       }
@@ -1339,6 +1316,7 @@ const TradePage = ({route}) => {
                             );
 
                             if (finalSignature) {
+                              setLoading(true);
                               navigation.navigate('PendingTxStatus', {
                                 state: crossChainSwapTx,
                                 tradeType,
@@ -1360,20 +1338,24 @@ const TradePage = ({route}) => {
               setPreparingTx(false);
             }
           }}>
-          <Text
-            style={{
-              fontSize: 14,
-              letterSpacing: 0.2,
-              fontFamily: 'Unbounded-Bold',
-              color: '#000',
-              textAlign: 'center',
-            }}>
-            {isStockTrade
-              ? stockOrderStages
-              : tradeType === 'sell'
-              ? sellOrderStages
-              : buyTradeStages}
-          </Text>
+          {loading ? (
+            <ActivityIndicator size={12} color="#000" />
+          ) : (
+            <Text
+              style={{
+                fontSize: 14,
+                letterSpacing: 0.2,
+                fontFamily: 'Unbounded-Bold',
+                color: '#000',
+                textAlign: 'center',
+              }}>
+              {isStockTrade
+                ? stockOrderStages
+                : tradeType === 'sell'
+                ? sellOrderStages
+                : 'Place Order'}
+            </Text>
+          )}
         </TouchableOpacity>
         <Modal
           animationType="slide"

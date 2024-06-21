@@ -50,7 +50,12 @@ export const getDLNTradeCreateBuyOrder = async (
   try {
     let response;
     if (dstChainId === srcChainId) {
-      console.log('src token in amount....', srcChainTokenInAmount);
+      console.log(
+        'src token in amount....',
+        srcChainTokenIn,
+        srcChainId,
+        srcChainTokenInAmount,
+      );
       response = await getQuoteFromLifi(
         srcChainId,
         dstChainId,
@@ -418,6 +423,7 @@ export const confirmDLNTransaction = async (
       '137';
     smartAccount = smartAccountSrc;
     const erc20Abi = new ethers.Interface(erc20);
+    console.log('chain info', smartAccount, chainId);
     const approvalData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,
       amount,

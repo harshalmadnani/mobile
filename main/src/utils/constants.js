@@ -5573,7 +5573,7 @@ export const NetworkChainInfo = [
 export const getRouteOnNetwork = symbol => {
   switch (symbol) {
     case 'BTC':
-      return 'Arbitrum';
+      return 'Polygon';
     case 'ETH':
       return 'Polygon';
     case 'BNB':

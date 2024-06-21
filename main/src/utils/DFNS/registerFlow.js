@@ -56,7 +56,7 @@ export const registerUsernameToDFNS = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const initRes = await axios.post(
-      `https://gull-relevant-secretly.ngrok-free.app/register/init`,
+      `http://api-dfns.xade.finance/register/init`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,

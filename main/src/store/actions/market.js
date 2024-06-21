@@ -159,25 +159,11 @@ export const getBestDLNCrossSwapRateBuy = (
   };
 };
 
-export const getBestDLNCrossSwapRateSell = (
-  tokenInfo,
-  value,
-  authToken,
-  wallets,
-) => {
+export const getBestDLNCrossSwapRateSell = (tokenInfo, value, scw) => {
   return async (dispatch, getState) => {
     // const evmInfo = getState().portfolio.evmInfo;
     // const evmInfo = getState().portfolio.evmInfo;
-    const chainName = getNameChainId(tokenInfo?.chainId?.toString());
-    console.log('chain....', chainName, tokenInfo?.chainId);
-    const walletInfo = wallets?.filter(x => x.network === chainName)[0];
-    console.log('chain....', authToken, walletInfo);
-    const scw = await getSmartAccountAddress(
-      authToken,
-      walletInfo?.id,
-      tokenInfo?.chainId?.toString(),
-    );
-    console.log('chain....', scw);
+    console.log('scw....', tokenInfo?.chainId, tokenInfo?.address, scw);
     const bestRate = await getDLNTradeCreateBuyOrder(
       tokenInfo?.chainId,
       tokenInfo?.address,

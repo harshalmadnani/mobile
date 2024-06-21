@@ -282,9 +282,7 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
-      biconomyPaymasterApiKey: '3OjDX_U5v.7a176ce5-e0bb-4906-8186-729255e8ef7c',
-      // rpcUrl:
-      //   'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
+      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
       bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId?.toString()}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
     const scwAddress = await smartAccountClient.getAccountAddress();
