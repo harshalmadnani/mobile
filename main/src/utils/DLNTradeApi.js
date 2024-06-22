@@ -50,12 +50,6 @@ export const getDLNTradeCreateBuyOrder = async (
   try {
     let response;
     if (dstChainId === srcChainId) {
-      console.log(
-        'src token in amount....',
-        srcChainTokenIn,
-        srcChainId,
-        srcChainTokenInAmount,
-      );
       response = await getQuoteFromLifi(
         srcChainId,
         dstChainId,
@@ -68,6 +62,7 @@ export const getDLNTradeCreateBuyOrder = async (
         srcChainTokenInAmount,
         smartAccount,
       );
+      console.log('lifi.....', JSON.stringify(response?.data));
     } else {
       response = await axios.get(
         `${DLNBaseURL}${
