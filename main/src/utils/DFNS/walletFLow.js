@@ -27,6 +27,20 @@ export const getPaymasterKeyOnName = chain => {
       return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
   }
 };
+export const getPaymasterKeyOnId = chain => {
+  switch (chain) {
+    case '137':
+      return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
+    case '56':
+      return 'PtenFME78.7ec6feef-5f51-4cfd-ae5a-a2efe0ae712d';
+    case '8453':
+      return 'PsoPGd6TZ.7cfbc00c-7cee-4bf8-815c-2cab0db4a8e1';
+    case '42161':
+      return '3OjDX_U5v.7a176ce5-e0bb-4906-8186-729255e8ef7c';
+    default:
+      return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
+  }
+};
 export const getIdOnChain = chain => {
   switch (chain) {
     case 'Polygon':
@@ -170,7 +184,7 @@ export const transferTokenGassless = async (
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
-      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
+      biconomyPaymasterApiKey: getPaymasterKeyOnId(chainId?.toString()),
       rpcUrl:
         'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
       bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
@@ -253,7 +267,7 @@ export const getSmartAccountAddress = async (authToken, walletId, chainId) => {
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
-      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
+      biconomyPaymasterApiKey: getPaymasterKeyOnId(chainId?.toString()),
       // rpcUrl:
       //   'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
       bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
@@ -282,7 +296,7 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
-      biconomyPaymasterApiKey: 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64',
+      biconomyPaymasterApiKey: getPaymasterKeyOnId(chainId?.toString()),
       bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId?.toString()}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
     const scwAddress = await smartAccountClient.getAccountAddress();

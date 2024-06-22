@@ -1022,7 +1022,9 @@ const TradePage = ({route}) => {
                     alignSelf: 'flex-end',
                     color: '#fff',
                   }}>
-                  {chainName}
+                  {tradeType === 'buy'
+                    ? chainName
+                    : chainNames[parseInt(tokensToSell?.[0]?.chainId)]}
                 </Text>
               </View>
             </View>
@@ -1217,20 +1219,16 @@ const TradePage = ({route}) => {
                             bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId?.toString() ??
                           '137',
                       )?.[0]?.address;
-                      // smartAccountDst = await getSmartAccountAddress(
-                      //   dfnsToken,
-                      //   wallets.filter(x => x.network === dstChainName)?.[0]
-                      //     ?.id,
-                      // bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                      //   ?.chainId ?? 137,
-                      // );
-                      // smartAccountSrc = await getSmartAccountAddress(
-                      //   dfnsToken,
-                      //   wallets.filter(x => x.network === srcChainName)?.[0]
-                      //     ?.id,
-                      //   bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                      //     ?.chainId ?? 137,
-                      // );
+                      console.log(
+                        'Cross info.........',
+                        dstChainName,
+                        srcChainName,
+                        smartAccountDst,
+                        smartAccountSrc,
+                        getUSDCTokenOnChain(
+                          parseInt(tokensToSell?.[0]?.chainId),
+                        ).toLowerCase(),
+                      );
                       if (
                         tokensToSell?.[0]?.address?.toLowerCase() !==
                         getUSDCTokenOnChain(
@@ -1248,7 +1246,10 @@ const TradePage = ({route}) => {
                             smartAccountSrc,
                             value * Math.pow(10, tokensToSell?.[0]?.decimals),
                           );
-
+                        console.log(
+                          'same chain tx',
+                          txReceiptOfSameChain?.transactionRequest,
+                        );
                         if (txReceiptOfSameChain?.transactionRequest) {
                           sameChainTx = await confirmDLNTransaction(
                             tradeType,
