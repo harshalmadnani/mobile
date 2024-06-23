@@ -73,7 +73,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
               <View style={{flexDirection: 'row', paddingRight: 10}}>
-                <Image
+                {/* <Image
                   source={{
                     uri: NetworkChainInfo.filter(
                       x => x.chainId === item?.contracts_balances?.[0]?.chainId,
@@ -85,7 +85,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     alignSelf: 'center',
                     marginRight: 8,
                   }}
-                />
+                /> */}
                 <Text style={styles.text5}>{item?.balance?.toFixed(5)}</Text>
               </View>
             </View>
@@ -370,7 +370,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    marginBottom: '10%',
+                    marginBottom: 10,
                   }}>
                   <Text
                     style={{
@@ -392,6 +392,49 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     }}>
                     ${item?.realized_pnl?.toFixed(2)}
                   </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginBottom: '10%',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: '#ADADAD',
+                      textAlign: 'left',
+                      flex: 1,
+                      fontFamily: 'NeueMontreal-Medium',
+                    }}>
+                    Chain:
+                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Image
+                      source={{
+                        uri: NetworkChainInfo.filter(
+                          x => x.chainId === item?.contracts_balances?.[0]?.chainId,
+                        )?.[0]?.logo,
+                      }}
+                      style={{
+                        width: 18,
+                        height: 18,
+                        marginRight: 8,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: '#fff',
+                        fontFamily: 'Unbounded-Medium',
+                      }}>
+                      {
+                        NetworkChainInfo.find(
+                          x => x.chainId === item?.contracts_balances?.[0]?.chainId
+                        )?.name
+                      }
+                    </Text>
+                  </View>
                 </View>
               </View>
               <TouchableOpacity
