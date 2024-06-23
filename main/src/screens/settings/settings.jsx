@@ -77,7 +77,7 @@ const Component = ({navigation}) => {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: `Download the ultimate trading app with my refer code: ${userInfo?.[0]?.name?.toUpperCase()}
+        message: `Download the ultimate trading app with my refer code: ${info}
           to win 400 Xade Shards and other exclusive rewards!
           Experience the new era of finance: bit.ly/xadefinance`,
       });

@@ -220,28 +220,33 @@ const AddFund = ({navigation}) => {
       </TouchableOpacity>
       <Text style={styles.heading}>Payment Request</Text>
 
-      {/* <LinearGradient colors={['#1D2426', '#383838']} style={styles.linearGradient}>
-                <Text style={styles.sectionHeading}>Select Bank Account</Text>
-                <View style={styles.formContainer}>                
-                    <View
-                        style={styles.pickerContainer}>
-                        <Picker
-                            label="Bank Account"
-                            style={styles.picker}
-                            selectedValue = {selectedBankAccount}
-                            mode='dialog'
-                            onValueChange={(itemValue) => setSelectedBankAccount(itemValue)}>
-
-                            {
-                                bankAccountList.map((bankAccount) => 
-                                    <Picker.Item key={bankAccount.id} value={bankAccount.id} label={bankAccount.accountNumber + ' - ' + bankAccount.bankAccountSubType} />
-                                )
-                            }
-
-                        </Picker>
-                    </View>
-                </View>
-            </LinearGradient> */}
+      {/* <LinearGradient
+        colors={['#1D2426', '#383838']}
+        style={styles.linearGradient}>
+        <Text style={styles.sectionHeading}>Select Bank Account</Text>
+        <View style={styles.formContainer}>
+          <View style={styles.pickerContainer}>
+            <Picker
+              label="Bank Account"
+              style={styles.picker}
+              selectedValue={selectedBankAccount}
+              mode="dialog"
+              onValueChange={itemValue => setSelectedBankAccount(itemValue)}>
+              {bankAccountList.map(bankAccount => (
+                <Picker.Item
+                  key={bankAccount.id}
+                  value={bankAccount.id}
+                  label={
+                    bankAccount.accountNumber +
+                    ' - ' +
+                    bankAccount.bankAccountSubType
+                  }
+                />
+              ))}
+            </Picker>
+          </View>
+        </View>
+      </LinearGradient> */}
 
       {!loading && selectedBankAccount !== null ? (
         <LinearGradient

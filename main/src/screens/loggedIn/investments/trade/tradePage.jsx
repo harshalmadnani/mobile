@@ -84,7 +84,10 @@ const TradePage = ({route}) => {
     {left: 'BOTS', right: 'COMING SOON'},
   ];
   const holdings = useSelector(x => x.portfolio.holdings);
-  const usdcValue = holdings?.assets?.filter(x => x.asset?.symbol === 'USDC');
+  const usdcValue = holdings?.assets?.filter(
+    x =>
+      x.asset?.symbol === 'USDC' && x?.contracts_balances[0]?.chainId === '137',
+  );
   const bestSwappingBuyTrades = useSelector(x => x.market.bestSwappingTrades);
   const allSwappingTradesQuotes = useSelector(
     x => x.market.allSwappingTradesQuotes,

@@ -180,7 +180,7 @@ const SendEmailComponent = ({navigation}) => {
             {submitText}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.sendMobile}
           onPress={() => navigation.push('SendMobile')}>
           <Text
@@ -198,7 +198,7 @@ const SendEmailComponent = ({navigation}) => {
             type="feather"
             onPress={() => navigation.goBack()}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity
           style={styles.sendWallet}
           onPress={() => navigation.push('SendWallet')}>

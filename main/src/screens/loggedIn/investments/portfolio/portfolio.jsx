@@ -38,7 +38,7 @@ const Portfolio = ({navigation}) => {
   const userInfo = useSelector(x => x.portfolio.userInfo);
 
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [portfolioValue, setPortfolioValue] = useState(null);
   let info;
   let imageUrl;
   // info = global.loginAccount.name;
@@ -51,13 +51,13 @@ const Portfolio = ({navigation}) => {
     );
     if (allScw?.length) {
       const scwWallets = allScw.map(x => x.address);
-      console.log('portfolio all scw', scwWallets);
       ws.onopen = () => {
         const payload = {
           type: 'wallet',
           authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
           payload: {
             wallets: `${scwWallets.toString()}`,
+            // wallet: '0xce3bc7500c88d0bdd0ef3d9152b82188d683fb3c',
             type: 'portfolio',
             interval: 2,
             unlistedAssets: false,
@@ -70,7 +70,7 @@ const Portfolio = ({navigation}) => {
       ws.onmessage = event => {
         const parsedData = JSON.parse(event?.data);
         const manipulatedHoldingsData = [];
-
+        setPortfolioValue(parsedData);
         if (parsedData.assets?.length > 0) {
           parsedData.assets?.forEach((asset, i) => {
             asset?.contracts_balances?.forEach(contractBalance =>
@@ -125,7 +125,8 @@ const Portfolio = ({navigation}) => {
   };
   const [refreshing, setRefreshing] = React.useState(false);
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
-  console.log(holdings?.assets[0]?.cross_chain_balances?.Polygon);
+
+  console.log(JSON.stringify(holdings));
   const onRefresh = async () => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
@@ -139,6 +140,7 @@ const Portfolio = ({navigation}) => {
           authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
           payload: {
             wallets: `${scwWallets.toString()}`,
+            // wallets: '0xce3bc7500c88d0bdd0ef3d9152b82188d683fb3c',
             type: 'portfolio',
             interval: 2,
             unlistedAssets: false,
@@ -152,7 +154,7 @@ const Portfolio = ({navigation}) => {
       ws.onmessage = event => {
         const parsedData = JSON.parse(event?.data);
         const manipulatedHoldingsData = [];
-
+        setPortfolioValue(parsedData);
         if (parsedData.assets?.length > 0) {
           parsedData.assets?.forEach((asset, i) => {
             asset?.contracts_balances?.forEach(contractBalance =>
@@ -164,7 +166,6 @@ const Portfolio = ({navigation}) => {
               }),
             );
           });
-          console.log(manipulatedHoldingsData.length);
           dispatch(
             portfolioAction.setHoldings({assets: manipulatedHoldingsData}),
           );
@@ -354,7 +355,7 @@ const Portfolio = ({navigation}) => {
                           color: '#fff',
                           fontFamily: 'Unbounded-Bold',
                         }}>
-                        ${holdings?.total_wallet_balance?.toFixed(2)}
+                        ${portfolioValue?.total_wallet_balance?.toFixed(2)}
                       </Text>
                     </View>
 
@@ -382,23 +383,23 @@ const Portfolio = ({navigation}) => {
                         style={{
                           fontSize: 16,
                           color:
-                            holdings?.total_unrealized_pnl >= 0
+                            portfolioValue?.total_unrealized_pnl >= 0
                               ? '#ADFF6C'
                               : 'red',
                           fontFamily: 'Unbounded-Bold',
                         }}>
                         {(isNaN(
-                          (holdings?.total_unrealized_pnl /
-                            (holdings?.total_wallet_balance -
-                              holdings?.total_unrealized_pnl -
-                              holdings?.total_realized_pnl)) *
+                          (portfolioValue?.total_unrealized_pnl /
+                            (portfolioValue?.total_wallet_balance -
+                              portfolioValue?.total_unrealized_pnl -
+                              portfolioValue?.total_realized_pnl)) *
                             100,
                         )
                           ? 0
-                          : (holdings?.total_unrealized_pnl /
-                              (holdings?.total_wallet_balance -
-                                holdings?.total_unrealized_pnl -
-                                holdings?.total_realized_pnl)) *
+                          : (portfolioValue?.total_unrealized_pnl /
+                              (portfolioValue?.total_wallet_balance -
+                                portfolioValue?.total_unrealized_pnl -
+                                portfolioValue?.total_realized_pnl)) *
                             100
                         )?.toFixed(2)}
                         %
@@ -434,9 +435,9 @@ const Portfolio = ({navigation}) => {
                       {' '}
                       $
                       {(
-                        holdings?.total_wallet_balance -
-                        holdings?.total_unrealized_pnl -
-                        holdings?.total_realized_pnl
+                        portfolioValue?.total_wallet_balance -
+                        portfolioValue?.total_unrealized_pnl -
+                        portfolioValue?.total_realized_pnl
                       )?.toFixed(2)}
                     </Text>
                   </View>
@@ -460,14 +461,14 @@ const Portfolio = ({navigation}) => {
                       style={{
                         fontSize: 16,
                         color:
-                          holdings?.total_unrealized_pnl >= 0
+                          portfolioValue?.total_unrealized_pnl >= 0
                             ? '#ADFF6C'
                             : 'red',
                         textAlign: 'right',
                         flex: 1,
                         fontFamily: 'Unbounded-Medium',
                       }}>
-                      ${holdings?.total_unrealized_pnl?.toFixed(2)}
+                      ${portfolioValue?.total_unrealized_pnl?.toFixed(2)}
                     </Text>
                   </View>
                   <View
@@ -490,12 +491,14 @@ const Portfolio = ({navigation}) => {
                       style={{
                         fontSize: 16,
                         color:
-                          holdings?.total_realized_pnl >= 0 ? '#ADFF6C' : 'red',
+                          portfolioValue?.total_realized_pnl >= 0
+                            ? '#ADFF6C'
+                            : 'red',
                         textAlign: 'right',
                         flex: 1,
                         fontFamily: 'Unbounded-Medium',
                       }}>
-                      ${holdings?.total_realized_pnl?.toFixed(2)}
+                      ${portfolioValue?.total_realized_pnl?.toFixed(2)}
                     </Text>
                   </View>
                 </View>
@@ -804,40 +807,41 @@ const Portfolio = ({navigation}) => {
               )}
             </View>
           </ScrollView>
-          <TouchableOpacity
-            onPress={async e => {
-              navigation.push('Ramper');
-              ReactNativeHapticFeedback.trigger('impactHeavy', options);
-            }}
-            style={{
-              position: 'absolute',
-              bottom: Platform.OS === 'ios' ? '0%' : '0%',
-              width: '95%',
-              height: 56,
-              borderRadius: 28,
-              backgroundColor: '#FFF',
-              justifyContent: 'center',
-              alignItems: 'center',
-              shadowColor: '#000',
-
-              shadowOffset: {
-                width: 2,
-                height: 5,
-              },
-              shadowOpacity: 0.5,
-              shadowRadius: 10,
-              elevation: 5,
-            }}>
-            <Text
-              style={{
-                color: '#000',
-                fontSize: 16,
-                fontFamily: 'Unbounded-Bold',
-              }}>
-              ADD FUNDS
-            </Text>
-          </TouchableOpacity>
         </ScrollView>
+        <TouchableOpacity
+          onPress={async e => {
+            navigation.push('Ramper');
+            ReactNativeHapticFeedback.trigger('impactHeavy', options);
+          }}
+          style={{
+            position: 'absolute',
+            bottom: Platform.OS === 'ios' ? '0%' : '0%',
+            width: '95%',
+            height: 56,
+            borderRadius: 28,
+            backgroundColor: '#FFF',
+            justifyContent: 'center',
+            alignItems: 'center',
+            shadowColor: '#000',
+
+            shadowOffset: {
+              width: 2,
+              height: 5,
+            },
+            shadowOpacity: 0.5,
+            shadowRadius: 10,
+            elevation: 5,
+            // position: 'fixed',
+          }}>
+          <Text
+            style={{
+              color: '#000',
+              fontSize: 16,
+              fontFamily: 'Unbounded-Bold',
+            }}>
+            ADD FUNDS
+          </Text>
+        </TouchableOpacity>
       </GestureHandlerRootView>
     </SafeAreaView>
   );
