@@ -302,6 +302,28 @@ const Component = ({navigation}) => {
             </View>
           </TouchableOpacity>
           <HorizontalRule />
+          <TouchableOpacity
+            style={styles.innerSettings}
+            onPress={() => {
+              Linking.openURL('https://app.koinx.com/get-started?r=XadeFinance&utm_source=App&utm_medium=wallet&utm_campaign=Signup');
+            }}>
+            <FastImage
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./Interface/icon/heroicons/Outline/calculator.png')}
+            />
+            <View style={styles.actualSetting}>
+              <Text style={styles.settingsText}>Tax Calculator</Text>
+              <Icon
+                // style={styles.tup}
+                name={'angle-right'}
+                size={20}
+                color={'#86969A'}
+                type="font-awesome"
+                // style = {{marginRight: '1%'}}
+              />
+            </View>
+          </TouchableOpacity>
+          <HorizontalRule />
           {/* <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
