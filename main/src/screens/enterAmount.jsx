@@ -318,6 +318,7 @@ export default function EnterAmountComponent({navigation, route}) {
           </TouchableOpacity>
         </View>
       </View>
+
       <AnyTokenListScreen
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}

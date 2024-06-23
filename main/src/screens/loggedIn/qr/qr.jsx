@@ -388,11 +388,18 @@ function QRPage() {
             borderWidth: 1,
             borderRadius: 10,
             borderColor: '#707070',
+            flexDirection: 'row',
           }}
           onPress={() => setModalVisible(true)}>
           <Text style={[{...styles.address}, {marginTop: 0}]}>
             {getNameChainId(selected?.chainId)}
           </Text>
+          <Icon
+            name={'expand-more'}
+            size={24}
+            color={'#f0f0f0'}
+            type="materialicons"
+          />
         </Pressable>
         <NetworkListPicker
           modalVisible={modalVisible}

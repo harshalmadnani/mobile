@@ -114,7 +114,7 @@ android {
         applicationId "com.org.xadefinance"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 130031
+        versionCode 130032
         versionName "1.4.3"
         manifestPlaceholders["PN_PROJECT_ID"] = "260df770-44b4-4afd-a408-0a9f2b9944a9"
         manifestPlaceholders["PN_PROJECT_CLIENT_KEY"] = "c2HUrCSv7ymat5zCKhD41B9BA8bsRIFJgAXM0Jlm"
