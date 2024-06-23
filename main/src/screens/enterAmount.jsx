@@ -55,6 +55,7 @@ export default function EnterAmountComponent({navigation, route}) {
   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0, ...params};
   const recipientAddress = useSelector(x => x.transfer.recipientAddress);
   const assetInfo = useSelector(x => x.transfer.assetInfo);
+  console.log(assetInfo);
   const holdings = useSelector(x => x.portfolio.holdings);
   const dispatch = useDispatch();
   function handleButtonPress(button) {

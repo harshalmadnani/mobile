@@ -6,6 +6,7 @@ import Video from 'react-native-video';
 // import {transferAnyTokenWithParticleAAGasless} from '../';
 import {useSelector} from 'react-redux';
 import {transferTokenGassless} from '../../../utils/DFNS/walletFLow.js';
+import {getNameChainId} from '../../../store/actions/market.js';
 
 let web3;
 const successVideo = require('./pending.mp4');
@@ -18,6 +19,7 @@ const Component = ({route, navigation}) => {
   const amount = useSelector(x => x.transfer.transferAmount);
   const dfnsToken = useSelector(x => x.auth.DFNSToken);
   const wallets = useSelector(x => x.auth.wallets);
+  const allScw = useSelector(x => x.auth.scw);
   // const {emailAddress} = route.params;
 
   // console.log('Params:', route.params);
@@ -29,13 +31,32 @@ const Component = ({route, navigation}) => {
       try {
         console.log(assetInfo);
         console.log(
-          'Here....',
-          wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-          assetInfo?.contracts_balances[0]?.chainId,
+          'Here....1',
+          wallets,
+          wallets?.filter(
+            x =>
+              x.network ===
+              getNameChainId(
+                assetInfo?.contracts_balances[0]?.chainId?.toString(),
+              ),
+          )[0]?.id,
+          allScw?.filter(
+            x =>
+              x.chainId ===
+              assetInfo?.contracts_balances[0]?.chainId?.toString(),
+          )?.[0]?.address,
+          getNameChainId(assetInfo?.contracts_balances[0]?.chainId?.toString()),
         );
+
         const txnHash = await transferTokenGassless(
           dfnsToken,
-          wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+          wallets?.filter(
+            x =>
+              x.network ===
+              getNameChainId(
+                assetInfo?.contracts_balances[0]?.chainId?.toString(),
+              ),
+          )[0]?.id,
           assetInfo?.contracts_balances[0]?.chainId,
           assetInfo?.contracts_balances[0] ===
             '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -44,6 +65,11 @@ const Component = ({route, navigation}) => {
           assetInfo?.contracts_balances[0]?.address,
           recipientAddress,
           amount,
+          allScw?.filter(
+            x =>
+              x.chainId ===
+              assetInfo?.contracts_balances[0]?.chainId?.toString(),
+          )?.[0]?.address,
         );
         if (txnHash) {
           navigation.push('Successful', {
@@ -62,7 +88,7 @@ const Component = ({route, navigation}) => {
       }
     };
     transaction();
-  }, []);
+  }, [recipientAddress]);
 
   return (
     <View

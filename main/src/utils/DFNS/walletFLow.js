@@ -41,6 +41,7 @@ export const getPaymasterKeyOnId = chain => {
       return 'UfZhdqxYR.528b38b4-89d7-4b33-9006-6856b9c82d64';
   }
 };
+
 export const getIdOnChain = chain => {
   switch (chain) {
     case 'Polygon':
@@ -146,7 +147,7 @@ export const getChainOnId = chainId => {
 };
 const readEntryPointContract = async (functionName, args, chainId) => {
   const instanceClient = createPublicClient({
-    chain: getChainOnId(chainId),
+    chain: getChainOnId(parseInt(chainId)),
     transport: http(),
   });
   const data = await instanceClient.readContract({
@@ -166,6 +167,7 @@ export const transferTokenGassless = async (
   tokenAddress,
   to,
   amount,
+  scwAddress,
 ) => {
   try {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
@@ -176,29 +178,28 @@ export const transferTokenGassless = async (
       walletId,
       dfnsClient: client,
     });
+    console.log(
+      'chain id',
+      getChainOnId(parseInt(chainId)),
+      chainId,
+      getPaymasterKeyOnId(chainId?.toString()),
+    );
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
-      chain: getChainOnId(chainId),
+      chain: getChainOnId(parseInt(chainId)),
       transport: http(),
     });
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
       biconomyPaymasterApiKey: getPaymasterKeyOnId(chainId?.toString()),
-      rpcUrl:
-        'https://polygon-mainnet.g.alchemy.com/v2/gBoo6ihGnSUa3ObT49K36yHG6BdtyuVo',
-      bundlerUrl: `https://bundler.biconomy.io/api/v2/137/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
+      bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId?.toString()}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
-    const scwAddress = await smartAccountClient.getAccountAddress();
+    // const scwAddress = await smartAccountClient.getAccountAddress();
     const nonce = await readEntryPointContract(
       'getNonce',
       [scwAddress, '0'],
       chainId,
-    );
-    console.log(
-      'smart account address created =====',
-      nonce?.toString(),
-      scwAddress,
     );
     if (isNative) {
       const userOpResponse = await smartAccountClient.sendTransaction(
@@ -290,7 +291,7 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
     });
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
-      chain: getChainOnId(chainId),
+      chain: getChainOnId(parseInt(chainId)),
       transport: http(),
     });
     const smartAccountClient = await createSmartAccountClient({
