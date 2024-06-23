@@ -28,7 +28,7 @@ const BouncyIcon = () => {
   return (
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       <Animated.View style={{ transform: [{ scale }] }}>
-        <Icon name="expand-less" size={24} color="#fff" />
+        <Icon name="expand-less" size={36} color="#fff" /> 
       </Animated.View>
     </View>
   );

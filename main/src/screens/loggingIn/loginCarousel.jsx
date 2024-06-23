@@ -29,7 +29,7 @@ class LoginCarousel extends React.Component {
   }
 
   componentDidMount = () => {
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.setState(
         prev => ({
           selectedIndex:
@@ -43,9 +43,14 @@ class LoginCarousel extends React.Component {
             x: width * this.state.selectedIndex,
             y: 0,
           });
+          this.props.onImageChange(this.props.images[this.state.selectedIndex].name);
         },
       );
     }, 3000);
+  };
+
+  componentWillUnmount = () => {
+    clearInterval(this.interval);
   };
 
   setSelectedIndex = event => {
@@ -55,6 +60,7 @@ class LoginCarousel extends React.Component {
     // Divide the horizontal offset by the width of the view to see which page is visible
     const selectedIndex = Math.floor(contentOffset.x / viewSize.width);
     this.setState({selectedIndex});
+    this.props.onImageChange(this.props.images[selectedIndex].name);
   };
 
   render(navigation) {
@@ -65,7 +71,8 @@ class LoginCarousel extends React.Component {
         style={{height: height}}
         horizontal
         pagingEnabled
-        ref={this.scrollRef}>
+        ref={this.scrollRef}
+        onMomentumScrollEnd={this.setSelectedIndex}>
         {images.map(image => (
           <View style={styles.depWith} key={image.name}>
             <Text style={styles.xade}>XADE</Text>

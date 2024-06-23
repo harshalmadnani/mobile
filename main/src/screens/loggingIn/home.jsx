@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useRef} from 'react';
+import React, {Component, useEffect, useRef, useState} from 'react';
 import {
   ImageBackground,
   TouchableOpacity,
@@ -14,7 +14,6 @@ import {
 import {Text} from '@rneui/themed';
 import BouncyIcon from './BouncyIcon';
 import {Icon} from 'react-native-elements';
-// const Web3 = require('web3');
 import {PNAccount} from '../../Models/PNAccount';
 import FastImage from 'react-native-fast-image';
 import {
@@ -26,8 +25,6 @@ import {
 import {LoginCarousel} from './loginCarousel';
 import {onClickLogin} from '../../particle-auth';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-// import * as particleAuth from 'react-native-particle-auth';
-
 import LinearGradient from 'react-native-linear-gradient';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -76,21 +73,10 @@ const images = [
 ];
 
 const StaticHomeScreen = ({navigation}) => {
-  const [selectedButton, setSelectedButton] = React.useState(
+  const [selectedButton, setSelectedButton] = useState(
     `THE ULTIMATE${'\n'}TRADING ${'\n'} EXPERIENCE`,
   );
   const dispatch = useDispatch();
-  useEffect(() => {
-    i = 0;
-    setInterval(() => {
-      if (i < 4) {
-        i += 1;
-      } else {
-        i = -1;
-      }
-      setSelectedButton(images[Math.abs(Math.ceil(i))].name);
-    }, 3000);
-  }, []);
 
   const handleSwipeUp = ({nativeEvent}) => {
     if (nativeEvent.oldState === State.BEGAN) {
@@ -104,6 +90,7 @@ const StaticHomeScreen = ({navigation}) => {
       // dispatch(onAuthCoreLogin(navigation));
     }
   };
+
   return (
     <GestureHandlerRootView>
       <SafeAreaView style={styles.bg}>
@@ -113,46 +100,26 @@ const StaticHomeScreen = ({navigation}) => {
           <ScrollView>
             <View style={styles.container}>
               <View style={styles.topbar}>
-                <View
-                  style={
-                    selectedButton == `Introducing a new${'\n'}era of finance`
-                      ? styles.selected
-                      : styles.carouselIndicator
-                  }></View>
-                <View
-                  style={
-                    selectedButton ==
-                    `Pay globally with${'\n'}close to zero fees`
-                      ? styles.selected
-                      : styles.carouselIndicator
-                  }></View>
-                <View
-                  style={
-                    selectedButton == `Save with Xade to${'\n'}beat inflation`
-                      ? styles.selected
-                      : styles.carouselIndicator
-                  }></View>
-                <View
-                  style={
-                    selectedButton == `Trade anything${'\n'}with 10x leverage`
-                      ? styles.selected
-                      : styles.carouselIndicator
-                  }></View>
-                <View
-                  style={
-                    selectedButton == `Finance your loans${'\n'}fast and easily`
-                      ? styles.selected
-                      : styles.carouselIndicator
-                  }></View>
+                {images.map((image, index) => (
+                  <View
+                    key={index}
+                    style={
+                      selectedButton === image.name
+                        ? styles.selected
+                        : styles.carouselIndicator
+                    }
+                  />
+                ))}
               </View>
               <View style={styles.mainContent}>
                 <LoginCarousel
                   images={images}
                   navigation={navigation}
                   address={'0x'}
-                  key={images}
+                  selectedImage={selectedButton}
+                  onImageChange={(newImage) => setSelectedButton(newImage)}
                 />
-                <View style={{marginTop: '0%'}}>
+                <View style={{ marginTop: '5%', alignItems: 'center' }}>
                   <BouncyIcon />
                   <Text style={styles.getStartedText}>
                     SWIPE UP TO GET STARTED
@@ -293,8 +260,8 @@ const styles = StyleSheet.create({
     color: '#A1A1A1',
     fontFamily: `Unbounded-Medium`,
     textAlign: 'center',
-    fontSize: 11,
-    marginTop: '1%',
+    fontSize: 16, // Increased font size
+    marginTop: '2%',
   },
 
   connectText: {
