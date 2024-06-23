@@ -100,13 +100,13 @@ const NetworkListPicker = ({
         }}>
         <View
           style={{
-            marginTop: '8%',
-            marginLeft: '5%',
-            marginRight: '5%',
+            marginTop: '20%',
+            marginLeft: '2%',
+            marginRight: '2%',
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <Text
+       <Text
             style={{
               fontFamily: 'Unbounded-Medium',
               color: '#fff',
@@ -118,7 +118,8 @@ const NetworkListPicker = ({
             onPress={() => {
               setModalVisible(false);
               // navigation.goBack(); // Assuming you're using something like React Navigation
-            }}>
+            }}
+            style={{position: 'absolute', right: 10, top: 10}}>
             <Icon
               name={'close'}
               size={24}
@@ -132,6 +133,27 @@ const NetworkListPicker = ({
             marginTop: 16,
             width: '98%',
           }}>
+          <Text
+            style={{
+              fontFamily: 'Sk-Modernist-Regular',
+              color: '#fff',
+              fontSize: 18,
+              marginVertical: '5%',
+              marginHorizontal:'2%'
+            }}>
+            USDC on the Polygon POS network serves as the primary asset on our platform, and can be used to trade any asset, if you don't have usdc on polygon, you can deposit any asset on any of the networks mentioned below and sell them for USDC on Polygon
+          </Text>
+          <Text
+            style={{
+              fontFamily: 'Sk-Modernist-Bold',
+              color: '#fff',
+              fontSize: 20,
+              marginBottom:'5%',
+              marginHorizontal:'2%',
+              textAlign: 'left',
+            }}>
+Choose the network to deposit funds:
+          </Text>
           {allScw.length > 0
             ? allScw?.map((item, i) => (
                 <Pressable
@@ -149,11 +171,12 @@ const NetworkListPicker = ({
                     }}>
                     <Text
                       style={{
-                        fontFamily: `NeueMontreal-Medium`,
+          fontFamily: 'Sk-Modernist-Bold',
                         color: 'white',
                         fontSize: 20,
+
                       }}>
-                      {getNameChainId(item?.chainId)}
+                      {getNameChainId(item?.chainId) || 'BSC'}
                     </Text>
                     {/* <View style={{marginRight: 8}}>
                       <Image
@@ -193,8 +216,8 @@ const NetworkListPicker = ({
                       }}>
                       <Text
                         style={{
-                          fontFamily: `NeueMontreal-Medium`,
-                          color: 'white',
+                          fontFamily: 'Sk-Modernist-Regular',
+                          color: '#A9A9A9',
                           fontSize: 16,
                           paddingTop: 10,
                         }}>
@@ -364,7 +387,7 @@ function QRPage() {
               fontFamily: 'Unbounded-Medium',
               fontSize: 16,
             }}>
-            Deposit {getNameChainId(selected?.chainId)} USDC
+            Deposit {selected?.chainId === '137' ? `${getNameChainId(selected?.chainId)} USDC` : `${getNameChainId(selected?.chainId)|| 'BSC'} assets`}
           </Text>
         </View>
       </View>
@@ -382,24 +405,24 @@ function QRPage() {
         <Pressable
           style={{
             padding: 20,
-            width: '60%',
+            width: '70%',
             justifyContent: 'center',
             alignItems: 'center',
-            borderWidth: 1,
-            borderRadius: 10,
-            borderColor: '#707070',
+   
             flexDirection: 'row',
           }}
           onPress={() => setModalVisible(true)}>
           <Text style={[{...styles.address}, {marginTop: 0}]}>
-            {getNameChainId(selected?.chainId)}
+            {selected?.chainId === '137' ? 'Dont have Polygon USDC?' : getNameChainId(selected?.chainId)|| 'BSC'}
           </Text>
-          <Icon
-            name={'expand-more'}
-            size={24}
-            color={'#f0f0f0'}
-            type="materialicons"
-          />
+          {selected?.chainId !== '137' && (
+            <Icon
+              name={'expand-more'}
+              size={24}
+              color={'#f0f0f0'}
+              type="materialicons"
+            />
+          )}
         </Pressable>
         <NetworkListPicker
           modalVisible={modalVisible}

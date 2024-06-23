@@ -117,7 +117,7 @@ const TradePage = ({route}) => {
   const firstItemChainId = firstItem ? firstItem.chainId : undefined;
   const chainName = firstItemChainId
     ? chainNames[firstItemChainId]
-    : 'Unknown Chain';
+    : 'Not Found';
   const isStockTrade = useSelector(x => x.market.isStockTrade);
 
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
