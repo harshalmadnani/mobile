@@ -157,7 +157,7 @@ const Name = ({navigation, route}) => {
 const styles = StyleSheet.create({
   black: {
     width: '100%',
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#000',
     height: '100%',
   },
 

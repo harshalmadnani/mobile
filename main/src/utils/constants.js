@@ -5584,6 +5584,8 @@ export const getRouteOnNetwork = symbol => {
       return 'BNB Smart Chain (BEP20)';
     case 'Doge':
       return 'BNB Smart Chain (BEP20)';
+      case 'USDT':
+      return 'Polygon';
     default:
       return false;
   }
