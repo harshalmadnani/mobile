@@ -997,8 +997,7 @@ const TradePage = ({route}) => {
                   {isStockTrade
                     ? '8 '
                     : bestSwappingBuyTrades?.order
-                        ?.approximateFulfillmentDelay ??
-                      bestSwappingBuyTrades?.estimate?.executionDuration}
+                        ?.approximateFulfillmentDelay ?? 6}
                   s
                 </Text>
               </View>

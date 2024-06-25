@@ -4,9 +4,10 @@
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application
-        android:usesCleartextTraffic="true"
         tools:targetApi="28"
         android:fullBackupContent="true" 
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:replace="android:fullBackupContent"
      tools:ignore="GoogleAppIndexingWarning"/>
 </manifest>

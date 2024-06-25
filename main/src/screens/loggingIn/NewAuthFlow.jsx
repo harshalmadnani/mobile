@@ -133,23 +133,23 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       setLoading(true);
       const status = await checkUserIsDFNSSignedUp(email);
       if (status && status !== 'no-passkey') {
-        setIsLogin(false);
-        const {error, data} = await supabase.auth.signInWithOtp({
-          email: email,
-          options: {
-            // set this to false if you do not want the user to be automatically signed up
-            shouldCreateUser: false,
-          },
-        });
-        if (error) {
-          setLoading(false);
-        }
-        if (data) {
-          setStages('otp');
-          setIsSignIn(true);
-        }
-        setLoading(false);
-        // dispatch(autoLogin(navigation, email));
+        // setIsLogin(false);
+        // const {error, data} = await supabase.auth.signInWithOtp({
+        //   email: email,
+        //   options: {
+        //     // set this to false if you do not want the user to be automatically signed up
+        //     shouldCreateUser: false,
+        //   },
+        // });
+        // if (error) {
+        //   setLoading(false);
+        // }
+        // if (data) {
+        //   setStages('otp');
+        //   setIsSignIn(true);
+        // }
+        // setLoading(false);
+        dispatch(autoLogin(navigation, email));
       } else if (status && status === 'no-passkey') {
         console.log('register again!!!!!');
         const {error, data} = await supabase.auth.signInWithOtp({
@@ -208,7 +208,15 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       }
     } else {
       if (user && !isLogin) {
-        console.log('error on final register');
+        console.log('On final register');
+        Toast.show('On final register', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
         try {
           const response = await registerUsernameToDFNS(email);
           if (response) {
@@ -217,6 +225,14 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           }
         } catch (error) {
           console.log('error on signup....', error);
+          Toast.show('Fail to fetch passkey', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+          });
           setLoading(false);
         }
       }

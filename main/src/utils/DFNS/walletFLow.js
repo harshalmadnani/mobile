@@ -294,6 +294,7 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
       chain: getChainOnId(parseInt(chainId)),
       transport: http(),
     });
+    console.log('here....chain id', chainId);
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,

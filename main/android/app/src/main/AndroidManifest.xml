@@ -54,11 +54,13 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <application
       android:supportsRtl="true"
-        xmlns:tools="http://schemas.android.com/tools"
+      android:networkSecurityConfig="@xml/network_security_config"
+      xmlns:tools="http://schemas.android.com/tools"
       android:name=".MainApplication"
       android:label="@string/app_name"
-        android:fullBackupContent="true"
-        tools:replace="android:fullBackupContent"
+      android:usesCleartextTraffic="true"
+      android:fullBackupContent="true"
+      tools:replace="android:fullBackupContent"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@drawable/ic_arrow_back_white"
       android:theme="@style/AppTheme">

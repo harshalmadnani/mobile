@@ -188,8 +188,12 @@ const Portfolio = ({navigation}) => {
         setRefreshing(false);
       };
     }
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 5000);
     return () => {
       ws.close();
+      setRefreshing(false);
     };
   };
   return (
@@ -200,9 +204,11 @@ const Portfolio = ({navigation}) => {
             <RefreshControl
               tintColor={'#fff'}
               colors={['#f0f8ff']}
+              progressBackgroundColor={'black'}
               enabled={true}
               refreshing={refreshing}
               onRefresh={onRefresh}
+              size="default"
             />
           }>
           <View

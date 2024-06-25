@@ -95,6 +95,7 @@ export const registerUsernameToDFNS = async username => {
     return completeRes.data;
   } catch (error) {
     console.log('error on registering..........', error);
+    return false;
   } finally {
   }
 };

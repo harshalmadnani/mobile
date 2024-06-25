@@ -354,8 +354,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
   const txQuoteInfo = state;
 
   const [countdown, setCountdown] = useState(
-    txQuoteInfo?.order?.approximateFulfillmentDelay ||
-      txQuoteInfo?.estimate?.executionDuration,
+    txQuoteInfo?.order?.approximateFulfillmentDelay ?? 5,
   );
   useEffect(() => {
     const timer = setInterval(() => {
@@ -370,9 +369,7 @@ const PendingTxStatusPage = ({route, navigation}) => {
   }, []);
 
   const calculatePercentage = () => {
-    const totalDuration =
-      txQuoteInfo?.order?.approximateFulfillmentDelay ||
-      txQuoteInfo?.estimate?.executionDuration;
+    const totalDuration = txQuoteInfo?.order?.approximateFulfillmentDelay ?? 5;
     const circumference = 2 * Math.PI * 40; // 40 is the radius of the circle
     return (countdown / totalDuration) * circumference;
   };
