@@ -149,7 +149,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
         //   setIsSignIn(true);
         // }
         // setLoading(false);
-        dispatch(autoLogin(navigation, email));
+         dispatch(autoLogin(navigation, email));
       } else if (status && status === 'no-passkey') {
         console.log('register again!!!!!');
         const {error, data} = await supabase.auth.signInWithOtp({
@@ -204,6 +204,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           hideOnPress: true,
           delay: 0,
         });
+        console.log('inside OTP fail', user, isSignIn);
         setLoading(false);
       }
     } else {
@@ -235,6 +236,17 @@ const NewAuthLoginFLow = ({navigation, route}) => {
           });
           setLoading(false);
         }
+      } else {
+        Toast.show('OTP input is incorrect', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 0,
+        });
+        console.log('inside OTP fail', user, isSignIn);
+        setLoading(false);
       }
     }
   };

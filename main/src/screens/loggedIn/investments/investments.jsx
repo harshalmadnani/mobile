@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import {
   TouchableOpacity,
   SafeAreaView,
@@ -10,6 +11,7 @@ import {
   StyleSheet,
   FlatList,
   Pressable,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import TradeItemCard from './TradeItemCard';
 import LottieView from 'lottie-react-native';
@@ -29,6 +31,15 @@ const options = {
   ignoreAndroidSystemSettings: false,
 };
 
+const tabs = [
+  {name: 'Top Holdings', id: 1},
+  {name: 'Gainers', id: 2},
+  {name: 'Losers', id: 3},
+  {name: 'Temp', id: 4},
+  {name: 'Losers', id: 5},
+  {name: 'Losers', id: 6},
+];
+
 const Investments = ({navigation}) => {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height;
@@ -41,6 +52,7 @@ const Investments = ({navigation}) => {
 
   const [section, setSection] = useState('crypto');
   const [page, setPage] = useState(1);
+  const [chipIndex, setChipIndex] = useState(0);
   const dispatch = useDispatch();
 
   useFocusEffect(
@@ -206,6 +218,40 @@ const Investments = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
+
+        <FlatList
+          contentContainerStyle
+          style={styles.container}
+          horizontal
+          data={tabs}
+          renderItem={({item, index}) => {
+            const isActive = index === chipIndex;
+
+            return (
+              <View key={item.id}>
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    setChipIndex(index);
+                  }}>
+                  <View
+                    style={[
+                      styles.item,
+                      isActive && {
+                        borderColor: 'white',
+                        backgroundColor: 'black',
+                      },
+                    ]}>
+                    {/* <SimpleLineIcons name="fire" size={16} color={isActive ? '#FFA500':'#999'} /> */}
+                    <Text style={[styles.text, isActive && {color: 'white'}]}>
+                      {item.name}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              </View>
+            );
+          }}
+          keyExtractor={item => item.id.toString()}
+        />
       </View>
 
       {marketListFetchLoading && (
@@ -344,9 +390,31 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     color: '#ffffff',
-    fontFamily: `NeueMontreal-Medium`,
-    fontWeight: '500',
     marginLeft: 30,
+  },
+  container: {
+    flexDirection: 'row',
+    marginTop: 10,
+    marginBottom: 25,
+    paddingHorizontal: 5,
+  },
+  item: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 5,
+    backgroundColor: '#1c1c1f',
+    borderRadius: 20,
+    borderWidth: 1,
+    // flexDirection: 'row',
+    flexDirection: 'column',
+    paddingHorizontal: 10,
+  },
+  text: {
+    //marginLeft: 5,
+    fontFamily: 'NeueMontreal-Medium',
+    color: '#999',
+    fontSize: 12,
   },
 });
 

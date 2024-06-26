@@ -90,7 +90,7 @@ function MainFlowStack() {
           name="Investments"
           component={Investments}
         />
-        {/* <Tab.Screen
+        <Tab.Screen
           listeners={() => ({
             tabPress: () => {
               if (Platform.OS === 'ios') {
@@ -123,7 +123,7 @@ function MainFlowStack() {
           }}
           name="Spending"
           component={Spending}
-        /> */}
+        />
         <Tab.Screen
           listeners={() => ({
             tabPress: () => {

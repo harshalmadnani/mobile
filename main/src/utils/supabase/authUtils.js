@@ -57,7 +57,8 @@ export const verifyEmailOtp = async (otp, email) => {
   if (error) {
     console.log(
       'error...',
-      error === '[AuthApiError: Token has expired or is invalid]',
+      error,
+      '[AuthApiError: Token has expired or is invalid]',
     );
     return false;
   }
