@@ -13,9 +13,9 @@ const URL = {
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6IjVhMTdjMmIzYmVhZGVhMzFhYmI0YWRhYmNjYzQ1MTAyIiwiY29udGVudCI6IjgzYzgwNjI2NzM0MzljMDNkNzBkZDhlOTU0MmY0NjIwNGU4MDdkMmEwMGNhZjMwZTBkYjI4ZDMwOWNkZTJkNjU1NTk3OWZkN2NiMzAzZmY3OTAxNGYzMGIzYzMyNDgwYzlhOTAyZWI3YzVlYzM5NGQzYjYwODg0NGE2Yzc2ZjI2MWU2NjBkMzE4MGRlMGQ2ZTY5NWVmOWMxYjEwZTRlOWMzMzBiMWY3Yjc3NDdhNWUwMmE3NWFiZTdlZTE3YzBmNGE4NGM3ZDE1MzdmMDQ0ZDYzOTJiNTE4MGVmMWIxYjI2NmFmOTdjYjQ5MTRhOGFmOTNmOWMzY2ZkZWIxYzFlYjAwOTc2OTg0ODc4ZTk5NiJ9LCJpYXQiOjE3MTM4NDY3NzUsImV4cCI6MTcxMzkzMzE3NX0.FZlP5jDRMyDoXpb-2I-CNQ_ywlxjxqtbEg7ts5m8X-E';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImQxMTY1ZTUyY2EyYzFlMTI1MjY2OTc1ZTM2YTU4YjAxIiwiY29udGVudCI6ImNiOGNlZTJiYjBjOTFhZmI2NzBiOTE5M2ZlYWU2M2RjNjVmMDFhZDc2Y2ZhMmE5NTU5YTk1ZjQ2ZDFmMDgxNGIwMDM4YmY2NzQyMjBlN2VmY2JlMTE3MmM1NmNjOTI2ZWY5ZWZiYzNlMzliYWY5NDJkMDlhYzQyNmFlMjRjZDI5ZjRmYjllYzczMWJmYmU1MWQ3Y2MwMTZhZDI3MmE0NjJmMzY3YjdlMzY4ODlkMmRiOWMxNjYxMGMwZWFiNWQxOWY0YmNlOGMzZGFkNzVlYTNmY2Y0NTNkMWVlOWE2MDQyYjQ2NWE3M2NmOWNlNjBkMmIxNDk5MWZlNWY5NGY4NDNiNmM5M2FjNjk1NmI3MTQxIn0sImlhdCI6MTcxOTQ4OTM5NCwiZXhwIjoxNzE5NTc1Nzk0fQ.mFAWXstDJEHK6x7uwblpWSVarDHeNpVmwdOu5iuLL5E';
 
-const fetchOnboardedUser = () => {
+export const fetchOnboardedUser = email => {
   return async dispatch => {
     try {
       const response = await axios.get(URL.FETCH_USER, {
@@ -25,9 +25,18 @@ const fetchOnboardedUser = () => {
       });
 
       if (response.status === 200) {
-        console.log('Onboarded users:', response);
+        console.log(
+          'Onboarded users:',
+          response?.data?.data?.usersList?.filter(x => x.email === email)
+            ?.length === 0,
+          email,
+          response?.data?.data?.usersList?.filter(x => x.email === email)[0],
+        );
 
-        if (/* check existing user DOES NOT CONTAINS in userList */ 1 == 1) {
+        if (
+          response?.data?.data?.usersList?.filter(x => x.email === email)
+            ?.length === 0
+        ) {
           try {
             const createUserResponse = await axios.post(
               URL.CREATE_USER,
@@ -36,16 +45,15 @@ const fetchOnboardedUser = () => {
               },
               {
                 headers: {
-                  Accept: '*/*',
                   Authorization: `Bearer ${token}`,
                 },
               },
             );
 
-            if (response.status === 201) {
+            if (response.status === 200) {
               console.log('User created successfully');
               console.log('Response:', createUserResponse);
-              dispatch(offRampAction.setUser(createUserResponse));
+              dispatch(offRampAction.setUser(createUserResponse?.data?.data));
             } else {
               console.error('Failed to create user');
             }
@@ -55,6 +63,14 @@ const fetchOnboardedUser = () => {
               error,
             );
           }
+        } else {
+          dispatch(
+            offRampAction.setUser(
+              response?.data?.data?.usersList?.filter(
+                x => x.email === email,
+              )[0],
+            ),
+          );
         }
       } else {
         console.error('Failed to fetch onboarded users');
@@ -68,7 +84,7 @@ const fetchOnboardedUser = () => {
   };
 };
 
-const getCountry = async () => {
+export const getCountry = async () => {
   try {
     const response = await axios.get('https://ipapi.co/json/');
     return response.data.country_name;
@@ -78,12 +94,12 @@ const getCountry = async () => {
   }
 };
 
-const getCountryBasedGiftCard = () => {
+export const getCountryBasedGiftCard = () => {
   return async dispatch => {
     const countryName = await getCountry();
     if (countryName != null) {
       try {
-        const response = await axios.get(GET_GIFT_CARD, {
+        const response = await axios.get(URL.GET_GIFT_CARD, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -110,7 +126,7 @@ const getCountryBasedGiftCard = () => {
   };
 };
 
-const submitDetailsForQuote = requestBody => {
+export const submitDetailsForQuote = requestBody => {
   return async dispatch => {
     //raw data
     const requestBody = {
@@ -152,7 +168,7 @@ const submitDetailsForQuote = requestBody => {
   };
 };
 
-const acceptGiftCardOrder = quoteID => {
+export const acceptGiftCardOrder = quoteID => {
   return async dispatch => {
     //raw data
     const quoteID = '62547d0a-a023-4921-bfc6-ac9b0b425851';

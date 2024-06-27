@@ -10,11 +10,17 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import WebView from 'react-native-webview';
 import CouponModal from '../../../component/CouponModal';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchOnboardedUser, getCountryBasedGiftCard} from '../../../store/actions/offRamp';
 const Spending = () => {
   const url = 'https://sandbox.encryptus.co/v1/partners/create/user';
-
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-
+  const email = useSelector(x => x.auth.email);
+  const enterUserForCoupon = async () => {
+    await dispatch(fetchOnboardedUser(email));
+    await dispatch(getCountryBasedGiftCard());
+  };
   const closeWebView = () => {
     setShowWebView(false);
   };
@@ -151,7 +157,11 @@ const Spending = () => {
           paddingHorizontal: '1%',
         }}>
         <TouchableOpacity
-          onPress={() => setCouponModal(true)}
+          onPress={async () => {
+            await enterUserForCoupon();
+
+            // setCouponModal(true);
+          }}
           style={{
             backgroundColor: '#fff',
             paddingVertical: '5%',

@@ -126,7 +126,6 @@ const Portfolio = ({navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
 
-  console.log(JSON.stringify(holdings));
   const onRefresh = async () => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
