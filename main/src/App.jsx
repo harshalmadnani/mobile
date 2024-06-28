@@ -28,7 +28,9 @@ import {RootSiblingParent} from 'react-native-root-siblings';
 import {Buffer} from 'buffer';
 const publicClient = createPublicClient({
   // chain: mainnet,
-  transport: http(),
+  transport: http(
+    'https://polygon-mainnet.g.alchemy.com/v2/TjxOaj0jbq-FVA2jFK2p_h_KnrooFuHg',
+  ),
   chain: polygon,
 });
 global.Buffer = Buffer;

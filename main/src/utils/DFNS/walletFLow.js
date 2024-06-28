@@ -105,7 +105,12 @@ export const getAllScwAddress = async (authToken, walletIds) => {
       const walletClient = createWalletClient({
         account: toAccount(dfnsWWalletSigner),
         chain: getProviderOnName(x?.network),
-        transport: http(),
+        transport:
+          x?.network === 'Polygon'
+            ? http(
+                'https://polygon-mainnet.g.alchemy.com/v2/TjxOaj0jbq-FVA2jFK2p_h_KnrooFuHg',
+              )
+            : http(),
       });
       const smartAccountClient = await createSmartAccountClient({
         signer: walletClient,
@@ -148,7 +153,12 @@ export const getChainOnId = chainId => {
 const readEntryPointContract = async (functionName, args, chainId) => {
   const instanceClient = createPublicClient({
     chain: getChainOnId(parseInt(chainId)),
-    transport: http(),
+    transport:
+      parseInt(chainId) === 137
+        ? http(
+            'https://polygon-mainnet.g.alchemy.com/v2/TjxOaj0jbq-FVA2jFK2p_h_KnrooFuHg',
+          )
+        : http(),
   });
   const data = await instanceClient.readContract({
     address: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
@@ -187,7 +197,12 @@ export const transferTokenGassless = async (
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
       chain: getChainOnId(parseInt(chainId)),
-      transport: http(),
+      transport:
+        parseInt(chainId) === 137
+          ? http(
+              'https://polygon-mainnet.g.alchemy.com/v2/TjxOaj0jbq-FVA2jFK2p_h_KnrooFuHg',
+            )
+          : http(),
     });
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
@@ -263,7 +278,12 @@ export const getSmartAccountAddress = async (authToken, walletId, chainId) => {
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
       chain: getChainOnId(parseInt(chainId)),
-      transport: http(),
+      transport:
+        parseInt(chainId) === 137
+          ? http(
+              'https://polygon-mainnet.g.alchemy.com/v2/TjxOaj0jbq-FVA2jFK2p_h_KnrooFuHg',
+            )
+          : http(),
     });
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
@@ -292,7 +312,12 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
       chain: getChainOnId(parseInt(chainId)),
-      transport: http(),
+      transport:
+        parseInt(chainId) === 137
+          ? http(
+              'https://polygon-mainnet.g.alchemy.com/v2/TjxOaj0jbq-FVA2jFK2p_h_KnrooFuHg',
+            )
+          : http(),
     });
     console.log('here....chain id', chainId);
     const smartAccountClient = await createSmartAccountClient({

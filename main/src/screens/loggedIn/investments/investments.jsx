@@ -219,7 +219,7 @@ const Investments = ({navigation}) => {
           </TouchableOpacity>
         </View>
 
-        <FlatList
+        {/* <FlatList
           contentContainerStyle
           style={styles.container}
           horizontal
@@ -241,7 +241,6 @@ const Investments = ({navigation}) => {
                         backgroundColor: 'black',
                       },
                     ]}>
-                    {/* <SimpleLineIcons name="fire" size={16} color={isActive ? '#FFA500':'#999'} /> */}
                     <Text style={[styles.text, isActive && {color: 'white'}]}>
                       {item.name}
                     </Text>
@@ -251,7 +250,7 @@ const Investments = ({navigation}) => {
             );
           }}
           keyExtractor={item => item.id.toString()}
-        />
+        /> */}
       </View>
 
       {marketListFetchLoading && (
