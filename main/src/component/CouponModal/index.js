@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -7,54 +7,42 @@ import {
   Pressable,
   TouchableOpacity,
   Dimensions,
+  ScrollView,
+  Image,
 } from 'react-native';
-import {useWeb3Modal} from '@web3modal/wagmi-react-native';
-import AuthTextInput from '../../component/Input/AuthTextInputs';
-import erc20 from '../../screens/loggedIn/payments/USDC.json';
-import LinearGradient from 'react-native-linear-gradient';
-import {
-  useAccount,
-  useSendTransaction,
-  useWaitForTransaction,
-  usePrepareSendTransaction,
-} from 'wagmi';
-import {ethers} from 'ethers';
-import {getQuoteFromLifi} from '../../utils/DLNTradeApi';
-import {
-  getAllSupportedChainsFromSwing,
-  getApprovalCallDataFromSwing,
-  getQuoteFromSwing,
-  getTxCallDataFromSwing,
-} from '../../utils/SwingCrossDepositsApi';
-import LottieView from 'lottie-react-native';
-import {w3cwebsocket as W3CWebSocket} from 'websocket';
-import {useDispatch, useSelector} from 'react-redux';
-import {Image} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {depositAction} from '../../store/reducers/deposit';
-import Toast from 'react-native-root-toast';
-import {disconnect} from '@wagmi/core';
 
-const SingleCouponItem = ({onSelect, name}) => {
+import AuthTextInput from '../../component/Input/AuthTextInputs';
+
+import LinearGradient from 'react-native-linear-gradient';
+import {useSelector} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+// import {Image} from 'react-native-svg';
+
+const SingleCouponItem = ({onSelect, info}) => {
+  console.log('coupon...', info);
   return (
     <Pressable onPress={async () => await onSelect()} style={{margin: 12}}>
-      <View
+      <Image
+        source={{uri: info?.vouchersImg}}
         style={{
           width: 48,
           height: 48,
           borderRadius: 100,
-          backgroundColor: 'white',
-        }}></View>
+          alignSelf: 'center',
+        }}
+      />
       <Text
+        numberOfLines={1}
         style={{
           fontSize: 14,
           color: '#fff',
           fontWeight: 500,
-          textAlign: 'center',
+          // textAlign: 'center',
           fontFamily: 'NeueMontreal-Medium',
           marginTop: 8,
+          maxWidth: 100,
         }}>
-        {name}
+        {info?.brand}
       </Text>
     </Pressable>
   );
@@ -73,6 +61,8 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
     {name: 'Paypal'},
     {name: 'PS Store'},
   ]);
+  const giftCards = useSelector(x => x.offRamp.giftCards);
+  console.log(giftCards);
   const [qty, setQty] = useState(1);
   return (
     <Modal
@@ -110,13 +100,15 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
                 style={{
                   alignItems: 'center',
                 }}>
-                <View
+                <Image
+                  source={{uri: selected?.vouchersImg}}
                   style={{
                     width: 64,
                     height: 64,
                     borderRadius: 100,
                     backgroundColor: 'white',
-                  }}></View>
+                  }}
+                />
                 <Text
                   style={{
                     fontSize: 24,
@@ -126,9 +118,9 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
                     fontFamily: 'NeueMontreal-Medium',
                     marginTop: 12,
                   }}>
-                  {selected}
+                  {selected?.brand}
                 </Text>
-                <Text
+                {/* <Text
                   style={{
                     fontSize: 14,
                     color: '#fff',
@@ -138,7 +130,7 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
                     marginTop: 20,
                   }}>
                   {`Amazon Gift Cards are redeemable towards the purchase of millions of eligible goods and services provided by Amazon.com Services LLC and its affiliates on www.amazon.com`}
-                </Text>
+                </Text> */}
               </View>
             </Pressable>
             <View style={{marginBottom: 12}}>
@@ -189,7 +181,11 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
           <View
             style={[
               styles.modalView,
-              {height: height * 0.45, backgroundColor: '#1D1D1D'},
+              {
+                minHeight: height * 0.45,
+                maxHeight: height * 0.8,
+                backgroundColor: '#1D1D1D',
+              },
             ]}>
             <View
               style={{
@@ -219,15 +215,29 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
                 Select the gift card
               </Text>
             </View>
-            <View style={styles.wrapContainer}>
-              {coupons.map(x => (
-                <SingleCouponItem
-                  onSelect={() => setSelected(x?.name)}
-                  key={x.name}
-                  name={x.name}
-                />
-              ))}
-            </View>
+            <ScrollView
+              contentContainerStyle={{
+                lexGrow: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'center',
+                }}>
+                {giftCards?.length > 0
+                  ? giftCards?.map(x => (
+                      <SingleCouponItem
+                        onSelect={() => setSelected(x)}
+                        key={x?.productId}
+                        info={x}
+                      />
+                    ))
+                  : null}
+              </View>
+            </ScrollView>
           </View>
         )}
       </View>

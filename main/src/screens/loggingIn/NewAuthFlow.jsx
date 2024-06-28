@@ -133,23 +133,23 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       setLoading(true);
       const status = await checkUserIsDFNSSignedUp(email);
       if (status && status !== 'no-passkey') {
-        // setIsLogin(false);
-        // const {error, data} = await supabase.auth.signInWithOtp({
-        //   email: email,
-        //   options: {
-        //     // set this to false if you do not want the user to be automatically signed up
-        //     shouldCreateUser: false,
-        //   },
-        // });
-        // if (error) {
-        //   setLoading(false);
-        // }
-        // if (data) {
-        //   setStages('otp');
-        //   setIsSignIn(true);
-        // }
-        // setLoading(false);
-         dispatch(autoLogin(navigation, email));
+        setIsLogin(false);
+        const {error, data} = await supabase.auth.signInWithOtp({
+          email: email,
+          options: {
+            // set this to false if you do not want the user to be automatically signed up
+            shouldCreateUser: false,
+          },
+        });
+        if (error) {
+          setLoading(false);
+        }
+        if (data) {
+          setStages('otp');
+          setIsSignIn(true);
+        }
+        setLoading(false);
+        // dispatch(autoLogin(navigation, email));
       } else if (status && status === 'no-passkey') {
         console.log('register again!!!!!');
         const {error, data} = await supabase.auth.signInWithOtp({

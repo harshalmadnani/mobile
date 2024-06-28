@@ -16,56 +16,6 @@ import {
   getCountryBasedGiftCard,
 } from '../../../store/actions/offRamp';
 const Spending = () => {
-  const url = 'https://sandbox.encryptus.co/v1/partners/create/user';
-  const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const email = useSelector(x => x.auth.email);
-  const enterUserForCoupon = async () => {
-    await dispatch(fetchOnboardedUser(email));
-    await dispatch(getCountryBasedGiftCard());
-  };
-  const giftCards = useSelector(x => x.offRamp.giftCards);
-  console.log(giftCards);
-  const closeWebView = () => {
-    setShowWebView(false);
-  };
-  const ImageTextRow = () => {
-    return (
-      <View style={styles.row}>
-        <Image
-          source={{
-            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712667639/n6bg9u0bn6jixqk8utlr.png',
-          }}
-          style={styles.imageStyle}
-        />
-        <View style={styles.textContainer}>
-          <Text style={styles.firstLine}>First Line of Text</Text>
-          <Text style={styles.secondLine}>Second Line of Text</Text>
-        </View>
-      </View>
-    );
-  };
-  const data = {
-    email: global?.loginAccount?.phoneEmail,
-  };
-  const [showWebView, setShowWebView] = useState(false);
-  // console.log(data);
-  // fetch(url, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify(data),
-  // })
-  //   .then(response => {
-  //     if (response.ok) {
-  //       return response.json();
-  //     }
-  //     throw new Error('Network response was not ok.');
-  //   })
-  //   .then(data => console.log(data))
-  //   .catch(error => console.error('Error:', error));
-  const [couponModal, setCouponModal] = useState(false);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
       <View

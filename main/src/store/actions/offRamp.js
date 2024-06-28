@@ -97,6 +97,7 @@ export const getCountry = async () => {
 export const getCountryBasedGiftCard = () => {
   return async dispatch => {
     const countryName = await getCountry();
+    console.log('Country name', countryName);
     if (countryName != null) {
       try {
         const response = await axios.get(URL.GET_GIFT_CARD, {
@@ -104,15 +105,15 @@ export const getCountryBasedGiftCard = () => {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            country: country,
+            country: countryName,
             //  deliveryType: '',
             //  currencyCode: '',
           },
         });
 
         if (response.status === 200) {
-          console.log('Gift cards:', response);
-          dispatch(offRampAction.setGiftCards(response));
+          console.log('Gift cards:', response?.data?.data?.vouchers);
+          dispatch(offRampAction.setGiftCards(response?.data?.data?.vouchers));
         } else {
           console.error('Failed to fetch gift cards');
         }
