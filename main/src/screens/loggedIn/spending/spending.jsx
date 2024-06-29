@@ -6,6 +6,7 @@ import {
   Image,
   SafeAreaView,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import WebView from 'react-native-webview';
@@ -16,55 +17,35 @@ import {
   getCountryBasedGiftCard,
 } from '../../../store/actions/offRamp';
 const Spending = () => {
+  const [loading, setLoading] = useState(false);
+  const [showWebView, setShowWebView] = useState(false);
+
   const url = 'https://sandbox.encryptus.co/v1/partners/create/user';
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const email = useSelector(x => x.auth.email);
+
   const enterUserForCoupon = async () => {
-    await dispatch(fetchOnboardedUser(email));
-    await dispatch(getCountryBasedGiftCard());
+    try {
+      setLoading(true);
+      await dispatch(fetchOnboardedUser(email));
+      await dispatch(getCountryBasedGiftCard());
+      setLoading(false);
+      navigation.navigate('Catelog');
+    } catch (err) {
+      console.log('Error at spending.jsx/enterUserForCoupon fun');
+      setLoading(false);
+    }
   };
   const giftCards = useSelector(x => x.offRamp.giftCards);
   console.log(giftCards);
   const closeWebView = () => {
     setShowWebView(false);
   };
-  const ImageTextRow = () => {
-    return (
-      <View style={styles.row}>
-        <Image
-          source={{
-            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712667639/n6bg9u0bn6jixqk8utlr.png',
-          }}
-          style={styles.imageStyle}
-        />
-        <View style={styles.textContainer}>
-          <Text style={styles.firstLine}>First Line of Text</Text>
-          <Text style={styles.secondLine}>Second Line of Text</Text>
-        </View>
-      </View>
-    );
-  };
   const data = {
     email: global?.loginAccount?.phoneEmail,
   };
-  const [showWebView, setShowWebView] = useState(false);
-  // console.log(data);
-  // fetch(url, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify(data),
-  // })
-  //   .then(response => {
-  //     if (response.ok) {
-  //       return response.json();
-  //     }
-  //     throw new Error('Network response was not ok.');
-  //   })
-  //   .then(data => console.log(data))
-  //   .catch(error => console.error('Error:', error));
+
   const [couponModal, setCouponModal] = useState(false);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
@@ -77,10 +58,16 @@ const Spending = () => {
           flexDirection: 'row',
           justifyContent: 'space-between', // This line positions items on opposite ends
         }}>
-        <Text
-          style={{fontFamily: 'Unbounded-Medium', color: '#fff', fontSize: 20}}>
-          SPENDING
-        </Text>
+        {
+          <Text
+            style={{
+              fontFamily: 'Unbounded-Medium',
+              color: '#fff',
+              fontSize: 20,
+            }}>
+            SPENDING
+          </Text>
+        }
         <TouchableOpacity onPress={() => navigation.push('TransactionHistory')}>
           <Image
             source={{
@@ -165,7 +152,9 @@ const Spending = () => {
           onPress={async () => {
             try {
               await enterUserForCoupon();
-              setCouponModal(true);
+
+              //COMMENTING THIS BECAUSE WE DONT WANT TO OPEN MODAL NOW
+              // setCouponModal(true);
             } catch (err) {
               console.log('error', err);
             }
@@ -182,21 +171,25 @@ const Spending = () => {
             shadowRadius: 2.62,
             alignSelf: 'stretch',
           }}>
-          <Text
-            style={{
-              fontSize: 16,
-              color: 'black',
-              fontFamily: 'Unbounded-Bold',
-            }}>
-            START SPENDING
-          </Text>
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text
+              style={{
+                fontSize: 16,
+                color: 'black',
+                fontFamily: 'Unbounded-Bold',
+              }}>
+              START SPENDING
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
-      <CouponModal
+      {/* <CouponModal
         modalVisible={couponModal}
         setModalVisible={setCouponModal}
         value={5000}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

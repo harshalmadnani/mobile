@@ -13,7 +13,7 @@ const URL = {
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImQxMTY1ZTUyY2EyYzFlMTI1MjY2OTc1ZTM2YTU4YjAxIiwiY29udGVudCI6ImNiOGNlZTJiYjBjOTFhZmI2NzBiOTE5M2ZlYWU2M2RjNjVmMDFhZDc2Y2ZhMmE5NTU5YTk1ZjQ2ZDFmMDgxNGIwMDM4YmY2NzQyMjBlN2VmY2JlMTE3MmM1NmNjOTI2ZWY5ZWZiYzNlMzliYWY5NDJkMDlhYzQyNmFlMjRjZDI5ZjRmYjllYzczMWJmYmU1MWQ3Y2MwMTZhZDI3MmE0NjJmMzY3YjdlMzY4ODlkMmRiOWMxNjYxMGMwZWFiNWQxOWY0YmNlOGMzZGFkNzVlYTNmY2Y0NTNkMWVlOWE2MDQyYjQ2NWE3M2NmOWNlNjBkMmIxNDk5MWZlNWY5NGY4NDNiNmM5M2FjNjk1NmI3MTQxIn0sImlhdCI6MTcxOTQ4OTM5NCwiZXhwIjoxNzE5NTc1Nzk0fQ.mFAWXstDJEHK6x7uwblpWSVarDHeNpVmwdOu5iuLL5E';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6IjU5ZDMxZGEwZTFkNzM5NmRhMmExYTE4YjNjZWNjODAwIiwiY29udGVudCI6ImVjNDg3OGVjNmYwMGMyMjc4Zjc1NTA1NjRhMjkyNmE5NjMzODMyODI0YzFhYTBhMTg2NWFmNjNkZjVkOTFmZmQ2ZmY2MWFiZGEyNjJlOTE3YmMyNGZiOTZkM2FhOTY5MGQyZGY2NzQ1NjExY2Y1OTI0YjI4Nzg5ZDVhZDM5Y2MyY2Q0NWVhYzIzMzIzNDk3ZDM0OTQzOGY3YTYxZDc0NmRlOGJmYzZiMWNmZDhmZmUwODM2OTk5Y2MyMTc0Y2RjYjhjZTEwNjIyZjk4ZTBiMTMwNTMwODkxMTRhYTFmMTg2NDhmMWU2OGQwNDYxOTAzN2IyMTU5YWU1YzZiMDRjMTFkMTBkNDViMWYyNDFkZjg4In0sImlhdCI6MTcxOTU4NzczMCwiZXhwIjoxNzE5Njc0MTMwfQ.N7BHsxGt48PQ6K1fvlBBTHemI4yH3g9f0n3MM7Ztt1w';
 
 export const fetchOnboardedUser = email => {
   return async dispatch => {
@@ -86,6 +86,9 @@ export const fetchOnboardedUser = email => {
 
 export const getCountry = async () => {
   try {
+    console.log(
+      'Removing the console log makes the getCountryBasedGiftCard not wait for getCountry',
+    );
     const response = await axios.get('https://ipapi.co/json/');
     return response.data.country_name;
   } catch (err) {
@@ -98,14 +101,17 @@ export const getCountryBasedGiftCard = () => {
   return async dispatch => {
     const countryName = await getCountry();
     console.log('Country name', countryName);
-    if (countryName != null) {
+    //if (countryName != null)
+    if (1 == 1) {
+      //REMOVE THIS BEFORE PUSHING
       try {
         const response = await axios.get(URL.GET_GIFT_CARD, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            country: countryName,
+            // country: countryName,
+            country: 'India',
             //  deliveryType: '',
             //  currencyCode: '',
           },

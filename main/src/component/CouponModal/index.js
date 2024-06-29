@@ -18,30 +18,12 @@ import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 // import {Image} from 'react-native-svg';
 
-const SingleCouponItem = ({onSelect, info}) => {
+export const SingleCouponItem = ({onSelect, info}) => {
   console.log('coupon...', info);
   return (
-    <Pressable onPress={async () => await onSelect()} style={{margin: 12}}>
-      <Image
-        source={{uri: info?.vouchersImg}}
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 100,
-          alignSelf: 'center',
-        }}
-      />
-      <Text
-        numberOfLines={1}
-        style={{
-          fontSize: 14,
-          color: '#fff',
-          fontWeight: 500,
-          // textAlign: 'center',
-          fontFamily: 'NeueMontreal-Medium',
-          marginTop: 8,
-          maxWidth: 100,
-        }}>
+    <Pressable onPress={onSelect} style={styles.container}>
+      <Image source={{uri: info?.vouchersImg}} style={styles.image} />
+      <Text numberOfLines={1} style={styles.brandName}>
         {info?.brand}
       </Text>
     </Pressable>
@@ -273,6 +255,36 @@ const styles = StyleSheet.create({
     //justifyContent: 'center', // Align items to the start of the container
     padding: 8, // Add some padding around the container
     marginTop: '2%',
+  },
+  container: {
+    width: '25%',
+    aspectRatio: 1, // Ensure a square aspect ratio for each item
+    marginRight: '5%',
+    marginVertical: '5%',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Background color of the item
+    borderRadius: 8, // Rounded corners
+    padding: 10, // Padding inside the item
+    elevation: 2, // Elevation for Android shadow
+    shadowColor: '#000', // Shadow color for iOS shadow
+    shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS shadow
+    shadowOpacity: 0.2, // Shadow opacity for iOS shadow
+    shadowRadius: 2, // Shadow radius for iOS shadow
+  },
+  image: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+    alignSelf: 'center',
+  },
+  brandName: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: '500',
+    fontFamily: 'NeueMontreal-Medium',
+    marginTop: 8,
+    textAlign: 'center',
+    maxWidth: '100%', // Adjust maximum width as needed
   },
 });
 

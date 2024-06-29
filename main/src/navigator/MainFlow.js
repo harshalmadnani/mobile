@@ -2,24 +2,39 @@ import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Pressable, StyleSheet, View} from 'react-native';
 import Portfolio from '../screens/loggedIn/investments/portfolio/portfolio';
-import Spending from '../screens/loggedIn/spending/spending';
+import SpendingFlow from '../navigator/SpendingFlow';
 import SettingsComponent from '../screens/settings/settings';
 import Investments from '../screens/loggedIn/investments/investments';
 import FastImage from 'react-native-fast-image';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import {useRoute} from '@react-navigation/native';
 const Tab = createBottomTabNavigator();
 
-function MainFlowStack() {
+function MainFlowStack({navigation}) {
+  const route = useRoute();
   const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
   };
+  console.log(navigation.getState().routes);
+  // Function to determine if tab bar should be visible
+  const getTabBarVisibility = () => {
+    if (route.name != 'Catelog') return '';
+    else {
+      return 'none';
+    }
+  };
+
   return (
     <View style={{flex: 1}}>
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarStyle: {backgroundColor: 'black', borderTopWidth: 0},
+          tabBarStyle: {
+            backgroundColor: 'black',
+            borderTopWidth: 0,
+            display: getTabBarVisibility(),
+          },
           tabBarShowLabel: false,
         }}>
         <Tab.Screen
@@ -90,7 +105,7 @@ function MainFlowStack() {
           name="Investments"
           component={Investments}
         />
-        {/* <Tab.Screen
+        <Tab.Screen
           listeners={() => ({
             tabPress: () => {
               if (Platform.OS === 'ios') {
@@ -121,9 +136,9 @@ function MainFlowStack() {
                 />
               ),
           }}
-          name="Spending"
-          component={Spending}
-        /> */}
+          name="SpendingFlow"
+          component={SpendingFlow}
+        />
         <Tab.Screen
           listeners={() => ({
             tabPress: () => {
