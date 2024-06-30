@@ -88,7 +88,36 @@ const ChangeCurrency = ({navigation, route}) => {
             <Text style={styles.subHeading}>
               Choose the currency you want to have your balance displayed in
             </Text>
-            <View style={{marginTop: 16}}></View>
+          </View>
+
+          <View
+            style={{
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              marginTop: '5%',
+            }}>
+            <TouchableOpacity
+              onPress={() => setCurrency('USD')}
+              style={styles.regionContainer}>
+              <Image
+                source={{
+                  uri: 'https://cdn.britannica.com/79/4479-050-6EF87027/flag-Stars-and-Stripes-May-1-1795.jpg',
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.des}>USD</Text>
+              <Text style={styles.subdes}>US Dollar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.regionContainer}>
+              <Image
+                source={{
+                  uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/2560px-Flag_of_India.svg.png',
+                }}
+                style={styles.image}
+              />
+              <Text style={styles.des}>CHANGE</Text>
+              <Text style={styles.subdes}>US Dollar</Text>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity
@@ -152,7 +181,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 12,
     flex: 1,
-    justifyContent: 'space-between',
   },
   subHeading: {
     color: '#A6A6A6',
@@ -177,6 +205,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
   },
   confirmButtonTitle: {
     fontFamily: 'Sk-Modernist-Bold',
@@ -217,6 +248,46 @@ const styles = StyleSheet.create({
     right: 0,
     height: 300, // Increased height for a bigger image
     zIndex: -1, // Ensure background image is behind content
+  },
+  regionContainer: {
+    width: '45%',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Background color of the item
+    borderRadius: 20, // Rounded corners
+    paddingHorizontal: 15, // Padding inside the item
+    paddingVertical: '10%',
+    justifyContent: 'center',
+    elevation: 2, // Elevation for Android shadow
+    shadowColor: '#000', // Shadow color for iOS shadow
+    shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS shadow
+    shadowOpacity: 0.2, // Shadow opacity for iOS shadow
+    shadowRadius: 2, // Shadow radius for iOS shadow
+  },
+
+  image: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    alignSelf: 'center',
+  },
+
+  des: {
+    fontSize: 16,
+    color: '#000',
+    fontWeight: '500',
+    fontFamily: 'NeueMontreal-Medium',
+    marginTop: '10%',
+    textAlign: 'center',
+    maxWidth: '100%', // Adjust maximum width as needed
+  },
+  subdes: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: '500',
+    fontFamily: 'NeueMontreal-Light',
+    marginTop: 10,
+    textAlign: 'center',
+    maxWidth: '100%', // Adjust maximum width as needed
   },
 });
 
