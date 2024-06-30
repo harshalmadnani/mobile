@@ -28,6 +28,7 @@ import {
   NativeViewGestureHandler,
   RefreshControl,
 } from 'react-native-gesture-handler';
+import {convertCurrency, getCurrency} from '../../../../store/actions/offRamp';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -195,6 +196,7 @@ const Portfolio = ({navigation}) => {
       setRefreshing(false);
     };
   };
+
   return (
     <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
       <GestureHandlerRootView>

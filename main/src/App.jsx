@@ -26,6 +26,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootSiblingParent} from 'react-native-root-siblings';
 import {Buffer} from 'buffer';
+import ChangeCurrency from './screens/settings/changeCurrency';
 const publicClient = createPublicClient({
   // chain: mainnet,
   transport: http(
@@ -893,6 +894,12 @@ function App({navigation, uri}) {
                   <Stack.Screen
                     name="CardInfo"
                     component={CardInfoScreen}
+                    navigation={navigation}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="ChangeCurrency"
+                    component={ChangeCurrency}
                     navigation={navigation}
                     options={{headerShown: false}}
                   />

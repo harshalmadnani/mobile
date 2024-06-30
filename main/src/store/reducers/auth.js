@@ -13,6 +13,8 @@ const initialState = {
   wallets: [],
   name: '',
   DFNSToken: '',
+  currency: null,
+  country: null,
 };
 
 export const authSlice = createSlice({
@@ -46,6 +48,12 @@ export const authSlice = createSlice({
     },
     setDfnsToken: (state, action) => {
       state.DFNSToken = action.payload;
+    },
+    setCurrency: (state, action) => {
+      state.currency = action.payload;
+    },
+    setCountry: (state, action) => {
+      state.country = action.payload;
     },
   },
 });

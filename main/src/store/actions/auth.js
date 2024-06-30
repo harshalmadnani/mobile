@@ -18,6 +18,7 @@ import {
   getDfnsJwt,
   getUserInfoFromDB,
 } from '../../utils/DFNS/registerFlow';
+import {getCountry} from './offRamp';
 
 export const registerUserToDB = () => {
   return async dispatch => {};
@@ -294,6 +295,51 @@ export const onIsLoginCheckAuthCore = (
     //   console.log('Navigating To Home');
     // }
   };
+};
+
+export const getCurrency = async () => {
+  try {
+    const response = await axios.get('https://ipapi.co/json/');
+    return response.data.currency;
+  } catch (err) {
+    console.log('Error in actions/offRamp/getCurrency function.', err);
+    return null;
+  }
+};
+
+export const storeCountryCurrency = (curr, country) => {
+  return async dispatch => {
+    const curr = getCurrency();
+    const country = getCountry();
+
+    dispatch(authActions.setCurrency(curr));
+    dispatch(authActions.setCountry(country));
+  };
+};
+
+export const convertCurrency = async (userCurrency, amount) => {
+  try {
+    if (userCurrency != null) {
+      //use /euro for euro conversion rates.
+      const response = await axios.get(
+        'https://api.exchangerate-api.com/v4/latest/usd',
+      );
+      const rate = response.data.rates[`${userCurrency}`];
+
+      if (rate) {
+        const parsedRate = parseFloat(rate);
+        const convertedAmount = parsedRate * parseFloat(amount);
+        return convertedAmount;
+      } else {
+        console.log('Error in fetching rate or it is null.');
+        return null;
+      }
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.log(err, 'Error in actions/offRamp/convertCurrency function.');
+  }
 };
 
 export const autoLogin = (navigation, email) => {

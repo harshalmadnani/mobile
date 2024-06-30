@@ -305,7 +305,31 @@ const Component = ({navigation}) => {
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
-              Linking.openURL('https://app.koinx.com/get-started?r=XadeFinance&utm_source=App&utm_medium=wallet&utm_campaign=Signup');
+              navigation.navigate('ChangeCurrency');
+            }}>
+            <FastImage
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./book-open.png')}
+            />
+            <View style={styles.actualSetting}>
+              <Text style={styles.settingsText}>Change Currency</Text>
+              <Icon
+                // style={styles.tup}
+                name={'angle-right'}
+                size={20}
+                color={'#86969A'}
+                type="font-awesome"
+                // style = {{marginRight: '1%'}}
+              />
+            </View>
+          </TouchableOpacity>
+          <HorizontalRule />
+          <TouchableOpacity
+            style={styles.innerSettings}
+            onPress={() => {
+              Linking.openURL(
+                'https://app.koinx.com/get-started?r=XadeFinance&utm_source=App&utm_medium=wallet&utm_campaign=Signup',
+              );
             }}>
             <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
