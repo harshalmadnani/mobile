@@ -307,13 +307,11 @@ export const getCurrency = async () => {
   }
 };
 
-export const storeCountryCurrency = (curr, country) => {
+export const storeCountryCurrency = (country, curr, curr_name) => {
   return async dispatch => {
-    const curr = getCurrency();
-    const country = getCountry();
-
     dispatch(authActions.setCurrency(curr));
     dispatch(authActions.setCountry(country));
+    dispatch(authActions.setCurrencyName(curr_name));
   };
 };
 

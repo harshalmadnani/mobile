@@ -25,8 +25,13 @@ import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {err} from 'react-native-svg/lib/typescript/xml';
 import {useDispatch, useSelector} from 'react-redux';
-import {autoLogin, onIsLoginCheckAuthCore} from '../../store/actions/auth';
-import { authActions } from '../../store/reducers/auth';
+import {
+  autoLogin,
+  onIsLoginCheckAuthCore,
+  storeCountryCurrency,
+} from '../../store/actions/auth';
+import {authActions} from '../../store/reducers/auth';
+import axios from 'axios';
 
 var DeviceInfo = require('react-native-device-info');
 
@@ -41,12 +46,26 @@ global.TextEncoder = require('text-encoding').TextEncoder;
 // };
 
 const PreLoad = ({navigation}) => {
+  const dispatch = useDispatch();
   const [loadingText, setLoadingText] = useState(
     'Prepare to enter a new era of finance...',
   );
+
+  const getCountry = async () => {
+    try {
+      const response = await axios.get('https://ipapi.co/json');
+
+      const {country_name, currency, currency_name} = await response.data;
+
+      dispatch(storeCountryCurrency(country_name, currency, currency_name));
+    } catch (err) {
+      console.log('Error in getCountry.');
+    }
+  };
+
   const email = useSelector(state => state.auth.email);
   console.log('here...start', email);
-  const dispatch = useDispatch();
+
   useEffect(() => {
     async function preLoadLog() {
       if (email) {
@@ -58,7 +77,7 @@ const PreLoad = ({navigation}) => {
         navigation.push('LoggedOutHome');
       }
     }
-
+    getCountry();
     preLoadLog();
   }, [dispatch]);
   return (

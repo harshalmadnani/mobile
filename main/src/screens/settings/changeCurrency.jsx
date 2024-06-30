@@ -42,23 +42,54 @@ import {getAllScwAddress, getScwAddress} from '../../utils/DFNS/walletFLow.js';
 import AuthTextInput from '../../component/Input/AuthTextInputs.jsx';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {authActions} from '../../store/reducers/auth.js';
 import {autoLogin} from '../../store/actions/auth.js';
 import {Passkey} from 'react-native-passkey';
 import Toast from 'react-native-root-toast';
 
 const ChangeCurrency = ({navigation, route}) => {
+  const store_currency = useSelector(x => x.auth.currency);
+  const store_currency_name = useSelector(x => x.auth.currency_name);
+  const email = useSelector(x => x.auth.email);
+  const BASE_CURRENCY = 'USD';
+
+  console.log(store_currency_name, store_currency);
   const [loading, setLoading] = useState(false);
 
   const [currency, setCurrency] = useState('the currency');
-  const dispatch = useDispatch();
 
   const onPressBack = () => {
     navigation.navigate('Settings');
   };
   const getConfirmationOnInput = () => {
     return currency != 'the currency';
+  };
+
+  const onSubmit = async () => {
+    if (currency != 'the currency') {
+      try {
+        console.log(currency === BASE_CURRENCY);
+        await axios.patch(
+          `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
+          {
+            isUsd: currency === BASE_CURRENCY,
+          },
+          {
+            headers: {
+              apiKey:
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+              Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+            },
+          },
+        );
+
+        onPressBack();
+      } catch (err) {
+        console.log('error submitting in supabase');
+      }
+    }
   };
 
   return (
@@ -97,31 +128,39 @@ const ChangeCurrency = ({navigation, route}) => {
               marginTop: '5%',
             }}>
             <TouchableOpacity
-              onPress={() => setCurrency('USD')}
-              style={styles.regionContainer}>
+              onPress={() => setCurrency(BASE_CURRENCY)}
+              style={[
+                styles.regionContainer,
+                {borderColor: currency === BASE_CURRENCY ? '#ffffff' : '#000'},
+              ]}>
               <Image
                 source={{
                   uri: 'https://cdn.britannica.com/79/4479-050-6EF87027/flag-Stars-and-Stripes-May-1-1795.jpg',
                 }}
                 style={styles.image}
               />
-              <Text style={styles.des}>USD</Text>
+              <Text style={styles.des}>{BASE_CURRENCY}</Text>
               <Text style={styles.subdes}>US Dollar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.regionContainer}>
+            <TouchableOpacity
+              onPress={() => setCurrency(store_currency)}
+              style={[
+                styles.regionContainer,
+                {borderColor: currency === store_currency ? '#ffffff' : '#000'},
+              ]}>
               <Image
                 source={{
                   uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/2560px-Flag_of_India.svg.png',
                 }}
                 style={styles.image}
               />
-              <Text style={styles.des}>CHANGE</Text>
-              <Text style={styles.subdes}>US Dollar</Text>
+              <Text style={styles.des}>{store_currency}</Text>
+              <Text style={styles.subdes}>Rupee</Text>
             </TouchableOpacity>
           </View>
 
           <TouchableOpacity
-            disabled={currency != 'the currency'}
+            disabled={currency === 'the currency'}
             style={[
               styles.confirmButton,
               {
@@ -131,7 +170,7 @@ const ChangeCurrency = ({navigation, route}) => {
               },
             ]}
             onPress={async () => {
-              console.log('Dispatch action');
+              onSubmit();
             }}>
             {loading ? (
               <ActivityIndicator />
@@ -261,7 +300,8 @@ const styles = StyleSheet.create({
     shadowColor: '#000', // Shadow color for iOS shadow
     shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS shadow
     shadowOpacity: 0.2, // Shadow opacity for iOS shadow
-    shadowRadius: 2, // Shadow radius for iOS shadow
+    shadowRadius: 2, // Shadow radius for iOS shadow,
+    borderWidth: 1,
   },
 
   image: {

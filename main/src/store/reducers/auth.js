@@ -15,6 +15,7 @@ const initialState = {
   DFNSToken: '',
   currency: null,
   country: null,
+  currency_name: null,
 };
 
 export const authSlice = createSlice({
@@ -54,6 +55,9 @@ export const authSlice = createSlice({
     },
     setCountry: (state, action) => {
       state.country = action.payload;
+    },
+    setCurrencyName: (state, action) => {
+      state.currency_name = action.payload;
     },
   },
 });
