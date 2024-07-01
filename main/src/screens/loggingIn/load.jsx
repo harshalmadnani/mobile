@@ -27,6 +27,7 @@ import {err} from 'react-native-svg/lib/typescript/xml';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   autoLogin,
+  convertCurrency,
   onIsLoginCheckAuthCore,
   storeCountryCurrency,
 } from '../../store/actions/auth';
@@ -56,8 +57,22 @@ const PreLoad = ({navigation}) => {
       const response = await axios.get('https://ipapi.co/json');
 
       const {country_name, currency, currency_name} = await response.data;
-
-      dispatch(storeCountryCurrency(country_name, currency, currency_name));
+      const exRate = await convertCurrency(currency);
+      console.log(
+        'ex rate.............',
+        country_name,
+        currency,
+        currency_name,
+        exRate * 1.1,
+      );
+      dispatch(
+        storeCountryCurrency(
+          country_name,
+          currency,
+          currency_name,
+          exRate * 1.1,
+        ),
+      );
     } catch (err) {
       console.log('Error in getCountry.');
     }

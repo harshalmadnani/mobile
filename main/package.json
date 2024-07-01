@@ -37,6 +37,7 @@
     "@supabase/supabase-js": "^2.43.1",
     "@tradle/react-native-http": "^2.0.1",
     "@transak/react-native-sdk": "^1.3.0",
+    "@unizen-io/unizen-contract-addresses": "^0.0.14",
     "@walletconnect/react-native-compat": "^2.12.2",
     "@web3modal/wagmi-react-native": "^1.3.0",
     "alchemy-sdk": "^3.1.2",

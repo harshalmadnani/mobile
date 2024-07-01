@@ -16,6 +16,7 @@ const initialState = {
   currency: null,
   country: null,
   currency_name: null,
+  exchRate: 0,
 };
 
 export const authSlice = createSlice({
@@ -58,6 +59,9 @@ export const authSlice = createSlice({
     },
     setCurrencyName: (state, action) => {
       state.currency_name = action.payload;
+    },
+    setExchangeRate: (state, action) => {
+      state.exchRate = action.payload;
     },
   },
 });

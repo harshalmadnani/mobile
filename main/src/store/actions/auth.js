@@ -307,15 +307,16 @@ export const getCurrency = async () => {
   }
 };
 
-export const storeCountryCurrency = (country, curr, curr_name) => {
+export const storeCountryCurrency = (country, curr, curr_name, ex_rate) => {
   return async dispatch => {
     dispatch(authActions.setCurrency(curr));
     dispatch(authActions.setCountry(country));
     dispatch(authActions.setCurrencyName(curr_name));
+    dispatch(authActions.setExchangeRate(ex_rate));
   };
 };
 
-export const convertCurrency = async (userCurrency, amount) => {
+export const convertCurrency = async userCurrency => {
   try {
     if (userCurrency != null) {
       //use /euro for euro conversion rates.
@@ -326,7 +327,7 @@ export const convertCurrency = async (userCurrency, amount) => {
 
       if (rate) {
         const parsedRate = parseFloat(rate);
-        const convertedAmount = parsedRate * parseFloat(amount);
+        const convertedAmount = parsedRate;
         return convertedAmount;
       } else {
         console.log('Error in fetching rate or it is null.');

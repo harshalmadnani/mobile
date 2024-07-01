@@ -46,10 +46,26 @@ export const getDLNTradeCreateBuyOrder = async (
   dstChainId,
   dstChainTokenOut,
   smartAccount,
+  isLifi = false,
 ) => {
   try {
     let response;
-    if (dstChainId === srcChainId) {
+    if (dstChainId === srcChainId && !isLifi) {
+      console.log('buy same chain............>');
+      response = await getQuoteFromUnizen(
+        srcChainId,
+        dstChainId,
+        srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : srcChainTokenIn,
+        dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+          ? '0x0000000000000000000000000000000000000000'
+          : dstChainTokenOut,
+        srcChainTokenInAmount,
+        smartAccount,
+      );
+      console.log('unizen trade.....', JSON.stringify(response));
+    } else if (dstChainId === srcChainId && isLifi) {
       response = await getQuoteFromLifi(
         srcChainId,
         dstChainId,
@@ -78,7 +94,7 @@ export const getDLNTradeCreateBuyOrder = async (
         }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       );
     }
-    return response?.data;
+    return response?.data ?? response;
   } catch (error) {
     console.log(
       'error from Trade Quote api:',
@@ -152,49 +168,7 @@ export const getDLNTradeCreateSellOrder = async (
     return null;
   }
 };
-// export const getDLNTradeCreateSellOrder = async (
-//   srcChainId,
-//   srcChainTokenIn,
-//   srcChainTokenInAmount,
-//   dstChainId,
-//   dstChainTokenOut,
-// ) => {
-//   try {
-//     let response;
-//     if (dstChainId === 137) {
-//       response = await axios.get(
-//         `https://api.dln.trade/v1.0/chain/estimation?chainId=${srcChainId}&tokenIn=${
-//           srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-//             ? '0x0000000000000000000000000000000000000000'
-//             : srcChainTokenIn
-//         }&tokenInAmount=${srcChainTokenInAmount}&tokenOut=${
-//           dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-//             ? '0x0000000000000000000000000000000000000000'
-//             : dstChainTokenOut
-//         }&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-//       );
-//     } else {
-//       response = await axios.get(
-//         `${DLNBaseURL}${
-//           tradeRoutes.createOrder
-//         }?srcChainId=${srcChainId}&srcChainTokenIn=${
-//           srcChainTokenIn === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-//             ? '0x0000000000000000000000000000000000000000'
-//             : srcChainTokenIn
-//         }&srcChainTokenInAmount=${srcChainTokenInAmount}&dstChainId=${dstChainId}&dstChainTokenOut=${
-//           dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-//             ? '0x0000000000000000000000000000000000000000'
-//             : dstChainTokenOut
-//         }&dstChainTokenOutAmount=auto&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
-//       );
-//     }
 
-//     return response?.data;
-//   } catch (error) {
-//     console.log('error  from DLN api:', dstChainId, error.toString());
-//     return null;
-//   }
-// };
 const getChainIdOnChainName = chainName => {
   if (chainName === 'Ethereum') {
     return 1;
@@ -206,6 +180,8 @@ const getChainIdOnChainName = chainName => {
     return 43114;
   } else if (chainName === 'Arbitrum') {
     return 42161;
+  } else if (chainName === 'Base') {
+    return 8453;
   }
 };
 export const getBestCrossSwapRateBuy = async (
@@ -226,6 +202,7 @@ export const getBestCrossSwapRateBuy = async (
       x.blockchains === 'Base' ||
       x.blockchains === 'Arbitrum',
   );
+
   const ratesOfDifferentChainOut = blockchainsContractAddress.map(async x => {
     const res = await getDLNTradeCreateBuyOrder(
       137,
@@ -238,21 +215,26 @@ export const getBestCrossSwapRateBuy = async (
     return res;
   });
   let results = await Promise.all(ratesOfDifferentChainOut);
-  const listOfRoutes = [];
+  console.log('trade......', results);
+  // const listOfRoutes = [];
   // best rate calculation
   results = results.filter(x => x !== null);
   const bestTradingPrice = results.map(x => {
     return {
       fee: isNaN(
         parseInt(
-          x?.estimation?.dstChainTokenOut?.amount || x?.estimate?.toAmountMin,
+          x?.estimation?.dstChainTokenOut?.amount ||
+            x?.estimate?.toAmountMin ||
+            x?.transactionData?.info?.amountOutMin,
         ),
       )
         ? 0
         : parseInt(
-            x?.estimation?.dstChainTokenOut?.amount || x?.estimate?.toAmountMin,
+            x?.estimation?.dstChainTokenOut?.amount ||
+              x?.estimate?.toAmountMin ||
+              x?.transactionData?.info?.amountOutMin,
           ),
-      estimation: x?.estimation,
+      estimation: x?.estimation ?? x,
       chainId: x?.estimation?.dstChainTokenOut?.chainId || 137,
     };
   });
@@ -261,7 +243,7 @@ export const getBestCrossSwapRateBuy = async (
 
   results =
     bestTradingPrice.filter(x => x.fee === bestPrice)[0]?.chainId === 137
-      ? results.filter(x => x?.estimate?.toAmountMin !== undefined)
+      ? results
       : results.filter(
           x =>
             x?.estimation?.dstChainTokenOut?.chainId ===
@@ -276,15 +258,18 @@ export const getBestCrossSwapRateBuy = async (
           fee: isNaN(
             parseInt(
               results[0]?.estimation?.dstChainTokenOut?.amount ||
-                results[0]?.estimate?.toAmountMin,
+                results[0]?.estimate?.toAmountMin ||
+                results[0]?.transactionData?.info?.amountOutMin,
             ),
           )
             ? 0
             : parseInt(
                 results[0]?.estimation?.dstChainTokenOut?.amount ||
-                  results[0]?.estimate?.toAmountMin,
+                  results[0]?.estimate?.toAmountMin ||
+                  results[0]?.transactionData?.info?.amountOutMin,
               ),
-          estimation: results[0]?.estimation ?? results[0]?.estimate,
+          estimation:
+            results[0]?.estimation ?? results[0]?.estimate ?? results[0],
           chainId: results[0]?.estimation?.dstChainTokenOut?.chainId || 137,
         },
       ],
@@ -418,7 +403,7 @@ export const confirmDLNTransaction = async (
       '137';
     smartAccount = smartAccountSrc;
     const erc20Abi = new ethers.Interface(erc20);
-    console.log('chain info', smartAccount, chainId);
+    console.log('chain info', tokenAddress, smartAccount, chainId);
     const approvalData = erc20Abi.encodeFunctionData('approve', [
       txData?.to,
       amount,
@@ -433,7 +418,7 @@ export const confirmDLNTransaction = async (
       data: txData?.data,
     };
     txs.push(executeTx);
-    console.log('same chain tx......', walletIdSrc, chainId, txs);
+    console.log('same chain tx......', amount, walletIdSrc, chainId, txs);
   }
   if (!onlyTransaction) {
     const txnHash = await tradeTokenGasless(
@@ -659,6 +644,61 @@ export const getQuoteFromLifi = async (
     console.log('lifi error.....', error?.response?.data);
   }
 };
+export const getQuoteFromUnizen = async (
+  fromChain,
+  toChain,
+  fromToken,
+  toToken,
+  fromAmount,
+  fromAddress,
+) => {
+  try {
+    console.log('unizen data.....', fromAmount);
+    const result = await axios.get(
+      `https://api.zcx.com/trade/v1/${fromChain}/quote/single?fromTokenAddress=${fromToken}&toTokenAddress=${toToken}&amount=${fromAmount}&sender=${fromAddress}&slippage=0.005`,
+      {
+        headers: {
+          Authorization: `Bearer af0e50ed-6636-414f-afa3-2626db5c6acf`,
+          // accept: 'application/json',
+        },
+      },
+    );
+
+    const allMinAmount = result?.data?.map(x =>
+      parseInt(x?.transactionData?.info?.amountOutMin),
+    );
+    const maxAmountOut = Math.max(...allMinAmount);
+    const index = allMinAmount.indexOf(maxAmountOut);
+    console.log('unizen result.....', maxAmountOut, index);
+    return result?.data[index];
+  } catch (error) {
+    console.log('unizen error.....', error?.response?.data);
+  }
+};
+export const getTxFromUnizen = async (
+  fromChain,
+  transactionData,
+  nativeValue,
+  account,
+  tradeType,
+) => {
+  try {
+    console.log('unizen data.....');
+    const result = await axios.post(
+      `https://api.zcx.com/trade/v1/${fromChain}/swap/single`,
+      {transactionData, nativeValue, account, tradeType, receiver: account},
+      {
+        headers: {
+          Authorization: `Bearer af0e50ed-6636-414f-afa3-2626db5c6acf`,
+          // accept: 'application/json',
+        },
+      },
+    );
+    return result?.data;
+  } catch (error) {
+    console.log('unizen error.....', error?.response?.data);
+  }
+};
 export const executeSameChainSellForUSDC = async (
   tokenInfo,
   smartAccount,
@@ -681,6 +721,7 @@ export const executeSameChainSellForUSDC = async (
     tokenInfo?.chainId,
     usdcNativeToken,
     smartAccount,
+    true,
   );
   return uSDCTxnRate;
 };

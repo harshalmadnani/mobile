@@ -90,7 +90,8 @@ const PendingTxComponent = ({
           }}>
           {normalAmount?.toFixed(6)}{' '}
           {txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
-            txQuoteInfo?.action?.toToken?.name}{' '}
+            txQuoteInfo?.action?.toToken?.name ||
+            txQuoteInfo?.tokenTo?.symbol}{' '}
           {'\n'}
           are on the way
         </Text>
@@ -151,7 +152,8 @@ const SuccessTxComponent = ({
           {isStockTrade
             ? ` USDC of ${stockInfo?.stock?.symbol} stocks`
             : txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
-              txQuoteInfo?.action?.toToken?.name}
+              txQuoteInfo?.action?.toToken?.name ||
+              txQuoteInfo?.tokenTo?.symbol}
         </Text>
       </View>
       <View style={{marginTop: '15%'}}>
@@ -201,6 +203,12 @@ const SuccessTxComponent = ({
               {tradeType === 'sell'
                 ? txQuoteInfo?.action?.toToken?.priceUSD ||
                   (
+                    parseInt(txQuoteInfo?.toTokenAmount) /
+                    Math.pow(10, txQuoteInfo?.tokenTo?.decimals)
+                  ).toFixed(5) / parseFloat(normalAmount) ||
+                  parseInt(txQuoteInfo?.toTokenAmount) /
+                    Math.pow(10, txQuoteInfo?.tokenTo?.decimals) ||
+                  (
                     txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
                     Math.pow(
                       10,
@@ -214,19 +222,25 @@ const SuccessTxComponent = ({
                   ).toFixed(6)
                 : //when same chain
                 !isStockTrade
-                ? txQuoteInfo?.action?.toToken?.priceUSD || //when cross chain
-                  (
-                    txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                ? txQuoteInfo?.action?.toToken?.priceUSD ||
+                  parseFloat(normalAmount) /
+                    (
+                      parseInt(
+                        txQuoteInfo?.transactionData?.info?.amountOutMin,
+                      ) / Math.pow(10, txQuoteInfo?.tokenTo?.decimals)
+                    ).toFixed(5) || //when cross chain
+                  txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
                     Math.pow(
                       10,
                       txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
                     ) /
-                    (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
+                    (
+                      txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
                       Math.pow(
                         10,
                         txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      ))
-                  ).toFixed(6)
+                      )
+                    ).toFixed(6)
                 : stockInfo?.priceInfo?.price}
             </Text>
           </View>
@@ -275,7 +289,7 @@ const SuccessTxComponent = ({
                       10,
                       txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
                     )
-                : txQuoteInfo?.estimate?.gasCosts?.[0]?.amountUSD}
+                : txQuoteInfo?.estimate?.gasCosts?.[0]?.amountUSD ?? '0.0'}
             </Text>
           </View>
 
@@ -304,7 +318,8 @@ const SuccessTxComponent = ({
               }}>
               {' '}
               {txQuoteInfo?.order?.approximateFulfillmentDelay ||
-                txQuoteInfo?.estimate?.executionDuration}
+                txQuoteInfo?.estimate?.executionDuration ||
+                5}
               s
             </Text>
           </View>
@@ -381,21 +396,25 @@ const PendingTxStatusPage = ({route, navigation}) => {
   };
   const weiAmount = new BigNumber(
     txQuoteInfo?.estimation?.dstChainTokenOut?.amount ||
-      txQuoteInfo?.estimate?.toAmountMin,
+      txQuoteInfo?.estimate?.toAmountMin ||
+      txQuoteInfo?.transactionData?.info?.amountOutMin,
   );
   const percent =
     (((txQuoteInfo?.order?.approximateFulfillmentDelay ||
-      txQuoteInfo?.estimate?.executionDuration) -
+      txQuoteInfo?.estimate?.executionDuration ||
+      5) -
       countdown) /
       (txQuoteInfo?.order?.approximateFulfillmentDelay ||
-        txQuoteInfo?.estimate?.executionDuration)) *
+        txQuoteInfo?.estimate?.executionDuration ||
+        5)) *
     100;
   const formattedPercent = Math.round(percent) + '%';
   const normalAmount = weiAmount
     .div(
       10 **
         (txQuoteInfo?.estimation?.dstChainTokenOut.decimals ||
-          txQuoteInfo?.action?.toToken?.decimals),
+          txQuoteInfo?.action?.toToken?.decimals ||
+          txQuoteInfo?.tokenTo?.decimals),
     )
     .toNumber();
   // {

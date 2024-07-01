@@ -38,8 +38,10 @@ import {
   executeSameChainSellForUSDC,
   getDLNTradeCreateBuyOrder,
   getDLNTradeCreateBuyOrderTxn,
+  getTxFromUnizen,
   getUSDCTokenOnChain,
 } from '../../../../utils/DLNTradeApi';
+import contractAddress from '@unizen-io/unizen-contract-addresses/production.json';
 // import // getAuthCoreProviderEthers,
 // // switchAuthCoreChain,
 // '../../../../utils/particleCoreSDK';
@@ -59,7 +61,7 @@ const TradePage = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
-  const [value, setValue] = useState(tradeType !== 'sell' ? '10' : '0.1');
+  const [value, setValue] = useState(tradeType !== 'sell' ? '4' : '0.1');
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [sellOrderStages, setSellOrderStages] = useState('Place Order');
   const [buyTradeStages, setBuyTradeStages] = useState('Place Order');
@@ -108,7 +110,7 @@ const TradePage = ({route}) => {
     8453: 'Base',
     // add other chains as necessary
   };
-  // console.log('all trades....', allSwappingTradesQuotes);
+
   // Retrieve the first item's chainId and find the chain name
   const firstItem =
     Array.isArray(allSwappingTradesQuotes) && allSwappingTradesQuotes.length > 0
@@ -153,12 +155,16 @@ const TradePage = ({route}) => {
         if (tradeType === 'sell' && parseFloat(value) > 0) {
           console.log(
             'fired when value changes',
-            parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+            parseInt(
+              parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+            ),
           );
           dispatch(
             getBestDLNCrossSwapRateSell(
               tokensToSell?.[0],
-              parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+              parseInt(
+                parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+              ),
               allScw.filter(x => x.chainId === tokensToSell?.[0]?.chainId)?.[0]
                 ?.address,
             ),
@@ -754,10 +760,10 @@ const TradePage = ({route}) => {
                               ),
                           )
                         ? (
-                            bestSwappingBuyTrades?.estimate?.toAmountMin /
+                            parseInt(bestSwappingBuyTrades?.toTokenAmount) /
                             Math.pow(
                               10,
-                              bestSwappingBuyTrades?.action?.toToken?.decimals,
+                              bestSwappingBuyTrades?.tokenTo?.decimals,
                             )
                           ).toFixed(5)
                         : (
@@ -812,10 +818,10 @@ const TradePage = ({route}) => {
                               ),
                           )
                         ? (
-                            bestSwappingBuyTrades?.estimate?.toAmountMin /
+                            parseInt(bestSwappingBuyTrades?.toTokenAmount) /
                             Math.pow(
                               10,
-                              bestSwappingBuyTrades?.action?.toToken?.decimals,
+                              bestSwappingBuyTrades?.tokenTo?.decimals,
                             )
                           ).toFixed(5)
                         : (
@@ -881,6 +887,10 @@ const TradePage = ({route}) => {
                   {tradeType === 'sell'
                     ? bestSwappingBuyTrades?.action?.fromToken?.priceUSD ||
                       (
+                        parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                        Math.pow(10, bestSwappingBuyTrades?.tokenTo?.decimals)
+                      ).toFixed(5) / parseFloat(value) ||
+                      (
                         bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                           ?.amount /
                         Math.pow(
@@ -895,11 +905,21 @@ const TradePage = ({route}) => {
                             bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                               ?.decimals,
                           ))
-                      ).toFixed(6)
+                      ).toFixed(3)
                     : //when same chain
 
                     !isStockTrade
-                    ? bestSwappingBuyTrades?.action?.toToken?.priceUSD || //when cross chain
+                    ? parseFloat(value) /
+                        (
+                          parseInt(
+                            bestSwappingBuyTrades?.transactionData?.info
+                              ?.amountOutMin,
+                          ) /
+                          Math.pow(
+                            10,
+                            parseInt(bestSwappingBuyTrades?.tokenTo?.decimals),
+                          )
+                        ).toFixed(5) || //when cross chain
                       (
                         bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                           ?.amount /
@@ -966,7 +986,8 @@ const TradePage = ({route}) => {
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                             ?.decimals,
                         )
-                    : bestSwappingBuyTrades?.estimate?.gasCosts?.[0]?.amountUSD}
+                    : bestSwappingBuyTrades?.estimate?.gasCosts?.[0]
+                        ?.amountUSD ?? 0}
                 </Text>
               </View>
 
@@ -1074,11 +1095,23 @@ const TradePage = ({route}) => {
                     let walletDstId;
                     let walletSrcId;
                     let res;
-                    if (bestSwappingBuyTrades?.transactionRequest) {
+                    if (bestSwappingBuyTrades?.transactionData) {
                       smartAccountSrc = allScw.filter(
                         x => x.chainId === '137',
                       )?.[0]?.address;
-                      res = bestSwappingBuyTrades;
+                      res = await getTxFromUnizen(
+                        137,
+                        bestSwappingBuyTrades?.transactionData,
+                        bestSwappingBuyTrades?.nativeValue,
+                        smartAccountSrc,
+                        bestSwappingBuyTrades?.tradeType,
+                      );
+                      console.log(
+                        'same chain response..........',
+                        contractAddress[res?.contractVersion]?.polygon,
+                        res,
+                        JSON.stringify(bestSwappingBuyTrades),
+                      );
                     } else {
                       const dstChainName = getNameChainId(
                         (
@@ -1118,12 +1151,22 @@ const TradePage = ({route}) => {
                     setBuyTradeStages('Confirming tx ...');
                     const signature = await confirmDLNTransaction(
                       tradeType,
-                      res,
+                      bestSwappingBuyTrades?.transactionData
+                        ? bestSwappingBuyTrades
+                        : res,
                       res?.estimation?.srcChainTokenIn?.amount ||
-                        res?.action?.fromAmount,
+                        res?.action?.fromAmount ||
+                        bestSwappingBuyTrades?.fromTokenAmount,
                       res?.estimation?.srcChainTokenIn?.address ||
-                        res?.action?.fromToken?.address,
-                      res?.tx ?? res?.transactionRequest,
+                        res?.action?.fromToken?.address ||
+                        bestSwappingBuyTrades?.tokenFrom?.contractAddress,
+                      res?.tx ??
+                        res?.transactionRequest ?? {
+                          data: res?.data,
+                          from: smartAccountSrc,
+                          to: contractAddress[res?.contractVersion]?.polygon,
+                          value: res?.nativeValue,
+                        },
                       evmInfo?.smartAccount,
                       wallets?.filter(x => x.network === 'Polygon')[0]?.address,
                       false,
@@ -1141,7 +1184,9 @@ const TradePage = ({route}) => {
                     setLoading(false);
                     if (signature) {
                       navigation.navigate('PendingTxStatus', {
-                        state: res,
+                        state: bestSwappingBuyTrades?.transactionData
+                          ? bestSwappingBuyTrades
+                          : res,
                         tradeType,
                       });
                     }
@@ -1149,22 +1194,44 @@ const TradePage = ({route}) => {
                     setPreparingTx(true);
                     setLoading(true);
                     let res;
-                    if (bestSwappingBuyTrades?.transactionRequest) {
+                    if (bestSwappingBuyTrades?.transactionData) {
                       //same chain
-                      res = bestSwappingBuyTrades;
+                      // res = bestSwappingBuyTrades;
                       // setSellOrderStages('Preparing Tx...');
                       const smartAccountSrc = allScw.filter(
                         x => x.chainId === '137',
                       )?.[0]?.address;
-                      ReactNativeHapticFeedback.trigger('impactHeavy', options);
+                      res = await getTxFromUnizen(
+                        137,
+                        bestSwappingBuyTrades?.transactionData,
+                        bestSwappingBuyTrades?.nativeValue,
+                        smartAccountSrc,
+                        bestSwappingBuyTrades?.tradeType,
+                      );
+                      console.log(
+                        'same chain response..........',
+                        contractAddress[res?.contractVersion]?.polygon,
+                        res,
+                        JSON.stringify(bestSwappingBuyTrades),
+                      );
                       const signature = await confirmDLNTransaction(
                         tradeType,
-                        res,
+                        bestSwappingBuyTrades?.transactionData
+                          ? bestSwappingBuyTrades
+                          : res,
                         res?.estimation?.srcChainTokenIn?.amount ||
-                          res?.action?.fromAmount,
+                          res?.action?.fromAmount ||
+                          bestSwappingBuyTrades?.fromTokenAmount,
                         res?.estimation?.srcChainTokenIn?.address ||
-                          res?.action?.fromToken?.address,
-                        res?.tx ?? res?.transactionRequest,
+                          res?.action?.fromToken?.address ||
+                          bestSwappingBuyTrades?.tokenFrom?.contractAddress,
+                        res?.tx ??
+                          res?.transactionRequest ?? {
+                            data: res?.data,
+                            from: smartAccountSrc,
+                            to: contractAddress[res?.contractVersion]?.polygon,
+                            value: res?.nativeValue,
+                          },
                         evmInfo?.smartAccount,
                         wallets?.filter(x => x.network === 'Polygon')[0]
                           ?.address,
@@ -1180,7 +1247,9 @@ const TradePage = ({route}) => {
                       setPreparingTx(false);
                       if (signature) {
                         navigation.navigate('PendingTxStatus', {
-                          state: res,
+                          state: bestSwappingBuyTrades?.transactionData
+                            ? bestSwappingBuyTrades
+                            : res,
                           tradeType,
                         });
                       }

@@ -170,6 +170,7 @@ export const getBestDLNCrossSwapRateSell = (tokenInfo, value, scw) => {
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       scw,
     );
+    console.log('sell to token', bestRate);
     dispatch(marketsAction.setBestSwappingRates(bestRate ?? []));
   };
 };
