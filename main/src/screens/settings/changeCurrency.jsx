@@ -132,11 +132,43 @@ const ChangeCurrency = ({navigation, route}) => {
 
         onPressBack();
       } catch (err) {
-        console.log('error submitting in supabase, from changeCurrency Screen');
+        console.log(
+          'error submitting in supabase, from changeCurrency Screen',
+          err,
+        );
       }
     }
   };
+  const getCountry = async () => {
+    try {
+      const ipRes = await axios.get('https://api.ipify.org?format=json');
+      const ipAddress = ipRes.data.ip;
 
+      console.log('IP PUBLIC ADDRESS =>', ipAddress);
+
+      const response = await axios.get(`https://ipapi.co/${ipAddress}/json/`);
+      const {country_name, currency, currency_name, country_code} =
+        response.data;
+
+      const exRate = await convertCurrency(currency); //has to be capital
+      dispatch(
+        storeCountryCurrency(
+          country_name,
+          currency,
+          currency_name,
+          exRate,
+          ipAddress,
+          country_code,
+        ),
+      );
+    } catch (err) {
+      console.log('Error in getCountry.', err);
+    }
+  };
+
+  useEffect(() => {
+    getCountry();
+  }, []);
   return (
     <TouchableWithoutFeedback
       onPress={() => {

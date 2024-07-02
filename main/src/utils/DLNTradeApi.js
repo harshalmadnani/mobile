@@ -426,6 +426,7 @@ export const confirmDLNTransaction = async (
       walletIdSrc,
       chainId,
       txs,
+      smartAccountSrc,
     );
     console.log('Signature Signed...........', txnHash);
     if (txnHash) {

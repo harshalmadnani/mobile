@@ -299,7 +299,13 @@ export const getSmartAccountAddress = async (authToken, walletId, chainId) => {
     console.log('error on registering..........', error);
   }
 };
-export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
+export const tradeTokenGasless = async (
+  authToken,
+  walletId,
+  chainId,
+  txns,
+  scwAddress,
+) => {
   try {
     // Start delegated registration flow. Server needs to obtain the challenge with the appId
     // and appOrigin of the mobile application. For simplicity, they are included as part of
@@ -319,14 +325,14 @@ export const tradeTokenGasless = async (authToken, walletId, chainId, txns) => {
             )
           : http(),
     });
-    console.log('here....chain id', chainId);
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
       biconomyPaymasterApiKey: getPaymasterKeyOnId(chainId?.toString()),
       bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId?.toString()}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
-    const scwAddress = await smartAccountClient.getAccountAddress();
+    // const scwAddress = await smartAccountClient.getAccountAddress();
+    console.log('here....chain id', scwAddress);
     const nonce = await readEntryPointContract(
       'getNonce',
       [scwAddress, '0'],
