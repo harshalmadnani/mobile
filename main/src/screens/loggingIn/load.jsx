@@ -70,7 +70,7 @@ const PreLoad = ({navigation}) => {
         exRate,
         ipAddress,
       );
-      dispatch(
+      await dispatch(
         storeCountryCurrency(
           country_name,
           currency,

@@ -280,7 +280,7 @@ const MarketChart = props => {
                 marginTop: '2%',
               }}>
               {isUsd ? '$' : currency_name}{' '}
-              {currentAsset?.[0]?.estimated_balance?.toFixed(2) * exchRate ??
+              {(currentAsset?.[0]?.estimated_balance * exchRate)?.toFixed(2) ??
                 0.0}
             </Text>
             <Text

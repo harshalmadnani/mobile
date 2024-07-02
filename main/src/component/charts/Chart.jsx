@@ -16,6 +16,9 @@ function InteractiveChart() {
     {timestamp: 0, value: 0},
     {timestamp: 0, value: 0},
   ]);
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency_name);
   const [currentPrice, setCurrentPrice] = useState('0');
   const [selectedTimeframe, setSelectedTimeframe] = useState('1D');
   const [priceChange, setPriceChange] = useState('0');
@@ -189,8 +192,8 @@ function InteractiveChart() {
                 justifyContent: 'center',
               }}>
               <Text style={styles.stockPrice}>
-                $
-                {Number(currentPrice || '0')
+                {isUsd ? `$` : `${currency_name} `}
+                {Number(isUsd ? currentPrice : currentPrice * exchRate || '0')
                   ?.toFixed(2)
                   ?.toLocaleString('en-US')}
               </Text>
@@ -210,8 +213,8 @@ function InteractiveChart() {
                 fontSize: 14,
                 textAlign: 'center',
               }}>
-              $
-              {Number(priceChange || 0)
+              {isUsd ? `$` : `${currency_name} `}
+              {Number(isUsd ? priceChange : priceChange * exchRate || 0)
                 ?.toFixed(2)
                 ?.toLocaleString('en-US')}{' '}
               (
