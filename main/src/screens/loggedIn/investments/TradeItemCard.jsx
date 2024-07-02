@@ -26,7 +26,7 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const navigation = useNavigation();
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
-  const currency_name = useSelector(x => x.auth.currency_name);
+  const currency_name = useSelector(x => x.auth.currency);
 
   return (
     <Pressable

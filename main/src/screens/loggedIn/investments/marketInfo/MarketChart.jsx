@@ -30,7 +30,7 @@ const MarketChart = props => {
   );
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
-  const currency_name = useSelector(x => x.auth.currency_name);
+  const currency_name = useSelector(x => x.auth.currency);
   const isStockTrade = useSelector(x => x.market.isStockTrade);
   const tradingViewWidgetHTML = !isStockTrade
     ? `

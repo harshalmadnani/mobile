@@ -38,7 +38,7 @@ function InteractiveChart({assetName}) {
   const [touchActive, setTouchActive] = useState(false);
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
-  const currency_name = useSelector(x => x.auth.currency_name);
+  const currency_name = useSelector(x => x.auth.currency);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;

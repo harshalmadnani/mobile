@@ -34,7 +34,7 @@ const Portfolio = ({navigation}) => {
   const holdings = useSelector(x => x.portfolio.holdings);
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
-  const currency_name = useSelector(x => x.auth.currency_name);
+  const currency_name = useSelector(x => x.auth.currency);
   console.log('currency', isUsd, currency_name, exchRate);
   const portfolioHoldingFetch = useSelector(
     x => x.portfolio.portfolioHoldingFetch,

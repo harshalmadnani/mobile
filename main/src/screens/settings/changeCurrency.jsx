@@ -105,9 +105,19 @@ const ChangeCurrency = ({navigation, route}) => {
               'US',
             ),
           );
+          dispatch(authActions.setIsUsd(true));
         } else {
           const exRate = await convertCurrency(currency); //has to be capital
-
+          console.log(
+            'firedddd',
+            store_country,
+            store_currency,
+            store_currency_name,
+            exRate,
+            ipAddress,
+            store_countryCode,
+          );
+          dispatch(authActions.setIsUsd(false));
           dispatch(
             storeCountryCurrency(
               store_country,
@@ -177,26 +187,23 @@ const ChangeCurrency = ({navigation, route}) => {
               <Text style={styles.des}>{BASE_CURRENCY}</Text>
               <Text style={styles.subdes}>US Dollar</Text>
             </TouchableOpacity>
-            {store_currency != 'USD' && (
-              <TouchableOpacity
-                onPress={() => setCurrency(store_currency)}
-                style={[
-                  styles.regionContainer,
-                  {
-                    borderColor:
-                      currency === store_currency ? '#ffffff' : '#000',
-                  },
-                ]}>
-                <Image
-                  source={getFlagImageSource(store_countryCode)}
-                  style={styles.image}
-                />
-                <Text style={styles.des}>{store_currency}</Text>
-                <Text style={styles.subdes}>
-                  {store_country} {store_currency_name}
-                </Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              onPress={() => setCurrency(store_currency)}
+              style={[
+                styles.regionContainer,
+                {
+                  borderColor: currency === store_currency ? '#ffffff' : '#000',
+                },
+              ]}>
+              <Image
+                source={getFlagImageSource(store_countryCode)}
+                style={styles.image}
+              />
+              <Text style={styles.des}>{store_currency}</Text>
+              <Text style={styles.subdes}>
+                {store_country} {store_currency_name}
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <TouchableOpacity

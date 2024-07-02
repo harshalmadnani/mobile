@@ -26,7 +26,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
   const holdings = useSelector(x => x.portfolio.holdings);
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
-  const currency_name = useSelector(x => x.auth.currency_name);
+  const currency_name = useSelector(x => x.auth.currency);
   console.log('currency', isUsd, currency_name, exchRate);
   currentAsset = holdings?.assets?.filter(
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
