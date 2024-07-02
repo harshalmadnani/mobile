@@ -948,8 +948,6 @@ PODS:
     - React-Core
   - react-native-netinfo (11.3.2):
     - React-Core
-  - react-native-network-info (5.2.1):
-    - React
   - react-native-notifications (4.3.5):
     - React-Core
   - react-native-pager-view (6.3.3):
@@ -1241,7 +1239,6 @@ DEPENDENCIES:
   - react-native-floating-label-input (from `../node_modules/react-native-floating-label-input`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
-  - react-native-network-info (from `../node_modules/react-native-network-info`)
   - react-native-notifications (from `../node_modules/react-native-notifications`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-passkey (from `../node_modules/react-native-passkey`)
@@ -1381,8 +1378,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-get-random-values"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
-  react-native-network-info:
-    :path: "../node_modules/react-native-network-info"
   react-native-notifications:
     :path: "../node_modules/react-native-notifications"
   react-native-pager-view:
@@ -1533,7 +1528,6 @@ SPEC CHECKSUMS:
   react-native-floating-label-input: 87443ecddba939a8d37b1917573a958cbef28162
   react-native-get-random-values: 21325b2244dfa6b58878f51f9aa42821e7ba3d06
   react-native-netinfo: 076df4f9b07f6670acf4ce9a75aac8d34c2e2ccc
-  react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
   react-native-notifications: 504143d59f9628c3b0c22fd0ccf34b65b9182d01
   react-native-pager-view: 0806384f3b3e89d905e369d1b9bf4551acd09371
   react-native-passkey: 29ff814a83dfd4311478498e71a801dce68043ac

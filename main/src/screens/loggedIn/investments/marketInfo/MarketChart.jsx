@@ -28,6 +28,9 @@ const MarketChart = props => {
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency_name);
   const isStockTrade = useSelector(x => x.market.isStockTrade);
   const tradingViewWidgetHTML = !isStockTrade
     ? `
@@ -276,7 +279,9 @@ const MarketChart = props => {
                 fontFamily: `Unbounded-Bold`,
                 marginTop: '2%',
               }}>
-              $ {currentAsset?.[0]?.estimated_balance?.toFixed(2) ?? 0.0}
+              {isUsd ? '$' : currency_name}{' '}
+              {currentAsset?.[0]?.estimated_balance?.toFixed(2) * exchRate ??
+                0.0}
             </Text>
             <Text
               style={{

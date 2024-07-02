@@ -32,6 +32,10 @@ import {convertCurrency, getCurrency} from '../../../../store/actions/offRamp';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency_name);
+  console.log('currency', isUsd, currency_name, exchRate);
   const portfolioHoldingFetch = useSelector(
     x => x.portfolio.portfolioHoldingFetch,
   );
@@ -565,8 +569,12 @@ const Portfolio = ({navigation}) => {
                           fontSize: 16,
                           marginRight: '2%',
                         }}>
-                        $
-                        {Number(usdcBalance)
+                        {isUsd ? '$' : `${currency_name} `}
+                        {Number(
+                          isUsd
+                            ? parseFloat(usdcBalance)
+                            : parseFloat(usdcBalance) * parseFloat(exchRate),
+                        )
                           ?.toFixed(2)
                           ?.toLocaleString('en-US')}
                       </Text>

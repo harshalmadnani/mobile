@@ -24,6 +24,10 @@ const MyInvestmentItemCard = ({navigation, item}) => {
   const [modalVisible, setModalVisible] = useState(false);
   let currentAsset;
   const holdings = useSelector(x => x.portfolio.holdings);
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency_name);
+  console.log('currency', isUsd, currency_name, exchRate);
   currentAsset = holdings?.assets?.filter(
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
@@ -102,7 +106,12 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             }}>
             <View>
               <Text style={styles.text2}>
-                ${(item?.current_price * item?.balance)?.toFixed(3)}
+                {isUsd ? `$` : `${currency_name} `}
+                {(
+                  item?.current_price *
+                  item?.balance *
+                  (isUsd ? 1 : parseFloat(exchRate))
+                )?.toFixed(3)}
               </Text>
             </View>
             <View>
@@ -409,11 +418,13 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     }}>
                     Chain:
                   </Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <Image
                       source={{
                         uri: NetworkChainInfo.filter(
-                          x => x.chainId === item?.contracts_balances?.[0]?.chainId,
+                          x =>
+                            x.chainId ===
+                            item?.contracts_balances?.[0]?.chainId,
                         )?.[0]?.logo,
                       }}
                       style={{
@@ -430,7 +441,9 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       }}>
                       {
                         NetworkChainInfo.find(
-                          x => x.chainId === item?.contracts_balances?.[0]?.chainId
+                          x =>
+                            x.chainId ===
+                            item?.contracts_balances?.[0]?.chainId,
                         )?.name
                       }
                     </Text>

@@ -11,7 +11,7 @@ import {
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 const options = {
@@ -24,6 +24,9 @@ import {marketsAction} from '../../../store/reducers/market';
 const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency_name);
 
   return (
     <Pressable
@@ -119,9 +122,15 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             }}>
             <View>
               <Text style={styles.text1}>
-                $
-                {item?.price?.toLocaleString() ??
-                  item?.priceInfo?.price?.toLocaleString()}
+                {isUsd ? `$` : `${currency_name} `}
+                {(isUsd
+                  ? parseFloat(item?.price)
+                  : parseFloat(item?.price) * exchRate
+                )?.toLocaleString() ??
+                  (isUsd
+                    ? item?.priceInfo?.price
+                    : item?.priceInfo?.price * exchRate
+                  )?.toLocaleString()}
               </Text>
             </View>
             <View>
