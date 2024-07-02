@@ -25,6 +25,7 @@ import {Icon} from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
+import {getFlagImageSource} from './getFlag.js';
 import axios from 'axios';
 import {getEvmAddresses} from '../../store/actions/portfolio.js';
 import {
@@ -185,12 +186,7 @@ const ChangeCurrency = ({navigation, route}) => {
                       currency === store_currency ? '#ffffff' : '#000',
                   },
                 ]}>
-                <Image
-                  source={{
-                    uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/2560px-Flag_of_India.svg.png',
-                  }}
-                  style={styles.image}
-                />
+                <Image source={getFlagImageSource('tl')} style={styles.image} />
                 <Text style={styles.des}>{store_currency}</Text>
                 <Text style={styles.subdes}>
                   {store_country} {store_currency_name}

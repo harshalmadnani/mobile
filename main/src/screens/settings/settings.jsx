@@ -309,7 +309,7 @@ const Component = ({navigation}) => {
             }}>
             <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
-              source={require('./book-open.png')}
+              source={require('./coin.png')}
             />
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>Change Currency</Text>
