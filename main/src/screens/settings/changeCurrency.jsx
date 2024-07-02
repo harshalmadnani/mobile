@@ -84,7 +84,6 @@ const ChangeCurrency = ({navigation, route}) => {
             },
           },
         );
-
         onPressBack();
       } catch (err) {
         console.log('error submitting in supabase');

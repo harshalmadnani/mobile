@@ -36,6 +36,9 @@ function InteractiveChart({assetName}) {
   const [divisionResult, setDivisionResult] = useState(0);
   const [currentPrice, setcurrentPrice] = useState(0);
   const [touchActive, setTouchActive] = useState(false);
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency_name);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;
@@ -215,9 +218,11 @@ function InteractiveChart({assetName}) {
                 justifyContent: 'center',
                 maxHeight: 50,
               }}>
-              <Text style={styles.stockPrice}>$</Text>
               <Text style={styles.stockPrice}>
-                {Number(currentPrice || '0')
+                {isUsd ? '$' : `${currency_name} `}
+              </Text>
+              <Text style={styles.stockPrice}>
+                {Number(isUsd ? currentPrice : currentPrice * exchRate || '0')
                   ?.toFixed(2)
                   ?.toLocaleString('en-US')}
               </Text>
@@ -237,8 +242,8 @@ function InteractiveChart({assetName}) {
                 fontSize: 14,
                 textAlign: 'center',
               }}>
-              $
-              {Number(priceChange || 0)
+              {isUsd ? '$' : `${currency_name} `}
+              {Number(isUsd ? priceChange : priceChange * exchRate || 0)
                 ?.toFixed(2)
                 ?.toLocaleString('en-US')}{' '}
               (

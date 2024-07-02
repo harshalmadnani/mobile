@@ -309,9 +309,11 @@ export const onIsLoginCheckAuthCore = (
 
 export const storeCountryCurrency = (country, curr, curr_name, ex_rate, ip) => {
   return async dispatch => {
+    const res = await axios.get(`https://ipapi.co/currency/`);
+    console.log('currency symbol...', res.data);
     dispatch(authActions.setCurrency(curr));
     dispatch(authActions.setCountry(country));
-    dispatch(authActions.setCurrencyName(curr_name));
+    dispatch(authActions.setCurrencyName(res.data));
     dispatch(authActions.setExchangeRate(ex_rate));
     dispatch(authActions.setIpAddress(ip));
   };
