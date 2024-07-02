@@ -33,7 +33,6 @@ import {
 } from '../../store/actions/auth';
 import {authActions} from '../../store/reducers/auth';
 import axios from 'axios';
-
 var DeviceInfo = require('react-native-device-info');
 
 global.TextEncoder = require('text-encoding').TextEncoder;
@@ -54,27 +53,34 @@ const PreLoad = ({navigation}) => {
 
   const getCountry = async () => {
     try {
-      const response = await axios.get('https://ipapi.co/json');
+      const ipRes = await axios.get('https://api.ipify.org?format=json');
+      const ipAddress = ipRes.data.ip;
 
-      const {country_name, currency, currency_name} = await response.data;
-      const exRate = await convertCurrency(currency);
+      console.log('IP PUBLIC ADDRESS =>', ipAddress);
+
+      const response = await axios.get(`https://ipapi.co/${ipAddress}/json/`);
+      const {country_name, currency, currency_name} = response.data;
+
+      const exRate = await convertCurrency(currency); //has to be capital
       console.log(
         'ex rate.............',
         country_name,
         currency,
         currency_name,
-        exRate * 1.1,
+        exRate,
+        ipAddress,
       );
       dispatch(
         storeCountryCurrency(
           country_name,
           currency,
           currency_name,
-          exRate * 1.1,
+          exRate,
+          ipAddress,
         ),
       );
     } catch (err) {
-      console.log('Error in getCountry.');
+      console.log('Error in getCountry.', err);
     }
   };
 

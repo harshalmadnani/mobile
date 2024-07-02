@@ -297,45 +297,36 @@ export const onIsLoginCheckAuthCore = (
   };
 };
 
-export const getCurrency = async () => {
-  try {
-    const response = await axios.get('https://ipapi.co/json/');
-    return response.data.currency;
-  } catch (err) {
-    console.log('Error in actions/offRamp/getCurrency function.', err);
-    return null;
-  }
-};
+// export const getCurrency = async () => {
+//   try {
+//     const response = await axios.get('https://ipapi.co/json/');
+//     return response.data.currency;
+//   } catch (err) {
+//     console.log('Error in actions/offRamp/getCurrency function.', err);
+//     return null;
+//   }
+// };
 
-export const storeCountryCurrency = (country, curr, curr_name, ex_rate) => {
+export const storeCountryCurrency = (country, curr, curr_name, ex_rate, ip) => {
   return async dispatch => {
     dispatch(authActions.setCurrency(curr));
     dispatch(authActions.setCountry(country));
     dispatch(authActions.setCurrencyName(curr_name));
     dispatch(authActions.setExchangeRate(ex_rate));
+    dispatch(authActions.setIpAddress(ip));
   };
 };
 
 export const convertCurrency = async userCurrency => {
   try {
-    if (userCurrency != null) {
-      //use /euro for euro conversion rates.
-      const response = await axios.get(
-        'https://api.exchangerate-api.com/v4/latest/usd',
-      );
-      const rate = response.data.rates[`${userCurrency}`];
-
-      if (rate) {
-        const parsedRate = parseFloat(rate);
-        const convertedAmount = parsedRate;
-        return convertedAmount;
-      } else {
-        console.log('Error in fetching rate or it is null.');
-        return null;
-      }
-    } else {
-      return null;
-    }
+    const response = await axios.get(
+      `https://api.currencyapi.com/v3/latest?apikey=cur_live_SDqMY1JGZtVzdiBs13uqO8C2EaQjH3B3m77xVosV&currencies=${userCurrency}`,
+    );
+    console.log(
+      `current rate at ${userCurrency}`,
+      response.data.data[userCurrency].value,
+    );
+    return response.data.data[userCurrency].value;
   } catch (err) {
     console.log(err, 'Error in actions/offRamp/convertCurrency function.');
   }
@@ -347,7 +338,9 @@ export const autoLogin = (navigation, email) => {
     if (status) {
       const token = await getDfnsJwt(email);
       const user = await getUserInfoFromDB(email);
-      console.log('info from db......', token, user);
+      console.log('info from db......##', token, user);
+
+      dispatch(authActions.setIsUsd(user?.isUsd));
       dispatch(authActions.setEmail(email));
       dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(user?.dfnsScw));

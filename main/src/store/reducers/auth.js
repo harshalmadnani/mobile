@@ -17,6 +17,8 @@ const initialState = {
   country: null,
   currency_name: null,
   exchRate: 0,
+  isUsd: null,
+  ipAddress: undefined,
 };
 
 export const authSlice = createSlice({
@@ -62,6 +64,12 @@ export const authSlice = createSlice({
     },
     setExchangeRate: (state, action) => {
       state.exchRate = action.payload;
+    },
+    setIsUsd: (state, action) => {
+      state.isUsd = action.payload;
+    },
+    setIpAddress: (state, action) => {
+      state.ipAddress = action.payload;
     },
   },
 });

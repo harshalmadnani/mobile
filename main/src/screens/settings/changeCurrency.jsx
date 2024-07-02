@@ -155,7 +155,7 @@ const ChangeCurrency = ({navigation, route}) => {
                 style={styles.image}
               />
               <Text style={styles.des}>{store_currency}</Text>
-              <Text style={styles.subdes}>Rupee</Text>
+              <Text style={styles.subdes}>{store_currency_name}</Text>
             </TouchableOpacity>
           </View>
 

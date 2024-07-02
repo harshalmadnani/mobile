@@ -7,7 +7,6 @@ import SettingsComponent from '../screens/settings/settings';
 import Investments from '../screens/loggedIn/investments/investments';
 import FastImage from 'react-native-fast-image';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import {getCurrency} from '../store/actions/offRamp';
 const Tab = createBottomTabNavigator();
 
 function MainFlowStack() {
