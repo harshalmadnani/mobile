@@ -44,17 +44,25 @@ const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 import {useDispatch, useSelector} from 'react-redux';
 import {authActions} from '../../store/reducers/auth.js';
-import {autoLogin} from '../../store/actions/auth.js';
+import {
+  autoLogin,
+  convertCurrency,
+  storeCountryCurrency,
+} from '../../store/actions/auth.js';
 import {Passkey} from 'react-native-passkey';
 import Toast from 'react-native-root-toast';
 
 const ChangeCurrency = ({navigation, route}) => {
   const store_currency = useSelector(x => x.auth.currency);
   const store_currency_name = useSelector(x => x.auth.currency_name);
+  const store_country = useSelector(x => x.auth.country);
+  const store_ip = useSelector(x => x.auth.ipAddress);
+  const store_exchRate = useSelector(x => x.auth.exchRate);
+
   const email = useSelector(x => x.auth.email);
   const BASE_CURRENCY = 'USD';
+  const dispatch = useDispatch();
 
-  console.log(store_currency_name, store_currency);
   const [loading, setLoading] = useState(false);
 
   const [currency, setCurrency] = useState('the currency');
@@ -68,8 +76,9 @@ const ChangeCurrency = ({navigation, route}) => {
 
   const onSubmit = async () => {
     if (currency != 'the currency') {
+      const ipRes = await axios.get('https://api.ipify.org?format=json');
+      const ipAddress = ipRes.data.ip;
       try {
-        console.log(currency === BASE_CURRENCY);
         await axios.patch(
           `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
           {
@@ -85,9 +94,33 @@ const ChangeCurrency = ({navigation, route}) => {
           },
         );
 
+        if (currency === 'USD') {
+          dispatch(
+            storeCountryCurrency(
+              'United States',
+              currency,
+              'Dollar',
+              1,
+              ipAddress,
+            ),
+          );
+        } else {
+          const exRate = await convertCurrency(currency); //has to be capital
+
+          dispatch(
+            storeCountryCurrency(
+              store_country,
+              store_currency,
+              store_currency_name,
+              exRate,
+              ipAddress,
+            ),
+          );
+        }
+
         onPressBack();
       } catch (err) {
-        console.log('error submitting in supabase');
+        console.log('error submitting in supabase, from changeCurrency Screen');
       }
     }
   };
@@ -142,21 +175,28 @@ const ChangeCurrency = ({navigation, route}) => {
               <Text style={styles.des}>{BASE_CURRENCY}</Text>
               <Text style={styles.subdes}>US Dollar</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setCurrency(store_currency)}
-              style={[
-                styles.regionContainer,
-                {borderColor: currency === store_currency ? '#ffffff' : '#000'},
-              ]}>
-              <Image
-                source={{
-                  uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/2560px-Flag_of_India.svg.png',
-                }}
-                style={styles.image}
-              />
-              <Text style={styles.des}>{store_currency}</Text>
-              <Text style={styles.subdes}>{store_currency_name}</Text>
-            </TouchableOpacity>
+            {store_currency != 'USD' && (
+              <TouchableOpacity
+                onPress={() => setCurrency(store_currency)}
+                style={[
+                  styles.regionContainer,
+                  {
+                    borderColor:
+                      currency === store_currency ? '#ffffff' : '#000',
+                  },
+                ]}>
+                <Image
+                  source={{
+                    uri: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/2560px-Flag_of_India.svg.png',
+                  }}
+                  style={styles.image}
+                />
+                <Text style={styles.des}>{store_currency}</Text>
+                <Text style={styles.subdes}>
+                  {store_country} {store_currency_name}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <TouchableOpacity
