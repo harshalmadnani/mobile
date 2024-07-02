@@ -18,7 +18,8 @@ const initialState = {
   currency_name: null,
   exchRate: 0,
   isUsd: null,
-  ipAddress: undefined,
+  ipAddress: null,
+  countryCode: null,
 };
 
 export const authSlice = createSlice({
@@ -70,6 +71,9 @@ export const authSlice = createSlice({
     },
     setIpAddress: (state, action) => {
       state.ipAddress = action.payload;
+    },
+    setCountryCode: (state, action) => {
+      state.countryCode = action.payload;
     },
   },
 });

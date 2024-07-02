@@ -307,15 +307,24 @@ export const onIsLoginCheckAuthCore = (
 //   }
 // };
 
-export const storeCountryCurrency = (country, curr, curr_name, ex_rate, ip) => {
+export const storeCountryCurrency = (
+  country,
+  curr,
+  curr_name,
+  ex_rate,
+  ip,
+  cc,
+) => {
   return async dispatch => {
     const res = await axios.get(`https://ipapi.co/currency/`);
     console.log('currency symbol...', res.data);
+
     dispatch(authActions.setCurrency(curr));
     dispatch(authActions.setCountry(country));
-    dispatch(authActions.setCurrencyName(res.data));
+    dispatch(authActions.setCurrencyName(curr_name));
     dispatch(authActions.setExchangeRate(ex_rate));
     dispatch(authActions.setIpAddress(ip));
+    dispatch(authActions.setCountryCode(cc));
   };
 };
 

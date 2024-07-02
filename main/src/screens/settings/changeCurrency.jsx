@@ -57,8 +57,7 @@ const ChangeCurrency = ({navigation, route}) => {
   const store_currency = useSelector(x => x.auth.currency);
   const store_currency_name = useSelector(x => x.auth.currency_name);
   const store_country = useSelector(x => x.auth.country);
-  const store_ip = useSelector(x => x.auth.ipAddress);
-  const store_exchRate = useSelector(x => x.auth.exchRate);
+  const store_countryCode = useSelector(x => x.auth.countryCode);
 
   const email = useSelector(x => x.auth.email);
   const BASE_CURRENCY = 'USD';
@@ -103,6 +102,7 @@ const ChangeCurrency = ({navigation, route}) => {
               'Dollar',
               1,
               ipAddress,
+              'US',
             ),
           );
         } else {
@@ -115,6 +115,7 @@ const ChangeCurrency = ({navigation, route}) => {
               store_currency_name,
               exRate,
               ipAddress,
+              store_countryCode,
             ),
           );
         }
@@ -186,7 +187,10 @@ const ChangeCurrency = ({navigation, route}) => {
                       currency === store_currency ? '#ffffff' : '#000',
                   },
                 ]}>
-                <Image source={getFlagImageSource('tl')} style={styles.image} />
+                <Image
+                  source={getFlagImageSource(store_countryCode)}
+                  style={styles.image}
+                />
                 <Text style={styles.des}>{store_currency}</Text>
                 <Text style={styles.subdes}>
                   {store_country} {store_currency_name}

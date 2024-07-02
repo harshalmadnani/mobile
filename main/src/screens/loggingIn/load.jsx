@@ -59,7 +59,8 @@ const PreLoad = ({navigation}) => {
       console.log('IP PUBLIC ADDRESS =>', ipAddress);
 
       const response = await axios.get(`https://ipapi.co/${ipAddress}/json/`);
-      const {country_name, currency, currency_name} = response.data;
+      const {country_name, currency, currency_name, country_code} =
+        response.data;
 
       const exRate = await convertCurrency(currency); //has to be capital
       console.log(
@@ -69,14 +70,16 @@ const PreLoad = ({navigation}) => {
         currency_name,
         exRate,
         ipAddress,
+        country_code,
       );
-      await dispatch(
+      dispatch(
         storeCountryCurrency(
           country_name,
           currency,
           currency_name,
           exRate,
           ipAddress,
+          country_code,
         ),
       );
     } catch (err) {
