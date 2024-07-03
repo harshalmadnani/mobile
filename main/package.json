@@ -1,6 +1,6 @@
 {
   "name": "xademobile",
-  "version": "1.4.3",
+  "version": "1.5.6",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -13,7 +13,7 @@
     "postinstall": "jetify && npx patch-package"
   },
   "dependencies": {
-    "@biconomy/account": "^4.4.0",
+    "@biconomy/account": "4.4.0",
     "@dfns/lib-viem": "^0.4.3",
     "@dfns/sdk": "^0.4.3",
     "@dfns/sdk-browser": "^0.4.3",

@@ -56,7 +56,7 @@ export const registerUsernameToDFNS = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const initRes = await axios.post(
-      `http://api-dfns.xade.finance/register/init`,
+      `https://gull-relevant-secretly.ngrok-free.app/register/init`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
@@ -76,7 +76,7 @@ export const registerUsernameToDFNS = async username => {
 
     // // // Finish delegated registration
     const completeRes = await axios.post(
-      `http://api-dfns.xade.finance/register/complete`,
+      `https://gull-relevant-secretly.ngrok-free.app/register/complete`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         signedChallenge: {firstFactorCredential: attestation},
@@ -106,7 +106,7 @@ export const getDfnsJwt = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const res = await axios.post(
-      `http://api-dfns.xade.finance/login`,
+      `https://gull-relevant-secretly.ngrok-free.app/login`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,

@@ -1195,10 +1195,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@biconomy/account@^4.4.0":
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/@biconomy/account/-/account-4.5.0.tgz#39260820dd7e44a6e0ae30b33bf4d06a92a20950"
-  integrity sha512-OV8KevgP9DfW3+oSMxCHyFt4v+IpMHWaVwViiHpuigavL4HlTqVF242HxmDzU2tBpalL4itjSRiDFkXLg6Z9NQ==
+"@biconomy/account@4.4.0":
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/@biconomy/account/-/account-4.4.0.tgz#ca665cf220b6348d683dab41d97ae597bd073304"
+  integrity sha512-Bmemv77eNcyHQjphrzP/jE6Yapo9hWnJc23bNrAlqHPYz6ouALTPy57/L3daHxA3cFAdco28+pA36x7gGOw5kw==
   dependencies:
     merkletreejs "^0.3.11"
 

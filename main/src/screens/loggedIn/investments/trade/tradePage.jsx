@@ -886,30 +886,35 @@ const TradePage = ({route}) => {
                   $
                   {tradeType === 'sell'
                     ? bestSwappingBuyTrades?.action?.fromToken?.priceUSD ||
-                      (
-                        parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                        Math.pow(10, bestSwappingBuyTrades?.tokenTo?.decimals)
-                      ).toFixed(5) / parseFloat(value) ||
-                      (
-                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.amount /
+                      bestSwappingBuyTrades?.toTokenAmount
+                      ? (
+                          parseInt(bestSwappingBuyTrades?.toTokenAmount) /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            bestSwappingBuyTrades?.tokenTo?.decimals,
+                          ) /
+                          parseFloat(value)
+                        )?.toFixed(4)
+                      : (
+                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.decimals,
-                          ))
-                      ).toFixed(3)
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            ))
+                        ).toFixed(3)
                     : //when same chain
 
                     !isStockTrade
-                    ? parseFloat(value) /
+                    ? parseFloat(value)?.toFixed(4) /
                         (
                           parseInt(
                             bestSwappingBuyTrades?.transactionData?.info
@@ -919,7 +924,7 @@ const TradePage = ({route}) => {
                             10,
                             parseInt(bestSwappingBuyTrades?.tokenTo?.decimals),
                           )
-                        ).toFixed(5) || //when cross chain
+                        ).toFixed(4) || //when cross chain
                       (
                         bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                           ?.amount /
@@ -935,7 +940,7 @@ const TradePage = ({route}) => {
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.decimals,
                           ))
-                      ).toFixed(6)
+                      ).toFixed(4)
                     : state?.priceInfo?.price}
                 </Text>
               </View>
