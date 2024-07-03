@@ -302,7 +302,7 @@ const Component = ({navigation}) => {
             </View>
           </TouchableOpacity>
           <HorizontalRule />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
               navigation.navigate('ChangeCurrency');
@@ -322,7 +322,7 @@ const Component = ({navigation}) => {
                 // style = {{marginRight: '1%'}}
               />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <HorizontalRule />
           <TouchableOpacity
             style={styles.innerSettings}
