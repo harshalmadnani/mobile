@@ -73,10 +73,14 @@ const TradePage = ({route}) => {
   const width = Dimensions.get('window').width;
   const state = route.params.state;
   const tradeAsset = route.params.asset;
+
+  const exchRate = useSelector(x => x.auth.exchRate);
+
   const dispatch = useDispatch();
   const selectedAssetMetaData = useSelector(
     x => x.market.selectedAssetMetaData,
   );
+
   const allScw = useSelector(x => x.auth.scw);
   const items = [
     {left: 'SPOT MARKET', right: ' '},
@@ -615,7 +619,11 @@ const TradePage = ({route}) => {
                   textAlign: 'center',
                   fontFamily: 'Unbounded-Medium',
                 }}>
-                ${usdcValue?.[0]?.estimated_balance?.toFixed(2)}{' '}
+                $
+                {(
+                  usdcValue?.[0]?.estimated_balance *
+                  (exchRate ? parseFloat(exchRate) : 1)
+                )?.toFixed(2)}{' '}
               </Text>
             </View>
           ) : (
@@ -704,6 +712,8 @@ const TradePage = ({route}) => {
                     }}>
                     $
                   </Text>
+
+                  {/*TODO need to change based on currency */}
                   <TextInput
                     style={{
                       fontSize: 56,
@@ -818,20 +828,22 @@ const TradePage = ({route}) => {
                               ),
                           )
                         ? (
-                            parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.tokenTo?.decimals,
-                            )
+                            (parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.tokenTo?.decimals,
+                              )) *
+                            (exchRate ? parseFloat(exchRate) : 1)
                           ).toFixed(5)
                         : (
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.amount /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.estimation
-                                ?.dstChainTokenOut?.decimals,
-                            )
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
+                              )) *
+                            (exchRate ? parseFloat(exchRate) : 1)
                           ).toFixed(5)}
                     </Text>
                   </View>
@@ -888,12 +900,13 @@ const TradePage = ({route}) => {
                     ? bestSwappingBuyTrades?.action?.fromToken?.priceUSD ||
                       bestSwappingBuyTrades?.toTokenAmount
                       ? (
-                          parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.tokenTo?.decimals,
-                          ) /
-                          parseFloat(value)
+                          (parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.tokenTo?.decimals,
+                            ) /
+                            parseFloat(value)) *
+                          (exchRate ? parseFloat(exchRate) : 1)
                         )?.toFixed(4)
                       : (
                           bestSwappingBuyTrades?.estimation?.dstChainTokenOut
@@ -903,43 +916,48 @@ const TradePage = ({route}) => {
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.decimals,
                           ) /
-                          (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                          ((bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                             ?.amount /
                             Math.pow(
                               10,
                               bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                                 ?.decimals,
-                            ))
+                            )) *
+                            (exchRate ? parseFloat(exchRate) : 1))
                         ).toFixed(3)
                     : //when same chain
 
                     !isStockTrade
                     ? parseFloat(value)?.toFixed(4) /
                         (
-                          parseInt(
+                          (parseInt(
                             bestSwappingBuyTrades?.transactionData?.info
                               ?.amountOutMin,
                           ) /
-                          Math.pow(
-                            10,
-                            parseInt(bestSwappingBuyTrades?.tokenTo?.decimals),
-                          )
+                            Math.pow(
+                              10,
+                              parseInt(
+                                bestSwappingBuyTrades?.tokenTo?.decimals,
+                              ),
+                            )) *
+                          (exchRate ? parseFloat(exchRate) : 1)
                         ).toFixed(4) || //when cross chain
                       (
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                        (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                           ?.amount /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                               ?.decimals,
-                          ))
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            ))) *
+                        (exchRate ? parseFloat(exchRate) : 1)
                       ).toFixed(4)
                     : state?.priceInfo?.price}
                 </Text>
@@ -970,29 +988,33 @@ const TradePage = ({route}) => {
                   }}>
                   $
                   {isStockTrade
-                    ? 2.5
+                    ? 2.5 * (exchRate ? parseFloat(exchRate) : 1).toFixed(2)
                     : bestSwappingBuyTrades?.estimation?.costsDetails
                     ? tradeType === 'sell'
                       ? (
-                          bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                          (bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
                             x => x.type === 'DlnProtocolFee',
                           )[0]?.payload?.feeAmount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                              ?.decimals,
-                          )
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                                ?.decimals,
+                            )) *
+                          (exchRate ? parseFloat(exchRate) : 1)
                         ).toFixed(2)
-                      : bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
+                      : (bestSwappingBuyTrades?.estimation?.costsDetails?.filter(
                           x => x.type === 'DlnProtocolFee',
                         )[0]?.payload?.feeAmount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        )
-                    : bestSwappingBuyTrades?.estimate?.gasCosts?.[0]
-                        ?.amountUSD ?? 0}
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          )) *
+                        (exchRate ? parseFloat(exchRate) : 1).toFixed(2)
+                    : (
+                        (bestSwappingBuyTrades?.estimate?.gasCosts?.[0]
+                          ?.amountUSD ?? 0) * exchRate
+                      ).toFixed(2)}
                 </Text>
               </View>
 

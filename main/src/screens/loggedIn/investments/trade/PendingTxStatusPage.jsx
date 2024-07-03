@@ -4,6 +4,7 @@ import {Dimensions, SafeAreaView, TouchableOpacity} from 'react-native';
 import {Text, View, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Svg, Circle, Text as SvgText} from 'react-native-svg';
+import {useSelector} from 'react-redux';
 const {BigNumber} = require('bignumber.js');
 const PendingTxComponent = ({
   txQuoteInfo,
@@ -202,34 +203,39 @@ const SuccessTxComponent = ({
               $
               {tradeType === 'sell'
                 ? txQuoteInfo?.action?.toToken?.priceUSD ||
-                  (
+                  ((
                     parseInt(txQuoteInfo?.toTokenAmount) /
                     Math.pow(10, txQuoteInfo?.tokenTo?.decimals)
-                  ).toFixed(5) / parseFloat(normalAmount) ||
-                  parseInt(txQuoteInfo?.toTokenAmount) /
-                    Math.pow(10, txQuoteInfo?.tokenTo?.decimals) ||
+                  ).toFixed(5) /
+                    parseFloat(normalAmount)) *
+                    (exchRate ? parseFloat(exchRate) : 1) ||
+                  (parseInt(txQuoteInfo?.toTokenAmount) /
+                    Math.pow(10, txQuoteInfo?.tokenTo?.decimals)) *
+                    (exchRate ? parseFloat(exchRate) : 1) ||
                   (
-                    txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                    Math.pow(
-                      10,
-                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                    ) /
-                    (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                    (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
                       Math.pow(
                         10,
-                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                      ))
+                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                      ) /
+                      (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                        ))) *
+                    (exchRate ? parseFloat(exchRate) : 1)
                   ).toFixed(6)
                 : //when same chain
                 !isStockTrade
                 ? txQuoteInfo?.action?.toToken?.priceUSD ||
-                  parseFloat(normalAmount) /
+                  (parseFloat(normalAmount) /
                     (
                       parseInt(
                         txQuoteInfo?.transactionData?.info?.amountOutMin,
                       ) / Math.pow(10, txQuoteInfo?.tokenTo?.decimals)
-                    ).toFixed(5) || //when cross chain
-                  txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
+                    ).toFixed(5)) *
+                    (exchRate ? parseFloat(exchRate) : 1) || //when cross chain
+                  (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
                     Math.pow(
                       10,
                       txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
@@ -240,8 +246,10 @@ const SuccessTxComponent = ({
                         10,
                         txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
                       )
-                    ).toFixed(6)
-                : stockInfo?.priceInfo?.price}
+                    ).toFixed(6)) *
+                    (exchRate ? parseFloat(exchRate) : 1)
+                : stockInfo?.priceInfo?.price *
+                  (exchRate ? parseFloat(exchRate) : 1)}
             </Text>
           </View>
 
@@ -272,24 +280,27 @@ const SuccessTxComponent = ({
               {txQuoteInfo?.estimation?.costsDetails
                 ? tradeType === 'sell'
                   ? (
-                      txQuoteInfo?.estimation?.costsDetails?.filter(
+                      (txQuoteInfo?.estimation?.costsDetails?.filter(
                         x => x.type === 'DlnProtocolFee',
                       )[0]?.payload?.feeAmount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                      )
+                        Math.pow(
+                          10,
+                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
+                        )) *
+                      (exchRate ? parseFloat(exchRate) : 1)
                     ).toFixed(2)
                   : isStockTrade
-                  ? 2.5
-                  : txQuoteInfo?.estimation?.costsDetails?.filter(
+                  ? 2.5 * (exchRate ? parseFloat(exchRate) : 1)
+                  : (txQuoteInfo?.estimation?.costsDetails?.filter(
                       x => x.type === 'DlnProtocolFee',
                     )[0]?.payload?.feeAmount /
-                    Math.pow(
-                      10,
-                      txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                    )
-                : txQuoteInfo?.estimate?.gasCosts?.[0]?.amountUSD ?? '0.0'}
+                      Math.pow(
+                        10,
+                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
+                      )) *
+                    (exchRate ? parseFloat(exchRate) : 1).toFixed(2)
+                : (txQuoteInfo?.estimate?.gasCosts?.[0]?.amountUSD ?? '0.0') *
+                  (exchRate ? parseFloat(exchRate) : 1).toFixed(2)}
             </Text>
           </View>
 
@@ -367,6 +378,8 @@ const SuccessTxComponent = ({
 const PendingTxStatusPage = ({route, navigation}) => {
   const {state, tradeType, isStockTrade, stockInfo, signature} = route.params;
   const txQuoteInfo = state;
+
+  const exchRate = useSelector(x => x.auth.exchRate);
 
   const [countdown, setCountdown] = useState(
     txQuoteInfo?.order?.approximateFulfillmentDelay ?? 5,
