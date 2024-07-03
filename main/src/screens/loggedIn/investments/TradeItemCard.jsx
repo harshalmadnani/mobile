@@ -13,6 +13,7 @@ import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import { getCurrencyIcon } from '../../../utils/currencyicon';
 
 const options = {
   enableVibrateFallback: true,
@@ -27,6 +28,7 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
+  const currency_icon = getCurrencyIcon(currency_name);
 
   return (
     <Pressable
@@ -122,7 +124,7 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             }}>
             <View>
               <Text style={styles.text1}>
-                {isUsd ? `$` : `${currency_name}`}
+                {isUsd ? `$` : `${currency_icon}`}
                 {item?.price
                   ? (isUsd
                       ? parseFloat(item?.price)
