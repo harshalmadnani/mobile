@@ -244,7 +244,7 @@ const ChangeCurrency = ({navigation, route}) => {
               styles.confirmButton,
               {
                 backgroundColor: getConfirmationOnInput()
-                  ? '#FFFFFF'
+                  ? '#fff'
                   : '#1C1C1C',
               },
             ]}
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   regionContainer: {
     width: '45%',
     alignItems: 'center',
-    backgroundColor: '#fff', // Background color of the item
+    backgroundColor: '#1d1d1d', // Background color of the item
     borderRadius: 20, // Rounded corners
     paddingHorizontal: 15, // Padding inside the item
     paddingVertical: '10%',
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
 
   des: {
     fontSize: 16,
-    color: '#000',
+    color: '#fff',
     fontWeight: '500',
     fontFamily: 'NeueMontreal-Medium',
     marginTop: '10%',
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
   },
   subdes: {
     fontSize: 14,
-    color: '#000',
+    color: '#fff',
     fontWeight: '500',
     fontFamily: 'NeueMontreal-Light',
     marginTop: 10,

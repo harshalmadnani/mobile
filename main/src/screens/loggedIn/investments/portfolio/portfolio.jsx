@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { getCurrencyIcon } from '../../../../utils/currencyicon';
 import {
   View,
   Text,
@@ -39,6 +40,7 @@ const Portfolio = ({navigation}) => {
   const portfolioHoldingFetch = useSelector(
     x => x.portfolio.portfolioHoldingFetch,
   );
+  const currency_icon = getCurrencyIcon(currency_name);
   const allScw = useSelector(x => x.auth.scw);
   const userInfo = useSelector(x => x.portfolio.userInfo);
 
@@ -569,7 +571,7 @@ const Portfolio = ({navigation}) => {
                           fontSize: 16,
                           marginRight: '2%',
                         }}>
-                        {isUsd ? '$' : `${currency_name} `}
+                        {isUsd ? '$' : `${currency_icon}`}
                         {Number(
                           isUsd
                             ? parseFloat(usdcBalance)

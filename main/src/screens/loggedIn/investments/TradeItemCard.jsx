@@ -122,7 +122,7 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             }}>
             <View>
               <Text style={styles.text1}>
-                {isUsd ? `$` : `${currency_name} `}
+                {isUsd ? `$` : `${currency_name}`}
                 {item?.price
                   ? (isUsd
                       ? parseFloat(item?.price)

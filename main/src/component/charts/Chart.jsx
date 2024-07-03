@@ -7,7 +7,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 import {useFocusEffect} from '@react-navigation/native';
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
-
+import { getCurrencyIcon } from '../../utils/currencyicon';
 function InteractiveChart() {
   const dispatch = useDispatch();
 
@@ -34,6 +34,7 @@ function InteractiveChart() {
     {timestamp: 0, value: 0},
   ]);
   const now = new Date();
+  const currency_icon = getCurrencyIcon(currency_name);
   const genesis = new Date(now.getFullYear(), 0, 1); // Start of the current year
   const oneHourAgo = new Date(now.getTime() - 1 * 60 * 60 * 1000);
   const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -192,7 +193,7 @@ function InteractiveChart() {
                 justifyContent: 'center',
               }}>
               <Text style={styles.stockPrice}>
-                {isUsd ? `$` : `${currency_name} `}
+                {isUsd ? `$` : `${currency_icon}`}
                 {Number(isUsd ? currentPrice : currentPrice * exchRate || '0')
                   ?.toFixed(2)
                   ?.toLocaleString('en-US')}
@@ -213,7 +214,7 @@ function InteractiveChart() {
                 fontSize: 14,
                 textAlign: 'center',
               }}>
-              {isUsd ? `$` : `${currency_name} `}
+              {isUsd ? `$` : `${currency_icon}`}
               {Number(isUsd ? priceChange : priceChange * exchRate || 0)
                 ?.toFixed(2)
                 ?.toLocaleString('en-US')}{' '}

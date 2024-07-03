@@ -15,6 +15,7 @@ import {Icon, Image} from '@rneui/themed';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {NetworkChainInfo} from '../../../../utils/constants';
+import { getCurrencyIcon } from '../../../../utils/currencyicon';
 
 const options = {
   enableVibrateFallback: true,
@@ -27,7 +28,8 @@ const MyInvestmentItemCard = ({navigation, item}) => {
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
-  console.log('currency', isUsd, currency_name, exchRate);
+  const currency_icon = getCurrencyIcon(currency_name);
+  console.log('currency', isUsd, currency_icon, exchRate);
   currentAsset = holdings?.assets?.filter(
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
@@ -45,7 +47,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
         width: '100%',
         alignSelf: 'flex-start',
         paddingVertical: '5%',
-        // backgroundColor: 'red',
       }}>
       <View
         style={{
@@ -60,7 +61,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            // backgroundColor: 'red',
           }}>
           <View style={{paddingHorizontal: 5}}>
             <FastImage
@@ -77,19 +77,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
               <View style={{flexDirection: 'row', paddingRight: 10}}>
-                {/* <Image
-                  source={{
-                    uri: NetworkChainInfo.filter(
-                      x => x.chainId === item?.contracts_balances?.[0]?.chainId,
-                    )?.[0]?.logo,
-                  }}
-                  style={{
-                    width: 18,
-                    height: 18,
-                    alignSelf: 'center',
-                    marginRight: 8,
-                  }}
-                /> */}
                 <Text style={styles.text5}>{item?.balance?.toFixed(5)}</Text>
               </View>
             </View>
@@ -102,11 +89,10 @@ const MyInvestmentItemCard = ({navigation, item}) => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'flex-end',
-              // backgroundColor: 'red'
             }}>
             <View>
               <Text style={styles.text2}>
-                {isUsd ? `$` : `${currency_name} `}
+                {isUsd ? `$` : `${currency_icon}`}
                 {(
                   item?.current_price *
                   item?.balance *
@@ -163,7 +149,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   backgroundColor: '#090909',
                   borderRadius: 20,
                   padding: 35,
-                  paddingTop: 60, // Add more padding at the top for the icon
+                  paddingTop: 60,
                   alignItems: 'center',
                   shadowColor: '#000',
                   shadowOffset: {width: 0, height: 2},
@@ -172,15 +158,15 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   elevation: 5,
                   width: '100%',
                   height: '80%',
-                  position: 'relative', // To absolutely position the close icon
+                  position: 'relative',
                 }}>
                 {/* Close Icon */}
                 <TouchableOpacity
                   style={{
                     position: 'absolute',
-                    top: 25, // Adjust as needed
-                    left: 15, // Adjust as needed
-                    zIndex: 1, // Ensure it's above other content
+                    top: 25,
+                    left: 15,
+                    zIndex: 1,
                   }}
                   onPress={() => setModalVisible(!modalVisible)}>
                   <Icon name="close" size={35} color="#fff" />
@@ -201,7 +187,11 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     fontFamily: 'Unbounded-Medium',
                     marginVertical: 10,
                   }}>
-                  ${item?.current_price?.toFixed(2)}
+                  {isUsd ? `$` : `${currency_icon}`}
+                  {(
+                    item?.current_price *
+                    (isUsd ? 1 : parseFloat(exchRate))
+                  )?.toFixed(2)}
                 </Text>
                 <Text
                   style={{
@@ -247,7 +237,11 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                         color: '#fff',
                         fontFamily: 'Unbounded-Bold',
                       }}>
-                      ${(item?.current_price * item?.balance)?.toFixed(2)}
+                      {isUsd ? `$` : `${currency_icon}`}
+                      {(
+                        item?.current_price * item?.balance *
+                        (isUsd ? 1 : parseFloat(exchRate))
+                      )?.toFixed(2)}
                     </Text>
                   </View>
 
@@ -312,10 +306,10 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    {' '}
-                    $
+                    {isUsd ? `$` : `${currency_icon}`}
                     {(
-                      item?.current_price * item?.balance -
+                      item?.current_price * item?.balance *
+                      (isUsd ? 1 : parseFloat(exchRate)) -
                       item?.unrealized_pnl -
                       item?.realized_pnl
                     )?.toFixed(2)}
@@ -345,7 +339,11 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    ${item?.price_bought?.toFixed(2)}
+                    {isUsd ? `$` : `${currency_icon}`}
+                    {(
+                      item?.price_bought *
+                      (isUsd ? 1 : parseFloat(exchRate))
+                    )?.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -372,7 +370,11 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    ${item?.unrealized_pnl?.toFixed(2)}
+                    {isUsd ? `$` : `${currency_icon}`}
+                    {(
+                      item?.unrealized_pnl *
+                      (isUsd ? 1 : parseFloat(exchRate))
+                    )?.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -399,7 +401,11 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       flex: 1,
                       fontFamily: 'Unbounded-Medium',
                     }}>
-                    ${item?.realized_pnl?.toFixed(2)}
+                    {isUsd ? `$` : `${currency_icon}`}
+                    {(
+                      item?.realized_pnl *
+                      (isUsd ? 1 : parseFloat(exchRate))
+                    )?.toFixed(2)}
                   </Text>
                 </View>
                 <View
@@ -452,15 +458,15 @@ const MyInvestmentItemCard = ({navigation, item}) => {
               </View>
               <TouchableOpacity
                 style={{
-                  position: 'absolute', // Positions the button over the content
+                  position: 'absolute',
                   width: '95%',
                   marginTop: '10%',
-                  height: 56, // Button height
-                  borderRadius: 28, // Circular button
-                  backgroundColor: '#FFF', // Button color
-                  justifyContent: 'center', // Center the icon or text inside the button
-                  alignItems: 'center', // Center the icon or text inside the button
-                  shadowColor: '#C68DFF', // Shadow for the button
+                  height: 56,
+                  borderRadius: 28,
+                  backgroundColor: '#FFF',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  shadowColor: '#C68DFF',
                   shadowOffset: {
                     width: 0,
                   },
@@ -474,7 +480,6 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     state: item,
                     asset: currentAsset,
                   });
-                  // }
                 }}>
                 <Text
                   style={{
@@ -519,7 +524,7 @@ const styles = StyleSheet.create({
   text4: {
     fontSize: 14,
     fontFamily: 'Unbounded-Medium',
-    color: '#ff6c6c',
+    color: 'red',
   },
   text5: {
     fontSize: 14,
@@ -530,3 +535,4 @@ const styles = StyleSheet.create({
 });
 
 export default MyInvestmentItemCard;
+

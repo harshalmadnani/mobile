@@ -185,11 +185,11 @@ const Ramper = ({navigation}) => {
   const getDynamicFontSize = inputLength => {
     const baseSize = 56; // Base font size
     if (inputLength < 3) return baseSize;
-    return Math.max(baseSize - (inputLength - 5) * 5, 30); // Decrease font size as input length increases, with a minimum size
+    return Math.max(baseSize - Math.floor((inputLength - 1) / 3) * 8, 20); // Decrease font size more aggressively for every 3 new characters, with a minimum size
   };
   const handleValueChange = text => {
-    // Regular expression to allow only numbers and up to 6 decimal places
-    const regex = /^\d{0,6}$/;
+    // Regular expression to allow only numbers
+    const regex = /^\d*$/;
     // Check if the new text matches the regular expression
     if (regex.test(text)) {
       setValue(text);

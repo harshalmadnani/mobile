@@ -18,6 +18,8 @@ import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
 import axios from 'axios';
 import {getAllDinariNewsForSpecificStock} from '../../../../utils/Dinari/DinariApi';
+import { getCurrencyIcon } from '../../../../utils/currencyicon';
+
 const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -172,6 +174,8 @@ const MarketChart = props => {
     return null; // or <PlaceholderComponent />;
   }
 
+  const currency_icon = getCurrencyIcon(currency_name);
+
   return (
     <View style={{flex: 1}}>
       <ScrollView contentContainerStyle={{minHeight: height, minWidth: width}}>
@@ -279,9 +283,10 @@ const MarketChart = props => {
                 fontFamily: `Unbounded-Bold`,
                 marginTop: '2%',
               }}>
-              {isUsd ? '$' : currency_name}{' '}
-              {(currentAsset?.[0]?.estimated_balance * exchRate)?.toFixed(2) ??
-                0.0}
+              {isUsd ? '$' : currency_icon}
+              {isNaN(currentAsset?.[0]?.estimated_balance * exchRate)
+                ? '0.00'
+                : (currentAsset?.[0]?.estimated_balance * exchRate)?.toFixed(2)}
             </Text>
             <Text
               style={{
@@ -290,7 +295,7 @@ const MarketChart = props => {
                 textTransform: 'uppercase',
                 fontSize: 14,
               }}>
-              {currentAsset?.[0]?.token_balance?.toFixed(6) ?? 0.0}
+              {currentAsset?.[0]?.token_balance?.toFixed(6) || '0.00'}
               {` ${currentItem?.symbol ?? currentItem?.stock?.symbol}`}
             </Text>
           </View>
@@ -478,3 +483,4 @@ const ReadMoreLess = ({text, maxChars}) => {
 };
 
 export default MarketChart;
+

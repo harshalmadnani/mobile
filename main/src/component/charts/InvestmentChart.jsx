@@ -15,6 +15,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {getStockMapDataPointsFromDinari} from '../../utils/Dinari/DinariApi';
+import { getCurrencyIcon } from '../../utils/currencyicon';
+
 export default InteractiveChart;
 
 function CustomPriceText() {
@@ -39,6 +41,7 @@ function InteractiveChart({assetName}) {
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
+  const currency_icon = getCurrencyIcon(currency_name);
   const apx = (size = 0) => {
     let width = Dimensions.get('window').width;
     return (width / 750) * size;
@@ -219,7 +222,7 @@ function InteractiveChart({assetName}) {
                 maxHeight: 50,
               }}>
               <Text style={styles.stockPrice}>
-                {isUsd ? '$' : `${currency_name} `}
+                {isUsd ? '$' : currency_icon}
               </Text>
               <Text style={styles.stockPrice}>
                 {Number(isUsd ? currentPrice : currentPrice * exchRate || '0')
@@ -242,7 +245,7 @@ function InteractiveChart({assetName}) {
                 fontSize: 14,
                 textAlign: 'center',
               }}>
-              {isUsd ? '$' : `${currency_name} `}
+              {isUsd ? '$' : currency_icon}
               {Number(isUsd ? priceChange : priceChange * exchRate || 0)
                 ?.toFixed(2)
                 ?.toLocaleString('en-US')}{' '}
