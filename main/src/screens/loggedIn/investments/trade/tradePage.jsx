@@ -385,6 +385,23 @@ const TradePage = ({route}) => {
   );
   // Log when component mounts
   const {height} = Dimensions.get('window');
+
+  const getDynamicFontSize = inputLength => {
+    const baseSize = 56; // Base font size
+    if (inputLength < 3) return baseSize;
+    return Math.max(baseSize - Math.floor((inputLength - 1) / 3) * 8, 20); // Decrease font size less aggressively for every 3 new characters, with a minimum size
+  };
+
+  const handleValueChange = text => {
+    // Regular expression to allow only numbers
+    const regex = /^\d*$/;
+    // Check if the new text matches the regular expression
+    if (regex.test(text)) {
+      setValue(text);
+      ReactNativeHapticFeedback.trigger('impactMedium', options);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -617,17 +634,33 @@ const TradePage = ({route}) => {
                 Available to invest:{' '}
               </Text>
               <Text
-  style={{
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    fontFamily: 'Unbounded-Medium',
-  }}>
-  {isUsd ? `$` : `${currency_icon}`}
-  {isUsd ?   usdcValue?.[0]?.estimated_balance?.toFixed(2) : (
-    usdcValue?.[0]?.estimated_balance *
-    (exchRate ? parseFloat(exchRate) : 1)
-  )?.toFixed(2)}{' '}
+                style={{
+                  fontSize: 16,
+                  color: '#fff',
+                  textAlign: 'center',
+                  fontFamily: 'Unbounded-Medium',
+                }}>
+                {isUsd ? `$` : `${currency_icon}`}
+                {isUsd ? (
+                  <Text style={{ fontSize: 16, fontFamily: 'Unbounded-Medium', color: '#fff' }}>
+                    {usdcValue?.[0]?.estimated_balance?.toFixed(2)}
+                  </Text>
+                ) : (
+                  <Text style={{ fontSize: 16, fontFamily: 'Unbounded-Medium', color: '#fff' }}>
+                    {(usdcValue?.[0]?.estimated_balance * (exchRate ? parseFloat(exchRate) : 1))?.toFixed(2)}
+                  </Text>
+                )}{' '}
+                <TextInput
+                  style={{
+                    fontSize: getDynamicFontSize(value.length), // Adjust font size dynamically
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    fontFamily: 'Unbounded-Medium',
+                  }}
+                  value={value}
+                  onChangeText={handleValueChange}
+                  keyboardType="numeric"
+                />
 </Text>
             </View>
           ) : (
@@ -671,24 +704,18 @@ const TradePage = ({route}) => {
                   }}>
                   <TextInput
                     style={{
-                      fontSize: 56,
+                      fontSize: getDynamicFontSize(value.length), // Adjust font size dynamically
                       color: '#ffffff',
                       textAlign: 'center',
                       fontFamily: 'Unbounded-Medium',
                     }}
                     value={value}
-                    onChangeText={text => {
-                      setValue(text);
-                      ReactNativeHapticFeedback.trigger(
-                        'impactMedium',
-                        options,
-                      );
-                    }}
+                    onChangeText={handleValueChange}
                     keyboardType="numeric"
                   />
                   <Text
                     style={{
-                      fontSize: 56,
+                      fontSize: getDynamicFontSize(value.length),
                       color: '#fff',
                       textAlign: 'center',
                       fontFamily: 'Unbounded-Medium',
@@ -708,7 +735,7 @@ const TradePage = ({route}) => {
                   }}>
                   <Text
                     style={{
-                      fontSize: 56,
+                      fontSize: getDynamicFontSize(value.length),
                       color: '#fff',
                       textAlign: 'center',
                       fontFamily: 'Unbounded-Medium',
@@ -720,19 +747,13 @@ const TradePage = ({route}) => {
                   {/*TODO need to change based on currency */}
                   <TextInput
                     style={{
-                      fontSize: 56,
+                      fontSize: getDynamicFontSize(value.length), // Adjust font size dynamically
                       color: '#ffffff',
                       textAlign: 'center',
                       fontFamily: 'Unbounded-Medium',
                     }}
                     value={value}
-                    onChangeText={text => {
-                      setValue(text);
-                      ReactNativeHapticFeedback.trigger(
-                        'impactMedium',
-                        options,
-                      );
-                    }}
+                    onChangeText={handleValueChange}
                     keyboardType="numeric"
                   />
                 </View>
@@ -819,7 +840,10 @@ const TradePage = ({route}) => {
                         textAlign: 'center',
                         fontFamily: 'Unbounded-Bold',
                       }}>
-                      {`${'$ '}`}
+                          {isUsd ? `$` : `${currency_icon}`}
+
+
+
                       {isStockTrade
                         ? 0.0
                         : isNaN(
@@ -837,7 +861,7 @@ const TradePage = ({route}) => {
                                 10,
                                 bestSwappingBuyTrades?.tokenTo?.decimals,
                               )) *
-                            (exchRate ? parseFloat(exchRate) : 1)
+                            (isUsd ? 1 : (exchRate ? parseFloat(exchRate) : 1))
                           ).toFixed(5)
                         : (
                             (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
@@ -847,7 +871,7 @@ const TradePage = ({route}) => {
                                 bestSwappingBuyTrades?.estimation
                                   ?.dstChainTokenOut?.decimals,
                               )) *
-                            (exchRate ? parseFloat(exchRate) : 1)
+                              (isUsd ? 1 : (exchRate ? parseFloat(exchRate) : 1))
                           ).toFixed(5)}
                     </Text>
                   </View>
