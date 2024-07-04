@@ -5,6 +5,7 @@ apply plugin: "kotlin-android"
 apply plugin: "kotlin-parcelize"
 // apply plugin: "kotlin-android-extensions"
 apply plugin: 'com.google.gms.google-services'
+
 // import com.android.build.OutputFile
 
 /**
@@ -114,8 +115,8 @@ android {
         applicationId "com.org.xadefinance"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 130047
-        versionName "1.5.7"
+        versionCode 130048
+        versionName "1.4.3"
         manifestPlaceholders["PN_PROJECT_ID"] = "260df770-44b4-4afd-a408-0a9f2b9944a9"
         manifestPlaceholders["PN_PROJECT_CLIENT_KEY"] = "c2HUrCSv7ymat5zCKhD41B9BA8bsRIFJgAXM0Jlm"
         manifestPlaceholders["PN_APP_ID"] = "f84832a5-f295-4f30-a1b7-18aa0a616d16"
@@ -156,6 +157,7 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
+            
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
@@ -184,6 +186,8 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    // implementation platform('com.google.firebase:firebase-bom:33.1.1')
+    // implementation("com.google.firebase:firebase-crashlytics-ndk")
     implementation platform('com.google.firebase:firebase-bom:31.3.0')
     implementation ("androidx.credentials:credentials-play-services-auth:1.2.0-rc01")
     implementation ("androidx.credentials:credentials:1.2.0-rc01")
