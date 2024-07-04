@@ -393,11 +393,10 @@ const TradePage = ({route}) => {
   };
 
   const handleValueChange = text => {
-    // Regular expression to allow only numbers
     const regex = /^\d*$/;
-    // Check if the new text matches the regular expression
     if (regex.test(text)) {
       setValue(text);
+      
       ReactNativeHapticFeedback.trigger('impactMedium', options);
     }
   };
@@ -619,7 +618,6 @@ const TradePage = ({route}) => {
           {tradeType === 'buy' ? (
             <View
               style={{
-                marginTop: '5%',
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -650,18 +648,25 @@ const TradePage = ({route}) => {
                     {(usdcValue?.[0]?.estimated_balance * (exchRate ? parseFloat(exchRate) : 1))?.toFixed(2)}
                   </Text>
                 )}{' '}
-                <TextInput
+              </Text>
+              <TouchableOpacity
+                onPress={() => setValue(usdcValue?.[0]?.estimated_balance?.toFixed(2))}
+                style={{
+                  backgroundColor: '#292929',
+                  paddingVertical: 5,
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                  marginLeft: 10,
+                }}>
+                <Text
                   style={{
-                    fontSize: getDynamicFontSize(value.length), // Adjust font size dynamically
-                    color: '#ffffff',
-                    textAlign: 'center',
+                    fontSize: 14,
+                    color: '#fff',
                     fontFamily: 'Unbounded-Medium',
-                  }}
-                  value={value}
-                  onChangeText={handleValueChange}
-                  keyboardType="numeric"
-                />
-</Text>
+                  }}>
+                  MAX
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View
@@ -691,6 +696,24 @@ const TradePage = ({route}) => {
                 }}>
                 is available{' '}
               </Text>
+              <TouchableOpacity
+                  onPress={() => setValue(tokensToSell?.[0]?.balance?.toFixed(7))}
+                  style={{
+                    backgroundColor: '#292929',
+                    paddingVertical: 5,
+                    paddingHorizontal: 10,
+                    borderRadius: 5,
+                    marginLeft: 10,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: '#fff',
+                      fontFamily: 'Unbounded-Medium',
+                    }}>
+                      MAX
+                  </Text>
+                </TouchableOpacity>
             </View>
           )}
           <View style={{marginTop: '20%', marginBottom: '30%'}}>
@@ -741,10 +764,9 @@ const TradePage = ({route}) => {
                       fontFamily: 'Unbounded-Medium',
                       alignSelf: 'center',
                     }}>
-                    $
+                    {isUsd ? `$` : `${currency_icon}`}
                   </Text>
 
-                  {/*TODO need to change based on currency */}
                   <TextInput
                     style={{
                       fontSize: getDynamicFontSize(value.length), // Adjust font size dynamically
