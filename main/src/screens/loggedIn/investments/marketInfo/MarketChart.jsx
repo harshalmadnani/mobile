@@ -286,7 +286,9 @@ const MarketChart = props => {
               {isUsd ? '$' : currency_icon}
               {isNaN(currentAsset?.[0]?.estimated_balance * exchRate)
                 ? '0.00'
-                : (currentAsset?.[0]?.estimated_balance * exchRate)?.toFixed(2)}
+                :isUsd ? (currentAsset?.[0]?.estimated_balance)?.toFixed(2) 
+                : (currentAsset?.[0]?.estimated_balance * exchRate).toFixed(2)
+              }
             </Text>
             <Text
               style={{

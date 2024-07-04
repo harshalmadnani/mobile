@@ -12,10 +12,11 @@ import {
   Keyboard,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
-import {Icon} from 'react-native-elements';
+import {Icon} from '@rneui/base';
 import LinearGradient from 'react-native-linear-gradient';
 import Modal from 'react-native-modal';
 import '@ethersproject/shims';
+import { getCurrencyIcon } from '../../../../utils/currencyicon';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getBestDLNCrossSwapRateBuy,
@@ -73,7 +74,10 @@ const TradePage = ({route}) => {
   const width = Dimensions.get('window').width;
   const state = route.params.state;
   const tradeAsset = route.params.asset;
-
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const currency_name = useSelector(x => x.auth.currency);
+  console.log('currency', isUsd, currency_name, exchRate);
+  const currency_icon = getCurrencyIcon(currency_name);
   const exchRate = useSelector(x => x.auth.exchRate);
 
   const dispatch = useDispatch();
@@ -613,18 +617,18 @@ const TradePage = ({route}) => {
                 Available to invest:{' '}
               </Text>
               <Text
-                style={{
-                  fontSize: 16,
-                  color: '#fff',
-                  textAlign: 'center',
-                  fontFamily: 'Unbounded-Medium',
-                }}>
-                $
-                {(
-                  usdcValue?.[0]?.estimated_balance *
-                  (exchRate ? parseFloat(exchRate) : 1)
-                )?.toFixed(2)}{' '}
-              </Text>
+  style={{
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    fontFamily: 'Unbounded-Medium',
+  }}>
+  {isUsd ? `$` : `${currency_icon}`}
+  {isUsd ?   usdcValue?.[0]?.estimated_balance?.toFixed(2) : (
+    usdcValue?.[0]?.estimated_balance *
+    (exchRate ? parseFloat(exchRate) : 1)
+  )?.toFixed(2)}{' '}
+</Text>
             </View>
           ) : (
             <View
@@ -895,7 +899,7 @@ const TradePage = ({route}) => {
                     alignSelf: 'flex-end',
                     color: '#fff',
                   }}>
-                  $
+                  {isUsd ? `$` : `${currency_icon}`}
                   {tradeType === 'sell'
                     ? bestSwappingBuyTrades?.action?.fromToken?.priceUSD ||
                       bestSwappingBuyTrades?.toTokenAmount
@@ -986,7 +990,7 @@ const TradePage = ({route}) => {
                     alignSelf: 'flex-end',
                     color: '#fff',
                   }}>
-                  $
+                  {isUsd ? `$` : `${currency_icon}`}
                   {isStockTrade
                     ? 2.5 * (exchRate ? parseFloat(exchRate) : 1).toFixed(2)
                     : bestSwappingBuyTrades?.estimation?.costsDetails
