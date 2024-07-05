@@ -64,7 +64,7 @@ const PreLoad = ({navigation}) => {
 
       const exRate = await convertCurrency(currency); //has to be capital
       console.log(
-        'ex rate.............',
+        '!!!!!!!!!!!!!!!!!ex rate.............',
         country_name,
         currency,
         currency_name,

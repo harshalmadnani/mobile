@@ -56,13 +56,17 @@ import {
 } from '../../../../utils/DFNS/walletFLow';
 import {getRouteOnNetwork} from '../../../../utils/constants';
 import {ActivityIndicator} from 'react-native';
+
 // import {LoginType} from '@particle-network/rn-auth';
 
 const TradePage = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [tradeType, setTradeType] = useState('buy');
+
   const [value, setValue] = useState(tradeType !== 'sell' ? '4' : '0.1');
+  const [usdValue, setUsdValue] = useState();
+
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [sellOrderStages, setSellOrderStages] = useState('Place Order');
   const [buyTradeStages, setBuyTradeStages] = useState('Place Order');
@@ -76,7 +80,7 @@ const TradePage = ({route}) => {
   const tradeAsset = route.params.asset;
   const isUsd = useSelector(x => x.auth.isUsd);
   const currency_name = useSelector(x => x.auth.currency);
-  console.log('currency', isUsd, currency_name, exchRate);
+  //console.log('currency', isUsd, currency_name, exchRate);
   const currency_icon = getCurrencyIcon(currency_name);
   const exchRate = useSelector(x => x.auth.exchRate);
 
@@ -396,7 +400,7 @@ const TradePage = ({route}) => {
     const regex = /^\d*$/;
     if (regex.test(text)) {
       setValue(text);
-      
+
       ReactNativeHapticFeedback.trigger('impactMedium', options);
     }
   };
@@ -616,60 +620,78 @@ const TradePage = ({route}) => {
           </View>
 
           {tradeType === 'buy' ? (
-                    <View
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '5%',
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#9d9d9d',
+                  textAlign: 'center',
+                  fontFamily: 'NeueMontreal-Medium',
+                }}>
+                Available to invest:{' '}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#fff',
+                  textAlign: 'center',
+                  fontFamily: 'Unbounded-Medium',
+                }}>
+                {isUsd ? `$` : `${currency_icon}`}
+                {isUsd ? (
+                  <Text
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: "5%"
+                      fontSize: 16,
+                      fontFamily: 'Unbounded-Medium',
+                      color: '#fff',
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: '#9d9d9d',
-                        textAlign: 'center',
-                        fontFamily: 'NeueMontreal-Medium',
-                      }}>
-                      Available to invest:{' '}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: '#fff',
-                        textAlign: 'center',
-                        fontFamily: 'Unbounded-Medium',
-                      }}>
-                      {isUsd ? `$` : `${currency_icon}`}
-                      {isUsd ? (
-                        <Text style={{ fontSize: 16, fontFamily: 'Unbounded-Medium', color: '#fff' }}>
-                          {usdcValue?.[0]?.estimated_balance?.toFixed(2)}
-                        </Text>
-                      ) : (
-                        <Text style={{ fontSize: 16, fontFamily: 'Unbounded-Medium', color: '#fff' }}>
-                          {(usdcValue?.[0]?.estimated_balance * (exchRate ? parseFloat(exchRate) : 1))?.toFixed(2)}
-                        </Text>
-                      )}
-                    </Text>
+                    {usdcValue?.[0]?.estimated_balance?.toFixed(2)}
+                  </Text>
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontFamily: 'Unbounded-Medium',
+                      color: '#fff',
+                    }}>
+                    {(
+                      usdcValue?.[0]?.estimated_balance *
+                      (exchRate ? parseFloat(exchRate) : 1)
+                    )?.toFixed(2)}
+                  </Text>
+                )}
+              </Text>
 
-                    <TouchableOpacity
-                      onPress={() => setValue(usdcValue?.[0]?.estimated_balance?.toFixed(2).toString())} // Convert to string with 2 decimal points
-                      style={{
-                        backgroundColor: '#292929',
-                        paddingVertical: 5,
-                        paddingHorizontal: 10,
-                        borderRadius: 5,
-                        marginLeft: 10,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: '#fff',
-                          fontFamily: 'Unbounded-Medium',
-                        }}>
-                        MAX
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+              <TouchableOpacity
+                onPress={() => {
+                  let val = usdcValue?.[0]?.estimated_balance
+                    ?.toFixed(2)
+                    .toString();
+                  isUsd ? setValue(val) : setValue(val / exchRate);
+                }} // Convert to string with 2 decimal points
+                style={{
+                  backgroundColor: '#292929',
+                  paddingVertical: 5,
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                  marginLeft: 10,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: '#fff',
+                    fontFamily: 'Unbounded-Medium',
+                  }}>
+                  MAX
+                </Text>
+              </TouchableOpacity>
+            </View>
           ) : (
             <View
               style={{
@@ -699,23 +721,26 @@ const TradePage = ({route}) => {
                 is available{' '}
               </Text>
               <TouchableOpacity
-                  onPress={() => setValue(tokensToSell?.[0]?.balance?.toFixed(7))}
+                onPress={() => {
+                  let val = tokensToSell?.[0]?.balance?.toFixed(7);
+                  setValue(val);
+                }}
+                style={{
+                  backgroundColor: '#292929',
+                  paddingVertical: 5,
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                  marginLeft: 10,
+                }}>
+                <Text
                   style={{
-                    backgroundColor: '#292929',
-                    paddingVertical: 5,
-                    paddingHorizontal: 10,
-                    borderRadius: 5,
-                    marginLeft: 10,
+                    fontSize: 14,
+                    color: '#fff',
+                    fontFamily: 'Unbounded-Medium',
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: '#fff',
-                      fontFamily: 'Unbounded-Medium',
-                    }}>
-                      MAX
-                  </Text>
-                </TouchableOpacity>
+                  MAX
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
           <View style={{marginTop: '20%', marginBottom: '30%'}}>
@@ -947,41 +972,45 @@ const TradePage = ({route}) => {
                   {tradeType === 'sell'
                     ? bestSwappingBuyTrades?.toTokenAmount
                       ? (state?.price * (isUsd ? 1 : exchRate))?.toFixed(4)
-                      : (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                            ?.decimals,
-                        ) /
+                      : (
+                          (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            ) /
+                            (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
+                              ?.amount /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.srcChainTokenIn?.decimals,
+                              ))) *
+                          (isUsd ? 1 : exchRate)
+                        ).toFixed(4)
+                    : //when same chain
+
+                    !isStockTrade
+                    ? (state?.price * (isUsd ? 1 : exchRate))?.toFixed(4) || //when cross chain
+                      (
                         (bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                           ?.amount /
                           Math.pow(
                             10,
                             bestSwappingBuyTrades?.estimation?.srcChainTokenIn
                               ?.decimals,
-                          )) * (isUsd ? 1 : exchRate)).toFixed(4)
-                    : //when same chain
-
-                    !isStockTrade
-                    ? (state?.price * (isUsd ? 1 : exchRate))?.toFixed(4) || //when cross chain
-                      (
-                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                          ?.amount /
-                        Math.pow(
-                          10,
-                          bestSwappingBuyTrades?.estimation?.srcChainTokenIn
-                            ?.decimals,
-                        ) /
-                        (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                          ?.amount /
-                          Math.pow(
-                            10,
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.decimals,
-                          )) * (isUsd ? 1 : exchRate)
+                          ) /
+                          (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            ?.amount /
+                            Math.pow(
+                              10,
+                              bestSwappingBuyTrades?.estimation
+                                ?.dstChainTokenOut?.decimals,
+                            ))) *
+                        (isUsd ? 1 : exchRate)
                       ).toFixed(4)
-                    : (state?.priceInfo?.price * (isUsd ? 1 : exchRate))}
+                    : state?.priceInfo?.price * (isUsd ? 1 : exchRate)}
                 </Text>
               </View>
 
@@ -1009,35 +1038,37 @@ const TradePage = ({route}) => {
                     color: '#fff',
                   }}>
                   {isUsd ? `$` : `${currency_icon}`}
-                  {tradeType === 'buy' 
+                  {tradeType === 'buy'
                     ? (0.002 * value).toFixed(4)
                     : isStockTrade
-                        ? ((value / state?.priceInfo?.price) * 0.002).toFixed(4)
-                        : isNaN(
+                    ? ((value / state?.priceInfo?.price) * 0.002).toFixed(4)
+                    : isNaN(
+                        bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                          Math.pow(
+                            10,
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.amount /
-                              Math.pow(
-                                10,
-                                bestSwappingBuyTrades?.estimation
-                                  ?.dstChainTokenOut?.decimals,
-                              ),
-                          )
-                        ? (
-                            (parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.tokenTo?.decimals,
-                            )) * 0.002
-                          ).toFixed(4)
-                        : (
-                            (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.amount /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.estimation
-                                ?.dstChainTokenOut?.decimals,
-                            )) * 0.002
-                          ).toFixed(4)}
+                              ?.decimals,
+                          ),
+                      )
+                    ? (
+                        (parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.tokenTo?.decimals,
+                          )) *
+                        0.002
+                      ).toFixed(4)
+                    : (
+                        (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                          ?.amount /
+                          Math.pow(
+                            10,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
+                          )) *
+                        0.002
+                      ).toFixed(4)}
                 </Text>
               </View>
 

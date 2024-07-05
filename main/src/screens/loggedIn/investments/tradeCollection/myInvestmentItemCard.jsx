@@ -15,7 +15,7 @@ import {Icon, Image} from '@rneui/themed';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {setAssetMetadata} from '../../../../store/actions/market';
 import {NetworkChainInfo} from '../../../../utils/constants';
-import { getCurrencyIcon } from '../../../../utils/currencyicon';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 
 const options = {
   enableVibrateFallback: true,
@@ -29,7 +29,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
   const currency_icon = getCurrencyIcon(currency_name);
-  console.log('currency', isUsd, currency_icon, exchRate);
+  // console.log('currency', isUsd, currency_icon, exchRate);
   currentAsset = holdings?.assets?.filter(
     x => x.asset?.symbol?.toLowerCase() === item?.symbol?.toLowerCase(),
   );
@@ -189,8 +189,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                   }}>
                   {isUsd ? `$` : `${currency_icon}`}
                   {(
-                    item?.current_price *
-                    (isUsd ? 1 : parseFloat(exchRate))
+                    item?.current_price * (isUsd ? 1 : parseFloat(exchRate))
                   )?.toFixed(2)}
                 </Text>
                 <Text
@@ -239,7 +238,8 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                       }}>
                       {isUsd ? `$` : `${currency_icon}`}
                       {(
-                        item?.current_price * item?.balance *
+                        item?.current_price *
+                        item?.balance *
                         (isUsd ? 1 : parseFloat(exchRate))
                       )?.toFixed(2)}
                     </Text>
@@ -308,8 +308,9 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     }}>
                     {isUsd ? `$` : `${currency_icon}`}
                     {(
-                      item?.current_price * item?.balance *
-                      (isUsd ? 1 : parseFloat(exchRate)) -
+                      item?.current_price *
+                        item?.balance *
+                        (isUsd ? 1 : parseFloat(exchRate)) -
                       item?.unrealized_pnl -
                       item?.realized_pnl
                     )?.toFixed(2)}
@@ -341,8 +342,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     }}>
                     {isUsd ? `$` : `${currency_icon}`}
                     {(
-                      item?.price_bought *
-                      (isUsd ? 1 : parseFloat(exchRate))
+                      item?.price_bought * (isUsd ? 1 : parseFloat(exchRate))
                     )?.toFixed(2)}
                   </Text>
                 </View>
@@ -372,8 +372,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     }}>
                     {isUsd ? `$` : `${currency_icon}`}
                     {(
-                      item?.unrealized_pnl *
-                      (isUsd ? 1 : parseFloat(exchRate))
+                      item?.unrealized_pnl * (isUsd ? 1 : parseFloat(exchRate))
                     )?.toFixed(2)}
                   </Text>
                 </View>
@@ -403,8 +402,7 @@ const MyInvestmentItemCard = ({navigation, item}) => {
                     }}>
                     {isUsd ? `$` : `${currency_icon}`}
                     {(
-                      item?.realized_pnl *
-                      (isUsd ? 1 : parseFloat(exchRate))
+                      item?.realized_pnl * (isUsd ? 1 : parseFloat(exchRate))
                     )?.toFixed(2)}
                   </Text>
                 </View>
@@ -535,4 +533,3 @@ const styles = StyleSheet.create({
 });
 
 export default MyInvestmentItemCard;
-

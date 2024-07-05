@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { getCurrencyIcon } from '../../../../utils/currencyicon';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 import {
   View,
   Text,
@@ -36,7 +36,7 @@ const Portfolio = ({navigation}) => {
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
-  console.log('currency', isUsd, currency_name, exchRate);
+  // console.log('currency', isUsd, currency_name, exchRate);
   const portfolioHoldingFetch = useSelector(
     x => x.portfolio.portfolioHoldingFetch,
   );

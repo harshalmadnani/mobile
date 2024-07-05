@@ -18,7 +18,7 @@ import {setAssetMetadata} from '../../../../store/actions/market';
 import {WebView} from 'react-native-webview';
 import axios from 'axios';
 import {getAllDinariNewsForSpecificStock} from '../../../../utils/Dinari/DinariApi';
-import { getCurrencyIcon } from '../../../../utils/currencyicon';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 
 const MarketChart = props => {
   const navigation = useNavigation();
@@ -286,9 +286,9 @@ const MarketChart = props => {
               {isUsd ? '$' : currency_icon}
               {isNaN(currentAsset?.[0]?.estimated_balance * exchRate)
                 ? '0.00'
-                :isUsd ? (currentAsset?.[0]?.estimated_balance)?.toFixed(2) 
-                : (currentAsset?.[0]?.estimated_balance * exchRate).toFixed(2)
-              }
+                : isUsd
+                ? currentAsset?.[0]?.estimated_balance?.toFixed(2)
+                : (currentAsset?.[0]?.estimated_balance * exchRate).toFixed(2)}
             </Text>
             <Text
               style={{
@@ -485,4 +485,3 @@ const ReadMoreLess = ({text, maxChars}) => {
 };
 
 export default MarketChart;
-

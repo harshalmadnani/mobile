@@ -7,7 +7,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 import {useFocusEffect} from '@react-navigation/native';
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
-import { getCurrencyIcon } from '../../utils/currencyicon';
+import {getCurrencyIcon} from '../../utils/currencyicon';
 function InteractiveChart() {
   const dispatch = useDispatch();
 

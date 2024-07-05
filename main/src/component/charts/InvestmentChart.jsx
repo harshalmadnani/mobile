@@ -15,7 +15,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {getStockMapDataPointsFromDinari} from '../../utils/Dinari/DinariApi';
-import { getCurrencyIcon } from '../../utils/currencyicon';
+import {getCurrencyIcon} from '../../utils/currencyicon';
 
 export default InteractiveChart;
 

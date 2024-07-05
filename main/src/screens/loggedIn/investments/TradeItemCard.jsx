@@ -13,7 +13,7 @@ import FastImage from 'react-native-fast-image';
 import MarketInfo from './marketInfo';
 import {useDispatch, useSelector} from 'react-redux';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import { getCurrencyIcon } from '../../../utils/currencyicon';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 
 const options = {
   enableVibrateFallback: true,
