@@ -65,7 +65,7 @@ const TradePage = ({route}) => {
   const [tradeType, setTradeType] = useState('buy');
 
   const [value, setValue] = useState(tradeType !== 'sell' ? '4' : '0.1');
-  const [usdValue, setUsdValue] = useState();
+  const [isNativeValue, setIsNativeValue] = useState();
 
   const [stockOrderStages, setStockOrderStages] = useState('Place Order');
   const [sellOrderStages, setSellOrderStages] = useState('Place Order');
@@ -673,7 +673,8 @@ const TradePage = ({route}) => {
                   let val = usdcValue?.[0]?.estimated_balance
                     ?.toFixed(2)
                     .toString();
-                  isUsd ? setValue(val) : setValue(val / exchRate);
+                  setValue(val / exchRate);
+                  setIsNativeValue(val / exchRate);
                 }} // Convert to string with 2 decimal points
                 style={{
                   backgroundColor: '#292929',
