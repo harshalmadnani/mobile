@@ -399,7 +399,7 @@ const TradePage = ({route}) => {
   const handleValueChange = text => {
     const regex = /^\d*$/;
     if (regex.test(text)) {
-      setValue(text);
+      setValue(isUsd ? text : parseFloat(value) / exchRate);
 
       ReactNativeHapticFeedback.trigger('impactMedium', options);
     }
