@@ -13,7 +13,7 @@ const URL = {
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImQxMTY1ZTUyY2EyYzFlMTI1MjY2OTc1ZTM2YTU4YjAxIiwiY29udGVudCI6ImNiOGNlZTJiYjBjOTFhZmI2NzBiOTE5M2ZlYWU2M2RjNjVmMDFhZDc2Y2ZhMmE5NTU5YTk1ZjQ2ZDFmMDgxNGIwMDM4YmY2NzQyMjBlN2VmY2JlMTE3MmM1NmNjOTI2ZWY5ZWZiYzNlMzliYWY5NDJkMDlhYzQyNmFlMjRjZDI5ZjRmYjllYzczMWJmYmU1MWQ3Y2MwMTZhZDI3MmE0NjJmMzY3YjdlMzY4ODlkMmRiOWMxNjYxMGMwZWFiNWQxOWY0YmNlOGMzZGFkNzVlYTNmY2Y0NTNkMWVlOWE2MDQyYjQ2NWE3M2NmOWNlNjBkMmIxNDk5MWZlNWY5NGY4NDNiNmM5M2FjNjk1NmI3MTQxIn0sImlhdCI6MTcxOTQ4OTM5NCwiZXhwIjoxNzE5NTc1Nzk0fQ.mFAWXstDJEHK6x7uwblpWSVarDHeNpVmwdOu5iuLL5E';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NTcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDIyMDI0OCwiZXhwIjoxNzIwMzA2NjQ4fQ.UEOaWw7oJgyWfJT3aVs5x4gzm1UROSIy0IB3OOGgzNM';
 
 export const fetchOnboardedUser = email => {
   return async dispatch => {
@@ -86,6 +86,9 @@ export const fetchOnboardedUser = email => {
 
 export const getCountry = async () => {
   try {
+    console.log(
+      'Removing the console log makes the getCountryBasedGiftCard not wait for getCountry',
+    );
     const response = await axios.get('https://ipapi.co/json/');
     return response.data.country_name;
   } catch (err) {
@@ -96,16 +99,19 @@ export const getCountry = async () => {
 
 export const getCountryBasedGiftCard = () => {
   return async dispatch => {
-    const countryName = await getCountry();
-    console.log('Country name', countryName);
-    if (countryName != null) {
+    // const countryName = await getCountry();
+    // console.log('Country name', countryName);
+    //if (countryName != null)
+    if (1 == 1) {
+      //REMOVE THIS BEFORE PUSHING
       try {
         const response = await axios.get(URL.GET_GIFT_CARD, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            country: countryName,
+            // country: countryName,
+            country: 'India',
             //  deliveryType: '',
             //  currencyCode: '',
           },
@@ -127,6 +133,7 @@ export const getCountryBasedGiftCard = () => {
   };
 };
 
+//creates quote, this running every 10 second in coupon modal
 export const submitDetailsForQuote = requestBody => {
   return async dispatch => {
     //raw data

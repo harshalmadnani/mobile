@@ -18,30 +18,11 @@ import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 // import {Image} from 'react-native-svg';
 
-const SingleCouponItem = ({onSelect, info}) => {
-  console.log('coupon...', info);
+export const SingleCouponItem = ({onSelect, info}) => {
   return (
-    <Pressable onPress={async () => await onSelect()} style={{margin: 12}}>
-      <Image
-        source={{uri: info?.vouchersImg}}
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: 100,
-          alignSelf: 'center',
-        }}
-      />
-      <Text
-        numberOfLines={1}
-        style={{
-          fontSize: 14,
-          color: '#fff',
-          fontWeight: 500,
-          // textAlign: 'center',
-          fontFamily: 'NeueMontreal-Medium',
-          marginTop: 8,
-          maxWidth: 100,
-        }}>
+    <Pressable onPress={onSelect} style={styles.container}>
+      <Image source={{uri: info?.vouchersImg}} style={styles.image} />
+      <Text numberOfLines={1} style={styles.brandName}>
         {info?.brand}
       </Text>
     </Pressable>
@@ -54,15 +35,8 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState();
   const {height} = Dimensions.get('window');
-  const [coupons, setCoupons] = useState([
-    {name: 'Amazon'},
-    {name: 'Flipkart'},
-    {name: 'Myntra'},
-    {name: 'Paypal'},
-    {name: 'PS Store'},
-  ]);
+
   const giftCards = useSelector(x => x.offRamp.giftCards);
-  console.log(giftCards);
   const [qty, setQty] = useState(1);
   return (
     <Modal
@@ -74,11 +48,7 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
       }}>
       <View style={styles.centeredView}>
         {selected ? (
-          <View
-            style={[
-              styles.modalView,
-              {height: height * 0.5, backgroundColor: '#1D1D1D'},
-            ]}>
+          <View style={[styles.modalView, {backgroundColor: '#1D1D1D'}]}>
             <View
               style={{
                 height: 6,
@@ -215,29 +185,6 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
                 Select the gift card
               </Text>
             </View>
-            <ScrollView
-              contentContainerStyle={{
-                lexGrow: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                }}>
-                {giftCards?.length > 0
-                  ? giftCards?.map(x => (
-                      <SingleCouponItem
-                        onSelect={() => setSelected(x)}
-                        key={x?.productId}
-                        info={x}
-                      />
-                    ))
-                  : null}
-              </View>
-            </ScrollView>
           </View>
         )}
       </View>
@@ -273,6 +220,36 @@ const styles = StyleSheet.create({
     //justifyContent: 'center', // Align items to the start of the container
     padding: 8, // Add some padding around the container
     marginTop: '2%',
+  },
+  container: {
+    width: '25%',
+    aspectRatio: 1, // Ensure a square aspect ratio for each item
+    marginRight: '5%',
+    marginVertical: '5%',
+    alignItems: 'center',
+    backgroundColor: '#fff', // Background color of the item
+    borderRadius: 8, // Rounded corners
+    padding: 10, // Padding inside the item
+    elevation: 2, // Elevation for Android shadow
+    shadowColor: '#000', // Shadow color for iOS shadow
+    shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS shadow
+    shadowOpacity: 0.2, // Shadow opacity for iOS shadow
+    shadowRadius: 2, // Shadow radius for iOS shadow
+  },
+  image: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+    alignSelf: 'center',
+  },
+  brandName: {
+    fontSize: 14,
+    color: '#000',
+    fontWeight: '500',
+    fontFamily: 'NeueMontreal-Medium',
+    marginTop: 8,
+    textAlign: 'center',
+    maxWidth: '100%', // Adjust maximum width as needed
   },
 });
 
