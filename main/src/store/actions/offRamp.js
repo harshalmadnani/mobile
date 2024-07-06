@@ -13,7 +13,7 @@ const URL = {
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6IjU5ZDMxZGEwZTFkNzM5NmRhMmExYTE4YjNjZWNjODAwIiwiY29udGVudCI6ImVjNDg3OGVjNmYwMGMyMjc4Zjc1NTA1NjRhMjkyNmE5NjMzODMyODI0YzFhYTBhMTg2NWFmNjNkZjVkOTFmZmQ2ZmY2MWFiZGEyNjJlOTE3YmMyNGZiOTZkM2FhOTY5MGQyZGY2NzQ1NjExY2Y1OTI0YjI4Nzg5ZDVhZDM5Y2MyY2Q0NWVhYzIzMzIzNDk3ZDM0OTQzOGY3YTYxZDc0NmRlOGJmYzZiMWNmZDhmZmUwODM2OTk5Y2MyMTc0Y2RjYjhjZTEwNjIyZjk4ZTBiMTMwNTMwODkxMTRhYTFmMTg2NDhmMWU2OGQwNDYxOTAzN2IyMTU5YWU1YzZiMDRjMTFkMTBkNDViMWYyNDFkZjg4In0sImlhdCI6MTcxOTU4NzczMCwiZXhwIjoxNzE5Njc0MTMwfQ.N7BHsxGt48PQ6K1fvlBBTHemI4yH3g9f0n3MM7Ztt1w';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NTcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDIyMDI0OCwiZXhwIjoxNzIwMzA2NjQ4fQ.UEOaWw7oJgyWfJT3aVs5x4gzm1UROSIy0IB3OOGgzNM';
 
 export const fetchOnboardedUser = email => {
   return async dispatch => {
@@ -99,8 +99,8 @@ export const getCountry = async () => {
 
 export const getCountryBasedGiftCard = () => {
   return async dispatch => {
-    const countryName = await getCountry();
-    console.log('Country name', countryName);
+    // const countryName = await getCountry();
+    // console.log('Country name', countryName);
     //if (countryName != null)
     if (1 == 1) {
       //REMOVE THIS BEFORE PUSHING
@@ -133,6 +133,7 @@ export const getCountryBasedGiftCard = () => {
   };
 };
 
+//creates quote, this running every 10 second in coupon modal
 export const submitDetailsForQuote = requestBody => {
   return async dispatch => {
     //raw data

@@ -38,7 +38,7 @@ const Spending = () => {
     }
   };
   const giftCards = useSelector(x => x.offRamp.giftCards);
-  console.log(giftCards);
+
   const closeWebView = () => {
     setShowWebView(false);
   };

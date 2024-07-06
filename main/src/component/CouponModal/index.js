@@ -19,7 +19,6 @@ import {useNavigation} from '@react-navigation/native';
 // import {Image} from 'react-native-svg';
 
 export const SingleCouponItem = ({onSelect, info}) => {
-  console.log('coupon...', info);
   return (
     <Pressable onPress={onSelect} style={styles.container}>
       <Image source={{uri: info?.vouchersImg}} style={styles.image} />
@@ -36,15 +35,8 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState();
   const {height} = Dimensions.get('window');
-  const [coupons, setCoupons] = useState([
-    {name: 'Amazon'},
-    {name: 'Flipkart'},
-    {name: 'Myntra'},
-    {name: 'Paypal'},
-    {name: 'PS Store'},
-  ]);
+
   const giftCards = useSelector(x => x.offRamp.giftCards);
-  console.log(giftCards);
   const [qty, setQty] = useState(1);
   return (
     <Modal
@@ -56,11 +48,7 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
       }}>
       <View style={styles.centeredView}>
         {selected ? (
-          <View
-            style={[
-              styles.modalView,
-              {height: height * 0.5, backgroundColor: '#1D1D1D'},
-            ]}>
+          <View style={[styles.modalView, {backgroundColor: '#1D1D1D'}]}>
             <View
               style={{
                 height: 6,
@@ -197,29 +185,6 @@ const CouponModal = ({modalVisible, setModalVisible, value}) => {
                 Select the gift card
               </Text>
             </View>
-            <ScrollView
-              contentContainerStyle={{
-                lexGrow: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  flexWrap: 'wrap',
-                  justifyContent: 'center',
-                }}>
-                {giftCards?.length > 0
-                  ? giftCards?.map(x => (
-                      <SingleCouponItem
-                        onSelect={() => setSelected(x)}
-                        key={x?.productId}
-                        info={x}
-                      />
-                    ))
-                  : null}
-              </View>
-            </ScrollView>
           </View>
         )}
       </View>

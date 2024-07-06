@@ -18,6 +18,8 @@ import {
 } from '../../../store/actions/offRamp';
 import {Icon} from 'react-native-elements';
 import {ScrollView} from 'react-native';
+import SingleCouponModal from './Offramp/SingleCouponModal';
+
 const Catelog = () => {
   const [loading, setLoading] = useState(false);
   const [showWebView, setShowWebView] = useState(false);
@@ -31,6 +33,13 @@ const Catelog = () => {
   const [couponModal, setCouponModal] = useState(false);
 
   const giftCards = useSelector(x => x.offRamp.giftCards);
+
+  const onSelect = x => {
+    setSelected(x);
+    console.log('selecteeeeed', x);
+    setCouponModal(true);
+  };
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
       <View
@@ -86,7 +95,7 @@ const Catelog = () => {
                 <SingleCouponItem
                   key={x?.productId}
                   info={x}
-                  onSelect={() => setSelected(x)}
+                  onSelect={() => onSelect(x)}
                   style={{width: '30%', margin: 5}} // Adjust width and margin as needed
                 />
               ))}
@@ -94,10 +103,10 @@ const Catelog = () => {
         </ScrollView>
       </View>
 
-      <CouponModal
+      <SingleCouponModal
+        data={selected}
         modalVisible={couponModal}
         setModalVisible={setCouponModal}
-        value={40}
       />
     </SafeAreaView>
   );
