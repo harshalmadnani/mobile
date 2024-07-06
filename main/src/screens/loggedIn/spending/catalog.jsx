@@ -21,6 +21,12 @@ import {ScrollView} from 'react-native';
 import SingleCouponModal from './Offramp/SingleCouponModal';
 
 const Catelog = () => {
+  const store_currency = useSelector(x => x.auth.currency);
+  const store_currency_name = useSelector(x => x.auth.currency_name);
+  const store_country = useSelector(x => x.auth.country);
+  const store_countryCode = useSelector(x => x.auth.countryCode);
+
+
   const [loading, setLoading] = useState(false);
   const [showWebView, setShowWebView] = useState(false);
 
@@ -96,6 +102,7 @@ const Catelog = () => {
                   key={x?.productId}
                   info={x}
                   onSelect={() => onSelect(x)}
+                  isSelected={selected?.productId === x.productId}
                   style={{width: '30%', margin: 5}} // Adjust width and margin as needed
                 />
               ))}
@@ -107,6 +114,9 @@ const Catelog = () => {
         data={selected}
         modalVisible={couponModal}
         setModalVisible={setCouponModal}
+        country={store_country}
+        navigation={navigation}
+        email={email}
       />
     </SafeAreaView>
   );

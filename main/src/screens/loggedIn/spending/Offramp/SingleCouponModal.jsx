@@ -7,10 +7,17 @@ import {
   Pressable,
   Dimensions,
   Image,
+  ScrollView,
 } from 'react-native';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity} from 'react-native';
+import {TextInput} from 'react-native';
+import {
+  acceptGiftCardOrder,
+  fetchOnboardedUser,
+  submitDetailsForQuote,
+} from '../../../../store/actions/offRamp';
 
 const Chip = ({label, isSelected, onPress}) => {
   return (
@@ -25,8 +32,48 @@ const Chip = ({label, isSelected, onPress}) => {
   );
 };
 
-const SingleCouponModal = ({modalVisible, setModalVisible, data}) => {
+const SingleCouponModal = ({
+  modalVisible,
+  setModalVisible,
+  data,
+  country,
+  email,
+}) => {
   const [selectedChip, setSelectedChip] = useState(null);
+  const [quantity, setQuantity] = useState();
+  const [isFocused, setIsFocused] = useState(false);
+
+  const [gotQuote, setGotQuote] = useState(false);
+  const [isAccepted, setisAccepted] = useState(false);
+
+  const dispatch = useDispatch();
+
+  //todo(give  THE CONDITONS)
+  const getQuote = async () => {
+    //dispatch
+
+    await dispatch(
+      submitDetailsForQuote(
+        country,
+        data?.productId,
+        data?.brand,
+        selectedChip,
+        quantity,
+      ),
+    );
+
+    setGotQuote(true);
+  };
+
+  const onAccept = () => {
+    dispatch(acceptGiftCardOrder());
+    setisAccepted(true);
+    setGotQuote(false);
+    setQuantity('');
+    setModalVisible(false);
+    navigation.navigate('Home');
+  };
+
   //const [selectedChips, setSelectedChips] = useState(new Set());
 
   const toggleChipSelection = chip => {
@@ -50,6 +97,7 @@ const SingleCouponModal = ({modalVisible, setModalVisible, data}) => {
 
   return (
     <Modal
+      statusBarTranslucent={false}
       animationType="slide"
       transparent={true}
       visible={modalVisible}
@@ -65,23 +113,76 @@ const SingleCouponModal = ({modalVisible, setModalVisible, data}) => {
             style={styles.modalImg}
             resizeMode="cover"
           />
-          <Text style={[styles.modalText, {marginTop: 0}]}>{data?.brand}</Text>
-          <View style={styles.container}>
-            {data?.denominations.map((chip, index) => (
-              <Chip
-                key={index}
-                label={chip}
-                // isSelected={selectedChips.has(chip)}
-                isSelected={chip === selectedChip}
-                onPress={() => toggleChipSelection(chip)}
+          <Text style={[styles.modalText, {marginTop: 10}]}>{data?.brand}</Text>
+
+          {gotQuote ? (
+            <Text style={[styles.confirmationText, {marginTop: 10}]}>
+              You are paying{' '}
+              <Text style={styles.confirmationTextWhite}>
+                {selectedChip} USD
+              </Text>{' '}
+              for{' '}
+              <Text style={styles.confirmationTextWhite}>
+                {quantity} {data?.brand}
+              </Text>{' '}
+              gift cards
+            </Text>
+          ) : data?.denominations.length > 10 ? (
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1}}
+              style={{maxHeight: 200}}>
+              <View style={styles.container}>
+                {data?.denominations.map((chip, index) => (
+                  <Chip
+                    key={index}
+                    label={chip}
+                    // isSelected={selectedChips.has(chip)}
+                    isSelected={chip === selectedChip}
+                    onPress={() => toggleChipSelection(chip)}
+                  />
+                ))}
+              </View>
+            </ScrollView>
+          ) : (
+            <View style={styles.container}>
+              {data?.denominations.map((chip, index) => (
+                <Chip
+                  key={index}
+                  label={chip}
+                  // isSelected={selectedChips.has(chip)}
+                  isSelected={chip === selectedChip}
+                  onPress={() => toggleChipSelection(chip)}
+                />
+              ))}
+            </View>
+          )}
+          <View style={{justifyContent: 'flex-end'}}>
+            {!gotQuote && (
+              <TextInput
+                value={quantity}
+                onChangeText={setQuantity}
+                placeholder="How many to purchase"
+                placeholderTextColor={'#cccccc'}
+                style={[
+                  styles.input,
+                  {
+                    borderColor: isFocused ? '#fff' : '#000',
+                  },
+                ]}
+                keyboardType="numeric"
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
               />
-            ))}
+            )}
+
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={gotQuote ? onAccept : getQuote}>
+              <Text style={styles.textStyle}>
+                {gotQuote ? 'Confirm' : 'GET QUOTES'}
+              </Text>
+            </TouchableOpacity>
           </View>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => setModalVisible(!modalVisible)}>
-            <Text style={styles.textStyle}>Hide Modal</Text>
-          </Pressable>
         </View>
       </View>
     </Modal>
@@ -95,10 +196,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#1d1d1d',
     padding: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    justifyContent: 'center',
   },
   modalText: {
     fontSize: 20,
@@ -110,26 +212,25 @@ const styles = StyleSheet.create({
     //fontFamily: 'Unbounded-Bold',
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 10,
     elevation: 2,
     marginBottom: 10,
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#fff',
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#000000',
     textAlign: 'center',
+    fontFamily: 'Unbounded-Bold',
   },
   modalImg: {
     width: Dimensions.get('window').width * 0.9, // Full width
-    height: '40%', // Set a fixed height or adjust dynamically based on your needs
+    height: '30%', // Set a fixed height or adjust dynamically based on your needs
     borderRadius: 10,
     alignSelf: 'center',
-
-    marginVertical: 10,
+    marginBottom: 10,
   },
   container: {
     flexDirection: 'row',
@@ -146,7 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     margin: 5,
-    borderColor: '#ccc',
+    borderColor: '#303030',
     opacity: 0.8,
   },
   chipText: {
@@ -160,6 +261,33 @@ const styles = StyleSheet.create({
   },
   selectedChipText: {
     color: '#fff', // Selected text color
+  },
+  input: {
+    width: Dimensions.get('window').width * 0.9,
+
+    paddingHorizontal: 20,
+    backgroundColor: '#000',
+    color: '#fff',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 10,
+    alignSelf: 'center',
+    fontSize: 12,
+    opacity: 0.7,
+    marginVertical: 20,
+  },
+  confirmationText: {
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: '#ccc',
+    paddingVertical: 10,
+  },
+  confirmationTextWhite: {
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
+    color: '#fff',
   },
 });
 

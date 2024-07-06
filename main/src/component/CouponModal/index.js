@@ -18,9 +18,11 @@ import {useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 // import {Image} from 'react-native-svg';
 
-export const SingleCouponItem = ({onSelect, info}) => {
+export const SingleCouponItem = ({onSelect, info, isSelected}) => {
   return (
-    <Pressable onPress={onSelect} style={styles.container}>
+    <Pressable
+      onPress={onSelect}
+      style={[styles.container, isSelected ? styles.selectedItem : null]}>
       <Image source={{uri: info?.vouchersImg}} style={styles.image} />
       <Text numberOfLines={1} style={styles.brandName}>
         {info?.brand}
@@ -227,14 +229,15 @@ const styles = StyleSheet.create({
     marginRight: '5%',
     marginVertical: '5%',
     alignItems: 'center',
-    backgroundColor: '#fff', // Background color of the item
+    backgroundColor: '#131313', // Background color of the item
     borderRadius: 8, // Rounded corners
     padding: 10, // Padding inside the item
     elevation: 2, // Elevation for Android shadow
     shadowColor: '#000', // Shadow color for iOS shadow
     shadowOffset: {width: 0, height: 2}, // Shadow offset for iOS shadow
     shadowOpacity: 0.2, // Shadow opacity for iOS shadow
-    shadowRadius: 2, // Shadow radius for iOS shadow
+    shadowRadius: 2, // Shadow radius for iOS shadow,
+    borderWidth: 1,
   },
   image: {
     width: 48,
@@ -244,12 +247,15 @@ const styles = StyleSheet.create({
   },
   brandName: {
     fontSize: 14,
-    color: '#000',
+    color: '#ffffff',
     fontWeight: '500',
     fontFamily: 'NeueMontreal-Medium',
     marginTop: 8,
     textAlign: 'center',
     maxWidth: '100%', // Adjust maximum width as needed
+  },
+  selectedItem: {
+    borderColor: '#ffffff', // Change border color for selected item
   },
 });
 

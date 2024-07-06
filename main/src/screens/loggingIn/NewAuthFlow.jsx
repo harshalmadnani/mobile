@@ -47,6 +47,7 @@ import {authActions} from '../../store/reducers/auth';
 import {autoLogin} from '../../store/actions/auth';
 import {Passkey} from 'react-native-passkey';
 import Toast from 'react-native-root-toast';
+import {fetchOnboardedUser} from '../../store/actions/offRamp.js';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
   const [email, setEmail] = useState('');
@@ -181,7 +182,9 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       const token = await getDfnsJwt(email);
       console.log('wallets created.....', response?.wallets);
       const scw = await getAllScwAddress(token, response?.wallets);
+
       dispatch(authActions.setEmail(email));
+      
       dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(scw));
       dispatch(authActions.setWallet(response?.wallets));

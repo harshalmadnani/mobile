@@ -82,6 +82,8 @@ const PreLoad = ({navigation}) => {
           country_code,
         ),
       );
+
+      
     } catch (err) {
       console.log('Error in getCountry.', err);
     }

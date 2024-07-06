@@ -172,7 +172,7 @@ const Spending = () => {
             alignSelf: 'stretch',
           }}>
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color="#000000" />
           ) : (
             <Text
               style={{

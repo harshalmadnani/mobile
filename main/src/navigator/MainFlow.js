@@ -16,6 +16,14 @@ function MainFlowStack({navigation}) {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
   };
+  console.log(navigation.getState().routes);
+  // Function to determine if tab bar should be visible
+  const getTabBarVisibility = () => {
+    if (route.name != 'Catelog') return '';
+    else {
+      return 'none';
+    }
+  };
 
   return (
     <View style={{flex: 1}}>
