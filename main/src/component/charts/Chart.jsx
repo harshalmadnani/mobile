@@ -182,7 +182,9 @@ function InteractiveChart() {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Text style={styles.stockPrice}>$</Text>
+              <Text style={styles.stockPrice}>
+                {isUsd ? '$' : currency_icon}
+              </Text>
               <LineChart.PriceText style={styles.stockPrice} />
             </View>
           ) : (

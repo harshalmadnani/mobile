@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {getCurrencyIcon} from '../utils/currencyicon';
 // import * as particleAuth from 'react-native-particle-auth';
 
 const buttons = [
@@ -25,6 +26,9 @@ function renderButtons() {
   });
 }
 export default function EnterAmountComponent({navigation}) {
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_icon = getCurrencyIcon(currency_name);
   //   let params = route.params;
   let [amount, setAmount] = React.useState(0);
   let [address, setAddress] = React.useState(1);
@@ -62,7 +66,7 @@ export default function EnterAmountComponent({navigation}) {
               color: 'white',
               fontFamily: 'VelaSans-Bold',
             }}>
-            $
+            {isUsd ? '$' : currency_icon}
           </Text>
           <Text
             style={{
@@ -70,7 +74,7 @@ export default function EnterAmountComponent({navigation}) {
               color: 'white',
               fontFamily: 'VelaSans-Bold',
             }}>
-            {amount}
+            {isUsd ? amount : amount * parseFloat(exchRate)}
           </Text>
         </View>
       </View>

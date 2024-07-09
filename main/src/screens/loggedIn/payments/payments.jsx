@@ -34,6 +34,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
 import USDC_ABI from './USDC';
 import {SABEX_LP} from '@env';
+
 import {
   BICONOMY_API_KEY,
   BICONOMY_API_KEY_MUMBAI,
@@ -67,12 +68,17 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useFocusEffect} from '@react-navigation/native';
 import {getCryptoHoldingForAddressFromMobula} from '../../../store/actions/portfolio';
 import {marketSlice, marketsAction} from '../../../store/reducers/market';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359';
 
 // import {transferUSDC} from './remmitexv1';
 
 const PaymentsComponent = ({navigation}) => {
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+
   const [state, setState] = React.useState([
     {
       truth: true,
@@ -99,6 +105,7 @@ const PaymentsComponent = ({navigation}) => {
   const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
   const [transactionData, setTransactionData] = useState();
 
+  const [currency, setCurrency] = useState(' ');
   const handleCloseTransactionReceiptModal = () => {
     setShowTxnReceiptModal(false);
   };
@@ -157,6 +164,8 @@ const PaymentsComponent = ({navigation}) => {
     // }, []);
     useFocusEffect(
       React.useCallback(() => {
+        let curr = getCurrencyIcon(currency_name);
+        setCurrency(curr);
         call();
         // Cleanup function (optional)
         return () => {
@@ -208,7 +217,7 @@ const PaymentsComponent = ({navigation}) => {
                   fontWeight: '700',
                   marginTop: '1%',
                 }}>
-                ${balance?.split('.')[0]}
+                {isUsd ? '$' : currency} {balance?.split('.')[0] * exchRate}
                 <Text
                   style={{
                     color: '#fff',

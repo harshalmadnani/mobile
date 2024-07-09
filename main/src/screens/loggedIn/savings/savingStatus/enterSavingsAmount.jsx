@@ -1,5 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {useSelector} from 'react-redux';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 // import * as particleAuth from 'react-native-particle-auth';
 
 const buttons = [
@@ -30,6 +32,10 @@ export default function EnterAmountComponent({navigation, route}) {
   let {withdraw, web3} = route.params; // True if withdraw, False if deposit
   //   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0};
   //   console.log(json);
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+  const currency = getCurrencyIcon(currency_name);
 
   console.log('Web3 not being carried to enterSavings:', web3);
 
@@ -66,7 +72,7 @@ export default function EnterAmountComponent({navigation, route}) {
               color: 'white',
               fontFamily: 'VelaSans-Bold',
             }}>
-            $
+            {isUsd ? '$' : currency}
           </Text>
           <Text
             style={{
@@ -74,7 +80,7 @@ export default function EnterAmountComponent({navigation, route}) {
               color: 'white',
               fontFamily: 'VelaSans-Bold',
             }}>
-            {amount}
+            {isUsd ? amount : amount * exchRate}
           </Text>
         </View>
       </View>

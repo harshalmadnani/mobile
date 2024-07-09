@@ -16,6 +16,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {transferAction} from '../../../store/reducers/transfer';
 import {useNavigation} from '@react-navigation/native';
 import {NetworkChainInfo} from '../../../utils/constants';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
+
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
@@ -27,6 +29,11 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
   const height = Dimensions.get('window').height;
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
+
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+  const currency = getCurrencyIcon(currency_name);
 
   const recipientAddress = useSelector(x => x.transfer.recipientAddress);
   const navigation = useNavigation();
@@ -122,7 +129,12 @@ const AnyTokenListScreen = ({modalVisible, setModalVisible}) => {
                         fontSize: 16,
                         paddingTop: 10,
                       }}>
-                      ${item?.estimated_balance?.toString()?.slice(0, 5)}
+                      {isUsd ? '$' : currency}{' '}
+                      {isUsd
+                        ? item?.estimated_balance?.toString()?.slice(0, 5)
+                        : (parseFloat(item?.estimated_balance) * exchRate)
+                            .toString()
+                            ?.slice(0, 5)}
                     </Text>
                   </View>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>

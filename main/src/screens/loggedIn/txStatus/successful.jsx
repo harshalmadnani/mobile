@@ -23,6 +23,7 @@ import {SECRET_KEY_REMMITEX, POINTS_KEY} from '@env';
 import CryptoJS from 'react-native-crypto-js';
 import {Icon} from 'react-native-elements';
 import {useSelector} from 'react-redux';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 const windowWidth = Dimensions.get('window').width;
 
 const addPoints = async (userId, transactionAmount) => {
@@ -68,6 +69,9 @@ export default function Component({navigation, route}) {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  const isUsd = useSelector(x => x.auth.isUsd);
+
+  const currency_icon = getCurrencyIcon(currency_name);
   const [fees, setFees] = useState('0');
   console.log('Amount....', assetInfo);
   // useEffect(() => {
@@ -290,7 +294,7 @@ export default function Component({navigation, route}) {
                   alignSelf: 'flex-end',
                   color: '#fff',
                 }}>
-                $ 0
+                {isUsd ? '$' : currency_icon} 0
               </Text>
             </View>
           </View>

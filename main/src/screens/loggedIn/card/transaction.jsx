@@ -14,8 +14,14 @@ import {
 
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
+import {useSelector} from 'react-redux';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 
 const CardTransactions = () => {
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+  const currency = getCurrencyIcon(currency_name);
   const [state, setState] = React.useState([
     {
       truth: true,
@@ -149,8 +155,11 @@ const CardTransactions = () => {
                     fontSize: 18,
                     fontFamily: `EuclidCircularA-Medium`,
                   }}>
-                  {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
-                  {json?.value?.toFixed(3)}
+                  {json.truth != 0 && json.truth != 2 ? '+' : '-'}{' '}
+                  {isUsd ? '$' : currency}
+                  {isUsd
+                    ? json?.value?.toFixed(3)
+                    : (parseFloat(json?.value) * exchRate)?.toFixed(3)}
                 </Text>
                 <Icon
                   // style={styles.tup}

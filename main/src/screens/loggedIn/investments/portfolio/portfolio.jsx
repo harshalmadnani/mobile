@@ -368,7 +368,12 @@ const Portfolio = ({navigation}) => {
                           color: '#fff',
                           fontFamily: 'Unbounded-Bold',
                         }}>
-                        ${portfolioValue?.total_wallet_balance?.toFixed(2)}
+                        {isUsd ? '$' : currency_icon}{' '}
+                        {isUsd
+                          ? portfolioValue?.total_wallet_balance?.toFixed(2)
+                          : (portfolioValue?.total_wallet_balance * exchRate)
+                              ?.toFixed(2)
+                              .toString()}
                       </Text>
                     </View>
 
@@ -446,7 +451,7 @@ const Portfolio = ({navigation}) => {
                         fontFamily: 'Unbounded-Medium',
                       }}>
                       {' '}
-                      $
+                      {isUsd ? '$' : currency_icon}
                       {(
                         portfolioValue?.total_wallet_balance -
                         portfolioValue?.total_unrealized_pnl -

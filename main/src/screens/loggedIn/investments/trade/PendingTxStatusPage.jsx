@@ -5,6 +5,7 @@ import {Text, View, Image} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {Svg, Circle, Text as SvgText} from 'react-native-svg';
 import {useSelector} from 'react-redux';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 const {BigNumber} = require('bignumber.js');
 const PendingTxComponent = ({
   txQuoteInfo,
@@ -108,6 +109,11 @@ const SuccessTxComponent = ({
   stockInfo,
 }) => {
   const navigation = useNavigation();
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+  const currency = getCurrencyIcon(currency_name);
+
   return (
     <View style={{width: '100%'}}>
       <View style={{justifyContent: 'flex-start'}}>
@@ -200,7 +206,7 @@ const SuccessTxComponent = ({
                 alignSelf: 'flex-end',
                 color: '#fff',
               }}>
-              $
+              {isUsd ? '$' : currency}
               {tradeType === 'sell'
                 ? txQuoteInfo?.action?.toToken?.priceUSD ||
                   ((
@@ -276,7 +282,7 @@ const SuccessTxComponent = ({
                 alignSelf: 'flex-end',
                 color: '#fff',
               }}>
-              $
+              {isUsd ? '$' : currency}
               {txQuoteInfo?.estimation?.costsDetails
                 ? tradeType === 'sell'
                   ? (

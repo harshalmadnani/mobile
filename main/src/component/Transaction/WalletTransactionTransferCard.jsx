@@ -1,7 +1,7 @@
 import {StyleSheet, View, Text, Image} from 'react-native';
 import moment from 'moment';
 
-const WalletTransactionTransferCard = ({item}) => {
+const WalletTransactionTransferCard = ({item, currency, isUsd, exchRate}) => {
   const mainSwapToken =
     item?.giveOfferWithMetadata?.metadata?.symbol === 'USDC'
       ? item?.takeOfferWithMetadata
@@ -79,7 +79,8 @@ const WalletTransactionTransferCard = ({item}) => {
                 {color: '#fff', opacity: 1, alignSelf: 'flex-end'},
               ]}>
               {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}+
-              {item?.amount} USD
+              {isUsd ? item?.amount : (item?.amount * exchRate).toFixed(2)}{' '}
+              {isUsd ? '$' : currency}
             </Text>
             <Text
               style={[
@@ -102,7 +103,8 @@ const WalletTransactionTransferCard = ({item}) => {
                 {color: '#fff', opacity: 1, alignSelf: 'flex-end'},
               ]}>
               {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}-
-              {item?.amount} USD
+              {isUsd ? item?.amount : (item?.amount * exchRate).toFixed(2)}{' '}
+              {isUsd ? '$' : currency}
             </Text>
             <Text
               style={[

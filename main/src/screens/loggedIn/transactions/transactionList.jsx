@@ -20,6 +20,7 @@ import {
 } from '../../../store/actions/portfolio';
 import {SceneMap, TabView} from 'react-native-tab-view';
 import LottieView from 'lottie-react-native';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 
 const width = Dimensions.get('window').width;
 const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
@@ -49,6 +50,10 @@ const TransactionFilterButton = ({title, onFilterPressed, isActive}) => {
 };
 
 const TransactionList = ({navigation, route}) => {
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+  const [currency, setCurrency] = useState(' ');
   const [txType, setTxType] = useState('transfers');
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -69,6 +74,8 @@ const TransactionList = ({navigation, route}) => {
   };
   const onEndReachedFetch = async () => {};
   useEffect(() => {
+    const curr = getCurrencyIcon(currency_name);
+    setCurrency(curr);
     if (txType === 'dln') {
       getAllDLNTradeHistory();
     } else {
@@ -147,9 +154,19 @@ const TransactionList = ({navigation, route}) => {
           }
           renderItem={({item}) =>
             txType === 'transfers' ? (
-              <WalletTransactionTransferCard item={item} />
+              <WalletTransactionTransferCard
+                item={item}
+                currency={currency}
+                isUsd={isUsd}
+                exchRate={exchRate}
+              />
             ) : (
-              <WalletTransactionTradeCard item={item} />
+              <WalletTransactionTradeCard
+                item={item}
+                currency={currency}
+                isUsd={isUsd}
+                exchRate={exchRate}
+              />
             )
           }
           onEndReached={async () => await onEndReachedFetch()}

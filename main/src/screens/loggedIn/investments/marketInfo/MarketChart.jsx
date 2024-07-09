@@ -249,7 +249,9 @@ const MarketChart = props => {
                   <Text
                     style={{color: 'grey', fontFamily: 'NeueMontreal-Medium'}}>
                     {item?.label === 'Market Cap' || item?.label === 'Volume'
-                      ? '$'
+                      ? isUsd
+                        ? '$'
+                        : currency_icon
                       : ''}
                     {formatNumber(item?.value)}
                   </Text>

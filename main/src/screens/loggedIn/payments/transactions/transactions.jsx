@@ -37,11 +37,18 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 
 import {ethers} from 'ethers';
+import {useSelector} from 'react-redux';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 
 const width = Dimensions.get('window').width;
 
 const Transaction = ({navigation, route}) => {
   let [sender, setSender] = useState('Unregistered User');
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
+
+  const [currency, setCurrency] = useState(' ');
 
   const address = global.withAuth
     ? global.loginAccount.scw
@@ -83,7 +90,8 @@ const Transaction = ({navigation, route}) => {
           setSender(data);
         });
     };
-
+    let curr = getCurrencyIcon(currency_name);
+    setCurrency(curr);
     getData(txDetails.from == address ? txDetails.to : txDetails.from);
   }, []);
   return (
@@ -132,7 +140,10 @@ const Transaction = ({navigation, route}) => {
               fontFamily: 'EuclidCircularA-Medium',
               textAlign: 'center',
             }}>
-            ${txDetails?.value?.toFixed(4)}
+            {isUsd ? '$' : currency}{' '}
+            {isUsd
+              ? txDetails?.value?.toFixed(4)
+              : (parseFloat(txDetails?.value) * exchRate).toFixed(4)}
           </Text>
         </View>
         <View style={{flexDirection: 'column', marginTop: '10%'}}>

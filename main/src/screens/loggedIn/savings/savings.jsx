@@ -20,15 +20,22 @@ import createConnectProvider from '../../../particle-connect';
 import {POLYGON_API_KEY, SABEX_LP} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
+import {useSelector} from 'react-redux';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 // import { PROJECT_ID, CLIENT_KEY } from 'react-native-dotenv'
 
 let web3;
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 
 const Savings = ({navigation}) => {
+  const isUsd = useSelector(x => x.auth.isUsd);
+  const exchRate = useSelector(x => x.auth.exchRate);
+  const currency_name = useSelector(x => x.auth.currency);
   const [state, setState] = React.useState([
     {truth: true, to: '0', from: '0', value: 0},
   ]);
+
+  const [currency, setCurrency] = React.useState(' ');
   const [mainnet, setMainnet] = React.useState(false);
 
   var monthname = new Array(
@@ -68,6 +75,8 @@ const Savings = ({navigation}) => {
   const [balance, setBalance] = useState('0.00');
   useEffect(() => {
     async function allLogic() {
+      const curr = getCurrencyIcon(currency_name);
+      setCurrency(curr);
       const mainnetJSON = await AsyncStorage.getItem('mainnet');
       const _mainnet = JSON.parse(mainnetJSON);
       console.log('Mainnet', _mainnet);
@@ -170,7 +179,7 @@ const Savings = ({navigation}) => {
                 fontSize: 45,
                 fontFamily: 'Benzin-Medium',
               }}>
-              $
+              {isUsd ? '$' : currency}
             </Text>
             <Text
               style={{
@@ -178,7 +187,7 @@ const Savings = ({navigation}) => {
                 fontSize: 45,
                 fontFamily: 'Benzin-Medium',
               }}>
-              {balance.split('.')[0]}
+              {balance.split('.')[0] * exchRate}
             </Text>
             <Text
               style={{
@@ -188,7 +197,7 @@ const Savings = ({navigation}) => {
                 marginBottom: 5,
               }}>
               {'.'}
-              {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              {balance.split('.')[1] ? balance.split('.')[1] * exchRate : '00'}
             </Text>
           </View>
           <Text
@@ -279,7 +288,10 @@ const Savings = ({navigation}) => {
                 style={{width: '100%', height: 170}}
                 source={require('./img/dollar-dollar-color.png')}
               />
-              <Text style={styles.amountText}>$0.00</Text>
+              <Text style={styles.amountText}>
+                {' '}
+                {isUsd ? '$' : currency} 0.00
+              </Text>
               <Text style={styles.amountText2}>Interest earned</Text>
             </LinearGradient>
           </TouchableOpacity>
