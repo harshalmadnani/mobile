@@ -26,7 +26,7 @@ export const retrieveSaberUser = () => {
         'X-Timestamp': timeStampinSeconds,
         'X-Client-Id': SABER_CONSTANTS.client_id, // Replace with your actual client ID
         'X-Secret-Key': secret, // Replace with your actual secret key (if needed)
-        'X-Request-Id': "123456789876", // Replace with your actual request ID
+        'X-Request-Id': '123456789876', // Replace with your actual request ID
         'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef', // taken from 1st user created, cant find user ID
       };
 
@@ -38,7 +38,7 @@ export const retrieveSaberUser = () => {
       console.log('RETRIEVING SABER USER', respone.data);
       dispatch(depositAction.setSaberUser(respone.data?.data?.user_uuid));
     } catch (err) {
-        console.log(err)
+      console.log(err);
     }
   };
 };
