@@ -13,7 +13,7 @@ const URL = {
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NTcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDIyMDI0OCwiZXhwIjoxNzIwMzA2NjQ4fQ.UEOaWw7oJgyWfJT3aVs5x4gzm1UROSIy0IB3OOGgzNM';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NDcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDU1NzA1NCwiZXhwIjoxNzIwNjQzNDU0fQ.OTk9fMb7oyVO7jUpbKkvqNc6tjWm9vkeRq9Jb1WpibQ';
 
 export const fetchOnboardedUser = email => {
   console.log('fetching onboarded users');
@@ -184,11 +184,11 @@ export const submitDetailsForQuote = (
 };
 
 export const acceptGiftCardOrder = () => {
-  return async (dispatch,getState) => {
+  return async (dispatch, getState) => {
     //raw data
 
-    const quoteId = getState().offRamp.quoteDetail; ;
-    console.log("QUOTE ID =>",quoteId)
+    const quoteId = getState().offRamp.quoteDetail;
+    console.log('QUOTE ID =>', quoteId);
     try {
       const response = await axios.post(
         URL.ACCEPT_GIFT_CARD,
@@ -203,15 +203,15 @@ export const acceptGiftCardOrder = () => {
         },
       );
 
-      console.log("accept status =>",response.status);
+      console.log('accept status =>', response.status);
 
       if (response.status === 201) {
         console.log('Order submitted successfully:', response.data);
         dispatch(offRampAction.acceptQuote(response));
       } else {
         console.error('Failed to submit order');
-        console.log("Status =>->",response)
-         console.log('accept status =>', response.status);
+        console.log('Status =>->', response);
+        console.log('accept status =>', response.status);
       }
     } catch (error) {
       console.error(
