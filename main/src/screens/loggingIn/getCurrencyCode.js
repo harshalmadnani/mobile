@@ -387,6 +387,6 @@ export default getCurrencyCode = countryCode => {
     case 'ZW':
       return 'ZWL'; // Zimbabwean Dollar
     default:
-      return null; // Return null or handle undefined cases
+      return '¤'; // Return null or handle undefined cases
   }
 };

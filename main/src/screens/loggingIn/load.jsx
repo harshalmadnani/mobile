@@ -66,7 +66,7 @@ const PreLoad = ({navigation}) => {
       //PAID
       // const response = {
       //   data: {
-      //     ip: '183.28.229.235',
+      //     ip: '182.28.399.235',
       //     type: 'ipv4',
       //     continent_code: 'AS',
       //     continent_name: 'Asia',
@@ -74,9 +74,9 @@ const PreLoad = ({navigation}) => {
       //     country_name: 'India',
       //     region_code: 'MH',
       //     region_name: 'Maharashtra',
-      //     city: 'Panvel',
-      //     zip: '400710',
-      //     latitude: 76.10090637207,
+      //     city: 'Kharghar',
+      //     zip: '402710',
+      //     latitude: 90.10090637207,
       //     longitude: 22.02279663085938,
       //     location: {
       //       geoname_id: 1260734,
@@ -124,7 +124,7 @@ const PreLoad = ({navigation}) => {
 
       // const response = {
       //   data: {
-      //     ip: '182.48.227.235',
+      //     ip: '180.48.257.235',
       //     type: 'ipv4',
       //     continent_code: 'AS',
       //     continent_name: 'Asia',
@@ -132,10 +132,10 @@ const PreLoad = ({navigation}) => {
       //     country_name: 'India',
       //     region_code: 'MH',
       //     region_name: 'Maharashtra',
-      //     city: 'Panvel',
-      //     zip: '400710',
-      //     latitude: 19.10460090637207,
-      //     longitude: 73.02279663085938,
+      //     city: 'Kharghar',
+      //     zip: '420410',
+      //     latitude: 27.10460090637207,
+      //     longitude: 92.02279663085938,
       //     location: {
       //       geoname_id: 1260434,
       //       capital: 'New Delhi',
