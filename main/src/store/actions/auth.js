@@ -316,9 +316,11 @@ export const storeCountryCurrency = (
   cc,
 ) => {
   return async dispatch => {
-    const res = await axios.get(`https://ipapi.co/currency/`);
-    console.log('currency symbol...', res.data);
-
+    if (curr === 'USD') {
+      dispatch(authActions.setIsUsd(true));
+    } else {
+      dispatch(authActions.setIsUsd(false));
+    }
     dispatch(authActions.setCurrency(curr));
     dispatch(authActions.setCountry(country));
     dispatch(authActions.setCurrencyName(curr_name));
@@ -331,7 +333,7 @@ export const storeCountryCurrency = (
 export const convertCurrency = async userCurrency => {
   try {
     const response = await axios.get(
-      `https://api.currencyapi.com/v3/latest?apikey=cur_live_SDqMY1JGZtVzdiBs13uqO8C2EaQjH3B3m77xVosV&currencies=${userCurrency}`,
+      `https://api.currencyapi.com/v3/latest?apikey=cur_live_Qe5VlIdahch1NOftHKpRNcQdSwzNawXdTWTPswVm&currencies=${userCurrency}`,
     );
     console.log(
       `current rate at ${userCurrency}`,
@@ -351,7 +353,7 @@ export const autoLogin = (navigation, email) => {
       const user = await getUserInfoFromDB(email);
       console.log('info from db......##', token, user);
 
-      dispatch(authActions.setIsUsd(user?.isUsd));
+      //  dispatch(authActions.setIsUsd(user?.isUsd)); Removed since we are doing it in storeCountryCurrency everytime.
       dispatch(authActions.setEmail(email));
       dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(user?.dfnsScw));

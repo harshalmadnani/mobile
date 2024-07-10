@@ -14,6 +14,7 @@ export const getCurrentTimestampInSeconds = () => {
 export const retrieveSaberUser = () => {
   return async (dispatch, getState) => {
     try {
+      const saberUserId = getState().deposit.saberUser;
       const timeStampinSeconds = getCurrentTimestampInSeconds();
       const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
       const secret = Crypto.HmacSHA256(
@@ -27,11 +28,11 @@ export const retrieveSaberUser = () => {
         'X-Client-Id': SABER_CONSTANTS.client_id, // Replace with your actual client ID
         'X-Secret-Key': secret, // Replace with your actual secret key (if needed)
         'X-Request-Id': '123456789876', // Replace with your actual request ID
-        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef', // taken from 1st user created, cant find what is userID in docs
+        'X-User-Id': saberUserId, // taken from 1st user created, cant find what is userID in docs
       };
 
       const respone = await axios.get(
-        'https://sandbox.mudrex.com/api/v1/user/client_user?user_uuid=e139d82f-d688-4d64-abaa-7e19d7c684ef',
+        'https://sandbox.mudrex.com/api/v1/user/client_user',
         {headers},
       );
 
@@ -66,10 +67,11 @@ export const createSaberUser = () => {
         'X-Request-Id': '123456709876',
         'Content-Type': 'application/json', // Specify the content type for the request
       };
+      //400 PE REPEAT.
 
       const data = {
-        user_uuid: userId,
-        client_user_id: partnerUserId,
+        //  user_uuid: userId,
+        client_user_id: email,
         email: email,
       };
 
@@ -88,6 +90,7 @@ export const createSaberUser = () => {
       );
 
       console.log('USER CREATION RESPOSE =>', response.data);
+
       dispatch(depositAction.setSaberUser(response?.data?.data?.user_id));
 
       console.log('################');
@@ -122,7 +125,7 @@ export const fetchSaberBuyPrice = amount => {
       };
 
       const response = await axios.get(
-        'https://sandbox.mudrex.com/api/v2/wallet/s/quote',
+        'https://sandbox.mudrex.com/api/v2/wallet/w/quote',
         {headers, params},
       );
       dispatch(depositAction.setSaberBuyPrice(response.data.data.total_fee));
@@ -135,8 +138,11 @@ export const fetchSaberBuyPrice = amount => {
 export const createSaberBuyOrder = amount => {
   return async (dispatch, getState) => {
     try {
-      const walletAddress = getState().auth.wallets;
-      console.log('wallet ADDESS =>', walletAddress);
+      const saberUserId = getState().deposit.saberUser;
+      const wallets = getState().auth.scw;
+
+      const userWallet = wallets.filter(x => x?.chainId === '137');
+
       const timeStampinSeconds = getCurrentTimestampInSeconds();
       const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
       const secret = Crypto.HmacSHA256(
@@ -148,7 +154,7 @@ export const createSaberBuyOrder = amount => {
         'X-Timestamp': timeStampinSeconds,
         'X-Client-Id': SABER_CONSTANTS.client_id,
         'X-Request-Id': '1234567',
-        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef',
+        'X-User-Id': saberUserId,
         'X-Secret-Key': secret,
       };
       const data = {
@@ -157,7 +163,7 @@ export const createSaberBuyOrder = amount => {
         to_amount: amount,
         source_id: 'c41f7d27-781c-41da-b74c-278fe7202af5', //I Dont know where to get this from, it doesnt come when fetchingBuyPrice
         payment_method: 'upi_transfer',
-        crypto_wallet_address: '', //what should be the wallet address
+        crypto_wallet_address: userWallet[0].address,
         network: 'MATIC',
       };
 

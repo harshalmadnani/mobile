@@ -34,6 +34,7 @@ import {
 import {authActions} from '../../store/reducers/auth';
 import axios from 'axios';
 var DeviceInfo = require('react-native-device-info');
+import getCurrencyCode from './getCurrencyCode';
 
 global.TextEncoder = require('text-encoding').TextEncoder;
 
@@ -58,18 +59,121 @@ const PreLoad = ({navigation}) => {
 
       console.log('IP PUBLIC ADDRESS =>', ipAddress);
 
-      const response = await axios.get(`https://ipapi.co/${ipAddress}/json/`);
-      const {country_name, currency, currency_name, country_code} =
-        response.data;
+      const response = await axios.get(
+        `http://api.ipstack.com/${ipAddress}?access_key=5e8f2dab92e14daa9b485db62a28f128`,
+      );
 
-      //RATE LIMIT IS REACHED
-      let exRate = 1.1;
-      // const exRate = await convertCurrency(currency); //has to be capital
+      //PAID
+      // const response = {
+      //   data: {
+      //     ip: '183.28.229.235',
+      //     type: 'ipv4',
+      //     continent_code: 'AS',
+      //     continent_name: 'Asia',
+      //     country_code: 'IN',
+      //     country_name: 'India',
+      //     region_code: 'MH',
+      //     region_name: 'Maharashtra',
+      //     city: 'Panvel',
+      //     zip: '400710',
+      //     latitude: 76.10090637207,
+      //     longitude: 22.02279663085938,
+      //     location: {
+      //       geoname_id: 1260734,
+      //       capital: 'New Delhi',
+      //       languages: [
+      //         {
+      //           code: 'hi',
+      //           name: 'Hindi',
+      //           native: '\u0939\u093f\u0928\u094d\u0926\u0940',
+      //         },
+      //         {
+      //           code: 'en',
+      //           name: 'English',
+      //           native: 'English',
+      //         },
+      //       ],
+      //       country_flag: 'https://assets.ipstack.com/flags/in.svg',
+      //       country_flag_emoji: '\ud83c\uddee\ud83c\uddf3',
+      //       country_flag_emoji_unicode: 'U+1F1EE U+1F1F3',
+      //       calling_code: '91',
+      //       is_eu: false,
+      //     },
+      //     time_zone: {
+      //       id: 'Asia/Kolkata',
+      //       current_time: '2024-07-11T00:46:09+05:30',
+      //       gmt_offset: 19600,
+      //       code: 'IST',
+      //       is_daylight_saving: false,
+      //     },
+      //     currency: {
+      //       code: 'INR',
+      //       name: 'Indian Rupee',
+      //       plural: 'Indian rupees',
+      //       symbol: 'Rs',
+      //       symbol_native: '\u099f\u0995\u09be',
+      //     },
+      //     connection: {
+      //       asn: 49769,
+      //       isp: 'S-Vois',
+      //     },
+      //   },
+      // };
+
+      //HTTP
+
+      // const response = {
+      //   data: {
+      //     ip: '182.48.227.235',
+      //     type: 'ipv4',
+      //     continent_code: 'AS',
+      //     continent_name: 'Asia',
+      //     country_code: 'IN',
+      //     country_name: 'India',
+      //     region_code: 'MH',
+      //     region_name: 'Maharashtra',
+      //     city: 'Panvel',
+      //     zip: '400710',
+      //     latitude: 19.10460090637207,
+      //     longitude: 73.02279663085938,
+      //     location: {
+      //       geoname_id: 1260434,
+      //       capital: 'New Delhi',
+      //       languages: [
+      //         {
+      //           code: 'hi',
+      //           name: 'Hindi',
+      //           native: '\u0939\u093f\u0928\u094d\u0926\u0940',
+      //         },
+      //         {
+      //           code: 'en',
+      //           name: 'English',
+      //           native: 'English',
+      //         },
+      //       ],
+      //       country_flag: 'https://assets.ipstack.com/flags/in.svg',
+      //       country_flag_emoji: '\ud83c\uddee\ud83c\uddf3',
+      //       country_flag_emoji_unicode: 'U+1F1EE U+1F1F3',
+      //       calling_code: '91',
+      //       is_eu: false,
+      //     },
+      //   },
+      // };
+
+      //Starter plan doesn't provide currency and https, only country name
+      // const {country_name, currency, country_code} = response.data;
+      // const {code, name, symbol} = currency;
+
+      const {country_name, country_code} = response.data;
+      const code = getCurrencyCode(country_code);
+      const exRate = await convertCurrency(code); //has to be capital
+
       console.log(
         '!!!!!!!!!!!!!!!!!ex rate.............',
         country_name,
-        currency,
-        currency_name,
+        code,
+        //name,
+        code,
         exRate,
         ipAddress,
         country_code,
@@ -77,8 +181,9 @@ const PreLoad = ({navigation}) => {
       dispatch(
         storeCountryCurrency(
           country_name,
-          currency,
-          currency_name,
+          code,
+          //  name,
+          code,
           exRate,
           ipAddress,
           country_code,
@@ -90,7 +195,9 @@ const PreLoad = ({navigation}) => {
   };
 
   const email = useSelector(state => state.auth.email);
+  const isUsd = useSelector(state => state.auth.isUsd);
   console.log('here...start', email);
+  console.log('isUsd:', isUsd);
 
   useEffect(() => {
     getCountry();

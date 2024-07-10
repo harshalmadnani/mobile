@@ -30,6 +30,7 @@ import {
   RefreshControl,
 } from 'react-native-gesture-handler';
 import {convertCurrency, getCurrency} from '../../../../store/actions/offRamp';
+import axios from 'axios';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -52,10 +53,12 @@ const Portfolio = ({navigation}) => {
   // imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
+
   useEffect(() => {
     const ws = new W3CWebSocket(
       'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
     );
+
     if (allScw?.length) {
       const scwWallets = allScw.map(x => x.address);
       ws.onopen = () => {
