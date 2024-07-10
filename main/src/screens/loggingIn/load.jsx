@@ -62,7 +62,9 @@ const PreLoad = ({navigation}) => {
       const {country_name, currency, currency_name, country_code} =
         response.data;
 
-      const exRate = await convertCurrency(currency); //has to be capital
+      //RATE LIMIT IS REACHED
+      let exRate = 1.1;
+      // const exRate = await convertCurrency(currency); //has to be capital
       console.log(
         '!!!!!!!!!!!!!!!!!ex rate.............',
         country_name,
@@ -82,8 +84,6 @@ const PreLoad = ({navigation}) => {
           country_code,
         ),
       );
-
-      
     } catch (err) {
       console.log('Error in getCountry.', err);
     }
@@ -91,6 +91,10 @@ const PreLoad = ({navigation}) => {
 
   const email = useSelector(state => state.auth.email);
   console.log('here...start', email);
+
+  useEffect(() => {
+    getCountry();
+  }, []);
 
   useEffect(() => {
     async function preLoadLog() {
@@ -103,7 +107,7 @@ const PreLoad = ({navigation}) => {
         navigation.push('LoggedOutHome');
       }
     }
-    getCountry();
+
     preLoadLog();
   }, [dispatch]);
   return (

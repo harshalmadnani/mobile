@@ -32,7 +32,9 @@ import {SvgUri} from 'react-native-svg';
 import {Keyboard} from 'react-native';
 //import {depositAction} from '../../../../store/reducers/deposit';
 import {
+  createSaberBuyOrder,
   createSaberUser,
+  fetchSaberBuyPrice,
   getCurrentTimestampInSeconds,
   retrieveSaberUser,
   retrieveUser,
@@ -140,9 +142,11 @@ const Ramper = ({navigation}) => {
 
   const createUser = async () => {
     //deposit user check and creation
-   // await dispatch(fetchOnboardedUser(email));
-   // await dispatch(createSaberUser());
-    await dispatch(retrieveSaberUser());
+    await dispatch(fetchOnboardedUser(email));
+    // await dispatch(fetchSaberBuyPrice(value));
+    //await dispatch(createSaberUser());
+    //  await dispatch(retrieveSaberUser());
+    await dispatch(createSaberBuyOrder(value));
   };
 
   const onRampContinue = async () => {

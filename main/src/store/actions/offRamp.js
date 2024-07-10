@@ -13,7 +13,7 @@ const URL = {
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NDcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDU1NzA1NCwiZXhwIjoxNzIwNjQzNDU0fQ.OTk9fMb7oyVO7jUpbKkvqNc6tjWm9vkeRq9Jb1WpibQ';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NzcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDU5ODgxMCwiZXhwIjoxNzIwNjg1MjEwfQ.KmEhYStvzAVKvMxwV1h6SG9Vv2G99y2NtC6ICu60y2I';
 
 export const fetchOnboardedUser = email => {
   console.log('fetching onboarded users');
@@ -62,6 +62,7 @@ export const fetchOnboardedUser = email => {
             );
           }
         } else {
+          console.log('setting user...');
           dispatch(
             offRampAction.setUser(
               response?.data?.data?.usersList?.filter(

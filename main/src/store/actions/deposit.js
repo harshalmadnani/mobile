@@ -27,7 +27,7 @@ export const retrieveSaberUser = () => {
         'X-Client-Id': SABER_CONSTANTS.client_id, // Replace with your actual client ID
         'X-Secret-Key': secret, // Replace with your actual secret key (if needed)
         'X-Request-Id': '123456789876', // Replace with your actual request ID
-        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef', // taken from 1st user created, cant find user ID
+        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef', // taken from 1st user created, cant find what is userID in docs
       };
 
       const respone = await axios.get(
@@ -47,8 +47,8 @@ export const createSaberUser = () => {
   return async (dispatch, getState) => {
     console.log('###### USER CREATION DEPOSIT FLOW');
     try {
-      // console.log("!!!!",user)
       const user = getState().offRamp.user;
+      console.log('!!!!', user);
       const email = getState().auth.email;
       const userId = user?._id;
       const partnerUserId = user?.ref_partnerId;
@@ -97,40 +97,78 @@ export const createSaberUser = () => {
   };
 };
 
-export const acceptGiftCardOrder = () => {
+export const fetchSaberBuyPrice = amount => {
   return async (dispatch, getState) => {
-    //raw data
-
-    const quoteId = getState().offRamp.quoteDetail;
-    console.log('QUOTE ID =>', quoteId);
     try {
+      const timeStampinSeconds = getCurrentTimestampInSeconds();
+      const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
+      const secret = Crypto.HmacSHA256(
+        sigString,
+        SABER_CONSTANTS.client_secret,
+      );
+
+      const headers = {
+        'X-Timestamp': timeStampinSeconds,
+        'X-Client-Id': SABER_CONSTANTS.client_id,
+        'X-Request-Id': '1234567',
+        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef',
+        'X-Secret-Key': secret,
+      };
+      const params = {
+        from_currency: 'INR',
+        to_currency: 'USDC',
+        network: 'MATIC',
+        from_amount: amount,
+      };
+
+      const response = await axios.get(
+        'https://sandbox.mudrex.com/api/v2/wallet/s/quote',
+        {headers, params},
+      );
+      dispatch(depositAction.setSaberBuyPrice(response.data.data.total_fee));
+    } catch (err) {
+      console.log('error while fetching buy price saber: ', err);
+    }
+  };
+};
+
+export const createSaberBuyOrder = amount => {
+  return async (dispatch, getState) => {
+    try {
+      const walletAddress = getState().auth.wallets;
+      console.log('wallet ADDESS =>', walletAddress);
+      const timeStampinSeconds = getCurrentTimestampInSeconds();
+      const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
+      const secret = Crypto.HmacSHA256(
+        sigString,
+        SABER_CONSTANTS.client_secret,
+      );
+
+      const headers = {
+        'X-Timestamp': timeStampinSeconds,
+        'X-Client-Id': SABER_CONSTANTS.client_id,
+        'X-Request-Id': '1234567',
+        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef',
+        'X-Secret-Key': secret,
+      };
+      const data = {
+        from_currency: 'INR',
+        to_currency: 'USDC',
+        to_amount: amount,
+        source_id: 'c41f7d27-781c-41da-b74c-278fe7202af5', //I Dont know where to get this from, it doesnt come when fetchingBuyPrice
+        payment_method: 'upi_transfer',
+        crypto_wallet_address: '', //what should be the wallet address
+        network: 'MATIC',
+      };
+
       const response = await axios.post(
-        URL.ACCEPT_GIFT_CARD,
-        {
-          quoteId: quoteId,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        },
+        'https://sandbox.mudrex.com/api/v1/wallet/crypto/buy/',
+        data,
+        {headers},
       );
-
-      console.log('accept status =>', response.status);
-
-      if (response.status === 201) {
-        console.log('Order submitted successfully:', response.data);
-      } else {
-        console.error('Failed to submit order');
-        console.log('Status =>->', response);
-        console.log('accept status =>', response.status);
-      }
-    } catch (error) {
-      console.error(
-        'Error actions/offRamp/submitGiftCardOrder function:',
-        error,
-      );
+      dispatch(depositAction.setSaberBuyPrice(response.data.data.total_fee));
+    } catch (err) {
+      console.log('error while fetching buy price saber: ', err);
     }
   };
 };

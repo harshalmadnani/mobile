@@ -6,7 +6,8 @@ const initialState = {
   txToBeExecuted: false,
   txLoading: false,
   walletConnectModal: false,
-  saberUser:null
+  saberUser: null,
+  saberBuyPrice: 0,
 };
 
 export const depositSlice = createSlice({
@@ -23,9 +24,12 @@ export const depositSlice = createSlice({
     setWalletConnectModal: (state, action) => {
       state.walletConnectModal = action.payload;
     },
-    setSaberUser:(state,action) => {
-      state.saberUser = action.payload
-    }
+    setSaberUser: (state, action) => {
+      state.saberUser = action.payload;
+    },
+    setSaberBuyPrice: (state, action) => {
+      state.saberBuyPrice = action.payload;
+    },
   },
 });
 
