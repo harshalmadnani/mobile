@@ -359,7 +359,8 @@ export const autoLogin = (navigation, email) => {
       dispatch(authActions.setScw(user?.dfnsScw));
       dispatch(authActions.setWallet(user?.dfnsWallet));
       dispatch(authActions.setName(user?.name));
-      navigation.navigate('Portfolio');
+      //navigation.navigate('Portfolio');
+      navigation.navigate('ChangeCurrency');
     } else {
       dispatch(authActions.setEmail(null));
       dispatch(authActions.setScw([]));

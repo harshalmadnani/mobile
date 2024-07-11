@@ -52,6 +52,7 @@ import {
 } from '../../store/actions/auth.js';
 import {Passkey} from 'react-native-passkey';
 import Toast from 'react-native-root-toast';
+import getCurrencyCode from '../loggingIn/getCurrencyCode.js';
 
 const ChangeCurrency = ({navigation, route}) => {
   const store_currency = useSelector(x => x.auth.currency);
@@ -129,8 +130,8 @@ const ChangeCurrency = ({navigation, route}) => {
             ),
           );
         }
-
-        onPressBack();
+        navigation.navigate('Portfolio');
+        //  onPressBack();
       } catch (err) {
         console.log(
           'error submitting in supabase, from changeCurrency Screen',
@@ -146,16 +147,30 @@ const ChangeCurrency = ({navigation, route}) => {
 
       console.log('IP PUBLIC ADDRESS =>', ipAddress);
 
-      const response = await axios.get(`https://ipapi.co/${ipAddress}/json/`);
-      const {country_name, currency, currency_name, country_code} =
-        response.data;
+      const response = await axios.get(
+        `http://api.ipstack.com/${ipAddress}?access_key=5e8f2dab92e14daa9b485db62a28f128`,
+      );
 
-      const exRate = await convertCurrency(currency); //has to be capital
+      const {country_name, country_code} = response.data;
+      const code = getCurrencyCode(country_code);
+      const exRate = await convertCurrency(code); //has to be capital
+
+      console.log(
+        '!from change currency page" ex rate.............',
+        country_name,
+        code,
+        //name,
+        code,
+        exRate,
+        ipAddress,
+        country_code,
+      );
       dispatch(
         storeCountryCurrency(
           country_name,
-          currency,
-          currency_name,
+          code,
+          //  name,
+          code,
           exRate,
           ipAddress,
           country_code,
@@ -243,9 +258,7 @@ const ChangeCurrency = ({navigation, route}) => {
             style={[
               styles.confirmButton,
               {
-                backgroundColor: getConfirmationOnInput()
-                  ? '#fff'
-                  : '#1C1C1C',
+                backgroundColor: getConfirmationOnInput() ? '#fff' : '#1C1C1C',
               },
             ]}
             onPress={async () => {
