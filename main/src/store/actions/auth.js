@@ -346,9 +346,18 @@ export const convertCurrency = async userCurrency => {
 };
 
 export const autoLogin = (navigation, email) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     const status = await checkUserIsDFNSSignedUp(email);
     if (status) {
+      let isFirsTime = true;
+      const email = getState().auth.email;
+
+      // email  exists cache ie user is not a first time user
+      if (email != null) {
+        isFirsTime = false;
+      }
+      console.log('IS FIRST TIME =>', isFirsTime);
+
       const token = await getDfnsJwt(email);
       const user = await getUserInfoFromDB(email);
       console.log('info from db......##', token, user);
@@ -360,7 +369,7 @@ export const autoLogin = (navigation, email) => {
       dispatch(authActions.setWallet(user?.dfnsWallet));
       dispatch(authActions.setName(user?.name));
       //navigation.navigate('Portfolio');
-      navigation.navigate('ChangeCurrency');
+      navigation.navigate(isFirsTime ? 'ChangeCurrency' : 'Portfolio');
     } else {
       dispatch(authActions.setEmail(null));
       dispatch(authActions.setScw([]));

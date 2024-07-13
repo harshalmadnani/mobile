@@ -55,16 +55,22 @@ import Toast from 'react-native-root-toast';
 import getCurrencyCode from '../loggingIn/getCurrencyCode.js';
 
 const ChangeCurrency = ({navigation, route}) => {
-  const store_currency = useSelector(x => x.auth.currency);
-  const store_currency_name = useSelector(x => x.auth.currency_name);
-  const store_country = useSelector(x => x.auth.country);
-  const store_countryCode = useSelector(x => x.auth.countryCode);
+  // const store_currency = useSelector(x => x.auth.currency);
+  // const store_currency_name = useSelector(x => x.auth.currency_name);
+  // const store_country = useSelector(x => x.auth.country);
+  // const store_countryCode = useSelector(x => x.auth.countryCode);
+
+  const [store_currency, setStoreCurrency] = useState(' ');
+  const [store_currency_name, setStoreCurrencyName] = useState(' ');
+  const [store_country, setStoreCountry] = useState(' ');
+  const [store_countryCode, setStoreCountryCode] = useState(' ');
 
   const email = useSelector(x => x.auth.email);
   const BASE_CURRENCY = 'USD';
   const dispatch = useDispatch();
 
   const [loading, setLoading] = useState(false);
+  const [fetchingCountry, setFetchingCountry] = useState(false);
 
   const [currency, setCurrency] = useState('the currency');
 
@@ -75,11 +81,16 @@ const ChangeCurrency = ({navigation, route}) => {
     return currency != 'the currency';
   };
 
+  useEffect(() => {
+    getCountry();
+  }, []);
+
   const onSubmit = async () => {
     if (currency != 'the currency') {
-      const ipRes = await axios.get('https://api.ipify.org?format=json');
-      const ipAddress = ipRes.data.ip;
+      setLoading(true);
       try {
+        const ipRes = await axios.get('https://api.ipify.org?format=json');
+        const ipAddress = ipRes.data.ip;
         await axios.patch(
           `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
           {
@@ -130,6 +141,7 @@ const ChangeCurrency = ({navigation, route}) => {
             ),
           );
         }
+        setLoading(false);
         navigation.navigate('Portfolio');
         //  onPressBack();
       } catch (err) {
@@ -137,11 +149,13 @@ const ChangeCurrency = ({navigation, route}) => {
           'error submitting in supabase, from changeCurrency Screen',
           err,
         );
+        setLoading(false);
       }
     }
   };
   const getCountry = async () => {
     try {
+      setFetchingCountry(true);
       const ipRes = await axios.get('https://api.ipify.org?format=json');
       const ipAddress = ipRes.data.ip;
 
@@ -165,25 +179,18 @@ const ChangeCurrency = ({navigation, route}) => {
         ipAddress,
         country_code,
       );
-      dispatch(
-        storeCountryCurrency(
-          country_name,
-          code,
-          //  name,
-          code,
-          exRate,
-          ipAddress,
-          country_code,
-        ),
-      );
+
+      setStoreCurrencyName(code);
+      setStoreCurrency(code);
+      setStoreCountry(country_name);
+      setStoreCountryCode(country_code);
+      setFetchingCountry(false);
     } catch (err) {
       console.log('Error in getCountry.', err);
+      setFetchingCountry(false);
     }
   };
 
-  useEffect(() => {
-    getCountry();
-  }, []);
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -246,7 +253,9 @@ const ChangeCurrency = ({navigation, route}) => {
                 source={getFlagImageSource(store_countryCode)}
                 style={styles.image}
               />
-              <Text style={styles.des}>{store_currency}</Text>
+              <Text style={styles.des}>
+                {store_currency === ' ' ? '...' : store_currency}
+              </Text>
               <Text style={styles.subdes}>
                 {store_country} {store_currency_name}
               </Text>
@@ -254,7 +263,7 @@ const ChangeCurrency = ({navigation, route}) => {
           </View>
 
           <TouchableOpacity
-            disabled={currency === 'the currency'}
+            disabled={currency === 'the currency' || loading === true}
             style={[
               styles.confirmButton,
               {
@@ -265,7 +274,7 @@ const ChangeCurrency = ({navigation, route}) => {
               onSubmit();
             }}>
             {loading ? (
-              <ActivityIndicator />
+              <ActivityIndicator color={'#000'} />
             ) : (
               <Text
                 style={[

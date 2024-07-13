@@ -499,6 +499,6 @@ export const getFlagImageSource = countryCode => {
     case 'ZW':
       return require('./flags/zw.png');
     default:
-      return require('./flags/xk.png'); // Fallback image if countryCode doesn't match any case
+      return require('./flags/white.jpg'); // Fallback image if countryCode doesn't match any case
   }
 };
