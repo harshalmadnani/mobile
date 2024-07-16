@@ -60,7 +60,7 @@ const Portfolio = ({navigation}) => {
   useEffect(() => {
     const getUserInfo = async () => {
       const response = await getUserInfoFromDB(email);
-      console.log('USER DETAILS CONSIT POINTS!!! =>', response);
+      console.log('USER DETAILS CONSIT POINTS!!! =>', email, response);
       dispatch(portfolioAction.setUserInfo(response));
     };
     getUserInfo();
