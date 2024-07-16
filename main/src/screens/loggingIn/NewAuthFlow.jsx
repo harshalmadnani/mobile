@@ -184,7 +184,7 @@ const NewAuthLoginFLow = ({navigation, route}) => {
       const scw = await getAllScwAddress(token, response?.wallets);
 
       dispatch(authActions.setEmail(email));
-      
+
       dispatch(authActions.setDfnsToken(token));
       dispatch(authActions.setScw(scw));
       dispatch(authActions.setWallet(response?.wallets));

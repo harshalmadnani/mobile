@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {depositAction} from '../reducers/deposit';
+import {resolve} from 'path';
 const Crypto = require('crypto-js');
 
 export const SABER_CONSTANTS = {
@@ -14,9 +15,12 @@ export const getCurrentTimestampInSeconds = () => {
 export const retrieveSaberUser = () => {
   return async (dispatch, getState) => {
     try {
-      const saberUserId = getState().deposit.saberUser;
+      // const saberUserId = getState().deposit.saberUser;
       const timeStampinSeconds = getCurrentTimestampInSeconds();
-      const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
+      const sigString =
+        SABER_CONSTANTS.client_id +
+        timeStampinSeconds +
+        'e139d82f-d688-4d64-abaa-7e19d7c684ef';
       const secret = Crypto.HmacSHA256(
         sigString,
         SABER_CONSTANTS.client_secret,
@@ -28,7 +32,7 @@ export const retrieveSaberUser = () => {
         'X-Client-Id': SABER_CONSTANTS.client_id, // Replace with your actual client ID
         'X-Secret-Key': secret, // Replace with your actual secret key (if needed)
         'X-Request-Id': '123456789876', // Replace with your actual request ID
-        'X-User-Id': saberUserId, // taken from 1st user created, cant find what is userID in docs
+        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef',
       };
 
       const respone = await axios.get(
@@ -76,6 +80,7 @@ export const createSaberUser = () => {
       };
 
       //USER CREATION RESPOSE => {"data": {"client_user_id": "", "user_id": "e139d82f-d688-4d64-abaa-7e19d7c684ef"}, "success": true}
+      //{"data": {"client_user_id": "jopilis382@atebin.com", "user_id": "299ff36e-198b-4190-8fa8-09c8cd720b88"}, "success": true}
 
       console.log('SABER CREATING USER headers:', headers, '\n Data: ', data);
       console.log(userId, email, partnerUserId);
@@ -104,7 +109,10 @@ export const fetchSaberBuyPrice = amount => {
   return async (dispatch, getState) => {
     try {
       const timeStampinSeconds = getCurrentTimestampInSeconds();
-      const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
+      const sigString =
+        SABER_CONSTANTS.client_id +
+        timeStampinSeconds +
+        '299ff36e-198b-4190-8fa8-09c8cd720b88';
       const secret = Crypto.HmacSHA256(
         sigString,
         SABER_CONSTANTS.client_secret,
@@ -114,20 +122,15 @@ export const fetchSaberBuyPrice = amount => {
         'X-Timestamp': timeStampinSeconds,
         'X-Client-Id': SABER_CONSTANTS.client_id,
         'X-Request-Id': '1234567',
-        'X-User-Id': 'e139d82f-d688-4d64-abaa-7e19d7c684ef',
+        'X-User-Id': '299ff36e-198b-4190-8fa8-09c8cd720b88',
         'X-Secret-Key': secret,
-      };
-      const params = {
-        from_currency: 'INR',
-        to_currency: 'USDC',
-        network: 'MATIC',
-        from_amount: amount,
       };
 
       const response = await axios.get(
-        'https://sandbox.mudrex.com/api/v2/wallet/w/quote',
-        {headers, params},
+        `https://sandbox.mudrex.com/api/v2/wallet/w/quote?from_currency=INR&to_currency=USDT&network=MATIC&to_amount=${amount}`,
+        {headers},
       );
+      console.log(response.data);
       dispatch(depositAction.setSaberBuyPrice(response.data.data.total_fee));
     } catch (err) {
       console.log('error while fetching buy price saber: ', err);
@@ -144,7 +147,10 @@ export const createSaberBuyOrder = amount => {
       const userWallet = wallets.filter(x => x?.chainId === '137');
 
       const timeStampinSeconds = getCurrentTimestampInSeconds();
-      const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
+      const sigString =
+        SABER_CONSTANTS.client_id +
+        timeStampinSeconds +
+        'e139d82f-d688-4d64-abaa-7e19d7c684ef';
       const secret = Crypto.HmacSHA256(
         sigString,
         SABER_CONSTANTS.client_secret,
@@ -162,7 +168,7 @@ export const createSaberBuyOrder = amount => {
         to_currency: 'USDC',
         to_amount: amount,
         source_id: 'c41f7d27-781c-41da-b74c-278fe7202af5', //I Dont know where to get this from, it doesnt come when fetchingBuyPrice
-        payment_method: 'upi_transfer',
+        payment_method: 'bank_transfer',
         crypto_wallet_address: userWallet[0].address,
         network: 'MATIC',
       };
@@ -174,7 +180,7 @@ export const createSaberBuyOrder = amount => {
       );
       dispatch(depositAction.setSaberBuyPrice(response.data.data.total_fee));
     } catch (err) {
-      console.log('error while fetching buy price saber: ', err);
+      console.log('error while creating buy price saber: ', err);
     }
   };
 };

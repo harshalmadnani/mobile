@@ -19,6 +19,7 @@ import {
   getUserInfoFromDB,
 } from '../../utils/DFNS/registerFlow';
 import {getCountry} from './offRamp';
+import {portfolioAction} from '../reducers/portfolio';
 
 export const registerUserToDB = () => {
   return async dispatch => {};
@@ -349,9 +350,18 @@ export const autoLogin = (navigation, email) => {
   return async dispatch => {
     const status = await checkUserIsDFNSSignedUp(email);
     if (status) {
-      
+      let isFirsTime = true;
+      const email = getState().auth.email;
       const token = await getDfnsJwt(email);
       const user = await getUserInfoFromDB(email);
+
+      // email  exists cache ie user is not a first time user
+      if (email !== null) {
+        isFirsTime = false;
+        dispatch(portfolioAction.setUserInfo(user));
+      }
+      console.log('IS FIRST TIME =>', isFirsTime);
+
       console.log('info from db......##', token, user);
 
       //  dispatch(authActions.setIsUsd(user?.isUsd)); Removed since we are doing it in storeCountryCurrency everytime.
