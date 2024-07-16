@@ -437,21 +437,30 @@ const MarketChart = props => {
                   }}
                 />
               )}
-              <WebView
+              <View>
+              <View  style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: '#000',
+                  flexDirection: 'row', // Align children horizontally
+                  alignItems: 'center', // Align items vertically
+                  height: '22%',
+                  flex:2,
+                  zIndex:2
+                }}>
+             </View>
+            <WebView
                 originWhitelist={['*']}
-                source={{
-                  html: `
-                <style>
-                  body { background-color: black; margin: 0; padding: 0; color: white; }
-                </style>
-                ${tradingViewWidgetHTML}`,
-                }}
-                style={{width: width, height: 400}}
+                source={{ uri: `https://app.intotheblock.com/coin/${currentItem.symbol.toUpperCase()}` }}
+                style={{ width: width, height: 800 ,flex:1}}
                 onLoadStart={() => setLoading(true)}
                 onLoad={() => {
                   setLoading(false);
                 }}
               />
+              </View>
             </>
           )}
         </View>
