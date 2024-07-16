@@ -53,7 +53,7 @@ const Uniramp = ({route, navigation}) => {
       />
       <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => navigation.push('Ramper')}
+          onPress={() => navigation.goBack()}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
