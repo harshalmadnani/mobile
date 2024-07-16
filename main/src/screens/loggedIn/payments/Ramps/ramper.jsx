@@ -201,7 +201,7 @@ const Ramper = ({navigation}) => {
       setButtonTitle('Error');
       Toast.show(
         quote?.data?.type === 'minimum_gateway_error'
-          ? `This payment method requires a minimum of ${
+          ? `This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${
               quote?.data?.amount / Math.pow(10, fiat?.decimal)
             }`
           : 'Please try again',
