@@ -180,7 +180,7 @@ const Ramper = ({navigation}) => {
         navigation.push('Uniramp', {txInfo});
       } else {
         setButtonTitle('Error');
-        Toast.show(`This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${20 * exchRate}`, {
+        Toast.show(`This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${30 * exchRate}`, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.BOTTOM,
           shadow: true,
