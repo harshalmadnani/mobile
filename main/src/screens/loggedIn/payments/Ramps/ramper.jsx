@@ -79,7 +79,7 @@ const Ramper = ({navigation}) => {
   const handlePress = () => {
     if (selectedId === 'wallet') {
       // setModalVisible(true);
-      // navigation.push('QRScreen');
+      navigation.push('QRScreen');
     }
     // Additional actions based on other selectedId values or conditions
   };
@@ -201,9 +201,9 @@ const Ramper = ({navigation}) => {
       setButtonTitle('Error');
       Toast.show(
         quote?.data?.type === 'minimum_gateway_error'
-          ? `This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${
-              quote?.data?.amount / Math.pow(10, fiat?.decimal)
-            }`
+          ? `This payment method requires a minimum of  ${getCurrencySymbol(
+              fiat.id,
+            )}${quote?.data?.amount / Math.pow(10, fiat?.decimal)}`
           : 'Please try again',
         {
           duration: Toast.durations.SHORT,
@@ -442,14 +442,14 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              // if (buttonTitle.toLocaleLowerCase() === 'continue') {
-              //   selectedId === 'wallet'
-              //     ? onWalletConnectOpen()
-              //     : selectedId === 'coupon'
-              //     ? await onCouponFlow()
-              //     : await onRampContinue();
-              // }
-              await createUser();
+              if (buttonTitle.toLocaleLowerCase() === 'continue') {
+                selectedId === 'wallet'
+                  ? onWalletConnectOpen()
+                  : selectedId === 'coupon'
+                  ? await onCouponFlow()
+                  : await onRampContinue();
+              }
+              // await createUser();
             }} // Open modal on press
           >
             <LinearGradient

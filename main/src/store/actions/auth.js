@@ -347,7 +347,7 @@ export const convertCurrency = async userCurrency => {
 };
 
 export const autoLogin = (navigation, email) => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
     const status = await checkUserIsDFNSSignedUp(email);
     if (status) {
       let isFirsTime = true;
