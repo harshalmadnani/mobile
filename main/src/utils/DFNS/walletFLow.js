@@ -74,7 +74,7 @@ export const getScwAddress = async (authToken, walletId) => {
     // and appOrigin of the mobile application. For simplicity, they are included as part of
     // the request body. Alternatively, they can be sent as headers or with other approaches.
     const res = await axios.post(
-      `http://api-dfns.xade.finance/wallets/scw`,
+      `https://gull-relevant-secretly.ngrok-free.app/wallets/scw`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         walletId,
@@ -90,7 +90,7 @@ export const getScwAddress = async (authToken, walletId) => {
     console.log('scw address.....', jwt);
     return jwt?.scw;
   } catch (error) {
-    console.log('error on registering..........', error);
+    console.log('error on registering(getScwAddress)..........', error);
   } finally {
   }
 };
@@ -261,7 +261,7 @@ export const transferTokenGassless = async (
       }
     }
   } catch (error) {
-    console.log('error on registering..........', error);
+    console.log('error on registering(transferTokenGassless)..........', error);
   } finally {
   }
 };
@@ -296,7 +296,10 @@ export const getSmartAccountAddress = async (authToken, walletId, chainId) => {
     const scwAddress = await smartAccountClient.getAccountAddress();
     return scwAddress;
   } catch (error) {
-    console.log('error on registering..........', error);
+    console.log(
+      'error on registering(getSmartAccountAddress)..........',
+      error,
+    );
   }
 };
 export const tradeTokenGasless = async (
@@ -356,7 +359,10 @@ export const tradeTokenGasless = async (
       return transactionHash;
     }
   } catch (error) {
-    console.log('error on registering..........', error);
+    console.log(
+      'error on registering(createSmartAccountClien)..........',
+      error,
+    );
   } finally {
   }
 };

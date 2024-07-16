@@ -5,6 +5,8 @@ import {PasskeysSigner} from '@dfns/sdk-react-native';
 import {BrowserKeySigner, WebAuthnSigner} from '@dfns/sdk-browser';
 import {Platform} from 'react-native';
 
+const BASE_URL = 'https://gull-relevant-secretly.ngrok-free.app';
+
 export const checkUserIsDFNSSignedUp = async email => {
   try {
     const response = await axios.get(
@@ -56,7 +58,7 @@ export const registerUsernameToDFNS = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const initRes = await axios.post(
-      `http://api-dfns.xade.finance/register/init`,
+      `${BASE_URL}/register/init`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
@@ -76,7 +78,7 @@ export const registerUsernameToDFNS = async username => {
 
     // // // Finish delegated registration
     const completeRes = await axios.post(
-      `http://api-dfns.xade.finance/register/complete`,
+      `${BASE_URL}/register/complete`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         signedChallenge: {firstFactorCredential: attestation},
@@ -94,7 +96,10 @@ export const registerUsernameToDFNS = async username => {
     );
     return completeRes.data;
   } catch (error) {
-    console.log('error on registering..........', error);
+    console.log(
+      'error on registering(registerUsernameToDFNS)..........',
+      error,
+    );
     return false;
   } finally {
   }
@@ -106,7 +111,7 @@ export const getDfnsJwt = async username => {
     // the request body. Alternatively, they can be sent as headers or with other approaches.
 
     const res = await axios.post(
-      `http://api-dfns.xade.finance/login`,
+      `${BASE_URL}/login`,
       {
         appId: Platform.OS === 'ios' ? iosStagingAppId : androidStagingAppId,
         username: username,
@@ -121,7 +126,7 @@ export const getDfnsJwt = async username => {
     console.log('jwt.....', jwt);
     return jwt?.token;
   } catch (error) {
-    console.log('error on registering..........', error);
+    console.log('error on registering(getDfnsJwt)..........', error);
   } finally {
   }
 };

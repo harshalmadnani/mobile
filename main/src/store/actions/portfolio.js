@@ -65,6 +65,8 @@ export const getWalletTransactionForAddressFromDLN = page => {
     // return data;
   };
 };
+
+//NOT BEING USED ANYWHERE
 export const getEvmAddresses = () => {
   return async (dispatch, getState) => {
     // const eoaAddress = await getUserAddressFromAuthCoreSDK();

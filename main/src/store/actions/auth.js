@@ -358,7 +358,7 @@ export const autoLogin = (navigation, email) => {
       // email  exists cache ie user is not a first time user
       if (email != null) {
         isFirsTime = false;
-        dispatch(portfolioAction.setUserInfo(user?.points));
+        dispatch(portfolioAction.setUserInfo(user));
       }
       console.log('IS FIRST TIME =>', isFirsTime);
 
