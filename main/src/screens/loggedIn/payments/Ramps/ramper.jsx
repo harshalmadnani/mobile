@@ -180,7 +180,14 @@ const Ramper = ({navigation}) => {
         navigation.push('Uniramp', {txInfo});
       } else {
         setButtonTitle('Error');
-        Toast.show(txInfo?.message, {
+        let errorMessage = txInfo?.message;
+        const match = errorMessage.match(/Minimum limit of (\d+)/);
+        if (match) {
+          const number = match[1];
+          const formattedNumber = `${number.slice(0, -2)}.${number.slice(-2)}`;
+          errorMessage = errorMessage.replace(number, formattedNumber);
+        }
+        Toast.show(errorMessage, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.BOTTOM,
           shadow: true,
@@ -194,10 +201,10 @@ const Ramper = ({navigation}) => {
       setButtonTitle('Error');
       Toast.show(
         quote?.data?.type === 'minimum_gateway_error'
-          ? `This Payment Type Requires Minimum ${
+          ? `This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${
               quote?.data?.amount / Math.pow(10, fiat?.decimal)
             }`
-          : 'This is a message',
+          : 'Please try again',
         {
           duration: Toast.durations.SHORT,
           position: Toast.positions.BOTTOM,
