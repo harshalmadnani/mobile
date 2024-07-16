@@ -53,11 +53,13 @@ const Uniramp = ({route, navigation}) => {
       />
       <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Go back pressed');
+            navigation.goBack();
+          }}
           style={styles.iconButton}>
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.overlayText}>Deposit Funds</Text>
         {/* <TouchableOpacity onPress={refresh} style={styles.iconButton}>
           <Icon name="refresh" size={24} color="#000" />
         </TouchableOpacity> */}
@@ -72,7 +74,6 @@ const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
-    marginTop:'5%'
   },
   overlay: {
     position: 'absolute',
