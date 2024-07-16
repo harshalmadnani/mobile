@@ -43,7 +43,7 @@ export const getUserInfoFromDB = async email => {
       },
     );
     const userInfo = response.data;
-    console.log('wallets....', userInfo);
+    console.log('wallets(from db)....', userInfo);
     return userInfo?.[0];
   } catch (error) {
     console.log('error on getting wallet', error);

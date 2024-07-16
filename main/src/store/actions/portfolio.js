@@ -84,7 +84,7 @@ export const getEvmAddresses = () => {
         },
       },
     );
-    console.log('user infoooo.....user', response?.data);
+    console.log('user infoooo(getEvmAddresses)', response?.data);
     dispatch(
       portfolioAction.setEvmWalletInfo({
         address: eoaAddress,

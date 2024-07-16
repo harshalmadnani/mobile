@@ -31,6 +31,7 @@ import {
 } from 'react-native-gesture-handler';
 import {convertCurrency, getCurrency} from '../../../../store/actions/offRamp';
 import axios from 'axios';
+import {getUserInfoFromDB} from '../../../../utils/DFNS/registerFlow';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -43,7 +44,9 @@ const Portfolio = ({navigation}) => {
   );
   const currency_icon = getCurrencyIcon(currency_name);
   const allScw = useSelector(x => x.auth.scw);
+  const email = useSelector(x => x.auth.email);
   const userInfo = useSelector(x => x.portfolio.userInfo);
+  // console.log(userInfo);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [portfolioValue, setPortfolioValue] = useState(null);
@@ -53,6 +56,15 @@ const Portfolio = ({navigation}) => {
   // imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const response = await getUserInfoFromDB(email);
+      console.log('USER DETAILS CONSIT POINTS!!! =>', response);
+      dispatch(portfolioAction.setUserInfo(response));
+    };
+    getUserInfo();
+  }, []);
 
   useEffect(() => {
     const ws = new W3CWebSocket(
@@ -747,7 +759,7 @@ const Portfolio = ({navigation}) => {
                         textShadowOffset: {width: -1, height: 1},
                         textShadowRadius: 10,
                       }}>
-                      {userInfo?.[0]?.points ?? 0}{' '}
+                      {userInfo?.points ?? 0}{' '}
                     </Text>
                     <Text style={{fontSize: 16, color: '#fff'}}>
                       Xade Shards
