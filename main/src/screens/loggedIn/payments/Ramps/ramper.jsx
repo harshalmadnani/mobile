@@ -149,7 +149,7 @@ const Ramper = ({navigation}) => {
     // await dispatch(createSaberUser());
     // await dispatch(createSaberBuyOrder(value));
   };
-  const exchRate = useSelector(x => x.auth.exchRate);
+
   const onRampContinue = async () => {
     console.log(fiat, paymentMethods);
     setButtonTitle('Getting Quotes...');
@@ -180,7 +180,14 @@ const Ramper = ({navigation}) => {
         navigation.push('Uniramp', {txInfo});
       } else {
         setButtonTitle('Error');
-        Toast.show(`This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${30 * exchRate}`, {
+        let errorMessage = txInfo?.message;
+        const match = errorMessage.match(/Minimum limit of (\d+)/);
+        if (match) {
+          const number = match[1];
+          const formattedNumber = `${number.slice(0, -2)}.${number.slice(-2)}`;
+          errorMessage = errorMessage.replace(number, formattedNumber);
+        }
+        Toast.show(errorMessage, {
           duration: Toast.durations.SHORT,
           position: Toast.positions.BOTTOM,
           shadow: true,
@@ -194,7 +201,9 @@ const Ramper = ({navigation}) => {
       setButtonTitle('Error');
       Toast.show(
         quote?.data?.type === 'minimum_gateway_error'
-          ? `This payment method requires a minimum of  ${getCurrencySymbol(fiat.id)}${30 * exchRate}`
+          ? `This payment method requires a minimum of ${
+              quote?.data?.amount / Math.pow(10, fiat?.decimal)
+            }`
           : 'Please try again',
         {
           duration: Toast.durations.SHORT,
