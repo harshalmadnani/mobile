@@ -316,7 +316,6 @@ const MarketChart = props => {
           }}>
           {renderTabItem('News')}
           {renderTabItem('Degen AI')}
-          {renderTabItem('Analytics')}
         </View>
         <View
           style={{
@@ -389,9 +388,10 @@ const MarketChart = props => {
                       <Text
                         style={{
                           fontSize: 24,
-                          fontWeight: 'bold',
+                          fontFamily: 'Sk-Modernist-Bold',
                           color: '#D1D2D9',
                           textAlign: 'justify',
+                          letterSpacing: 0.5, // Adjust this value as needed
                         }}>
                         {item?.title ?? item?.description}
                       </Text>
@@ -418,49 +418,6 @@ const MarketChart = props => {
                 }}>
                 Coming Soon
               </Text>
-            </>
-          )}
-          {selectedTab === 'Analytics' && (
-            <>
-              {isLoading && (
-                <ActivityIndicator
-                  size="large"
-                  color="#0000ff"
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                />
-              )}
-              <View>
-              <View  style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  backgroundColor: '#000',
-                  flexDirection: 'row', // Align children horizontally
-                  alignItems: 'center', // Align items vertically
-                  height: '22%',
-                  flex:2,
-                  zIndex:2
-                }}>
-             </View>
-            <WebView
-                originWhitelist={['*']}
-                source={{ uri: `https://app.intotheblock.com/coin/${currentItem.symbol.toUpperCase()}` }}
-                style={{ width: width, height: 800 ,flex:1}}
-                onLoadStart={() => setLoading(true)}
-                onLoad={() => {
-                  setLoading(false);
-                }}
-              />
-              </View>
             </>
           )}
         </View>
