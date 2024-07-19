@@ -32,6 +32,7 @@ import {
 import {convertCurrency, getCurrency} from '../../../../store/actions/offRamp';
 import axios from 'axios';
 import {getUserInfoFromDB} from '../../../../utils/DFNS/registerFlow';
+import {authActions} from '../../../../store/reducers/auth';
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -63,6 +64,12 @@ const Portfolio = ({navigation}) => {
       const response = await getUserInfoFromDB(email);
       console.log('USER DETAILS CONSIT POINTS!!! =>', email, response);
       dispatch(portfolioAction.setUserInfo(response));
+      console.log(response?.isUsd);
+      if (response?.isUsd) {
+        dispatch(authActions.setIsUsd(true));
+      } else {
+        dispatch(authActions.setIsUsd(false));
+      }
     };
     getUserInfo();
   }, []);

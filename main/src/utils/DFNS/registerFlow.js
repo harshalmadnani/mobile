@@ -5,7 +5,7 @@ import {PasskeysSigner} from '@dfns/sdk-react-native';
 import {BrowserKeySigner, WebAuthnSigner} from '@dfns/sdk-browser';
 import {Platform} from 'react-native';
 
-const BASE_URL = 'http://api-dfns.xade.finance';
+const BASE_URL = 'https://gull-relevant-secretly.ngrok-free.app';
 
 export const checkUserIsDFNSSignedUp = async email => {
   try {

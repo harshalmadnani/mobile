@@ -215,7 +215,7 @@ export const getBestCrossSwapRateBuy = async (
     return res;
   });
   let results = await Promise.all(ratesOfDifferentChainOut);
-  console.log('trade......', results);
+  console.log('trade......', JSON.stringify(results));
   // const listOfRoutes = [];
   // best rate calculation
   results = results.filter(x => x !== null);
