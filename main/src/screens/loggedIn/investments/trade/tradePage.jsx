@@ -652,7 +652,7 @@ const TradePage = ({route}) => {
                       fontFamily: 'Unbounded-Medium',
                       color: '#fff',
                     }}>
-                    {usdcValue?.[0]?.estimated_balance?.toFixed(2)}
+                    {(usdcValue?.[0]?.estimated_balance ?? 0).toFixed(2)}
                   </Text>
                 ) : (
                   <Text
@@ -662,7 +662,7 @@ const TradePage = ({route}) => {
                       color: '#fff',
                     }}>
                     {(
-                      usdcValue?.[0]?.estimated_balance *
+                      (usdcValue?.[0]?.estimated_balance ?? 0) *
                       (exchRate ? parseFloat(exchRate) : 1)
                     )?.toFixed(2)}
                   </Text>
@@ -673,7 +673,7 @@ const TradePage = ({route}) => {
                 onPress={() =>
                   setValue(
                     (
-                      usdcValue?.[0]?.estimated_balance *
+                      (usdcValue?.[0]?.estimated_balance ?? 0) *
                       (exchRate ? parseFloat(exchRate) : 1)
                     ).toFixed(2), // Convert to string with 2 decimal points
                   )
@@ -906,21 +906,23 @@ const TradePage = ({route}) => {
                               ),
                           )
                         ? (
-                            parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.tokenTo?.decimals,
-                            )
-                          ).toFixed(4) * (isUsd ? 1 : exchRate)
+                            (parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.tokenTo?.decimals,
+                              )) *
+                            (isUsd ? 1 : exchRate)
+                          ).toFixed(4)
                         : (
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.amount /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.estimation
-                                ?.dstChainTokenOut?.decimals,
-                            )
-                          ).toFixed(4) * (isUsd ? 1 : exchRate)}
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
+                              )) *
+                            (isUsd ? 1 : exchRate)
+                          ).toFixed(4)}
                     </Text>
                   </View>
                 )}
