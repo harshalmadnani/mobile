@@ -56,6 +56,7 @@ const Portfolio = ({navigation}) => {
   // imageUrl = `https://ui-avatars.com/api/?name=${info}&format=png&rounded=true&bold=true&background=ffffff&color=000`;
   const [points, setPoints] = useState('0');
   const [modal2Visible, setModal2Visible] = useState(false);
+  const [modal3Visible, setModal3Visible] = useState(false);
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -731,11 +732,9 @@ const Portfolio = ({navigation}) => {
                   }}
                 />
                 <View
-                  style={
-                    {
-                      // This container can hold additional styling if necessary for text layout
-                    }
-                  }>
+                  style={{
+                    flex: 1, // Added to make the text container take available space
+                  }}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -774,7 +773,95 @@ const Portfolio = ({navigation}) => {
                     Distributed at the end of every week
                   </Text>
                 </View>
+                <TouchableOpacity onPress={() => setModal3Visible(true)}>
+                  <Icon
+                    name="chevron-right"
+                    size={24}
+                    color="#fff"
+                    type="materialicons"
+                  />
+                </TouchableOpacity>
               </View>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modal3Visible}
+                onRequestClose={() => setModal3Visible(!modal3Visible)}>
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    marginTop: 22,
+                    width: '100%',
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: '#010101',
+                      padding: 35,
+                      alignItems: 'center',
+                      shadowColor: '#000',
+                      width: '100%',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 5,
+                    }}>
+                        <Image
+                          source={{
+                            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1721315800/sjlrl5l1kxy90ycczqlv.png',
+                          }}
+                          style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
+                          resizeMode="contain" // Adjust resizeMode as needed
+                        />
+                    <Text
+                      style={{
+                        marginBottom: 15,
+                        textAlign: 'center',
+                        fontFamily: 'Unbounded-Medium',
+                        fontSize: 20,
+                        color: '#fff',
+                      }}>
+                      XADE SHARDS
+                    </Text>
+                    <Text
+                      style={{
+                        marginBottom: 15,
+                        textAlign: 'center',
+                        color: '#666',
+                        fontSize: 16,
+                        fontFamily:'Sk-Modernist-Regular'
+                      }}>
+                     You can earn Xade Shards by completing quests provided by Xade on different platforms, contributing to building Xade's community and being active on Xade's social media. Then you can trade these shards for cash, gift cards, NFTs and more.
+                    </Text>
+                    <Pressable
+                      onPress={() => setModal3Visible(!modal3Visible)}
+                      style={{
+                        borderRadius: 30,
+                        paddingHorizontal: '40%',
+                        paddingVertical: '6%',
+                        elevation: 2,
+                        marginTop: 10,
+                        backgroundColor: '#fff',
+                      }}>
+                      <Text
+                        style={{
+                          color: 'black',
+                          fontWeight: 'bold',
+                          textAlign: 'center',
+                          fontSize: 14,
+                        }}>
+                        Close
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+              </Modal>
+
               <Text
                 style={{
                   fontSize: 16,

@@ -27,6 +27,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {logoutRefresh} from '../../store/actions/auth';
 // import {EventsCarousel} from './eventsCarousel';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import { WebView } from 'react-native-webview';
 
 const options = {
   enableVibrateFallback: true,
@@ -101,6 +102,7 @@ const Component = ({navigation}) => {
     setFaceID(previousState => !previousState);
     const id = JSON.parse(await AsyncStorage.getItem('faceID'));
   };
+  const [webViewVisible, setWebViewVisible] = useState(false);
 
   return (
     <SafeAreaView
@@ -239,24 +241,9 @@ const Component = ({navigation}) => {
         </View>
 
         <View style={[styles.otherSettings, {marginTop: 20, marginBottom: 10}]}>
-          <TouchableOpacity style={styles.innerSettings}>
-            <FastImage
-              style={{width: 28, height: 28, borderRadius: 10}}
-              source={require('./face-id.png')}
-            />
-            <View style={styles.actualSetting}>
-              <Text style={styles.settingsText}>Face ID</Text>
-              <Switch
-                trackColor={{false: '#767577', true: '#fff'}}
-                thumbColor={'#fff'}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleSwitch}
-                value={faceID}
-              />
-            </View>
-          </TouchableOpacity>
+        
 
-          <HorizontalRule />
+
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
@@ -327,9 +314,7 @@ const Component = ({navigation}) => {
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={() => {
-              Linking.openURL(
-                'https://app.koinx.com/get-started?r=XadeFinance&utm_source=App&utm_medium=wallet&utm_campaign=Signup',
-              );
+              setWebViewVisible(true);
             }}>
             <FastImage
               style={{width: 28, height: 28, borderRadius: 10}}
@@ -338,12 +323,10 @@ const Component = ({navigation}) => {
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>Tax Calculator</Text>
               <Icon
-                // style={styles.tup}
                 name={'angle-right'}
                 size={20}
                 color={'#86969A'}
                 type="font-awesome"
-                // style = {{marginRight: '1%'}}
               />
             </View>
           </TouchableOpacity>
@@ -609,6 +592,24 @@ const Component = ({navigation}) => {
           v1.1.3 (5) - beta
         </Text>
       </ScrollView>
+      {webViewVisible && (
+        <View style={{flex: 1,        zIndex:1,position: 'absolute', top: 0, left: 0, right: 0, bottom: 0}}>
+          <WebView source={{ uri: 'https://app.koinx.com/get-started?r=XadeFinance&utm_source=App&utm_medium=wallet&utm_campaign=Signup' }} />
+          <TouchableOpacity
+            style={{
+              position: 'absolute',
+              top: 40,
+              left: 20,
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              borderRadius: 20,
+              padding: 10,
+              zIndex:1,
+            }}
+            onPress={() => setWebViewVisible(false)}>
+            <Icon name={'arrow-back'} size={30} color={'#fff'} type="material" />
+          </TouchableOpacity>
+        </View>
+      )}
       <TouchableOpacity
         onPress={() => {
           navigation.push('SendEmail');

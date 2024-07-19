@@ -669,13 +669,12 @@ const TradePage = ({route}) => {
               </Text>
 
               <TouchableOpacity
-                onPress={() => {
-                  let val = usdcValue?.[0]?.estimated_balance
-                    ?.toFixed(2)
-                    .toString();
-                  setValue(val / exchRate);
-                  setIsNativeValue(val / exchRate);
-                }} // Convert to string with 2 decimal points
+                onPress={() => setValue(
+                  (
+                    usdcValue?.[0]?.estimated_balance *
+                    (exchRate ? parseFloat(exchRate) : 1)
+                  ).toFixed(2) // Convert to string with 2 decimal points
+                )}
                 style={{
                   backgroundColor: '#292929',
                   paddingVertical: 5,
@@ -899,26 +898,28 @@ const TradePage = ({route}) => {
                               ?.amount /
                               Math.pow(
                                 10,
-                                bestSwappingBuyTrades?.estimation
-                                  ?.dstChainTokenOut?.decimals,
+                                bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                                  ?.decimals,
                               ),
                           )
                         ? (
-                            parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.tokenTo?.decimals,
-                            )
-                          ).toFixed(5)
+                            (parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.tokenTo?.decimals,
+                              )) *
+                            0.002
+                          ).toFixed(4)
                         : (
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                            (bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.amount /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.estimation
-                                ?.dstChainTokenOut?.decimals,
-                            )
-                          ).toFixed(5)}
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                                  ?.decimals,
+                              )) *
+                            0.002
+                          ).toFixed(4)}
                     </Text>
                   </View>
                 )}
@@ -1065,8 +1066,8 @@ const TradePage = ({route}) => {
                           ?.amount /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.decimals,
+                            bestSwappingBuyTrades?.estimation
+                              ?.dstChainTokenOut?.decimals,
                           )) *
                         0.002
                       ).toFixed(4)}
