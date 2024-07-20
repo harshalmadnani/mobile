@@ -26,11 +26,9 @@ const Catelog = () => {
   const store_country = useSelector(x => x.auth.country);
   const store_countryCode = useSelector(x => x.auth.countryCode);
 
-
   const [loading, setLoading] = useState(false);
   const [showWebView, setShowWebView] = useState(false);
 
-  const url = 'https://sandbox.encryptus.co/v1/partners/create/user';
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const email = useSelector(x => x.auth.email);
@@ -107,6 +105,8 @@ const Catelog = () => {
                 />
               ))}
           </View>
+
+          <View style={{height: 200}} />
         </ScrollView>
       </View>
 

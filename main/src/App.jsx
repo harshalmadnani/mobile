@@ -37,7 +37,6 @@ const publicClient = createPublicClient({
 global.Buffer = Buffer;
 import './global';
 import {
-  Image,
   View,
   ActivityIndicator,
   ImageBackground,
@@ -82,7 +81,7 @@ import Ramper from './screens/loggedIn/payments/Ramps/ramper';
 import LiFi from './screens/loggedIn/payments/Ramps/lifi';
 import PreRegister from './screens/loggedIn/spending/PreRegister';
 import Uniramp from './screens/loggedIn/payments/Ramps/uniramp';
-import SettingsComponent from './screens/settings/settings';
+
 import NFT from './screens/loggedIn/nft';
 import Card from './screens/loggedIn/card';
 
@@ -100,7 +99,7 @@ const windowWidth = Dimensions.get('window').width;
 
 import messaging from '@react-native-firebase/messaging';
 import {requestUserPermission, generateTopic} from './utils/push';
-import {getDeviceToken} from 'react-native-device-info';
+
 import FastImage from 'react-native-fast-image';
 import AddBankAccount from './screens/loggedIn/card/bankAccount/addBankAccount';
 import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccount';
@@ -113,7 +112,10 @@ import SuccessTxStatusPage from './screens/loggedIn/investments/trade/SuccesTxSt
 import MarketSearchScreen from './screens/loggedIn/investments/MaketSearchScreen';
 import * as Sentry from '@sentry/react-native';
 import DinariKycWebview from './screens/stocks/KYCFlow/DinariKycWebview';
-import AnyTokenListScreen from './screens/loggedIn/send/AnyTokenList';
+
+import Spending from './screens/loggedIn/spending/spending';
+import Catelog from './screens/loggedIn/spending/catalog';
+import Success from './screens/loggedIn/spending/success';
 // import {register} from 'module';
 const projectId = 'cb6fc19a389caeab31f49d301b87ad73';
 
@@ -654,6 +656,25 @@ function App({navigation, uri}) {
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
+
+                  {/* SPENDING FLOW*/}
+
+                  <Stack.Screen
+                    name="Spending"
+                    component={Spending}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Catelog"
+                    component={Catelog}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Success"
+                    component={Success}
+                    options={{headerShown: false}}
+                  />
+
                   {/* <Stack.Screen
                     name="ChooseConnect"
                     component={ChooseWallet}

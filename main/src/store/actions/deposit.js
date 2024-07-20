@@ -127,7 +127,7 @@ export const fetchSaberBuyPrice = amount => {
       };
 
       const response = await axios.get(
-        `https://sandbox.mudrex.com/api/v2/wallet/w/quote?from_currency=INR&to_currency=USDT&network=MATIC&to_amount=${amount}`,
+        `https://sandbox.mudrex.com/api/v2/wallet/w/quote?from_currency=INR&to_currency=USDC&network=MATIC&from_amount=${amount}`,
         {headers},
       );
       console.log(response.data);
@@ -150,7 +150,7 @@ export const createSaberBuyOrder = amount => {
       const sigString =
         SABER_CONSTANTS.client_id +
         timeStampinSeconds +
-        'e139d82f-d688-4d64-abaa-7e19d7c684ef';
+        '299ff36e-198b-4190-8fa8-09c8cd720b88';
       const secret = Crypto.HmacSHA256(
         sigString,
         SABER_CONSTANTS.client_secret,
@@ -178,7 +178,8 @@ export const createSaberBuyOrder = amount => {
         data,
         {headers},
       );
-      dispatch(depositAction.setSaberBuyPrice(response.data.data.total_fee));
+      console.log(response.data);
+      dispatch(depositAction.setSaberBuyPrice(response.data.data));
     } catch (err) {
       console.log('error while creating buy price saber: ', err);
     }

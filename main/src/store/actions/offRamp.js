@@ -4,16 +4,51 @@ import {offRampAction} from '../reducers/offRamp';
 //TODO(change payload here based on required response for reducers)
 
 const URL = {
-  FETCH_USER: 'https://sandbox.encryptus.co/v1/partners/fetchall/user',
-  CREATE_USER: 'https://sandbox.encryptus.co/v1/partners/create/user',
-  GET_GIFT_CARD: 'https://sandbox.encryptus.co/v1/payout/giftcard/filters',
-  SUBMIT_DETAIL_GIFT_CARD:
-    'https://sandbox.encryptus.co/v1/payout/giftcard/quote',
-  ACCEPT_GIFT_CARD: 'https://sandbox.encryptus.co/v1/payout/giftcard/order',
+  FETCH_USER: 'https://hub.encryptus.co/v1/partners/fetchall/user',
+  CREATE_USER: 'https://hub.encryptus.co/v1/partners/create/user',
+  GET_GIFT_CARD: 'https://hub.encryptus.co/v1/payout/giftcard/filters',
+  SUBMIT_DETAIL_GIFT_CARD: 'https://hub.encryptus.co/v1/payout/giftcard/quote',
+  ACCEPT_GIFT_CARD: 'https://hub.encryptus.co/v1/payout/giftcard/order',
+  GEN_TOKEN: 'https://hub.encryptus.co/v1/partners/generate/token',
 };
 
 const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImNjYzRhN2UzNThmYjQ3MDNjMTg1MzkwMDRmMjY2YWE2IiwiY29udGVudCI6Ijk4YzhlMTY3ZGE1MGEwMzhiYmMwMDBkMDcxN2Y0MmUxNjY3NzcwOGQ2NGYwY2Y5ODQzNGY0NzQ3MDQxNmI4ZmJkYjk2YTI2NTQ4ODk2YTg2ZDJlZDdjMDA5MzJjODNlZjAwYTc5OGQ1YzIxNTRiNjc0OWVmMmQ1ZDBjMDRiYTNmMDg5MWRmODZmYzk5ODI3OGIzZGQ5Nzk0NmZmNmEwYzE2NGEzYTYzZjQyZTZmZWE1NmU4ODA2MjFjMTlkNzZlOWRhN2U3OGIwYzc3NjZkYTQwM2Q0ODVmNDNjZDZmZjhjMzI1ZjhjMzFlYjc0MTI2YmFhMzczZTg2MmJlNWQzYzIwMWY2ODE1N2U2ZGNjOTUwIn0sImlhdCI6MTcyMDU5ODgxMCwiZXhwIjoxNzIwNjg1MjEwfQ.KmEhYStvzAVKvMxwV1h6SG9Vv2G99y2NtC6ICu60y2I';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImE5YzU2ZjQ1YThkMWQ4NTBjMjNkZGJlMjdiMWVlZjk5IiwiY29udGVudCI6IjhhN2M4OGYxYjU5ZTc2ZjdhY2EwYWZkM2ZhYWRhOWMyMTMwMWYxZDJkNzEyNmE2YjFlYTMzZjAwMjcwNTEyNjYwODhkYjU0ZjI5MzBlMDE4YTVlN2E2OWVmOWRmOTgxYTRkZDA3MTNiZDRmZmY2ZTk5MzlkZDE0ZjYxYzcwMDZkNDRiMTBlZjNlMDcwOTQzMTU1NzNjMDUxNTkwYmRmMzU0OGNmODY5OTMwNTZkMzIyZDBiMTI3MTU1OGVlODY3YWRlNGZmNmNhNTM2YmRkZTIxNTgyMGFjYTA0ODAyNmIyZTM0YmZkYTAzMWU4Yjc0NzQwY2Q0ZGEyMzNkOTA1MGI0ZTFiY2Q4MDMzYTk0NDNiYzQ1YzMxMTJiZCJ9LCJpYXQiOjE3MjE0NzQwODAsImV4cCI6MTcyMTU2MDQ4MH0.YKQc47soM9at1_hlY2EBWmUS-Dpp1OlAZqlgWf8h16c';
+
+async function generateToken() {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  //PRE-POD
+  // const data = {
+  //   partnerEmail: 'jashan@drepute.xyz',
+  //   partnerPassword: '1234567891234567',
+  //   grant_services: ['FORENSICS'],
+
+  //    clientSecret: '28faec67-57b5-4f89-95a5-11e6f7cf7ca8',
+  //    clientID: '6d05f4d1-3d93-4b54-8682-88bd0d31e510',
+
+  // };
+
+  //PROD
+  const data = {
+    partnerEmail: 'development@xade.finance',
+    partnerPassword: 'f@qa7WLaQ7NK-Wkk',
+    grant_services: ['FORENSICS'],
+    clientSecret: '67764c70-488b-4389-94be-6990e4e5fe93',
+    clientID: '795ce954-4a85-40f1-b1c8-2746cb302451',
+  };
+
+  try {
+    const response = await axios.post(URL.GEN_TOKEN, data, {headers});
+    console.log('Response status:', response.status);
+    console.log('Response data:', response.data);
+    // Add additional handling for the response as needed
+  } catch (error) {
+    console.error('Error:', error.message);
+    // Handle error
+  }
+}
 
 export const fetchOnboardedUser = email => {
   console.log('fetching onboarded users');
@@ -83,41 +118,27 @@ export const fetchOnboardedUser = email => {
   };
 };
 
-export const getCountry = async () => {
-  try {
-    console.log(
-      'Removing the console log makes the getCountryBasedGiftCard not wait for getCountry',
-    );
-    const response = await axios.get('https://ipapi.co/json/');
-    return response.data.country_name;
-  } catch (err) {
-    console.log('Error in actions/offRamp/getCountry function.');
-    return null;
-  }
-};
-
 export const getCountryBasedGiftCard = () => {
-  return async dispatch => {
-    // const countryName = await getCountry();
-    // console.log('Country name', countryName);
-    //if (countryName != null)
-    if (1 == 1) {
-      //REMOVE THIS BEFORE PUSHING
+  return async (dispatch, getState) => {
+    let countryName = await getState().auth.country;
+    console.log('🎁--> Getting gift cards based on country :', countryName);
+
+    if (countryName != null) {
       try {
         const response = await axios.get(URL.GET_GIFT_CARD, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            // country: countryName,
-            country: 'India',
+            country: countryName,
+
             //  deliveryType: '',
             //  currencyCode: '',
           },
         });
 
         if (response.status === 200) {
-          console.log('Gift cards:', response?.data?.data?.vouchers);
+          console.log('🎁Gift cards:', response?.data?.data?.vouchers);
           dispatch(offRampAction.setGiftCards(response?.data?.data?.vouchers));
         } else {
           console.error('Failed to fetch gift cards');
@@ -145,8 +166,8 @@ export const submitDetailsForQuote = (
     console.log('user!!!!!', user);
 
     const requestBody = {
-      country: 'India',
-      productId: parseInt(productId),
+      country: country,
+      productId: productId,
       brand: brand,
       denominator: denominator,
       cryptoCoin: 'USDC',
@@ -170,7 +191,7 @@ export const submitDetailsForQuote = (
       );
 
       if (response.status === 201) {
-        console.log('Quote created:', response.data);
+        console.log('🎁 Quote created:', response.data);
         dispatch(offRampAction.setQuoteDetail(response.data.quote.quoteId));
       } else {
         console.error('Failed to create quote');
@@ -204,19 +225,18 @@ export const acceptGiftCardOrder = () => {
         },
       );
 
-      console.log('accept status =>', response.status);
+      console.log('🎁 accept status =>', response.status);
 
       if (response.status === 201) {
-        console.log('Order submitted successfully:', response.data);
-        dispatch(offRampAction.acceptQuote(response));
+        console.log('🎁 Order submitted successfully:', response.data);
+        dispatch(offRampAction.acceptQuote(response?.data?.order));
       } else {
         console.error('Failed to submit order');
-        console.log('Status =>->', response);
         console.log('accept status =>', response.status);
       }
     } catch (error) {
       console.error(
-        'Error actions/offRamp/submitGiftCardOrder function:',
+        'Error actions/offRamp/acceptGiftCardOrder function:',
         error,
       );
     }

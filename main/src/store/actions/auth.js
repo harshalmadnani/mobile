@@ -343,6 +343,17 @@ export const convertCurrency = async userCurrency => {
     return response.data.data[userCurrency].value;
   } catch (err) {
     console.log(err, 'Error in actions/offRamp/convertCurrency function.');
+    console.log('action.jsx/ Failing to fetching location, setting default..');
+
+    storeCountryCurrency(
+      'India',
+      'INR',
+      //  name,
+      'INR',
+      83.6907984098,
+      ipAddress,
+      'IN',
+    );
   }
 };
 

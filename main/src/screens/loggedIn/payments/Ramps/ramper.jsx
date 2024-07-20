@@ -144,10 +144,10 @@ const Ramper = ({navigation}) => {
   const createUser = async () => {
     //deposit user check and creation
     // await dispatch(fetchOnboardedUser(email));
-    // await dispatch(retrieveSaberUser());
-    await dispatch(fetchSaberBuyPrice(value));
+    //  await dispatch(retrieveSaberUser());
+    // await dispatch(fetchSaberBuyPrice(value));
     //await dispatch(createSaberUser());
-    //await dispatch(createSaberBuyOrder(value));
+    await dispatch(createSaberBuyOrder(value));
   };
 
   const onRampContinue = async () => {
@@ -410,7 +410,7 @@ const Ramper = ({navigation}) => {
                     backgroundColor: '#fff',
                     width: 26,
                     height: 26,
-                    borderRadius: 13, // Make the image round
+                    borderRadius: 13,
                     marginRight: 10,
                   }}
                 />
@@ -442,14 +442,14 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              if (buttonTitle.toLocaleLowerCase() === 'continue') {
-                selectedId === 'wallet'
-                  ? onWalletConnectOpen()
-                  : selectedId === 'coupon'
-                  ? await onCouponFlow()
-                  : await onRampContinue();
-              }
-              // await createUser();
+              // if (buttonTitle.toLocaleLowerCase() === 'continue') {
+              //   selectedId === 'wallet'
+              //     ? onWalletConnectOpen()
+              //     : selectedId === 'coupon'
+              //     ? await onCouponFlow()
+              //     : await onRampContinue();
+              // }
+              await createUser();
             }} // Open modal on press
           >
             <LinearGradient

@@ -163,13 +163,12 @@ const PreLoad = ({navigation}) => {
       //Starter plan doesn't provide currency and https, only country name
       // const {country_name, currency, country_code} = response.data;
       // const {code, name, symbol} = currency;
-
-      const {country_name, country_code} = response.data;
+      const {country_name, country_code} = response?.data;
       const code = getCurrencyCode(country_code);
       const exRate = await convertCurrency(code); //has to be capital
 
       console.log(
-        '!!!!!!!!!!!!!!!!!ex rate.............',
+        'Load.jsx API for location/currency -> ',
         country_name,
         code,
         //name,
@@ -190,7 +189,19 @@ const PreLoad = ({navigation}) => {
         ),
       );
     } catch (err) {
-      console.log('Error in getCountry.', err);
+      console.log('load.jsx / Error in getCountry.', err);
+      console.log('Failing to fetching location, setting default..');
+      dispatch(
+        storeCountryCurrency(
+          'India',
+          'INR',
+          //  name,
+          'INR',
+          83.6907984098,
+          ipAddress,
+          'IN',
+        ),
+      );
     }
   };
 

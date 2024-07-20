@@ -2,12 +2,13 @@ import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Pressable, StyleSheet, View} from 'react-native';
 import Portfolio from '../screens/loggedIn/investments/portfolio/portfolio';
-import SpendingFlow from '../navigator/SpendingFlow';
+
 import SettingsComponent from '../screens/settings/settings';
 import Investments from '../screens/loggedIn/investments/investments';
 import FastImage from 'react-native-fast-image';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import {useRoute} from '@react-navigation/native';
+import Spending from '../screens/loggedIn/spending/spending';
 const Tab = createBottomTabNavigator();
 
 function MainFlowStack({navigation}) {
@@ -105,7 +106,7 @@ function MainFlowStack({navigation}) {
           name="Investments"
           component={Investments}
         />
-        {/* <Tab.Screen
+        <Tab.Screen
           listeners={() => ({
             tabPress: () => {
               if (Platform.OS === 'ios') {
@@ -136,9 +137,9 @@ function MainFlowStack({navigation}) {
                 />
               ),
           }}
-          name="SpendingFlow"
-          component={SpendingFlow}
-        /> */}
+          name="Spending"
+          component={Spending}
+        />
         <Tab.Screen
           listeners={() => ({
             tabPress: () => {

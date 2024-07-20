@@ -48,30 +48,29 @@ const SingleCouponModal = ({
 
   const dispatch = useDispatch();
 
-  //todo(give  THE CONDITONS)
   const getQuote = async () => {
-    //dispatch
+    if (quantity > 0 && selectedChip !== null) {
+      await dispatch(
+        submitDetailsForQuote(
+          country,
+          data?.productId,
+          data?.brand,
+          selectedChip,
+          quantity,
+        ),
+      );
 
-    await dispatch(
-      submitDetailsForQuote(
-        country,
-        data?.productId,
-        data?.brand,
-        selectedChip,
-        quantity,
-      ),
-    );
-
-    setGotQuote(true);
+      setGotQuote(true);
+    }
   };
 
-  const onAccept = () => {
-    dispatch(acceptGiftCardOrder());
+  const onAccept = async () => {
+    await dispatch(acceptGiftCardOrder());
     setisAccepted(true);
     setGotQuote(false);
     setQuantity('');
     setModalVisible(false);
-    navigation.navigate('Home');
+    navigation.navigate('Success');
   };
 
   //const [selectedChips, setSelectedChips] = useState(new Set());
