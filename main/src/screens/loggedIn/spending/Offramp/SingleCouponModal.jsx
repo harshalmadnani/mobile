@@ -18,6 +18,7 @@ import {
   fetchOnboardedUser,
   submitDetailsForQuote,
 } from '../../../../store/actions/offRamp';
+import {transferTokenGassless} from '../../../../utils/DFNS/walletFLow';
 
 const Chip = ({label, isSelected, onPress}) => {
   return (
@@ -45,7 +46,9 @@ const SingleCouponModal = ({
 
   const [gotQuote, setGotQuote] = useState(false);
   const [isAccepted, setisAccepted] = useState(false);
-
+  const dfnsToken = useSelector(x => x.auth.DFNSToken);
+  const wallets = useSelector(x => x.auth.wallets);
+  const allScw = useSelector(x => x.auth.scw);
   const dispatch = useDispatch();
 
   const getQuote = async () => {
@@ -65,12 +68,33 @@ const SingleCouponModal = ({
   };
 
   const onAccept = async () => {
-    await dispatch(acceptGiftCardOrder());
-    setisAccepted(true);
-    setGotQuote(false);
-    setQuantity('');
-    setModalVisible(false);
-    navigation.navigate('Success');
+    const txnHash = await transferTokenGassless(
+      dfnsToken,
+      wallets?.filter(
+        x =>
+          x.network ===
+          getNameChainId(assetInfo?.contracts_balances[0]?.chainId?.toString()),
+      )[0]?.id,
+      '137',
+      false,
+      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
+      amount,
+      allScw?.filter(
+        x =>
+          x.chainId === assetInfo?.contracts_balances[0]?.chainId?.toString(),
+      )?.[0]?.address,
+    );
+    if (txnHash) {
+      await dispatch(acceptGiftCardOrder());
+      setisAccepted(true);
+      setGotQuote(false);
+      setQuantity('');
+      setModalVisible(false);
+      navigation.navigate('Success');
+    } else {
+      console.log('Failed buy');
+    }
   };
 
   //const [selectedChips, setSelectedChips] = useState(new Set());

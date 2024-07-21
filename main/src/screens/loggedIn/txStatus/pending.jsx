@@ -29,25 +29,6 @@ const Component = ({route, navigation}) => {
   useEffect(() => {
     const transaction = async () => {
       try {
-        console.log(assetInfo);
-        console.log(
-          'Here....1',
-          wallets,
-          wallets?.filter(
-            x =>
-              x.network ===
-              getNameChainId(
-                assetInfo?.contracts_balances[0]?.chainId?.toString(),
-              ),
-          )[0]?.id,
-          allScw?.filter(
-            x =>
-              x.chainId ===
-              assetInfo?.contracts_balances[0]?.chainId?.toString(),
-          )?.[0]?.address,
-          getNameChainId(assetInfo?.contracts_balances[0]?.chainId?.toString()),
-        );
-
         const txnHash = await transferTokenGassless(
           dfnsToken,
           wallets?.filter(
