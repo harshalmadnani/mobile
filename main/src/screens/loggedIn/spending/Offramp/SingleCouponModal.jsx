@@ -19,6 +19,7 @@ import {
   submitDetailsForQuote,
 } from '../../../../store/actions/offRamp';
 import {transferTokenGassless} from '../../../../utils/DFNS/walletFLow';
+import {getNameChainId} from '../../../../store/actions/market';
 
 const Chip = ({label, isSelected, onPress}) => {
   return (

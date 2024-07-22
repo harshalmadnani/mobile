@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   fetchOnboardedUser,
   getCountryBasedGiftCard,
+  genrateToken,
 } from '../../../store/actions/offRamp';
 const Spending = () => {
   const [loading, setLoading] = useState(false);
@@ -28,6 +29,7 @@ const Spending = () => {
   const enterUserForCoupon = async () => {
     try {
       setLoading(true);
+      await dispatch(genrateToken());
       await dispatch(fetchOnboardedUser(email));
       await dispatch(getCountryBasedGiftCard());
       setLoading(false);

@@ -47,7 +47,6 @@ import {authActions} from '../../store/reducers/auth';
 import {autoLogin} from '../../store/actions/auth';
 import {Passkey} from 'react-native-passkey';
 import Toast from 'react-native-root-toast';
-import {fetchOnboardedUser} from '../../store/actions/offRamp.js';
 
 const NewAuthLoginFLow = ({navigation, route}) => {
   const [email, setEmail] = useState('');

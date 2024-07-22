@@ -11,10 +11,6 @@ import {useNavigation} from '@react-navigation/native';
 import WebView from 'react-native-webview';
 import CouponModal from '../../../component/CouponModal';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  fetchOnboardedUser,
-  getCountryBasedGiftCard,
-} from '../../../store/actions/offRamp';
 const Spending = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>

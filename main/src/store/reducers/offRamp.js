@@ -7,6 +7,7 @@ const initialState = {
   giftCards: null,
   quoteDetail: null,
   acceptedQuote: null,
+  token: null,
 };
 
 export const offRampSlice = createSlice({
@@ -24,6 +25,9 @@ export const offRampSlice = createSlice({
     },
     acceptQuote: (state, action) => {
       state.acceptedQuote = action.payload;
+    },
+    setToken: (state, action) => {
+      state.token = action.payload;
     },
   },
 });

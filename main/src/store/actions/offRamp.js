@@ -12,47 +12,39 @@ const URL = {
   GEN_TOKEN: 'https://hub.encryptus.co/v1/partners/generate/token',
 };
 
-const token =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZXRhZGF0YSI6eyJpdiI6ImE5YzU2ZjQ1YThkMWQ4NTBjMjNkZGJlMjdiMWVlZjk5IiwiY29udGVudCI6IjhhN2M4OGYxYjU5ZTc2ZjdhY2EwYWZkM2ZhYWRhOWMyMTMwMWYxZDJkNzEyNmE2YjFlYTMzZjAwMjcwNTEyNjYwODhkYjU0ZjI5MzBlMDE4YTVlN2E2OWVmOWRmOTgxYTRkZDA3MTNiZDRmZmY2ZTk5MzlkZDE0ZjYxYzcwMDZkNDRiMTBlZjNlMDcwOTQzMTU1NzNjMDUxNTkwYmRmMzU0OGNmODY5OTMwNTZkMzIyZDBiMTI3MTU1OGVlODY3YWRlNGZmNmNhNTM2YmRkZTIxNTgyMGFjYTA0ODAyNmIyZTM0YmZkYTAzMWU4Yjc0NzQwY2Q0ZGEyMzNkOTA1MGI0ZTFiY2Q4MDMzYTk0NDNiYzQ1YzMxMTJiZCJ9LCJpYXQiOjE3MjE0NzQwODAsImV4cCI6MTcyMTU2MDQ4MH0.YKQc47soM9at1_hlY2EBWmUS-Dpp1OlAZqlgWf8h16c';
+export const genrateToken = () => {
+  return async dispatch => {
+    const requestBody = {
+      partnerEmail: 'development@xade.finance',
+      partnerPassword: 'f@qa7WLaQ7NK-Wkk',
+      grant_services: ['FORENSICS'],
+      clientSecret: '67764c70-488b-4389-94be-6990e4e5fe93',
+      clientID: '795ce954-4a85-40f1-b1c8-2746cb302451',
+    };
 
-async function generateToken() {
-  const headers = {
-    'Content-Type': 'application/json',
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    try {
+      const response = await axios.post(URL.GEN_TOKEN, requestBody, {headers});
+
+      if (response.status === 200 || response.status === 201) {
+        console.log('Generated Token =>', response.data?.access_token);
+        dispatch(offRampAction.setToken(response.data?.access_token));
+      } else {
+        console.log('Unexpected response:', response.status);
+      }
+    } catch (error) {
+      console.error('Error in generating token:', error);
+    }
   };
-  //PRE-POD
-  // const data = {
-  //   partnerEmail: 'jashan@drepute.xyz',
-  //   partnerPassword: '1234567891234567',
-  //   grant_services: ['FORENSICS'],
-
-  //    clientSecret: '28faec67-57b5-4f89-95a5-11e6f7cf7ca8',
-  //    clientID: '6d05f4d1-3d93-4b54-8682-88bd0d31e510',
-
-  // };
-
-  //PROD
-  const data = {
-    partnerEmail: 'development@xade.finance',
-    partnerPassword: 'f@qa7WLaQ7NK-Wkk',
-    grant_services: ['FORENSICS'],
-    clientSecret: '67764c70-488b-4389-94be-6990e4e5fe93',
-    clientID: '795ce954-4a85-40f1-b1c8-2746cb302451',
-  };
-
-  try {
-    const response = await axios.post(URL.GEN_TOKEN, data, {headers});
-    console.log('Response status:', response.status);
-    console.log('Response data:', response.data);
-    // Add additional handling for the response as needed
-  } catch (error) {
-    console.error('Error:', error.message);
-    // Handle error
-  }
-}
+};
 
 export const fetchOnboardedUser = email => {
   console.log('fetching onboarded users');
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const token = getState().offRamp.token;
     try {
       const response = await axios.get(URL.FETCH_USER, {
         headers: {
@@ -121,6 +113,7 @@ export const fetchOnboardedUser = email => {
 export const getCountryBasedGiftCard = () => {
   return async (dispatch, getState) => {
     let countryName = await getState().auth.country;
+    const token = getState().offRamp.token;
     console.log('🎁--> Getting gift cards based on country :', countryName);
 
     if (countryName != null) {
@@ -163,6 +156,7 @@ export const submitDetailsForQuote = (
 ) => {
   return async (dispatch, getState) => {
     const user = getState().offRamp.user;
+    const token = getState().offRamp.token;
     console.log('user!!!!!', user);
 
     const requestBody = {
@@ -210,6 +204,7 @@ export const acceptGiftCardOrder = () => {
     //raw data
 
     const quoteId = getState().offRamp.quoteDetail;
+    const token = getState().offRamp.token;
     console.log('QUOTE ID =>', quoteId);
     try {
       const response = await axios.post(
