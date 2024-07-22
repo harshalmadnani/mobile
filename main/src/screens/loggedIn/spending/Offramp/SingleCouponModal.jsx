@@ -288,7 +288,8 @@ const styles = StyleSheet.create({
   },
   input: {
     width: Dimensions.get('window').width * 0.9,
-
+    fontSize: 14,
+    lineHeight: 19.2,
     paddingHorizontal: 20,
     backgroundColor: '#000',
     color: '#fff',
@@ -296,7 +297,6 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 10,
     alignSelf: 'center',
-    fontSize: 12,
     opacity: 0.7,
     marginVertical: 20,
   },
