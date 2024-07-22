@@ -59,7 +59,6 @@ const Catelog = () => {
         <Icon
           name={'navigate-before'}
           size={30}
-          style={{backgroundColor: 'red'}}
           color={'#f0f0f0'}
           type="materialicons"
           onPress={() => navigation.goBack()}

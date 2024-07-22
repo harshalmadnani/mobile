@@ -69,22 +69,19 @@ const SingleCouponModal = ({
   };
 
   const onAccept = async () => {
+    console.log(
+      'Amount to be transfered........',
+      selectedChip * 1000000 * parseInt(quantity),
+    );
     const txnHash = await transferTokenGassless(
       dfnsToken,
-      wallets?.filter(
-        x =>
-          x.network ===
-          getNameChainId(assetInfo?.contracts_balances[0]?.chainId?.toString()),
-      )[0]?.id,
+      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
       '137',
       false,
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
-      amount,
-      allScw?.filter(
-        x =>
-          x.chainId === assetInfo?.contracts_balances[0]?.chainId?.toString(),
-      )?.[0]?.address,
+      selectedChip * 1000000 * parseInt(quantity), //USD Amount*1000000*Qty
+      allScw?.filter(x => x.chainId === '137')?.[0]?.address,
     );
     if (txnHash) {
       await dispatch(acceptGiftCardOrder());
