@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Text,
   View,
@@ -26,10 +26,13 @@ const Spending = () => {
   const navigation = useNavigation();
   const email = useSelector(x => x.auth.email);
 
+  useEffect(() => {
+    dispatch(genrateToken());
+  }, []);
+
   const enterUserForCoupon = async () => {
     try {
       setLoading(true);
-      await dispatch(genrateToken());
       await dispatch(fetchOnboardedUser(email));
       await dispatch(getCountryBasedGiftCard());
       setLoading(false);
@@ -174,7 +177,7 @@ const Spending = () => {
             alignSelf: 'stretch',
           }}>
           {loading ? (
-            <ActivityIndicator color="#000000" />
+            <ActivityIndicator style={{padding: 1}} color="#000000" />
           ) : (
             <Text
               style={{

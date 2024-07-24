@@ -226,6 +226,7 @@ export const submitDetailsForQuote = (
 
       if (response.status === 201) {
         console.log('🎁 Quote created:', response.data);
+        console.log('Quto id created => ', response.data.quote.quoteId);
         dispatch(offRampAction.setQuoteDetail(response.data.quote.quoteId));
       } else {
         console.error('Failed to create quote');
@@ -262,18 +263,18 @@ export const acceptGiftCardOrder = () => {
 
       console.log('🎁 accept status =>', response.status);
 
-      if (response.status === 201) {
-        console.log('🎁 Order submitted successfully:', response.data);
-        dispatch(offRampAction.acceptQuote(response?.data?.order));
+      if (response.status === 200) {
+        console.log('🎁 Order submitted successfully:', response.data.data);
+        dispatch(offRampAction.acceptQuote(response?.data?.data?.gc_response));
       } else {
         console.error('Failed to submit order');
-        console.log('accept status =>', response.status);
       }
     } catch (error) {
-      console.error(
-        'Error actions/offRamp/acceptGiftCardOrder function:',
-        error,
-      );
+      throw new Error('Failed to confirm quote id', error);
+      // console.error(
+      //   'Error actions/offRamp/acceptGiftCardOrder function:',
+      //   error,
+      // );
     }
   };
 };
