@@ -16,7 +16,6 @@ import {TextInput} from 'react-native';
 import {
   acceptGiftCardOrder,
   CouponCurrencyToCurrentCurrency,
-  fetchOnboardedUser,
   submitDetailsForQuote,
 } from '../../../../store/actions/offRamp';
 import {transferTokenGassless} from '../../../../utils/DFNS/walletFLow';
@@ -88,7 +87,7 @@ const SingleCouponModal = ({
           selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
       }
 
-      console.log('Selected coupon:', amountInDollars);
+      console.log('Selected coupon in dollars:', amountInDollars);
 
       console.log(
         'Amount to be transfered........',
@@ -134,11 +133,6 @@ const SingleCouponModal = ({
   };
 
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
-  const {height, width} = Dimensions.get('window');
-
-  const giftCards = useSelector(x => x.offRamp.giftCards);
-  const [qty, setQty] = useState(1);
 
   return (
     <Modal

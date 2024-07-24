@@ -1,40 +1,20 @@
 import React, {useState} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import WebView from 'react-native-webview';
-import CouponModal, {SingleCouponItem} from '../../../component/CouponModal';
-import {useDispatch, useSelector} from 'react-redux';
-import {
-  fetchOnboardedUser,
-  getCountryBasedGiftCard,
-} from '../../../store/actions/offRamp';
+import {SingleCouponItem} from '../../../component/CouponModal';
+import {useSelector} from 'react-redux';
 import {Icon} from 'react-native-elements';
 import {ScrollView} from 'react-native';
 import SingleCouponModal from './Offramp/SingleCouponModal';
 import {getCurrencyIcon} from '../../../utils/currencyicon';
 
 const Catelog = () => {
-  const store_currency = useSelector(x => x.auth.currency);
-  const store_currency_name = useSelector(x => x.auth.currency_name);
   const store_country = useSelector(x => x.auth.country);
-  const store_countryCode = useSelector(x => x.auth.countryCode);
   const store_isUsd = useSelector(x => x.auth.isUsd);
   const store_couponCurrencyExchangeRate = useSelector(
     x => x.offRamp.couponCurrencyExchangeRate,
   );
 
-  const [loading, setLoading] = useState(false);
-  const [showWebView, setShowWebView] = useState(false);
-
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const email = useSelector(x => x.auth.email);
   const [selected, setSelected] = useState();
