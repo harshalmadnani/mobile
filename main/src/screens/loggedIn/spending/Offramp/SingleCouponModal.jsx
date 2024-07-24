@@ -85,11 +85,16 @@ const SingleCouponModal = ({
     try {
       setLoader(true);
       let amountInDollars = selectedChip;
-      if (!isUsd) {
-        amountInDollars =
-          selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
-      }
 
+      //FOR DYNAMIC CURRENCY (if isUSD is true, chips are already converted to dollars)
+      // if (!isUsd) {
+      //   amountInDollars =
+      //     selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
+      // }
+
+      //FOR LOCAL CURRENCY
+      amountInDollars =
+        selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
       console.log('Selected coupon in dollars:', amountInDollars);
 
       // console.log(
@@ -176,8 +181,9 @@ const SingleCouponModal = ({
             <Text style={[styles.confirmationText, {marginTop: 10}]}>
               You are paying{' '}
               <Text style={styles.confirmationTextWhite}>
-                {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}
-                {selectedChip?.toFixed(2)}
+                {/* {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}  FOR DYNAMIC CURRENCY*/}
+                {getCurrencyIcon(data?.currencyCode)}
+                {selectedChip?.toFixed(2) * quantity}
               </Text>{' '}
               for{' '}
               <Text style={styles.confirmationTextWhite}>
@@ -197,9 +203,11 @@ const SingleCouponModal = ({
                     <Chip
                       key={index}
                       label={Math.floor(newChip)}
-                      currencyIcon={getCurrencyIcon(
-                        isUsd ? 'USD' : data?.currencyCode,
-                      )}
+                      //FOR DYNAMIC CURRENCY
+                      // currencyIcon={getCurrencyIcon(
+                      //   isUsd ? 'USD' : data?.currencyCode,
+                      // )}
+                      currencyIcon={getCurrencyIcon(data?.currencyCode)}
                       // isSelected={selectedChips.has(chip)}
                       isSelected={newChip === selectedChip}
                       onPress={() => toggleChipSelection(newChip)}
@@ -217,9 +225,11 @@ const SingleCouponModal = ({
                   <Chip
                     key={index}
                     label={Math.floor(newChip)}
-                    currencyIcon={getCurrencyIcon(
-                      isUsd ? 'USD' : data?.currencyCode,
-                    )}
+                    //FOR DYNAMIC CURRENCY
+                    // currencyIcon={getCurrencyIcon(
+                    //   isUsd ? 'USD' : data?.currencyCode,
+                    // )}
+                    currencyIcon={getCurrencyIcon(data?.currencyCode)}
                     // isSelected={selectedChips.has(chip)}
                     isSelected={newChip === selectedChip}
                     onPress={() => toggleChipSelection(newChip)}

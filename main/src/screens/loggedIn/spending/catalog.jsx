@@ -39,7 +39,8 @@ const Catelog = () => {
         navigation={navigation}
         email={email}
         isUsd={store_isUsd}
-        couponCurrencyExchangeRate={store_couponCurrencyExchangeRate}
+        //  couponCurrencyExchangeRate={store_couponCurrencyExchangeRate} FOR DYNAMIC CURRENCY
+        couponCurrencyExchangeRate={1}
       />
       <View
         style={{
