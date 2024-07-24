@@ -229,12 +229,12 @@ export const submitDetailsForQuote = (
         console.log('Quto id created => ', response.data.quote.quoteId);
         dispatch(offRampAction.setQuoteDetail(response.data.quote.quoteId));
       } else {
-        console.error('Failed to create quote');
+        console.error('Failed to create quote', response);
       }
     } catch (error) {
       console.error(
         'Error actions/offRamp/submitGiftCardQuote function',
-        error.message,
+        error,
       );
     }
   };
@@ -270,8 +270,8 @@ export const acceptGiftCardOrder = () => {
         console.error('Failed to submit order');
       }
     } catch (error) {
-      throw new Error('Failed to confirm quote id', error);
-      // console.error(
+      // throw new Error('Failed to confirm quote id', error);
+      console.log(error); // console.error(
       //   'Error actions/offRamp/acceptGiftCardOrder function:',
       //   error,
       // );

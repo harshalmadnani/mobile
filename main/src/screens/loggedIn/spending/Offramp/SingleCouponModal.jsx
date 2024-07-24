@@ -101,27 +101,31 @@ const SingleCouponModal = ({
       //   'Amount to be transfered........',
       //   amountInDollars * 1000000 * parseInt(quantity),
       // );
-      // const txnHash = await transferTokenGassless(
-      //   dfnsToken,
-      //   wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-      //   '137',
-      //   false,
-      //   '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      //   '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
-      //   amountInDollars * 1000000 * parseInt(quantity), //USD Amount*1000000*Qty
-      //   allScw?.filter(x => x.chainId === '137')?.[0]?.address,
-      // );
-      // if (txnHash) {
-      await dispatch(acceptGiftCardOrder());
-      setLoader(false);
-      setisAccepted(true);
-      setGotQuote(false);
-      setQuantity('');
-      setModalVisible(false);
-      navigation.navigate('Success');
-      // } else {
-      //   console.log('Failed buy');
-      //}
+      console.log(
+        'amount in dollar',
+        parseInt(Math.round(amountInDollars)) * 1000000 * parseInt(quantity),
+      );
+      const txnHash = await transferTokenGassless(
+        dfnsToken,
+        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+        '137',
+        false,
+        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+        '0xc919926ceb1da03087Cb02ae9b5AF93DdE1D2334',
+        parseInt(Math.round(amountInDollars)) * 1000000 * parseInt(quantity), //USD Amount*1000000*Qty
+        allScw?.filter(x => x.chainId === '137')?.[0]?.address,
+      );
+      if (txnHash) {
+        await dispatch(acceptGiftCardOrder());
+        setLoader(false);
+        setisAccepted(true);
+        setGotQuote(false);
+        setQuantity('');
+        setModalVisible(false);
+        navigation.navigate('Success');
+      } else {
+        console.log('Failed buy');
+      }
     } catch (error) {
       console.log(error);
       setLoader(false);
@@ -271,7 +275,14 @@ const SingleCouponModal = ({
               <Text style={styles.textStyle}>
                 {gotQuote ? (
                   loader ? (
-                    <ActivityIndicator style={{padding: 1}} color="#000000" />
+                    <ActivityIndicator
+                      style={{
+                        alignSelf: 'center',
+                        justifyContent: 'center',
+                        padding: 1,
+                      }}
+                      color="#000000"
+                    />
                   ) : (
                     'Confirm'
                   )
