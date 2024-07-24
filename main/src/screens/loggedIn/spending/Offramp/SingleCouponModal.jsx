@@ -142,6 +142,9 @@ const SingleCouponModal = ({
 
   return (
     <Modal
+      hideModalContentWhileAnimating={true}
+      backdropColor="black"
+      useNativeDriverForBackdrop={true}
       style={styles.modal}
       isVisible={modalVisible}
       onBackButtonPress={() => {
@@ -151,59 +154,39 @@ const SingleCouponModal = ({
         setModalVisible(false);
       }}
       onBackdropPress={() => {
-        console.log('back');
+        setModalVisible(!modalVisible);
+        setGotQuote(false);
+        setQuantity('');
+        setModalVisible(false);
       }}>
-      <TouchableWithoutFeedback onPress={() => {}}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Image
-              source={{
-                uri: data?.vouchersImg,
-              }}
-              style={styles.modalImg}
-              resizeMode="cover"
-            />
-            <Text style={[styles.modalText, {marginTop: 10}]}>
-              {data?.brand}
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Image
+            source={{
+              uri: data?.vouchersImg,
+            }}
+            style={styles.modalImg}
+            resizeMode="cover"
+          />
+          <Text style={[styles.modalText, {marginTop: 10}]}>{data?.brand}</Text>
+
+          {gotQuote ? (
+            <Text style={[styles.confirmationText, {marginTop: 10}]}>
+              You are paying{' '}
+              <Text style={styles.confirmationTextWhite}>
+                {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}
+                {selectedChip?.toFixed(2)}
+              </Text>{' '}
+              for{' '}
+              <Text style={styles.confirmationTextWhite}>
+                {quantity} {data?.brand}
+              </Text>{' '}
+              gift cards
             </Text>
-
-            {gotQuote ? (
-              <Text style={[styles.confirmationText, {marginTop: 10}]}>
-                You are paying{' '}
-                <Text style={styles.confirmationTextWhite}>
-                  {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}
-                  {selectedChip?.toFixed(2)}
-                </Text>{' '}
-                for{' '}
-                <Text style={styles.confirmationTextWhite}>
-                  {quantity} {data?.brand}
-                </Text>{' '}
-                gift cards
-              </Text>
-            ) : data?.denominations.length > 10 ? (
-              <ScrollView
-                contentContainerStyle={{flexGrow: 1}}
-                style={{maxHeight: 200}}>
-                <View style={styles.container}>
-                  {data?.denominations.map((chip, index) => {
-                    const newChip = chip / couponCurrencyExchangeRate;
-
-                    return (
-                      <Chip
-                        key={index}
-                        label={Math.floor(newChip)}
-                        currencyIcon={getCurrencyIcon(
-                          isUsd ? 'USD' : data?.currencyCode,
-                        )}
-                        // isSelected={selectedChips.has(chip)}
-                        isSelected={newChip === selectedChip}
-                        onPress={() => toggleChipSelection(newChip)}
-                      />
-                    );
-                  })}
-                </View>
-              </ScrollView>
-            ) : (
+          ) : data?.denominations.length > 10 ? (
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1}}
+              style={{maxHeight: 200}}>
               <View style={styles.container}>
                 {data?.denominations.map((chip, index) => {
                   const newChip = chip / couponCurrencyExchangeRate;
@@ -222,45 +205,64 @@ const SingleCouponModal = ({
                   );
                 })}
               </View>
-            )}
-            <View style={{justifyContent: 'flex-end'}}>
-              {!gotQuote && (
-                <TextInput
-                  value={quantity}
-                  onChangeText={setQuantity}
-                  placeholder="How many to purchase"
-                  placeholderTextColor={'#cccccc'}
-                  style={[
-                    styles.input,
-                    {
-                      borderColor: isFocused ? '#fff' : '#000',
-                    },
-                  ]}
-                  keyboardType="numeric"
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                />
-              )}
+            </ScrollView>
+          ) : (
+            <View style={styles.container}>
+              {data?.denominations.map((chip, index) => {
+                const newChip = chip / couponCurrencyExchangeRate;
 
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={
-                  gotQuote
-                    ? () => {
-                        onAccept(data?.currencyCode);
-                      }
-                    : () => {
-                        getQuote(data?.currencyCode);
-                      }
-                }>
-                <Text style={styles.textStyle}>
-                  {gotQuote ? 'Confirm' : 'GET QUOTES'}
-                </Text>
-              </TouchableOpacity>
+                return (
+                  <Chip
+                    key={index}
+                    label={Math.floor(newChip)}
+                    currencyIcon={getCurrencyIcon(
+                      isUsd ? 'USD' : data?.currencyCode,
+                    )}
+                    // isSelected={selectedChips.has(chip)}
+                    isSelected={newChip === selectedChip}
+                    onPress={() => toggleChipSelection(newChip)}
+                  />
+                );
+              })}
             </View>
+          )}
+          <View style={{justifyContent: 'flex-end'}}>
+            {!gotQuote && (
+              <TextInput
+                value={quantity}
+                onChangeText={setQuantity}
+                placeholder="How many to purchase"
+                placeholderTextColor={'#cccccc'}
+                style={[
+                  styles.input,
+                  {
+                    borderColor: isFocused ? '#fff' : '#000',
+                  },
+                ]}
+                keyboardType="numeric"
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+              />
+            )}
+
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={
+                gotQuote
+                  ? () => {
+                      onAccept(data?.currencyCode);
+                    }
+                  : () => {
+                      getQuote(data?.currencyCode);
+                    }
+              }>
+              <Text style={styles.textStyle}>
+                {gotQuote ? 'Confirm' : 'GET QUOTES'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </Modal>
   );
 };
