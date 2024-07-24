@@ -19,12 +19,17 @@ import {
 import {Icon} from 'react-native-elements';
 import {ScrollView} from 'react-native';
 import SingleCouponModal from './Offramp/SingleCouponModal';
+import {getCurrencyIcon} from '../../../utils/currencyicon';
 
 const Catelog = () => {
   const store_currency = useSelector(x => x.auth.currency);
   const store_currency_name = useSelector(x => x.auth.currency_name);
   const store_country = useSelector(x => x.auth.country);
   const store_countryCode = useSelector(x => x.auth.countryCode);
+  const store_isUsd = useSelector(x => x.auth.isUsd);
+  const store_couponCurrencyExchangeRate = useSelector(
+    x => x.offRamp.couponCurrencyExchangeRate,
+  );
 
   const [loading, setLoading] = useState(false);
   const [showWebView, setShowWebView] = useState(false);
@@ -116,6 +121,8 @@ const Catelog = () => {
         country={store_country}
         navigation={navigation}
         email={email}
+        isUsd={store_isUsd}
+        couponCurrencyExchangeRate={store_couponCurrencyExchangeRate}
       />
     </SafeAreaView>
   );

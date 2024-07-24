@@ -20,15 +20,17 @@ import {
 } from '../../../../store/actions/offRamp';
 import {transferTokenGassless} from '../../../../utils/DFNS/walletFLow';
 import {getNameChainId} from '../../../../store/actions/market';
+import {getCurrencyIcon} from '../../../../utils/currencyicon';
 
-const Chip = ({label, isSelected, onPress}) => {
+const Chip = ({label, isSelected, onPress, currencyIcon}) => {
   return (
     <TouchableOpacity
       style={[styles.chip, isSelected ? styles.selectedChip : null]}
       onPress={onPress}>
       <Text
         style={[styles.chipText, isSelected ? styles.selectedChipText : null]}>
-        {label} USD
+        {currencyIcon}
+        {label}
       </Text>
     </TouchableOpacity>
   );
@@ -40,6 +42,8 @@ const SingleCouponModal = ({
   data,
   country,
   email,
+  isUsd,
+  couponCurrencyExchangeRate,
 }) => {
   const [selectedChip, setSelectedChip] = useState(null);
   const [quantity, setQuantity] = useState();
@@ -54,12 +58,17 @@ const SingleCouponModal = ({
 
   const getQuote = async () => {
     if (quantity > 0 && selectedChip !== null) {
+      let newChip = selectedChip;
+      if (isUsd) {
+        newChip = selectedChip * couponCurrencyExchangeRate;
+      }
+
       await dispatch(
         submitDetailsForQuote(
           country,
           data?.productId,
           data?.brand,
-          selectedChip,
+          newChip,
           quantity,
         ),
       );
@@ -69,29 +78,38 @@ const SingleCouponModal = ({
   };
 
   const onAccept = async () => {
-    console.log(
-      'Amount to be transfered........',
-      selectedChip * 1000000 * parseInt(quantity),
-    );
-    const txnHash = await transferTokenGassless(
-      dfnsToken,
-      wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-      '137',
-      false,
-      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
-      selectedChip * 1000000 * parseInt(quantity), //USD Amount*1000000*Qty
-      allScw?.filter(x => x.chainId === '137')?.[0]?.address,
-    );
-    if (txnHash) {
-      await dispatch(acceptGiftCardOrder());
-      setisAccepted(true);
-      setGotQuote(false);
-      setQuantity('');
-      setModalVisible(false);
-      navigation.navigate('Success');
-    } else {
-      console.log('Failed buy');
+    try {
+      let newChip = selectedChip;
+      if (isUsd) {
+        newChip = selectedChip * couponCurrencyExchangeRate;
+      }
+
+      console.log(
+        'Amount to be transfered........',
+        newChip * 1000000 * parseInt(quantity),
+      );
+      const txnHash = await transferTokenGassless(
+        dfnsToken,
+        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+        '137',
+        false,
+        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+        '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
+        newChip * 1000000 * parseInt(quantity), //USD Amount*1000000*Qty
+        allScw?.filter(x => x.chainId === '137')?.[0]?.address,
+      );
+      if (txnHash) {
+        await dispatch(acceptGiftCardOrder());
+        setisAccepted(true);
+        setGotQuote(false);
+        setQuantity('');
+        setModalVisible(false);
+        navigation.navigate('Success');
+      } else {
+        console.log('Failed buy');
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -124,6 +142,9 @@ const SingleCouponModal = ({
       visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
+        setGotQuote(false);
+        setQuantity('');
+        setModalVisible(false);
       }}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -140,7 +161,8 @@ const SingleCouponModal = ({
             <Text style={[styles.confirmationText, {marginTop: 10}]}>
               You are paying{' '}
               <Text style={styles.confirmationTextWhite}>
-                {selectedChip} USD
+                {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}
+                {selectedChip?.toFixed(2)}
               </Text>{' '}
               for{' '}
               <Text style={styles.confirmationTextWhite}>
@@ -153,28 +175,42 @@ const SingleCouponModal = ({
               contentContainerStyle={{flexGrow: 1}}
               style={{maxHeight: 200}}>
               <View style={styles.container}>
-                {data?.denominations.map((chip, index) => (
-                  <Chip
-                    key={index}
-                    label={chip}
-                    // isSelected={selectedChips.has(chip)}
-                    isSelected={chip === selectedChip}
-                    onPress={() => toggleChipSelection(chip)}
-                  />
-                ))}
+                {data?.denominations.map((chip, index) => {
+                  const newChip = chip / couponCurrencyExchangeRate;
+
+                  return (
+                    <Chip
+                      key={index}
+                      label={Math.floor(newChip)}
+                      currencyIcon={getCurrencyIcon(
+                        isUsd ? 'USD' : data?.currencyCode,
+                      )}
+                      // isSelected={selectedChips.has(chip)}
+                      isSelected={newChip === selectedChip}
+                      onPress={() => toggleChipSelection(newChip)}
+                    />
+                  );
+                })}
               </View>
             </ScrollView>
           ) : (
             <View style={styles.container}>
-              {data?.denominations.map((chip, index) => (
-                <Chip
-                  key={index}
-                  label={chip}
-                  // isSelected={selectedChips.has(chip)}
-                  isSelected={chip === selectedChip}
-                  onPress={() => toggleChipSelection(chip)}
-                />
-              ))}
+              {data?.denominations.map((chip, index) => {
+                const newChip = chip / couponCurrencyExchangeRate;
+
+                return (
+                  <Chip
+                    key={index}
+                    label={Math.floor(newChip)}
+                    currencyIcon={getCurrencyIcon(
+                      isUsd ? 'USD' : data?.currencyCode,
+                    )}
+                    // isSelected={selectedChips.has(chip)}
+                    isSelected={newChip === selectedChip}
+                    onPress={() => toggleChipSelection(newChip)}
+                  />
+                );
+              })}
             </View>
           )}
           <View style={{justifyContent: 'flex-end'}}>
@@ -296,6 +332,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     opacity: 0.7,
     marginVertical: 20,
+    height: 55,
   },
   confirmationText: {
     fontSize: 14,

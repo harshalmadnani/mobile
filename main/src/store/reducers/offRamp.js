@@ -8,6 +8,7 @@ const initialState = {
   quoteDetail: null,
   acceptedQuote: null,
   token: null,
+  couponCurrencyExchangeRate: 1,
 };
 
 export const offRampSlice = createSlice({
@@ -28,6 +29,9 @@ export const offRampSlice = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload;
+    },
+    setCouponCurrencyExchangeRate: (state, action) => {
+      state.couponCurrencyExchangeRate = action.payload;
     },
   },
 });

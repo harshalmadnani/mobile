@@ -109,12 +109,12 @@ const ChangeCurrency = ({navigation, route}) => {
         if (currency === 'USD') {
           dispatch(
             storeCountryCurrency(
-              'United States',
-              currency,
-              'Dollar',
+              store_country,
+              'USD',
+              'USD',
               1,
               ipAddress,
-              'US',
+              store_countryCode,
             ),
           );
           dispatch(authActions.setIsUsd(true));

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {offRampAction} from '../reducers/offRamp';
+import {convertCurrency} from './auth';
 
 //TODO(change payload here based on required response for reducers)
 
@@ -80,7 +81,7 @@ export const fetchOnboardedUser = email => {
               console.log('Response:', createUserResponse);
               dispatch(offRampAction.setUser(createUserResponse?.data?.data));
             } else {
-              console.error('Failed to create user');
+              throw new Error('Failed to create user');
             }
           } catch (error) {
             console.error(
@@ -110,28 +111,65 @@ export const fetchOnboardedUser = email => {
   };
 };
 
+const CouponCurrencyToCurrentCurrency = async couponCurrency => {
+  try {
+    const response = await axios.get(
+      `https://api.currencyapi.com/v3/latest?apikey=cur_live_Qe5VlIdahch1NOftHKpRNcQdSwzNawXdTWTPswVm&currencies=${couponCurrency}`,
+    );
+    console.log(
+      `current rate at ${couponCurrency}`,
+      response.data.data[couponCurrency].value,
+    );
+    return response.data.data[couponCurrency].value;
+  } catch (err) {
+    console.log(
+      err,
+      'Error in actions/offRamp/CouponCurrencyToCurrentCurrency function.',
+    );
+  }
+};
+
 export const getCountryBasedGiftCard = () => {
   return async (dispatch, getState) => {
-    let countryName = await getState().auth.country;
-    const token = getState().offRamp.token;
-    console.log('🎁--> Getting gift cards based on country :', countryName);
+    let countryCode = await getState().auth.countryCode;
+    let isUsd = await getState().auth.isUsd;
 
-    if (countryName != null) {
+    const token = getState().offRamp.token;
+    console.log('🎁--> Getting gift cards based on country :', countryCode);
+
+    if (countryCode != null) {
       try {
         const response = await axios.get(URL.GET_GIFT_CARD, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            country: countryName,
+            country: countryCode,
 
             //  deliveryType: '',
-            //  currencyCode: '',
+            // currencyCode: currency_code,
           },
         });
 
         if (response.status === 200) {
-          console.log('🎁Gift cards:', response?.data?.data?.vouchers);
+          //  console.log('🎁Gift cards:', response?.data?.data?.vouchers);
+          let newCouponCurrencyExchangeRate =
+            await CouponCurrencyToCurrentCurrency(
+              response?.data?.data?.vouchers[0].currencyCode,
+            );
+
+          console.log(
+            isUsd
+              ? `User chose dollars and coupon country : ${countryCode}, therefore Coupon price will divide by exchrate : ${newCouponCurrencyExchangeRate}`
+              : 'User DID NOT chose dollars, no change in coupons exchrate.',
+          );
+
+          await dispatch(
+            offRampAction.setCouponCurrencyExchangeRate(
+              isUsd ? parseFloat(newCouponCurrencyExchangeRate) : 1,
+            ),
+          );
+
           dispatch(offRampAction.setGiftCards(response?.data?.data?.vouchers));
         } else {
           console.error('Failed to fetch gift cards');
@@ -158,13 +196,14 @@ export const submitDetailsForQuote = (
     const user = getState().offRamp.user;
     const token = getState().offRamp.token;
     console.log('user!!!!!', user);
+    let denominator_ = denominator.toString();
 
     const requestBody = {
       country: country,
       productId: productId,
       brand: brand,
-      denominator: denominator,
-      cryptoCoin: 'USDC',
+      denominator: denominator_,
+      cryptoCoin: 'USDT',
       selectedFiat: 'INR',
       encryptus_userID: user?._id,
       quantity: parseInt(quantity),
@@ -193,7 +232,7 @@ export const submitDetailsForQuote = (
     } catch (error) {
       console.error(
         'Error actions/offRamp/submitGiftCardQuote function',
-        error,
+        error.message,
       );
     }
   };
