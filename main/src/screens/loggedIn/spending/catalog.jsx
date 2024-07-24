@@ -51,6 +51,16 @@ const Catelog = () => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
+      <SingleCouponModal
+        data={selected}
+        modalVisible={couponModal}
+        setModalVisible={setCouponModal}
+        country={store_country}
+        navigation={navigation}
+        email={email}
+        isUsd={store_isUsd}
+        couponCurrencyExchangeRate={store_couponCurrencyExchangeRate}
+      />
       <View
         style={{
           backgroundColor: '#333333',
@@ -113,17 +123,6 @@ const Catelog = () => {
           <View style={{height: 200}} />
         </ScrollView>
       </View>
-
-      <SingleCouponModal
-        data={selected}
-        modalVisible={couponModal}
-        setModalVisible={setCouponModal}
-        country={store_country}
-        navigation={navigation}
-        email={email}
-        isUsd={store_isUsd}
-        couponCurrencyExchangeRate={store_couponCurrencyExchangeRate}
-      />
     </SafeAreaView>
   );
 };

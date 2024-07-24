@@ -111,7 +111,7 @@ export const fetchOnboardedUser = email => {
   };
 };
 
-const CouponCurrencyToCurrentCurrency = async couponCurrency => {
+export const CouponCurrencyToCurrentCurrency = async couponCurrency => {
   try {
     const response = await axios.get(
       `https://api.currencyapi.com/v3/latest?apikey=cur_live_Qe5VlIdahch1NOftHKpRNcQdSwzNawXdTWTPswVm&currencies=${couponCurrency}`,
@@ -191,6 +191,7 @@ export const submitDetailsForQuote = (
   brand,
   denominator,
   quantity,
+  faitCurrency,
 ) => {
   return async (dispatch, getState) => {
     const user = getState().offRamp.user;
@@ -204,7 +205,7 @@ export const submitDetailsForQuote = (
       brand: brand,
       denominator: denominator_,
       cryptoCoin: 'USDT',
-      selectedFiat: 'INR',
+      selectedFiat: faitCurrency,
       encryptus_userID: user?._id,
       quantity: parseInt(quantity),
       partner_userID: user?.ref_partnerId,
