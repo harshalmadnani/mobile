@@ -9,6 +9,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -149,46 +150,64 @@ const SingleCouponModal = ({
         setQuantity('');
         setLoader(false);
       }}>
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          {/* Close Icon */}
-          <TouchableOpacity
-            style={styles.closeIcon}
-            onPress={() => {
-              setModalVisible(false);
-              setGotQuote(false);
-              setQuantity('');
-              setLoader(false);
-            }}>
-            <Icon name="close" size={32} color="#fff" />
-          </TouchableOpacity>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {/* Close Icon */}
+            <TouchableOpacity
+              style={styles.closeIcon}
+              onPress={() => {
+                setModalVisible(false);
+                setGotQuote(false);
+                setQuantity('');
+                setLoader(false);
+              }}>
+              <Icon name="close" size={32} color="#fff" />
+            </TouchableOpacity>
 
-          <Image
-            source={{
-              uri: data?.vouchersImg,
-            }}
-            style={styles.modalImg}
-            resizeMode="cover"
-          />
-          <Text style={[styles.modalText, {marginTop: 10}]}>{data?.brand}</Text>
+            <Image
+              source={{
+                uri: data?.vouchersImg,
+              }}
+              style={styles.modalImg}
+              resizeMode="cover"
+            />
+            <Text style={[styles.modalText, {marginTop: 10}]}>{data?.brand}</Text>
 
-          {gotQuote ? (
-            <Text style={[styles.confirmationText, {marginTop: 10}]}>
-              You are paying{' '}
-              <Text style={styles.confirmationTextWhite}>
-                {getCurrencyIcon(data?.currencyCode)}
-                {selectedChip?.toFixed(2) * quantity}
-              </Text>{' '}
-              for{' '}
-              <Text style={styles.confirmationTextWhite}>
-                {quantity} {data?.brand}
-              </Text>{' '}
-              gift cards
-            </Text>
-          ) : data?.denominations.length > 10 ? (
-            <ScrollView
-              contentContainerStyle={{flexGrow: 1}}
-              style={{maxHeight: 200}}>
+            {gotQuote ? (
+              <Text style={[styles.confirmationText, {marginTop: 10}]}>
+                You are paying{' '}
+                <Text style={styles.confirmationTextWhite}>
+                  {getCurrencyIcon(data?.currencyCode)}
+                  {selectedChip?.toFixed(2) * quantity}
+                </Text>{' '}
+                for{' '}
+                <Text style={styles.confirmationTextWhite}>
+                  {quantity} {data?.brand}
+                </Text>{' '}
+                gift cards
+              </Text>
+            ) : data?.denominations.length > 10 ? (
+              <ScrollView
+                contentContainerStyle={{flexGrow: 1}}
+                style={{maxHeight: 200}}>
+                <View style={styles.container}>
+                  {data?.denominations.map((chip, index) => {
+                    const newChip = chip / couponCurrencyExchangeRate;
+
+                    return (
+                      <Chip
+                        key={index}
+                        label={Math.floor(newChip)}
+                        currencyIcon={getCurrencyIcon(data?.currencyCode)}
+                        isSelected={newChip === selectedChip}
+                        onPress={() => toggleChipSelection(newChip)}
+                      />
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            ) : (
               <View style={styles.container}>
                 {data?.denominations.map((chip, index) => {
                   const newChip = chip / couponCurrencyExchangeRate;
@@ -204,76 +223,60 @@ const SingleCouponModal = ({
                   );
                 })}
               </View>
-            </ScrollView>
-          ) : (
-            <View style={styles.container}>
-              {data?.denominations.map((chip, index) => {
-                const newChip = chip / couponCurrencyExchangeRate;
-
-                return (
-                  <Chip
-                    key={index}
-                    label={Math.floor(newChip)}
-                    currencyIcon={getCurrencyIcon(data?.currencyCode)}
-                    isSelected={newChip === selectedChip}
-                    onPress={() => toggleChipSelection(newChip)}
-                  />
-                );
-              })}
-            </View>
-          )}
-          <View style={{justifyContent: 'flex-end'}}>
-            {!gotQuote && (
-              <TextInput
-                value={quantity}
-                onChangeText={setQuantity}
-                placeholder="How many to purchase"
-                placeholderTextColor={'#cccccc'}
-                style={[
-                  styles.input,
-                  {
-                    borderColor: isFocused ? '#fff' : '#000',
-                  },
-                ]}
-                keyboardType="numeric"
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-              />
             )}
+            <View style={{justifyContent: 'flex-end'}}>
+              {!gotQuote && (
+                <TextInput
+                  value={quantity}
+                  onChangeText={setQuantity}
+                  placeholder="How many to purchase"
+                  placeholderTextColor={'#cccccc'}
+                  style={[
+                    styles.input,
+                    {
+                      borderColor: isFocused ? '#fff' : '#000',
+                    },
+                  ]}
+                  keyboardType="numeric"
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
+              )}
 
-            <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
-              onPress={
-                gotQuote
-                  ? () => {
-                      onAccept(data?.currencyCode);
-                    }
-                  : () => {
-                      getQuote(data?.currencyCode);
-                    }
-              }>
-              <Text style={styles.textStyle}>
-                {gotQuote ? (
-                  loader ? (
-                    <ActivityIndicator
-                      style={{
-                        alignSelf: 'center',
-                        justifyContent: 'center',
-                        padding: 1,
-                      }}
-                      color="#000000"
-                    />
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={
+                  gotQuote
+                    ? () => {
+                        onAccept(data?.currencyCode);
+                      }
+                    : () => {
+                        getQuote(data?.currencyCode);
+                      }
+                }>
+                <Text style={styles.textStyle}>
+                  {gotQuote ? (
+                    loader ? (
+                      <ActivityIndicator
+                        style={{
+                          alignSelf: 'center',
+                          justifyContent: 'center',
+                          padding: 1,
+                        }}
+                        color="#000000"
+                      />
+                    ) : (
+                      'Confirm'
+                    )
                   ) : (
-                    'Confirm'
-                  )
-                ) : (
-                  'GET QUOTES'
-                )}
-              </Text>
-            </TouchableOpacity>
+                    'GET QUOTES'
+                  )}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
