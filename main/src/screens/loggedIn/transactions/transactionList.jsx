@@ -9,7 +9,8 @@ import {
   Pressable,
   ImageBackground,
 } from 'react-native';
-
+import Video from 'react-native-video'; // Add this import
+import transaction from '../../../../assets/transaction.mp4';
 import {Icon, Text} from 'react-native-elements';
 import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
 import WalletTransactionTradeCard from '../../../component/Transaction/WalletTransactionTradeCard';
@@ -176,18 +177,17 @@ const TransactionList = ({navigation, route}) => {
         <View
           style={{
             justifyContent: 'center',
-            height: '80%',
+            height: '30%',
             width: '100%',
           }}>
-          <LottieView
-            source={require('../../../../assets/lottie/iosLottieLoader.json')}
+          <Video
+            source={transaction}
             style={{
-              width: 20,
-              height: 20,
-              alignSelf: 'center',
+              width: '100%',
+              height: '100%',
             }}
-            autoPlay
-            loop
+            resizeMode="fit"
+            repeat
           />
         </View>
       )}

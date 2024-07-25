@@ -121,7 +121,7 @@ const MarketChart = props => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439',
+          `https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439&currencies=${currentItem?.symbol}`,
         );
         setNewsData(response?.data?.results);
       } catch (error) {
