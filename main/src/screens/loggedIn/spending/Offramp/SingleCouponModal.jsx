@@ -23,6 +23,7 @@ import {transferTokenGassless} from '../../../../utils/DFNS/walletFLow';
 import {getNameChainId} from '../../../../store/actions/market';
 import {getCurrencyIcon} from '../../../../utils/currencyicon';
 import Modal from 'react-native-modal';
+import { Icon } from 'react-native-elements';
 
 const Chip = ({label, isSelected, onPress, currencyIcon}) => {
   return (
@@ -86,21 +87,11 @@ const SingleCouponModal = ({
       setLoader(true);
       let amountInDollars = selectedChip;
 
-      //FOR DYNAMIC CURRENCY (if isUSD is true, chips are already converted to dollars)
-      // if (!isUsd) {
-      //   amountInDollars =
-      //     selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
-      // }
-
       //FOR LOCAL CURRENCY
       amountInDollars =
         selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
       console.log('Selected coupon in dollars:', amountInDollars);
 
-      // console.log(
-      //   'Amount to be transfered........',
-      //   amountInDollars * 1000000 * parseInt(quantity),
-      // );
       console.log(
         'amount in dollar',
         parseInt(Math.round(amountInDollars)) * 1000000 * parseInt(quantity),
@@ -133,18 +124,8 @@ const SingleCouponModal = ({
     }
   };
 
-  //const [selectedChips, setSelectedChips] = useState(new Set());
-
   const toggleChipSelection = chip => {
     setSelectedChip(chip === selectedChip ? null : chip);
-    //----for multiple chips--
-    // const updatedSelection = new Set(selectedChips);
-    // if (updatedSelection.has(chip)) {
-    //   updatedSelection.delete(chip);
-    // } else {
-    //   updatedSelection.add(chip);
-    // }
-    // setSelectedChips(updatedSelection);
   };
 
   const navigation = useNavigation();
@@ -157,21 +138,31 @@ const SingleCouponModal = ({
       style={styles.modal}
       isVisible={modalVisible}
       onBackButtonPress={() => {
-        setModalVisible(!modalVisible);
+        setModalVisible(false);
         setGotQuote(false);
         setQuantity('');
-        setModalVisible(false);
         setLoader(false);
       }}
       onBackdropPress={() => {
-        setModalVisible(!modalVisible);
+        setModalVisible(false);
         setGotQuote(false);
         setQuantity('');
-        setModalVisible(false);
         setLoader(false);
       }}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
+          {/* Close Icon */}
+          <TouchableOpacity
+            style={styles.closeIcon}
+            onPress={() => {
+              setModalVisible(false);
+              setGotQuote(false);
+              setQuantity('');
+              setLoader(false);
+            }}>
+            <Icon name="close" size={32} color="#fff" />
+          </TouchableOpacity>
+
           <Image
             source={{
               uri: data?.vouchersImg,
@@ -185,7 +176,6 @@ const SingleCouponModal = ({
             <Text style={[styles.confirmationText, {marginTop: 10}]}>
               You are paying{' '}
               <Text style={styles.confirmationTextWhite}>
-                {/* {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}  FOR DYNAMIC CURRENCY*/}
                 {getCurrencyIcon(data?.currencyCode)}
                 {selectedChip?.toFixed(2) * quantity}
               </Text>{' '}
@@ -207,12 +197,7 @@ const SingleCouponModal = ({
                     <Chip
                       key={index}
                       label={Math.floor(newChip)}
-                      //FOR DYNAMIC CURRENCY
-                      // currencyIcon={getCurrencyIcon(
-                      //   isUsd ? 'USD' : data?.currencyCode,
-                      // )}
                       currencyIcon={getCurrencyIcon(data?.currencyCode)}
-                      // isSelected={selectedChips.has(chip)}
                       isSelected={newChip === selectedChip}
                       onPress={() => toggleChipSelection(newChip)}
                     />
@@ -229,12 +214,7 @@ const SingleCouponModal = ({
                   <Chip
                     key={index}
                     label={Math.floor(newChip)}
-                    //FOR DYNAMIC CURRENCY
-                    // currencyIcon={getCurrencyIcon(
-                    //   isUsd ? 'USD' : data?.currencyCode,
-                    // )}
                     currencyIcon={getCurrencyIcon(data?.currencyCode)}
-                    // isSelected={selectedChips.has(chip)}
                     isSelected={newChip === selectedChip}
                     onPress={() => toggleChipSelection(newChip)}
                   />
@@ -322,11 +302,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
 
     color: '#fff',
-    //fontFamily: 'Unbounded-Bold',
   },
   button: {
     borderRadius: 10,
-    padding: 10,
+    padding: '5%',
     elevation: 2,
     marginBottom: 10,
   },
@@ -402,6 +381,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     color: '#fff',
+  },
+  closeIcon: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 1,
   },
 });
 
