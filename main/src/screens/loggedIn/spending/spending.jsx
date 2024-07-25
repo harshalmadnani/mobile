@@ -26,13 +26,10 @@ const Spending = () => {
   const navigation = useNavigation();
   const email = useSelector(x => x.auth.email);
 
-  useEffect(() => {
-    dispatch(genrateToken());
-  }, []);
-
   const enterUserForCoupon = async () => {
     try {
       setLoading(true);
+      await dispatch(genrateToken());
       await dispatch(fetchOnboardedUser(email));
       await dispatch(getCountryBasedGiftCard());
       setLoading(false);
