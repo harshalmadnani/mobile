@@ -23,6 +23,7 @@ import {transferTokenGassless} from '../../../../utils/DFNS/walletFLow';
 import {getNameChainId} from '../../../../store/actions/market';
 import {getCurrencyIcon} from '../../../../utils/currencyicon';
 import Modal from 'react-native-modal';
+import Toast from 'react-native-root-toast';
 
 const Chip = ({label, isSelected, onPress, currencyIcon}) => {
   return (
@@ -57,6 +58,7 @@ const SingleCouponModal = ({
   const dfnsToken = useSelector(x => x.auth.DFNSToken);
   const wallets = useSelector(x => x.auth.wallets);
   const allScw = useSelector(x => x.auth.scw);
+  const quoteDetail = useSelector(x => x.offRamp.quoteDetail);
   const dispatch = useDispatch();
 
   const getQuote = async faitCurrency => {
@@ -84,7 +86,7 @@ const SingleCouponModal = ({
   const onAccept = async currencyCode => {
     try {
       setLoader(true);
-      let amountInDollars = selectedChip;
+      // let amountInDollars = selectedChip;
 
       //FOR DYNAMIC CURRENCY (if isUSD is true, chips are already converted to dollars)
       // if (!isUsd) {
@@ -93,35 +95,49 @@ const SingleCouponModal = ({
       // }
 
       //FOR LOCAL CURRENCY
-      amountInDollars =
-        selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
-      console.log('Selected coupon in dollars:', amountInDollars);
+      // amountInDollars =
+      //   selectedChip / (await CouponCurrencyToCurrentCurrency(currencyCode)); // To convert back to USD.
+      // console.log('Selected coupon in dollars:', amountInDollars);
 
-      // console.log(
-      //   'Amount to be transfered........',
-      //   amountInDollars * 1000000 * parseInt(quantity),
-      // );
-      // const txnHash = await transferTokenGassless(
-      //   dfnsToken,
-      //   wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-      //   '137',
-      //   false,
-      //   '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-      //   '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
-      //   amountInDollars * 1000000 * parseInt(quantity), //USD Amount*1000000*Qty
-      //   allScw?.filter(x => x.chainId === '137')?.[0]?.address,
-      // );
-      // if (txnHash) {
-      await dispatch(acceptGiftCardOrder());
-      setLoader(false);
-      setisAccepted(true);
-      setGotQuote(false);
-      setQuantity('');
-      setModalVisible(false);
-      navigation.navigate('Success');
-      // } else {
-      //   console.log('Failed buy');
-      //}
+      let cryptoAmount = quoteDetail.crypto_amount;
+      console.log(
+        'Amount to be transfered........',
+        parseInt(cryptoAmount * 1000000),
+      );
+      const txnHash = await transferTokenGassless(
+        dfnsToken,
+        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+        '137',
+        false,
+        '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+        '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
+        parseInt(cryptoAmount * 1000000), //USD Amount*1000000*Qty
+        allScw?.filter(x => x.chainId === '137')?.[0]?.address,
+      );
+      if (txnHash) {
+        await dispatch(acceptGiftCardOrder());
+        setLoader(false);
+        setisAccepted(true);
+        setGotQuote(false);
+        setQuantity('');
+        setModalVisible(false);
+        navigation.navigate('Success');
+      } else {
+        console.log('Failed buy');
+        setLoader(false);
+        setGotQuote(false);
+        setQuantity('');
+        setModalVisible(false);
+        setLoader(false);
+        Toast.show('Insufficient wallet balance', {
+          duration: Toast.durations.SHORT,
+          position: Toast.positions.BOTTOM,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+          delay: 1,
+        });
+      }
     } catch (error) {
       console.log(error);
       setLoader(false);
@@ -153,14 +169,12 @@ const SingleCouponModal = ({
       style={styles.modal}
       isVisible={modalVisible}
       onBackButtonPress={() => {
-        setModalVisible(!modalVisible);
         setGotQuote(false);
         setQuantity('');
         setModalVisible(false);
         setLoader(false);
       }}
       onBackdropPress={() => {
-        setModalVisible(!modalVisible);
         setGotQuote(false);
         setQuantity('');
         setModalVisible(false);
@@ -182,12 +196,11 @@ const SingleCouponModal = ({
               You are paying{' '}
               <Text style={styles.confirmationTextWhite}>
                 {/* {getCurrencyIcon(isUsd ? 'USD' : data?.currencyCode)}{' '}  FOR DYNAMIC CURRENCY*/}
-                {getCurrencyIcon(data?.currencyCode)}
-                {selectedChip?.toFixed(2) * quantity}
+                {(quoteDetail?.crypto_amount).toFixed(2)} USDC
               </Text>{' '}
               for{' '}
               <Text style={styles.confirmationTextWhite}>
-                {quantity} {data?.brand}
+                {quantity} {'x'} {selectedChip} {data?.brand}
               </Text>{' '}
               gift cards
             </Text>

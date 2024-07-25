@@ -227,7 +227,7 @@ export const submitDetailsForQuote = (
       if (response.status === 201) {
         console.log('🎁 Quote created:', response.data);
         console.log('Quto id created => ', response.data.quote.quoteId);
-        dispatch(offRampAction.setQuoteDetail(response.data.quote.quoteId));
+        dispatch(offRampAction.setQuoteDetail(response.data.quote));
       } else {
         console.error('Failed to create quote');
       }
@@ -244,7 +244,7 @@ export const acceptGiftCardOrder = () => {
   return async (dispatch, getState) => {
     //raw data
 
-    const quoteId = getState().offRamp.quoteDetail;
+    const {quoteId} = getState().offRamp.quoteDetail;
     const token = getState().offRamp.token;
     console.log('QUOTE ID =>', quoteId);
     try {
