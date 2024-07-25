@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, View, SafeAreaView, StyleSheet} from 'react-native';
+import {Text, View, SafeAreaView, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {SingleCouponItem} from '../../../component/CouponModal';
 import {useSelector} from 'react-redux';
@@ -31,82 +31,90 @@ const Catelog = () => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'black'}}>
-      <SingleCouponModal
-        data={selected}
-        modalVisible={couponModal}
-        setModalVisible={setCouponModal}
-        country={store_country}
-        navigation={navigation}
-        email={email}
-        isUsd={store_isUsd}
-        //  couponCurrencyExchangeRate={store_couponCurrencyExchangeRate} FOR DYNAMIC CURRENCY
-        couponCurrencyExchangeRate={1}
-      />
-      <View
-        style={{
-          backgroundColor: '#333333',
-          borderRadius: 100,
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          left: '5%',
-          top: '5%',
-        }}>
-        <Icon
-          name={'navigate-before'}
-          size={30}
-          color={'#f0f0f0'}
-          type="materialicons"
-          onPress={() => navigation.goBack()}
-        />
-      </View>
+      <TouchableWithoutFeedback onPress={() => setCouponModal(false)}>
+        <View style={{flex: 1}}>
+          <View style={{flexDirection: 'row', alignItems: 'center', marginTop: '5%'}}>
+            <View
+              style={{
+                backgroundColor: '#333333',
+                borderRadius: 100,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginLeft: '5%',
+              }}>
+              <Icon
+                name={'navigate-before'}
+                size={30}
+                color={'#f0f0f0'}
+                type="materialicons"
+                onPress={() => navigation.goBack()}
+              />
+            </View>
 
-      <Text
-        style={{
-          alignSelf: 'center',
-          color: '#fff',
-          fontSize: 16,
-          marginTop: '10%',
-        }}>
-        Gift Cards
-      </Text>
-
-      <View style={{marginTop: '10%', marginLeft: '5%'}}>
-        <Text
-          style={{
-            color: '#fff',
-            fontSize: 22,
-            marginTop: '5%',
-            paddingBottom: '5%',
-          }}>
-          Select the Gift card
-        </Text>
-
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'space-around',
-            }}>
-            {giftCards?.length > 0 &&
-              giftCards.map((x, index) => (
-                <SingleCouponItem
-                  key={x?.productId}
-                  info={x}
-                  onSelect={() => onSelect(x)}
-                  isSelected={selected?.productId === x.productId}
-                  style={{width: '30%', margin: 5}} // Adjust width and margin as needed
-                />
-              ))}
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 16,
+                marginLeft: '5%',
+              }}>
+              Gift Cards
+            </Text>
           </View>
 
-          <View style={{height: 200}} />
-        </ScrollView>
-      </View>
+          <View style={{marginTop: '2%', marginLeft: '5%'}}>
+           
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  justifyContent: 'space-around',
+                }}>
+                {giftCards?.length > 0 &&
+                  giftCards.map((x, index) => (
+                    <SingleCouponItem
+                      key={x?.productId}
+                      info={x}
+                      onSelect={() => onSelect(x)}
+                      isSelected={selected?.productId === x.productId}
+                      style={{width: '30%', margin: 5}} // Adjust width and margin as needed
+                    />
+                  ))}
+              </View>
+
+              <View style={{height: 200}} />
+            </ScrollView>
+          </View>
+
+          <SingleCouponModal
+            data={selected}
+            modalVisible={couponModal}
+            setModalVisible={setCouponModal}
+            country={store_country}
+            navigation={navigation}
+            email={email}
+            isUsd={store_isUsd}
+            //  couponCurrencyExchangeRate={store_couponCurrencyExchangeRate} FOR DYNAMIC CURRENCY
+            couponCurrencyExchangeRate={1}
+          >
+            <TouchableWithoutFeedback onPress={() => setCouponModal(false)}>
+              <View style={styles.closeIconContainer}>
+                <Icon
+                  name="close"
+                  size={30}
+                  color="#fff"
+                  type="materialicons"
+                  onPress={() => setCouponModal(false)} // Add onPress to close the modal
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          </SingleCouponModal>
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -158,6 +166,16 @@ const styles = StyleSheet.create({
     color: '#969696',
     width: '80%',
   },
+  closeIconContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 15,
+    padding: 5,
+  },
   // ... rest of your styles ...
 });
+
 export default Catelog;

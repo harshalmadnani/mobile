@@ -34,9 +34,9 @@ const MarketChart = props => {
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
   const isStockTrade = useSelector(x => x.market.isStockTrade);
+
   const tradingViewWidgetHTML = !isStockTrade
     ? `
-  
   <!-- TradingView Widget BEGIN -->
 <div class="tradingview-widget-container">
   <div class="tradingview-widget-container__widget"></div>
@@ -59,6 +59,7 @@ const MarketChart = props => {
 `
     : null;
   // Function to render a single tab item
+
   const renderTabItem = tabName => (
     <TouchableOpacity
       style={{
@@ -120,7 +121,7 @@ const MarketChart = props => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439',
+          `https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439&currencies=${currentItem?.symbol}`,
         );
         setNewsData(response?.data?.results);
       } catch (error) {
