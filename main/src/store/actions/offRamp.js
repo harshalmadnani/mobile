@@ -240,7 +240,7 @@ export const submitDetailsForQuote = (
   };
 };
 
-export const acceptGiftCardOrder = () => {
+export const acceptGiftCardOrder = navigation => {
   return async (dispatch, getState) => {
     //raw data
 
@@ -266,12 +266,15 @@ export const acceptGiftCardOrder = () => {
       if (response.status === 200) {
         console.log('🎁 Order submitted successfully:', response.data.data);
         dispatch(offRampAction.acceptQuote(response?.data?.data?.gc_response));
+        return true;
       } else {
         console.error('Failed to submit order');
+        return false;
       }
     } catch (error) {
       // throw new Error('Failed to confirm quote id', error);
       console.log(error); // console.error(
+      return false;
       //   'Error actions/offRamp/acceptGiftCardOrder function:',
       //   error,
       // );

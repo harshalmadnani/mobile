@@ -106,20 +106,31 @@ const SingleCouponModal = ({
         '137',
         false,
         '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
-        '0xDE690120f059046c1f9b2d01c1CA18A6fe51070E',
+        '0xd1E090E590FB0c5e8F2C0B7c39053c387c65d919',
         parseInt(cryptoAmount * 1000000), //USD Amount*1000000*Qty
         allScw?.filter(x => x.chainId === '137')?.[0]?.address,
       );
       if (txnHash) {
-        await dispatch(acceptGiftCardOrder());
-        setLoader(false);
-        setisAccepted(true);
-        setGotQuote(false);
-        setQuantity('');
-        setModalVisible(false);
-        navigation.navigate('Success');
+        const status = await dispatch(acceptGiftCardOrder());
+        if (status) {
+          setLoader(false);
+          setisAccepted(true);
+          setGotQuote(false);
+          setQuantity('');
+          setModalVisible(false);
+          navigation.navigate('Success');
+        } else {
+          Toast.show('Insufficient Encryptus balance', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 1,
+          });
+          navigation.navigate('Portfolio');
+        }
       } else {
-        console.log('Failed buy');
         setLoader(false);
         setGotQuote(false);
         setQuantity('');
@@ -133,10 +144,19 @@ const SingleCouponModal = ({
           hideOnPress: true,
           delay: 1,
         });
+        navigation.navigate('Portfolio');
       }
     } catch (error) {
       console.log(error);
       setLoader(false);
+      Toast.show('Insufficient wallet balance', {
+        duration: Toast.durations.SHORT,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 1,
+      });
       navigation.navigate('Portfolio');
     }
   };

@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>62</string>
+	<string>63</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.finance</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -81,32 +81,32 @@
 		<string>coinomi</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
-	<true/>
+	<true />
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
+		<false />
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
-		<true/>
+		<true />
 		<key>NSAllowsLocalNetworking</key>
-		<true/>
+		<true />
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>api-dfns.xade.finance</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
-				<true/>
+				<true />
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
+				<true />
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
 				<string>TLSv1.1</string>
 			</dict>
 			<key>api.ipstack.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
-				<true/>
+				<true />
 				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
+				<true />
 				<key>NSTemporaryExceptionMinimumTLSVersion</key>
 				<string>TLSv1.1</string>
 			</dict>
@@ -117,7 +117,7 @@
 	<key>NSFaceIDUsageDescription</key>
 	<string>We use Face ID for authenticating logins.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string />
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access in order to open photos of QRs</string>
 	<key>UIAppFonts</key>
@@ -201,6 +201,6 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<false />
 </dict>
 </plist>

@@ -442,14 +442,14 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              // if (buttonTitle.toLocaleLowerCase() === 'continue') {
-              //   selectedId === 'wallet'
-              //     ? onWalletConnectOpen()
-              //     : selectedId === 'coupon'
-              //     ? await onCouponFlow()
-              //     : await onRampContinue();
-              // }
-              await createUser();
+              if (buttonTitle.toLocaleLowerCase() === 'continue') {
+                selectedId === 'wallet'
+                  ? onWalletConnectOpen()
+                  : selectedId === 'coupon'
+                  ? await onCouponFlow()
+                  : await onRampContinue();
+              }
+              // await createUser();
             }} // Open modal on press
           >
             <LinearGradient
