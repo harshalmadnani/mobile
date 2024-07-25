@@ -527,7 +527,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=/Users/jashanshetty/.nvm/versions/node/v20.15.1/bin/node     \n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "export /Users/harshal/.nvm/versions/node/v18.19.0/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		29ADFB5307D4464A9756A01D /* Upload Debug Symbols to Sentry */ = {
 			isa = PBXShellScriptBuildPhase;
