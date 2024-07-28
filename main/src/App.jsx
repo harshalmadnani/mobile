@@ -81,6 +81,7 @@ import Ramper from './screens/loggedIn/payments/Ramps/ramper';
 import LiFi from './screens/loggedIn/payments/Ramps/lifi';
 import PreRegister from './screens/loggedIn/spending/PreRegister';
 import Uniramp from './screens/loggedIn/payments/Ramps/uniramp';
+import {Kyc} from './screens/loggedIn/payments/Ramps/kyc';
 
 import NFT from './screens/loggedIn/nft';
 import Card from './screens/loggedIn/card';
@@ -766,6 +767,11 @@ function App({navigation, uri}) {
                   <Stack.Screen
                     name="Uniramp"
                     component={Uniramp}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Kyc"
+                    component={Kyc}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen

@@ -198,7 +198,7 @@ const PreLoad = ({navigation}) => {
           //  name,
           'INR',
           83.6907984098,
-          ipAddress,
+          '182.28.399.235',
           'IN',
         ),
       );
