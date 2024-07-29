@@ -67,6 +67,7 @@ export const isKycVerified = async email => {
       {headers},
     );
     const kycStatus = respone.data?.data?.kyc_status;
+    // console.log('KYC =>', respone.data);
     console.log(`RETRIEVING KYC STATUS FOR ${saberUserId} : `, kycStatus);
     if (kycStatus === 'Unverified') {
       return false;
@@ -230,6 +231,8 @@ export const fetchBeneficiary = () => {
       const timeStampinSeconds = getCurrentTimestampInSeconds();
       const sigString =
         SABER_CONSTANTS.client_id + timeStampinSeconds + saberUserId;
+
+      console.log(sigString);
       const secret = Crypto.HmacSHA256(
         sigString,
         SABER_CONSTANTS.client_secret,

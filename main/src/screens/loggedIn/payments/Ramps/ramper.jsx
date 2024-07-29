@@ -47,6 +47,7 @@ import {
   fetchOnboardedUser,
   genrateToken,
 } from '../../../../store/actions/offRamp';
+import axios from 'axios';
 
 const Crypto = require('crypto-js');
 
@@ -156,9 +157,37 @@ const Ramper = ({navigation}) => {
     const iskycStatusVerified = await isKycVerified(email);
     if (iskycStatusVerified) {
       dispatch(fetchBeneficiary());
-      dispatch(fetchSaberBuyPrice(value));
+      //dispatch(fetchSaberBuyPrice(value));
     } else {
-      navigation.push('Kyc');
+      const Saberconfig = {
+        headers: {
+          apikey:
+            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+          Authorization:
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
+          'Content-Type': 'application/json',
+        },
+      };
+      const saberResponse = await axios.get(
+        `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/dfnsUsers?email=eq.${email}`,
+        Saberconfig,
+      );
+      const saberUserId = saberResponse.data[0].saberUserId;
+      const timeStampinSeconds = getCurrentTimestampInSeconds();
+      const sigString =
+        SABER_CONSTANTS.client_id + timeStampinSeconds + 'sdk' + saberUserId;
+
+      const secret = Crypto.HmacSHA256(
+        sigString,
+        SABER_CONSTANTS.client_secret,
+      );
+
+      navigation.push('Kyc', {
+        secret: secret,
+        timestamp: timeStampinSeconds,
+        user_id: saberUserId,
+        client_id: SABER_CONSTANTS.client_id,
+      });
     }
     console.log(iskycStatusVerified);
     // await dispatch(createSaberUser());

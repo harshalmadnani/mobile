@@ -4,16 +4,21 @@ import {WebView} from 'react-native-webview';
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Import Icon component
 export const Kyc = ({route, navigation}) => {
   const webViewRef = useRef(null);
+  const {secret, timestamp, user_id, client_id} = route?.params;
+
   const refresh = () => {
     if (webViewRef.current) webViewRef.current.reload();
   };
+  // console.log(
+  //   `https://app.sandbox.saber.money/kyc?client_id=${client_id}&timestamp=${timestamp}&user_id=${user_id}&secret=${secret}`,
+  // );
 
   return (
     <View style={styles.container}>
       <WebView
         ref={webViewRef}
         source={{
-          uri: 'https://app.sandbox.saber.money/kyc',
+          uri: `https://app.sandbox.saber.money/kyc?client_id=${client_id}&timestamp=${timestamp}&user_id=${user_id}&secret=${secret}`,
         }}
         style={styles.webView}
       />
