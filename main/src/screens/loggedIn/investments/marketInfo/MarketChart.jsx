@@ -305,13 +305,80 @@ const MarketChart = props => {
             </Text>
           </View>
         </TouchableOpacity>
+
+        {/* About Section */}
+        {selectedAssetMetaData?.description && (
+          <View style={{padding: '4%', marginTop: '5%'}}>
+            <Text style={{color: 'white', fontSize: 18, fontFamily: 'Benzin-Medium'}}>
+              About {currentItem?.symbol}
+            </Text>
+            <Text style={{color: 'grey', fontSize: 14, marginTop: 10, fontFamily: 'Sk-Modernist-Regular'}}>
+              {selectedAssetMetaData.description}
+            </Text>
+          </View>
+        )}
+
+        {/* Social Links Section */}
+        <View style={{flexDirection: 'row', justifyContent: 'flex-start', marginTop: '2%',  marginLeft:'4%'}}>
+          {selectedAssetMetaData?.discord && (
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: 'white',
+                borderRadius: 50,
+                paddingVertical: '2%',
+                paddingHorizontal: '5%',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              onPress={() => Linking.openURL(selectedAssetMetaData.discord)}>
+              <Text style={{color: 'white', fontSize: 12, fontFamily: 'NeueMontreal-Bold'}}>Discord</Text>
+              <Icon name="arrow-up-right" type="feather" size={14} color="white" style={{marginLeft: 2}} />
+            </TouchableOpacity>
+          )}
+          {selectedAssetMetaData?.twitter && (
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: 'white',
+                borderRadius: 50,
+                paddingVertical: '2%',
+                paddingHorizontal: '5%',
+                marginLeft: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              onPress={() => Linking.openURL(selectedAssetMetaData.twitter)}>
+              <Text style={{color: 'white', fontSize: 12, fontFamily: 'NeueMontreal-Bold'}}>Twitter</Text>
+              <Icon name="arrow-up-right" type="feather" size={14} color="white" style={{marginLeft: 2}} />
+            </TouchableOpacity>
+          )}
+          {selectedAssetMetaData?.website && (
+            <TouchableOpacity
+              style={{
+                borderWidth: 1,
+                borderColor: 'white',
+                borderRadius: 50,
+                paddingVertical: '2%',
+                paddingHorizontal: '5%',
+                marginLeft: 5,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+              onPress={() => Linking.openURL(selectedAssetMetaData.website)}>
+              <Text style={{color: 'white', fontSize: 12, fontFamily: 'NeueMontreal-Bold'}}>Website</Text>
+              <Icon name="arrow-up-right" type="feather" size={14} color="white" style={{marginLeft: 2}} />
+            </TouchableOpacity>
+          )}
+        </View>
+
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-around',
             backgroundColor: '#222',
             paddingVertical: 5,
-            margin: '0.5%',
+            margin: '2%',
             borderRadius: 30,
             marginVertical: '6%',
           }}>
