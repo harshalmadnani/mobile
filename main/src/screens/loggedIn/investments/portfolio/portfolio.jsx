@@ -62,7 +62,7 @@ const Portfolio = ({navigation}) => {
   useEffect(() => {
     const getUserInfo = async () => {
       const response = await getUserInfoFromDB(email);
-      console.log('USER DETAILS CONSIT POINTS!!! =>', email, response);
+      console.log('USER DETAILS CONSIST POINTS!!! =>', email, response);
       dispatch(portfolioAction.setUserInfo(response));
       console.log(response?.isUsd);
       if (response?.isUsd) {
@@ -818,13 +818,13 @@ const Portfolio = ({navigation}) => {
                       shadowRadius: 4,
                       elevation: 5,
                     }}>
-                        <Image
-                          source={{
-                            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1721315800/sjlrl5l1kxy90ycczqlv.png',
-                          }}
-                          style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
-                          resizeMode="contain" // Adjust resizeMode as needed
-                        />
+                    <Image
+                      source={{
+                        uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1721315800/sjlrl5l1kxy90ycczqlv.png',
+                      }}
+                      style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
+                      resizeMode="contain" // Adjust resizeMode as needed
+                    />
                     <Text
                       style={{
                         marginBottom: 15,
@@ -841,9 +841,13 @@ const Portfolio = ({navigation}) => {
                         textAlign: 'center',
                         color: '#666',
                         fontSize: 16,
-                        fontFamily:'Sk-Modernist-Regular'
+                        fontFamily: 'Sk-Modernist-Regular',
                       }}>
-                     You can earn Xade Shards by completing quests provided by Xade on different platforms, contributing to building Xade's community and being active on Xade's social media. Then you can trade these shards for cash, gift cards, NFTs and more.
+                      You can earn Xade Shards by completing quests provided by
+                      Xade on different platforms, contributing to building
+                      Xade's community and being active on Xade's social media.
+                      Then you can trade these shards for cash, gift cards, NFTs
+                      and more.
                     </Text>
                     <Pressable
                       onPress={() => setModal3Visible(!modal3Visible)}

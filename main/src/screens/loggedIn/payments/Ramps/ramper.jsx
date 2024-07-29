@@ -34,19 +34,25 @@ import {Keyboard} from 'react-native';
 import {
   createSaberBuyOrder,
   createSaberUser,
+  fetchBeneficiary,
   fetchSaberBuyPrice,
   getCurrentTimestampInSeconds,
+  isKycVerified,
   retrieveSaberUser,
   retrieveUser,
   SABER_CONSTANTS,
   saberCreateUser,
 } from '../../../../store/actions/deposit';
-import {fetchOnboardedUser} from '../../../../store/actions/offRamp';
+import {
+  fetchOnboardedUser,
+  genrateToken,
+} from '../../../../store/actions/offRamp';
 
 const Crypto = require('crypto-js');
 
 const Ramper = ({navigation}) => {
   const email = useSelector(x => x.auth.email);
+
   const getCurrencySymbol = currencyCode => {
     const format = new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -60,6 +66,7 @@ const Ramper = ({navigation}) => {
   const {address} = useAccount();
   const [value, setValue] = useState('1');
   const walletConnect = useSelector(x => x.deposit.walletConnectModal);
+
   const [paymentMethods, setPaymentMethods] = useState([]);
   const {open, close} = useWeb3Modal();
   const [fiat, setFiat] = useState([]);
@@ -143,11 +150,19 @@ const Ramper = ({navigation}) => {
 
   const createUser = async () => {
     //deposit user check and creation
+
     // await dispatch(fetchOnboardedUser(email));
-    //  await dispatch(retrieveSaberUser());
-    // await dispatch(fetchSaberBuyPrice(value));
-    //await dispatch(createSaberUser());
-    await dispatch(createSaberBuyOrder(value));
+    // await dispatch(retrieveSaberUser());
+    const iskycStatusVerified = await isKycVerified(email);
+    if (iskycStatusVerified) {
+      dispatch(fetchBeneficiary());
+      dispatch(fetchSaberBuyPrice(value));
+    } else {
+      navigation.push('Kyc');
+    }
+    console.log(iskycStatusVerified);
+    // await dispatch(createSaberUser());
+    // await dispatch(createSaberBuyOrder(value));
   };
 
   const onRampContinue = async () => {
@@ -442,14 +457,14 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              if (buttonTitle.toLocaleLowerCase() === 'continue') {
-                selectedId === 'wallet'
-                  ? onWalletConnectOpen()
-                  : selectedId === 'coupon'
-                  ? await onCouponFlow()
-                  : await onRampContinue();
-              }
-              // await createUser();
+              // if (buttonTitle.toLocaleLowerCase() === 'continue') {
+              //   selectedId === 'wallet'
+              //     ? onWalletConnectOpen()
+              //     : selectedId === 'coupon'
+              //     ? await onCouponFlow()
+              //     : await onRampContinue();
+              // }
+              await createUser();
             }} // Open modal on press
           >
             <LinearGradient
