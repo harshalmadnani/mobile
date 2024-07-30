@@ -150,14 +150,13 @@ const Ramper = ({navigation}) => {
   };
 
   const createUser = async () => {
-    //deposit user check and creation
-
-    // await dispatch(fetchOnboardedUser(email));
-    // await dispatch(retrieveSaberUser());
+    await dispatch(fetchOnboardedUser(email));
+    await dispatch(createSaberUser());
     const iskycStatusVerified = await isKycVerified(email);
     if (iskycStatusVerified) {
-      dispatch(fetchBeneficiary());
-      //dispatch(fetchSaberBuyPrice(value));
+      //dispatch(fetchBeneficiary());
+      dispatch(fetchSaberBuyPrice(value));
+      // await dispatch(createSaberBuyOrder(value));
     } else {
       const Saberconfig = {
         headers: {
@@ -189,9 +188,7 @@ const Ramper = ({navigation}) => {
         client_id: SABER_CONSTANTS.client_id,
       });
     }
-    console.log(iskycStatusVerified);
-    // await dispatch(createSaberUser());
-    // await dispatch(createSaberBuyOrder(value));
+    //console.log(iskycStatusVerified);
   };
 
   const onRampContinue = async () => {
@@ -486,14 +483,14 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              if (buttonTitle.toLocaleLowerCase() === 'continue') {
-                selectedId === 'wallet'
-                  ? onWalletConnectOpen()
-                  : selectedId === 'coupon'
-                  ? await onCouponFlow()
-                  : await onRampContinue();
-              }
-              //  await createUser();
+              // if (buttonTitle.toLocaleLowerCase() === 'continue') {
+              //   selectedId === 'wallet'
+              //     ? onWalletConnectOpen()
+              //     : selectedId === 'coupon'
+              //     ? await onCouponFlow()
+              //     : await onRampContinue();
+              // }
+              await createUser();
             }} // Open modal on press
           >
             <LinearGradient

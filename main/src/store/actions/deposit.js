@@ -26,7 +26,6 @@ const isUserExistsForSaber = async email => {
   );
 
   const saberUserId = await response?.data[0]?.saberUserId;
-  console.log('User dAT@@@', saberUserId);
   //Returns true if userId exists (if there is length)
   return saberUserId;
 };
@@ -83,7 +82,7 @@ export const createSaberUser = () => {
   return async (dispatch, getState) => {
     try {
       const email = getState().auth.email;
-      console.log('emaaaail from getState.auth.email=>', email);
+      console.log('Email from getState.auth.email=>', email);
 
       const timeStampinSeconds = getCurrentTimestampInSeconds();
       const sigString = SABER_CONSTANTS.client_id + timeStampinSeconds;
@@ -91,6 +90,8 @@ export const createSaberUser = () => {
         sigString,
         SABER_CONSTANTS.client_secret,
       );
+
+      console.log('FROM CREATE SABER =>', secret);
       const headers = {
         'X-Timestamp': timeStampinSeconds,
         'X-Client-Id': SABER_CONSTANTS.client_id,
@@ -237,6 +238,7 @@ export const fetchBeneficiary = () => {
         sigString,
         SABER_CONSTANTS.client_secret,
       );
+      console.log(secret);
       const headers = {
         'X-Timestamp': timeStampinSeconds,
         'X-Client-Id': SABER_CONSTANTS.client_id,
@@ -245,7 +247,7 @@ export const fetchBeneficiary = () => {
       };
 
       const respone = await axios.get(
-        'https://sandbox.mudrex.com/api/v1/wallet/conversion/fiat/methods/UPI/beneficiary?type=buy&fiat=INR&crypto=USDT',
+        'https://sandbox.mudrex.com/api/v1/wallet/conversion/fiat/methods/bank_transfer/beneficiary?type=buy&fiat=INR&crypto=USDT',
         {headers},
       );
 

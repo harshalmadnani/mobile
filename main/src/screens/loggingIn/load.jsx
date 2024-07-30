@@ -35,7 +35,7 @@ import {authActions} from '../../store/reducers/auth';
 import axios from 'axios';
 var DeviceInfo = require('react-native-device-info');
 import getCurrencyCode from './getCurrencyCode';
-
+import {genrateToken} from '../../store/actions/offRamp';
 global.TextEncoder = require('text-encoding').TextEncoder;
 
 // const optionalConfigObject = {
@@ -53,6 +53,7 @@ const PreLoad = ({navigation}) => {
   );
 
   const getCountry = async () => {
+    dispatch(genrateToken());
     try {
       const ipRes = await axios.get('https://api.ipify.org?format=json');
       const ipAddress = ipRes.data.ip;
