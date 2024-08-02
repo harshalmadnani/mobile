@@ -66,9 +66,11 @@ export const isKycVerified = async email => {
       {headers},
     );
     const kycStatus = respone.data?.data?.kyc_status;
+    const isBankAccounts = respone.data?.data?.bank_accounts;
+    console.log(isBankAccounts);
     // console.log('KYC =>', respone.data);
     console.log(`RETRIEVING KYC STATUS FOR ${saberUserId} : `, kycStatus);
-    if (kycStatus === 'Unverified') {
+    if (kycStatus === 'Unverified' || isBankAccounts.length === 0) {
       return false;
     } else {
       return true;
