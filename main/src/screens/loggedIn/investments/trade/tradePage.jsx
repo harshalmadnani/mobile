@@ -672,10 +672,12 @@ const TradePage = ({route}) => {
               <TouchableOpacity
                 onPress={() =>
                   setValue(
-                    (
-                      (usdcValue?.[0]?.estimated_balance ?? 0) *
-                      (exchRate ? parseFloat(exchRate) : 1)
-                    ).toFixed(2), // Convert to string with 2 decimal points
+                    isUsd
+                      ? (usdcValue?.[0]?.estimated_balance ?? 0).toFixed(2)
+                      : (
+                          (usdcValue?.[0]?.estimated_balance ?? 0) *
+                          (exchRate ? parseFloat(exchRate) : 1)
+                        ).toFixed(2)
                   )
                 }
                 style={{
@@ -836,7 +838,9 @@ const TradePage = ({route}) => {
                         fontFamily: 'Unbounded-Bold',
                       }}>
                       {isStockTrade
-                        ? (value / state?.priceInfo?.price)?.toFixed(4)
+                        ? isNaN(value / state?.priceInfo?.price)
+                          ? '0'
+                          : (value / state?.priceInfo?.price)?.toFixed(4)
                         : isNaN(
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.amount /
@@ -846,13 +850,21 @@ const TradePage = ({route}) => {
                                   ?.dstChainTokenOut?.decimals,
                               ),
                           )
-                        ? (
+                        ? isNaN(
                             parseInt(bestSwappingBuyTrades?.toTokenAmount) /
-                            Math.pow(
-                              10,
-                              bestSwappingBuyTrades?.tokenTo?.decimals,
-                            )
-                          ).toFixed(5)
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.tokenTo?.decimals,
+                              )
+                          )
+                          ? '0'
+                          : (
+                              parseInt(bestSwappingBuyTrades?.toTokenAmount) /
+                              Math.pow(
+                                10,
+                                bestSwappingBuyTrades?.tokenTo?.decimals,
+                              )
+                            ).toFixed(5)
                         : (
                             bestSwappingBuyTrades?.estimation?.dstChainTokenOut
                               ?.amount /

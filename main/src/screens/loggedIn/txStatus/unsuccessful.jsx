@@ -34,7 +34,7 @@ export default function Component({navigation, route}) {
           }}
         />
       </View>
-      <TouchableOpacity onPress={() => navigation.push('Settings')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Portfolio')}>
         <Text
           style={{
             color: '#fff',

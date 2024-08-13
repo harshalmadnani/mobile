@@ -204,7 +204,7 @@ export const submitDetailsForQuote = (
       productId: productId,
       brand: brand,
       denominator: denominator_,
-      cryptoCoin: 'USDT',
+      cryptoCoin: 'USDC',
       selectedFiat: faitCurrency,
       encryptus_userID: user?._id,
       quantity: parseInt(quantity),

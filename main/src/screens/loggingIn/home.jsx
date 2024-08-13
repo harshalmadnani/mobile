@@ -15,7 +15,9 @@ import {Text} from '@rneui/themed';
 import BouncyIcon from './BouncyIcon';
 import {Icon} from 'react-native-elements';
 import {PNAccount} from '../../Models/PNAccount';
-import FastImage from 'react-native-fast-image';
+import FastImage from 'react-native-fast-image'
+import imagePng from '../../../assets/image.png';
+
 import {
   FlingGestureHandler,
   Directions,

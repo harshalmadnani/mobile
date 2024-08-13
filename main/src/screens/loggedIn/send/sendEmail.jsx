@@ -52,7 +52,7 @@ const SendEmailComponent = ({navigation}) => {
     if (res) {
       console.log(
         'holdings.....',
-        holdings.assets.filter(
+        holdings?.assets.filter(
           x =>
             x.contracts_balances[0]?.address ===
             '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
@@ -60,7 +60,7 @@ const SendEmailComponent = ({navigation}) => {
       );
       dispatch(
         transferAction.setAssetToTransfer(
-          holdings.assets.filter(
+          holdings?.assets.filter(
             x =>
               x.contracts_balances[0]?.address ===
               '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
