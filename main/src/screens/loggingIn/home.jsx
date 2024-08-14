@@ -10,14 +10,13 @@ import {
   Button,
   Platform,
   Animated,
+  Image
 } from 'react-native';
 import {Text} from '@rneui/themed';
 import BouncyIcon from './BouncyIcon';
 import {Icon} from 'react-native-elements';
 import {PNAccount} from '../../Models/PNAccount';
-import FastImage from 'react-native-fast-image'
-import imagePng from '../../../assets/image.png';
-
+import FastImage from 'react-native-fast-image';
 import {
   FlingGestureHandler,
   Directions,
@@ -32,45 +31,44 @@ const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
 import {useDispatch} from 'react-redux';
 import {onAuthCoreLogin} from '../../store/actions/auth';
-
+import img1 from '../../../assets/1.png'; // Import the local image
+import img2 from '../../../assets/2.png';
+import img3 from '../../../assets/3.png';
+import img4 from '../../../assets/4.png';
+import img5 from '../../../assets/5.png';
+import img6 from '../../../assets/6.png';
 const windowHeight = Dimensions.get('window').height;
 
 const images = [
   {
     name: `THE ULTIMATE${'\n'}TRADING ${'\n'} EXPERIENCE`,
     details: `Trade everything with aggregated ${'\n'}liqudity and advanced tools`,
-    image:
-      'https://res.cloudinary.com/xade-finance/image/upload/v1709711984/fmyptuhb2wi1yln7e9v4.png',
+    image: img1, // Use the imported image directly
   },
   {
     name: `TRADE 10,000+ ${'\n'}MARKETS AT${'\n'}ONE PLACE `,
     details: `Trade stocks, crypto, commodities,${'\n'}forex & more at one place`,
-    image:
-      'https://res.cloudinary.com/xade-finance/image/upload/v1709734131/dmnvsv7hienduv5mkvqm.png',
+    image: img4, // Use the imported image directly
   },
   {
     name: `OMNI-CHAIN${'\n'}LIQUIDITY ${'\n'} AGGREGATION`,
     details: `Get the best liquidity aggregated ${'\n'} across all chains and protocols`,
-    image:
-      'https://res.cloudinary.com/xade-finance/image/upload/v1709733466/keimprxade9tyockzicf.png',
+    image: img3, // Use the imported image directly
   },
   {
     name: `O COMMISSION${'\n'}& INSTANT ${'\n'} SETTLEMENTS`,
     details: `Trade with <10s execution time in a${'\n'}gasless manner with 0 fees from Xade`,
-    image:
-      'https://res.cloudinary.com/xade-finance/image/upload/v1709737648/gvzbzieuat6wfi0o4gws.png',
+    image: img5, // Use the imported image directly
   },
   {
     name: `ADVANCED AI${'\n'}POWERED ${'\n'} ANALYSIS TOOLS`,
     details: `Trade like a pro with advanced${'\n'} charts, news, research and Degen AI`,
-    image:
-      'https://res.cloudinary.com/xade-finance/image/upload/v1709733465/nairzdjcol25nu0kroh4.png',
+    image: img2,
   },
   {
     name: `500+ DEPOSIT${'\n'}& WITHDRAWAL ${'\n'} METHODS`,
     details: `Deposit or Withdraw funds${'\n'} seamlessly from 120+ countries`,
-    image:
-      'https://res.cloudinary.com/xade-finance/image/upload/v1709733554/je8eqvw76ea9tza6ncsx.png',
+    image: img6,
   },
 ];
 
@@ -81,7 +79,7 @@ const StaticHomeScreen = ({navigation}) => {
   const dispatch = useDispatch();
 
   const handleSwipeUp = ({nativeEvent}) => {
-    if (nativeEvent.oldState === State.BEGAN) {
+    if (nativeEvent.oldState === State.ACTIVE) {
       // Trigger haptic feedback
       const options = {
         enableVibrateFallback: true,
@@ -89,67 +87,46 @@ const StaticHomeScreen = ({navigation}) => {
       };
       ReactNativeHapticFeedback.trigger('impactHeavy', options);
       navigation.navigate('NewAuthFlow');
-      // dispatch(onAuthCoreLogin(navigation));
     }
   };
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={styles.gestureRoot}>
       <SafeAreaView style={styles.bg}>
         <FlingGestureHandler
           direction={Directions.UP}
           onHandlerStateChange={handleSwipeUp}>
-          <ScrollView>
-            <View style={styles.container}>
-              <View style={styles.topbar}>
-                {images.map((image, index) => (
-                  <View
-                    key={index}
-                    style={
-                      selectedButton === image.name
-                        ? styles.selected
-                        : styles.carouselIndicator
-                    }
-                  />
-                ))}
-              </View>
-              <View style={styles.mainContent}>
-                <LoginCarousel
-                  images={images}
-                  navigation={navigation}
-                  address={'0x'}
-                  selectedImage={selectedButton}
-                  onImageChange={(newImage) => setSelectedButton(newImage)}
-                />
-                <View style={{ marginTop: '5%', alignItems: 'center' }}>
-                  <BouncyIcon />
-                  <Text style={styles.getStartedText}>
-                    SWIPE UP TO GET STARTED
-                  </Text>
-                </View>
-
-                {/* <TouchableOpacity onPress={() => navigation.push('ChooseConnect')}>
-              <Text style={styles.connectText}>
-                Have an existing wallet?{' '}
-                <Text
+          <View style={styles.container}>
+            <View style={styles.topbar}>
+              {images.map((image, index) => (
+                <View
+                  key={index}
                   style={
-                    (styles.connectText,
-                    {
-                      textDecorationLine: 'underline',
-                      color: '#fff',
-                      fontFamily: `EuclidCircularA-Regular`,
-                      fontSize: 15,
-                      marginTop: '4%',
-                      textAlign: 'center',
-                    })
-                  }>
-                  Connect Wallet
-                </Text>
-              </Text>
-            </TouchableOpacity> */}
-              </View>
+                    selectedButton === image.name
+                      ? styles.selected
+                      : styles.carouselIndicator
+                  }
+                />
+              ))}
             </View>
-          </ScrollView>
+            <View style={styles.carouselContainer}>
+              <LoginCarousel
+                images={images}
+                navigation={navigation}
+                address={'0x'}
+                selectedImage={selectedButton}
+                onImageChange={(newImage) => setSelectedButton(newImage)}
+              />
+            </View>
+            <LinearGradient
+              colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 0.5)']}
+              style={styles.swipeUpContainer}>
+              <BouncyIcon />
+              <Text style={styles.getStartedText}>
+                SWIPE UP TO GET STARTED
+              </Text>
+            </LinearGradient>
+          </View>
         </FlingGestureHandler>
       </SafeAreaView>
     </GestureHandlerRootView>
@@ -157,22 +134,22 @@ const StaticHomeScreen = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  gestureRoot: {
+    flex: 1,
+  },
   bg: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
     backgroundColor: '#000',
   },
-
   container: {
-    width: '100%',
-    height: '100%',
+    flex: 1,
   },
 
   carouselIndicator: {
     backgroundColor: '#817c89',
     opacity: 0.3,
     width: 58,
-    height: 4,
+    height: 4, 
     borderRadius: 15,
     marginHorizontal: 8,
   },
@@ -193,86 +170,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  logo: {
-    fontFamily: 'LemonMilk-Regular',
-    color: '#fff',
-    fontSize: 30,
-    marginLeft: '8%',
-    marginTop: '2%',
+  carouselContainer: {
+    flex: 1,
+    marginTop:'15%',
+    height:'120%' // This ensures the carousel takes up all available space
   },
 
-  mainContent: {
-    width: '100%',
-    backgroundColor: 'transparent',
-    marginTop: '15%',
-  },
-
-  mainText: {
-    color: '#fff',
-    fontFamily: 'VelaSans-Bold',
-    fontSize: 54,
-    width: '100%',
-    marginTop: windowHeight / 8.0,
-    marginLeft: '10%',
-  },
-
-  subText: {
-    color: '#979797',
-    fontFamily: 'NeueMontreal-Medium',
-    fontSize: 16,
-    width: '100%',
-    marginLeft: '10%',
-    marginTop: '12%',
-  },
-
-  button: {
-    width: '75%',
-    color: '#000',
-    borderRadius: 15,
-    marginLeft: '12%',
-    marginTop: '15%',
-    padding: '5%',
-    backgroundColor: '#E8FF59',
-    marginBottom: '1%',
-  },
-
-  buttonText: {
-    color: '#000',
-    fontFamily: `EuclidCircularA-Regular`,
-    fontSize: 20,
-    marginTop: '-11.7%',
-    marginLeft: '2%',
-  },
-
-  buttonIcon: {
-    marginLeft: '80%',
-  },
-
-  getStarted: {
-    width: '80%',
-    alignSelf: 'center',
+  swipeUpContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingVertical: 23,
-    borderRadius: 6,
-    marginTop: '2%',
+    zIndex: 1000,
   },
 
   getStartedText: {
     color: '#A1A1A1',
-    fontFamily: `Unbounded-Medium`,
+    fontFamily: 'Unbounded-Medium',
     textAlign: 'center',
-    fontSize: 16, // Increased font size
-    marginTop: '2%',
+    fontSize: 16,
+    marginTop: 10,
   },
 
-  connectText: {
-    color: '#fff',
-    fontFamily: `EuclidCircularA-Regular`,
-    fontSize: 15,
-    textAlign: 'center',
-    marginTop: '4%',
-  },
+  // ... other existing styles ...
 });
 
 export default StaticHomeScreen;

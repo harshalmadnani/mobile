@@ -8,9 +8,11 @@ import {
   SectionList,
   Pressable,
   ImageBackground,
+  Image,
 } from 'react-native';
-import Video from 'react-native-video'; // Add this import
+import Video from 'react-native-video';
 import transaction from '../../../../assets/transaction.mp4';
+import txHistoryImage from '../../../../assets/tx_history.png';
 import {Icon, Text} from 'react-native-elements';
 import WalletTransactionTransferCard from '../../../component/Transaction/WalletTransactionTransferCard';
 import WalletTransactionTradeCard from '../../../component/Transaction/WalletTransactionTradeCard';
@@ -58,6 +60,7 @@ const TransactionList = ({navigation, route}) => {
   const [txType, setTxType] = useState('transfers');
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [showImage, setShowImage] = useState(false);
   const dispatch = useDispatch();
   const evmDLNTradesTxListInfo = useSelector(
     x => x.portfolio.evmDLNTradesTxListInfo,
@@ -80,9 +83,14 @@ const TransactionList = ({navigation, route}) => {
     if (txType === 'dln') {
       getAllDLNTradeHistory();
     } else {
-      // setPage(0);
       getAllTxHistory();
     }
+
+    const timer = setTimeout(() => {
+      setShowImage(true);
+    }, 250000);
+
+    return () => clearTimeout(timer);
   }, [txType]);
   console.log('evmDLNTradesTxListInfo', evmDLNTradesTxListInfo);
   return (
@@ -148,31 +156,50 @@ const TransactionList = ({navigation, route}) => {
         />
       </View>
       {!loading ? (
-        <FlatList
-          style={{width: '100%', marginBottom: 30, flex: 1}}
-          data={
-            txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
-          }
-          renderItem={({item}) =>
-            txType === 'transfers' ? (
-              <WalletTransactionTransferCard
-                item={item}
-                currency={currency}
-                isUsd={isUsd}
-                exchRate={exchRate}
-              />
-            ) : (
-              <WalletTransactionTradeCard
-                item={item}
-                currency={currency}
-                isUsd={isUsd}
-                exchRate={exchRate}
-              />
-            )
-          }
-          onEndReached={async () => await onEndReachedFetch()}
-          keyExtractor={(item, i) => i?.toString()}
-        />
+        showImage ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              source={txHistoryImage}
+              style={{width: 200, height: 200}}
+              resizeMode="contain"
+            />
+          </View>
+        ) : (
+          <FlatList
+            style={{width: '100%', marginBottom: 30, flex: 1}}
+            data={
+              txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
+            }
+            renderItem={({item}) =>
+              txType === 'transfers' ? (
+                <WalletTransactionTransferCard
+                  item={item}
+                  currency={currency}
+                  isUsd={isUsd}
+                  exchRate={exchRate}
+                />
+              ) : (
+                <WalletTransactionTradeCard
+                  item={item}
+                  currency={currency}
+                  isUsd={isUsd}
+                  exchRate={exchRate}
+                />
+              )
+            }
+            ListEmptyComponent={() => (
+              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Image
+                  source={txHistoryImage}
+                  style={{width: 200, height: 200}}
+                  resizeMode="contain"
+                />
+              </View>
+            )}
+            onEndReached={async () => await onEndReachedFetch()}
+            keyExtractor={(item, i) => i?.toString()}
+          />
+        )
       ) : (
         <View
           style={{

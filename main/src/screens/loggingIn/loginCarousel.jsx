@@ -79,15 +79,13 @@ class LoginCarousel extends React.Component {
             <Text style={styles.header}>{image.name}</Text>
             <Text style={styles.subheader}>{image.details}</Text>
             <FastImage
-              source={{
-                uri: image.image,
-              }}
+              source={typeof image.image === 'string' ? { uri: image.image } : image.image}
               resizeMode="cover"
               style={{
-                width: '100%',
-                height: 300,
+                width: 600,
+                height: 550,
                 position: 'absolute',
-                bottom: 100,
+                bottom: -200,
                 borderRadius: 50,
               }}
             />

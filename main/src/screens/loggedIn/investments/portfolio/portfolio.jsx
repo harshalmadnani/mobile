@@ -650,9 +650,7 @@ const Portfolio = ({navigation}) => {
                         }}>
                         {/* Image component added here */}
                         <Image
-                          source={{
-                            uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1712474035/hnjacvonwztzamqzibpt.png',
-                          }}
+                          source={require('../../../../../assets/stack.png')}
                           style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
                           resizeMode="contain" // Adjust resizeMode as needed
                         />
@@ -819,11 +817,9 @@ const Portfolio = ({navigation}) => {
                       elevation: 5,
                     }}>
                     <Image
-                      source={{
-                        uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1721315800/sjlrl5l1kxy90ycczqlv.png',
-                      }}
-                      style={{width: 200, height: 200, alignSelf: 'center'}} // Adjust size as needed
-                      resizeMode="contain" // Adjust resizeMode as needed
+                      source={require('../../../../../assets/coin.png')}
+                      style={{width: 200, height: 200, alignSelf: 'center'}}
+                      resizeMode="contain"
                     />
                     <Text
                       style={{
