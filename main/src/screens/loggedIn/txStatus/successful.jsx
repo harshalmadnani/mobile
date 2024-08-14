@@ -70,8 +70,9 @@ export default function Component({navigation, route}) {
     setShowModal(false);
   };
   const isUsd = useSelector(x => x.auth.isUsd);
-
+  const currency_name = useSelector(x => x.auth.currency);
   const currency_icon = getCurrencyIcon(currency_name);
+
   const [fees, setFees] = useState('0');
   console.log('Amount....', assetInfo);
   // useEffect(() => {
@@ -266,8 +267,7 @@ export default function Component({navigation, route}) {
                   color: '#fff',
                 }}>
                 {parseFloat(amount) /
-                  Math.pow(10, assetInfo?.contracts_balances?.[0]?.decimals)}
-                {assetInfo?.asset?.symbol}
+                  Math.pow(10, assetInfo?.contracts_balances?.[0]?.decimals)} {assetInfo?.asset?.symbol}
               </Text>
             </View>
 
@@ -294,7 +294,7 @@ export default function Component({navigation, route}) {
                   alignSelf: 'flex-end',
                   color: '#fff',
                 }}>
-                {isUsd ? '$' : currency_icon} 0
+                {isUsd ? '$' : currency_icon}0
               </Text>
             </View>
           </View>

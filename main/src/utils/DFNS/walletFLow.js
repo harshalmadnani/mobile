@@ -366,3 +366,20 @@ export const tradeTokenGasless = async (
   } finally {
   }
 };
+
+export const exportWallet = async (authToken, walletId) => {
+  try {
+    const client = dfnsProviderClient(authToken);
+    const response = await client.post(`/wallets/${walletId}/export`, {
+      headers: {
+        'Authorization': `Bearer ${authToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    console.log('Wallet export successful:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error exporting wallet:', error);
+    throw error;
+  }
+};

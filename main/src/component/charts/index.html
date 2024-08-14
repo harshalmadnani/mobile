@@ -1,14 +1,16 @@
-import React, { useRef } from 'react';
-import { Platform, View } from 'react-native';
-import { WebView } from 'react-native-webview';
-
-const htmlContent = `
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0" />
-    <script type="text/javascript" src="charting_library/charting_library.standalone.js"></script>
+    <!-- Fix for iOS Safari zooming bug -->
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0" />
+
+    <script
+      type="text/javascript"
+      src="charting_library/charting_library.standalone.js"></script>
     <script type="text/javascript" src="datafeeds/udf/dist/bundle.js"></script>
+    <!-- <script src="src/main.js"></script> -->
     <script type="text/javascript">
       let params = new URL(document.location).searchParams;
       let height = params.get('height');
@@ -20,7 +22,7 @@ const htmlContent = `
           results = regex.exec(location.search);
         return results === null
           ? ''
-          : decodeURIComponent(results[1].replace(/\\+/g, ' '));
+          : decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
       function initOnReady() {
         var datafeedUrl = 'https://demo-feed-data.tradingview.com';
@@ -28,13 +30,15 @@ const htmlContent = `
         if (customDataUrl !== '') {
           datafeedUrl = customDataUrl.startsWith('https://')
             ? customDataUrl
-            : \`https://\${customDataUrl}\`;
+            : `https://${customDataUrl}`;
         }
         var widget = (window.tvWidget = new TradingView.widget({
+          // debug: true, // uncomment this line to see Library errors and warnings in the console
           fullscreen: false,
           symbol: 'AAPL',
           interval: '1M',
           container: 'tv_chart_container',
+          //	BEWARE: no trailing slash is expected in feed URL
           datafeed: new Datafeeds.UDFCompatibleDatafeed(
             datafeedUrl,
             undefined,
@@ -45,6 +49,7 @@ const htmlContent = `
           ),
           library_path: 'charting_library/',
           locale: getParameterByName('lang') || 'en',
+
           disabled_features: [
             'use_localstorage_for_settings',
             'left_toolbar',
@@ -78,6 +83,8 @@ const htmlContent = `
             'paneProperties.background': '#000000',
             'paneProperties.backgroundType': 'solid',
             'mainSeriesProperties.style': 8,
+            // 'mainSeriesProperties.statusViewStyle.symbolTextSource':
+            //   'long-description',
           },
         }));
         widget.activeChart().clearMarks();
@@ -89,11 +96,13 @@ const htmlContent = `
 
           console.log(TradingView.version());
 
+          // This is not working
           widget
             .activeChart()
             .crossHairMoved()
             .subscribe(null, crosshairMovedHandler);
 
+          // And this is not working too (and I tried them separately, also not working)
           widget.subscribe('mouse_down', () => {
             const mouseUpHandler = () => {
               window.ReactNativeWebView.postMessage(
@@ -108,35 +117,23 @@ const htmlContent = `
             widget.subscribe('mouse_up', mouseUpHandler);
           });
         });
+        // widget.subscribe('mouse_down', event => {
+        //   console.log(event);
+        // window.ReactNativeWebView.postMessage(
+        //   JSON.stringify({
+        //     data: event,
+        //     eventType: 'mouse_down',
+        //   }),
+        // );
+        // });
         window.frames[0].focus();
       }
 
       window.addEventListener('DOMContentLoaded', initOnReady, false);
     </script>
   </head>
+
   <body style="margin: 0px">
     <div id="tv_chart_container"></div>
   </body>
 </html>
-`;
-
-export const TradingViewChart = ({ height, width }) => {
-  return (
-    <View style={{ width, height }}>
-      <WebView
-        ref={r => (this.webref = r)}
-        style={{ flex: 1 }}
-        originWhitelist={['*']}
-        source={{ html: htmlContent }}
-        onMessage={event => {
-          console.log(JSON.parse(event?.nativeEvent.data));
-        }}
-        allowFileAccessFromFileURLs={true}
-        domStorageEnabled={true}
-        allowFileAccess={true}
-        allowUniversalAccessFromFileURLs={true}
-        onShouldStartLoadWithRequest={() => true}
-      />
-    </View>
-  );
-};

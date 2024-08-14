@@ -11,7 +11,7 @@ import {
 import {Text, Icon, Image} from '@rneui/themed';
 import styles from '../investment-styles';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-
+import {TradingViewChart} from '../../../../component/charts/TradingViewChart';
 import InvestmentChart from '../../../../component/charts/InvestmentChart';
 import {useDispatch, useSelector} from 'react-redux';
 import {setAssetMetadata} from '../../../../store/actions/market';

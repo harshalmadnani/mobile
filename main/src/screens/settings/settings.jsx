@@ -28,6 +28,7 @@ import {logoutRefresh} from '../../store/actions/auth';
 // import {EventsCarousel} from './eventsCarousel';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import { WebView } from 'react-native-webview';
+import { exportWallet } from '../../utils/DFNS/walletFLow';
 
 const options = {
   enableVibrateFallback: true,
@@ -103,6 +104,18 @@ const Component = ({navigation}) => {
     const id = JSON.parse(await AsyncStorage.getItem('faceID'));
   };
   const [webViewVisible, setWebViewVisible] = useState(false);
+
+  const authToken = useSelector(state => state.auth.token);
+  const walletId = useSelector(state => state.auth.walletId);
+
+  const handleExportWallet = async () => {
+    try {
+      const walletData = await exportWallet(authToken, walletId);
+      Alert.alert('Wallet Exported', JSON.stringify(walletData));
+    } catch (error) {
+      Alert.alert('Error', 'Failed to export wallet');
+    }
+  };
 
   return (
     <SafeAreaView
@@ -322,6 +335,26 @@ const Component = ({navigation}) => {
             />
             <View style={styles.actualSetting}>
               <Text style={styles.settingsText}>Tax Calculator</Text>
+              <Icon
+                name={'angle-right'}
+                size={20}
+                color={'#86969A'}
+                type="font-awesome"
+              />
+            </View>
+          </TouchableOpacity>
+          <HorizontalRule />
+          <TouchableOpacity
+            style={styles.innerSettings}
+            onPress={() => {
+              handleExportWallet();
+            }}>
+            <FastImage
+              style={{width: 28, height: 28, borderRadius: 10}}
+              source={require('./Interface/icon/heroicons/Outline/calculator.png')}
+            />
+            <View style={styles.actualSetting}>
+              <Text style={styles.settingsText}>Export Wallet</Text>
               <Icon
                 name={'angle-right'}
                 size={20}

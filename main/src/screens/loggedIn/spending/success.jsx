@@ -25,8 +25,7 @@ const Sucess = () => {
         />
         <Text style={styles.headingText}>IT'S A SUCCESS!</Text>
         <Text style={styles.confirmationText}>
-          Check your email for further instructions and how to redeem your gift
-          cards
+   
         </Text>
       </View>
       <Pressable
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     shadowRadius: 2.62,
     position: 'absolute',
-    bottom: 0,
+    bottom: '5%',
     alignSelf: 'center',
     width: '90%',
   },

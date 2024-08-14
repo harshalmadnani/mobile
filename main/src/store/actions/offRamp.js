@@ -264,7 +264,10 @@ export const acceptGiftCardOrder = navigation => {
       console.log('🎁 accept status =>', response.status);
 
       if (response.status === 200) {
+        const { url, brand } = response.data.data.gc_response;
         console.log('🎁 Order submitted successfully:', response.data.data);
+        console.log('🎁 URL:', url);
+        console.log('🎁 Brand:', brand);
         dispatch(offRampAction.acceptQuote(response?.data?.data?.gc_response));
         return true;
       } else {
