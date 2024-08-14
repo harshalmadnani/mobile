@@ -369,15 +369,38 @@ export const tradeTokenGasless = async (
 
 export const exportWallet = async (authToken, walletId) => {
   try {
-    const client = dfnsProviderClient(authToken);
-    const response = await client.post(`/wallets/${walletId}/export`, {
+    console.log('Attempting to export wallet with ID:', walletId);
+    
+    if (!authToken) {
+      throw new Error('Authentication token is missing');
+    }
+    
+    console.log('Auth token (first 10 chars):', authToken.substring(0, 10) + '...');
+
+    const response = await fetch(`https://api.dfns.ninja/wallets/${walletId}/export`, {
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${authToken}`,
         'Content-Type': 'application/json'
       }
     });
-    console.log('Wallet export successful:', response.data);
-    return response.data;
+    
+    console.log('Response status:', response.status);
+    console.log('Response headers:', JSON.stringify(response.headers));
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('Error response body:', errorBody);
+
+      if (response.status === 401) {
+        throw new Error('Unauthorized: Please check your authentication token');
+      }
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+    }
+    
+    const data = await response.json();
+    console.log('Wallet export successful:', data);
+    return data;
   } catch (error) {
     console.error('Error exporting wallet:', error);
     throw error;
