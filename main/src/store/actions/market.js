@@ -162,10 +162,11 @@ export const getBestDLNCrossSwapRateBuy = (
 export const getBestDLNCrossSwapRateSell = (tokenInfo, value, scw) => {
   return async (dispatch, getState) => {
     console.log('scw....', tokenInfo?.chainId, tokenInfo?.address, scw);
+    const safeValue = value || "1"; // Use "0" if value is null or undefined
     const bestRate = await getDLNTradeCreateBuyOrder(
       tokenInfo?.chainId,
       tokenInfo?.address,
-      value,
+      safeValue,
       '137',
       '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       scw,
