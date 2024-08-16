@@ -1,14 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Dimensions, SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {useSelector} from 'react-redux';
 import {BigNumber} from 'bignumber.js';
 import LinearGradient from 'react-native-linear-gradient';
 
-const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade, stockInfo }) => {
+const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade, stockInfo, isDLN }) => {
   const navigation = useNavigation();
 
-  // Move getChainName function definition here
   const getChainName = (chainId) => {
     switch (chainId) {
       case 1: return 'Ethereum';
@@ -26,27 +25,38 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
     }
   };
 
-  const tokenSymbol = txQuoteInfo?.tokenTo?.symbol || 'Unknown';
+  const tokenSymbol = isDLN ? txQuoteInfo?.estimation?.dstChainTokenOut?.symbol : txQuoteInfo?.tokenTo?.symbol || 'Unknown';
   const tokenAmount = parseFloat(normalAmount).toFixed(6);
 
   const amountPaid = txQuoteInfo?.fromTokenAmount || '0';
   const amountPaidSymbol = txQuoteInfo?.tokenFrom?.symbol || 'Unknown';
   const amountPaidDecimals = txQuoteInfo?.tokenFrom?.decimals || 18;
 
-  const formattedAmountPaid = parseFloat(amountPaid) / Math.pow(10, amountPaidDecimals);
+  const formattedAmountPaid = isDLN
+    ? parseFloat(txQuoteInfo?.estimation?.srcChainTokenIn?.amount) / Math.pow(10, txQuoteInfo?.estimation?.srcChainTokenIn?.decimals)
+    : parseFloat(amountPaid) / Math.pow(10, amountPaidDecimals);
 
   // Determine if it's a cross-chain trade
   const isCrossChainTrade = txQuoteInfo?.tokenFrom?.chainId !== txQuoteInfo?.tokenTo?.chainId;
 
   // Get chain names for both source and destination chains
-  const sourceChainName = getChainName(txQuoteInfo?.tokenFrom?.chainId);
-  const destChainName = getChainName(txQuoteInfo?.tokenTo?.chainId);
+  let sourceChainName = getChainName(txQuoteInfo?.tokenFrom?.chainId);
+  let destChainName = getChainName(txQuoteInfo?.tokenTo?.chainId);
+
+  // DLN specific calculations
+  let slippage, estimatedDelay;
+  if (isDLN) {
+    sourceChainName = getChainName(txQuoteInfo?.estimation?.srcChainTokenIn?.chainId);
+    destChainName = getChainName(txQuoteInfo?.estimation?.dstChainTokenOut?.chainId);
+    slippage = txQuoteInfo?.estimation?.recommendedSlippage || 0;
+    estimatedDelay = txQuoteInfo?.order?.approximateFulfillmentDelay || 0;
+  }
 
   // Calculate fee
   const fee = isCrossChainTrade 
     ? txQuoteInfo?.estimation?.gasCost || 0 
     : formattedAmountPaid * 0.002;
-  const txFee = `${fee.toFixed(6)} ${isCrossChainTrade ? 'USD' : amountPaidSymbol}`;
+  const txFee = `${fee.toFixed(6)}`;
 
   // Calculate entry price
   const entryPrice = tradeType === 'buy' ? formattedAmountPaid / parseFloat(tokenAmount) : parseFloat(tokenAmount) / formattedAmountPaid;
@@ -80,7 +90,7 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
           marginTop: 24,
           color: '#949494',
         }}>
-          You have successfully {isStockTrade ? 'placed order for' : tradeType === 'buy' ? 'bought' : 'sold'} {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying $${formattedAmountPaid.toFixed(6)}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
+          You have successfully {isStockTrade ? 'placed order for' : tradeType === 'buy' ? `bought` : `sold`} {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying $${formattedAmountPaid.toFixed(6)}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
         </Text>
       
       </View>
@@ -98,18 +108,29 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
           marginVertical: '5%',
           paddingHorizontal: '8%',
         }}>
+          {isDLN && (
+            <>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Entry Price:</Text>
             <Text style={styles.infoValue}>${entryPrice.toFixed(6)}</Text>
           </View>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Estimated Fees:</Text>
-            <Text style={styles.infoValue}>{txFee}</Text>
+            <Text style={styles.infoValue}>${txFee}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Transaction took:</Text>
-            <Text style={styles.infoValue}>{isCrossChainTrade ? '10-30m' : '6s'}</Text>
-          </View>
+                <Text style={styles.infoLabel}>Estimated Time:</Text>
+                <Text style={styles.infoValue}>{estimatedDelay}s</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Chain:</Text>
+                <Text style={styles.infoValue}>{destChainName}</Text>
+              </View>
+
+            </>
+          )}
+
+
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <LinearGradient
@@ -216,6 +237,8 @@ const PendingTxStatusPage = ({route}) => {
   const {state, tradeType, isStockTrade, stockInfo} = route.params;
   const txQuoteInfo = state;
 
+  console.log('DLN Quote Info:', JSON.stringify(txQuoteInfo, null, 2));
+
   const exchRate = useSelector(x => x.auth.exchRate);
 
   const weiAmount = new BigNumber(
@@ -232,6 +255,8 @@ const PendingTxStatusPage = ({route}) => {
           txQuoteInfo?.tokenTo?.decimals),
     )
     .toNumber();
+
+  const isDLN = txQuoteInfo?.estimation?.srcChainTokenIn?.chainId !== txQuoteInfo?.estimation?.dstChainTokenOut?.chainId;
 
   return (
     <SafeAreaView
@@ -251,6 +276,7 @@ const PendingTxStatusPage = ({route}) => {
         tradeType={tradeType}
         isStockTrade={isStockTrade}
         stockInfo={stockInfo}
+        isDLN={isDLN}
       />
     </SafeAreaView>
   );
