@@ -1,4 +1,4 @@
-import {useEffect, useState, useCallback} from 'react';
+import {useEffect, useState} from 'react';
 import {
   Dimensions,
   SafeAreaView,
@@ -61,29 +61,21 @@ const TransactionList = ({navigation, route}) => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showImage, setShowImage] = useState(false);
-  const [minLoadingTimePassed, setMinLoadingTimePassed] = useState(false);
   const dispatch = useDispatch();
   const evmDLNTradesTxListInfo = useSelector(
     x => x.portfolio.evmDLNTradesTxListInfo,
   );
   const evmTxListInfo = useSelector(x => x.portfolio.evmTxListInfo);
-
-  const getAllTxHistory = useCallback(async () => {
+  const getAllTxHistory = async () => {
     setLoading(true);
-    setShowImage(false);
-    setMinLoadingTimePassed(false);
     await dispatch(getWalletTransactionForAddressFromMobula(page));
     setLoading(false);
-  }, [dispatch, page]);
-
-  const getAllDLNTradeHistory = useCallback(async () => {
+  };
+  const getAllDLNTradeHistory = async () => {
     setLoading(true);
-    setShowImage(false);
-    setMinLoadingTimePassed(false);
     await dispatch(getWalletTransactionForAddressFromDLN(page));
     setLoading(false);
-  }, [dispatch, page]);
-
+  };
   const onEndReachedFetch = async () => {};
   useEffect(() => {
     const curr = getCurrencyIcon(currency_name);
@@ -94,26 +86,12 @@ const TransactionList = ({navigation, route}) => {
       getAllTxHistory();
     }
 
-    // Set a minimum loading time
     const timer = setTimeout(() => {
-      setMinLoadingTimePassed(true);
-    }, 3000); // 3 seconds minimum loading time
+      setShowImage(true);
+    }, 250000);
 
     return () => clearTimeout(timer);
-  }, [txType, getAllDLNTradeHistory, getAllTxHistory]);
-
-  useEffect(() => {
-    if (!loading && minLoadingTimePassed) {
-      const hasData = txType === 'dln' 
-        ? evmDLNTradesTxListInfo?.orders?.length > 0
-        : evmTxListInfo.length > 0;
-
-      if (!hasData) {
-        setShowImage(true);
-      }
-    }
-  }, [loading, minLoadingTimePassed, txType, evmDLNTradesTxListInfo, evmTxListInfo]);
-
+  }, [txType]);
   console.log('evmDLNTradesTxListInfo', evmDLNTradesTxListInfo);
   return (
     <SafeAreaView
@@ -177,7 +155,52 @@ const TransactionList = ({navigation, route}) => {
           onFilterPressed={() => setTxType('dln')}
         />
       </View>
-      {loading || !minLoadingTimePassed ? (
+      {!loading ? (
+        showImage ? (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              source={txHistoryImage}
+              style={{width: 200, height: 200}}
+              resizeMode="contain"
+            />
+          </View>
+        ) : (
+          <FlatList
+            style={{width: '100%', marginBottom: 30, flex: 1}}
+            data={
+              txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
+            }
+            renderItem={({item}) =>
+              txType === 'transfers' ? (
+                <WalletTransactionTransferCard
+                  item={item}
+                  currency={currency}
+                  isUsd={isUsd}
+                  exchRate={exchRate}
+                />
+              ) : (
+                <WalletTransactionTradeCard
+                  item={item}
+                  currency={currency}
+                  isUsd={isUsd}
+                  exchRate={exchRate}
+                />
+              )
+            }
+            ListEmptyComponent={() => (
+              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Image
+                  source={txHistoryImage}
+                  style={{width: 200, height: 200}}
+                  resizeMode="contain"
+                />
+              </View>
+            )}
+            onEndReached={async () => await onEndReachedFetch()}
+            keyExtractor={(item, i) => i?.toString()}
+          />
+        )
+      ) : (
         <View
           style={{
             justifyContent: 'center',
@@ -194,49 +217,6 @@ const TransactionList = ({navigation, route}) => {
             repeat
           />
         </View>
-      ) : showImage ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Image
-            source={txHistoryImage}
-            style={{width: 200, height: 200}}
-            resizeMode="contain"
-          />
-        </View>
-      ) : (
-        <FlatList
-          style={{width: '100%', marginBottom: 30, flex: 1}}
-          data={
-            txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
-          }
-          renderItem={({item}) =>
-            txType === 'transfers' ? (
-              <WalletTransactionTransferCard
-                item={item}
-                currency={currency}
-                isUsd={isUsd}
-                exchRate={exchRate}
-              />
-            ) : (
-              <WalletTransactionTradeCard
-                item={item}
-                currency={currency}
-                isUsd={isUsd}
-                exchRate={exchRate}
-              />
-            )
-          }
-          ListEmptyComponent={() => (
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <Image
-                source={txHistoryImage}
-                style={{width: 200, height: 200}}
-                resizeMode="contain"
-              />
-            </View>
-          )}
-          onEndReached={async () => await onEndReachedFetch()}
-          keyExtractor={(item, i) => i?.toString()}
-        />
       )}
     </SafeAreaView>
   );
