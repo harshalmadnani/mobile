@@ -1,363 +1,128 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, SafeAreaView, TouchableOpacity} from 'react-native';
-import {Text, View, Image} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import {Svg, Circle, Text as SvgText} from 'react-native-svg';
+import React from 'react';
+import {Dimensions, SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {useSelector} from 'react-redux';
-import {getCurrencyIcon} from '../../../../utils/currencyicon';
-const {BigNumber} = require('bignumber.js');
-const PendingTxComponent = ({
-  txQuoteInfo,
-  formattedPercent,
-  formattedCountdown,
-  normalAmount,
-  calculatePercentage,
-}) => {
-  return (
-    <View style={{justifyContent: 'center'}}>
-      <Svg height="300" width="300">
-        <Circle
-          cx="150"
-          cy="150"
-          r="147"
-          stroke="#fff"
-          strokeWidth="4"
-          fill="transparent"
-        />
-        <Circle
-          cx="150"
-          cy="150"
-          r="120"
-          stroke="#fff"
-          strokeWidth="8"
-          fill="transparent"
-        />
-        <Circle
-          cx="150"
-          cy="150"
-          r="99"
-          stroke="#fff"
-          strokeWidth="4"
-          fill="transparent"
-        />
-        <Circle
-          cx="150"
-          cy="150"
-          r="120"
-          stroke="#000"
-          strokeWidth="8"
-          fill="transparent"
-          strokeDasharray={[calculatePercentage, 256]}
-          strokeDashoffset="0"
-        />
-        <SvgText
-          x="50%"
-          y="50%"
-          textAnchor="middle"
-          alignmentBaseline="middle"
-          fontFamily="Unbounded-Medium"
-          fontSize="48"
-          fill="#fff">
-          {formattedPercent}
-        </SvgText>
-      </Svg>
-      <View style={{justifyContent: 'center', marginTop: '10%'}}>
-        <Text
-          style={{
-            fontFamily: 'Unbounded-Medium',
-            fontSize: 16,
-            textAlign: 'center',
-            color: '#fff',
-          }}>
-          TRANSACTION IS PENDING
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Unbounded-Medium',
-            fontSize: 16,
-            textAlign: 'center',
-            marginTop: 10,
-            color: '#fff',
-          }}>
-          Time remaining: {formattedCountdown}
-        </Text>
-        <Text
-          style={{
-            fontFamily: 'Unbounded-Medium',
-            fontSize: 12,
-            textAlign: 'center',
-            marginTop: '20%',
-            color: '#949494',
-          }}>
-          {normalAmount?.toFixed(6)}{' '}
-          {txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
-            txQuoteInfo?.action?.toToken?.name ||
-            txQuoteInfo?.tokenTo?.symbol}{' '}
-          {'\n'}
-          are on the way
-        </Text>
-      </View>
-    </View>
-  );
-};
-const SuccessTxComponent = ({
-  txQuoteInfo,
-  tradeType,
-  normalAmount,
-  isStockTrade,
-  stockInfo,
-}) => {
+import {BigNumber} from 'bignumber.js';
+import LinearGradient from 'react-native-linear-gradient';
+
+const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade, stockInfo }) => {
   const navigation = useNavigation();
-  const isUsd = useSelector(x => x.auth.isUsd);
-  const exchRate = useSelector(x => x.auth.exchRate);
-  const currency_name = useSelector(x => x.auth.currency);
-  const currency = getCurrencyIcon(currency_name);
+
+  // Move getChainName function definition here
+  const getChainName = (chainId) => {
+    switch (chainId) {
+      case 1: return 'Ethereum';
+      case 137: return 'Polygon';
+      case 56: return 'Binance Smart Chain';
+      case 42161: return 'Arbitrum';
+      case 10: return 'Optimism';
+      case 8453: return 'Base';
+      case 43114: return 'Avalanche';
+      case 250: return 'Fantom';
+      case 42220: return 'Celo';
+      case 1666600000: return 'Harmony';
+      case 128: return 'Huobi ECO Chain';
+      default: return 'Unknown Chain';
+    }
+  };
+
+  const tokenSymbol = txQuoteInfo?.tokenTo?.symbol || 'Unknown';
+  const tokenAmount = parseFloat(normalAmount).toFixed(6);
+
+  const amountPaid = txQuoteInfo?.fromTokenAmount || '0';
+  const amountPaidSymbol = txQuoteInfo?.tokenFrom?.symbol || 'Unknown';
+  const amountPaidDecimals = txQuoteInfo?.tokenFrom?.decimals || 18;
+
+  const formattedAmountPaid = parseFloat(amountPaid) / Math.pow(10, amountPaidDecimals);
+
+  // Determine if it's a cross-chain trade
+  const isCrossChainTrade = txQuoteInfo?.tokenFrom?.chainId !== txQuoteInfo?.tokenTo?.chainId;
+
+  // Get chain names for both source and destination chains
+  const sourceChainName = getChainName(txQuoteInfo?.tokenFrom?.chainId);
+  const destChainName = getChainName(txQuoteInfo?.tokenTo?.chainId);
+
+  // Calculate fee
+  const fee = isCrossChainTrade 
+    ? txQuoteInfo?.estimation?.gasCost || 0 
+    : formattedAmountPaid * 0.002;
+  const txFee = `${fee.toFixed(6)} ${isCrossChainTrade ? 'USD' : amountPaidSymbol}`;
+
+  // Calculate entry price
+  const entryPrice = tradeType === 'buy' ? formattedAmountPaid / parseFloat(tokenAmount) : parseFloat(tokenAmount) / formattedAmountPaid;
 
   return (
-    <View style={{width: '100%'}}>
-      <View style={{justifyContent: 'flex-start'}}>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignSelf: 'center',
-            marginTop: '20%',
-          }}>
+    <View style={{ width: '100%' }}>
+      <View style={{ justifyContent: 'flex-start' }}>
+        <View style={{
+          justifyContent: 'center',
+          alignSelf: 'center',
+          marginTop: '0%',
+        }}>
           <Image
-            source={{
-              uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710094353/ucvuadhlnkmbfn44aroo.png',
-            }}
-            style={{width: 200, height: 200}}
-            // Replace with the URL of your image
+            source={require('../../../../../assets/success.png')}
+            style={{ width: 200, height: 200 }}
           />
         </View>
-        <Text
-          style={{
-            fontFamily: 'Unbounded-Bold',
-            fontSize: 24,
-            textAlign: 'center',
-            marginTop: 24,
-            color: '#fff',
-          }}>
-          {isStockTrade ? 'Order is Booked' : 'IT’S A SUCCESS!'}
+        <Text style={{
+          fontFamily: 'Unbounded-Bold',
+          fontSize: 24,
+          textAlign: 'center',
+          marginTop: 24,
+          color: '#fff',
+        }}>
+          {isStockTrade ? 'Order is Booked' : 'IT\'S A SUCCESS!'}
         </Text>
-        <Text
-          style={{
-            fontFamily: 'Unbounded-Medium',
-            fontSize: 14,
-            textAlign: 'center',
-            marginTop: 24,
-            color: '#949494',
-          }}>
-          You have successfully {isStockTrade ? 'placed order for' : 'bought'}{' '}
-          {isStockTrade
-            ? parseFloat(
-                txQuoteInfo?.estimation?.srcChainTokenIn?.amount / 1000000 -
-                  2.5,
-              ).toFixed(2)
-            : normalAmount?.toFixed(6)}
-          {isStockTrade
-            ? ` USDC of ${stockInfo?.stock?.symbol} stocks`
-            : txQuoteInfo?.estimation?.dstChainTokenOut?.name ||
-              txQuoteInfo?.action?.toToken?.name ||
-              txQuoteInfo?.tokenTo?.symbol}
+        <Text style={{
+          fontFamily: 'Unbounded-Medium',
+          fontSize: 14,
+          textAlign: 'center',
+          marginTop: 24,
+          color: '#949494',
+        }}>
+          You have successfully {isStockTrade ? 'placed order for' : tradeType === 'buy' ? 'bought' : 'sold'} {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying $${formattedAmountPaid.toFixed(6)}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
         </Text>
+      
       </View>
-      <View style={{marginTop: '15%'}}>
-        <View
-          style={{
-            // flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+      <View style={{ marginTop: '15%' }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <LinearGradient
-            colors={['#000', '#191919', '#fff']} // Replace with your desired gradient colors
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+            colors={['#000', '#191919', '#fff']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ height: 2, width: '80%' }}
           />
         </View>
-        <View
-          style={{
-            justifyContent: 'flex-start',
-            marginVertical: '5%',
-            paddingHorizontal: '8%',
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginBottom: 16,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'NeueMontreal-Medium',
-                alignSelf: 'flex-start',
-                color: '#fff',
-              }}>
-              Entry Price:
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Unbounded-Medium',
-                alignSelf: 'flex-end',
-                color: '#fff',
-              }}>
-              {isUsd ? '$' : currency}
-              {tradeType === 'sell'
-                ? txQuoteInfo?.action?.toToken?.priceUSD ||
-                  ((
-                    parseInt(txQuoteInfo?.toTokenAmount) /
-                    Math.pow(10, txQuoteInfo?.tokenTo?.decimals)
-                  ).toFixed(5) /
-                    parseFloat(normalAmount)) *
-                    (exchRate ? parseFloat(exchRate) : 1) ||
-                  (parseInt(txQuoteInfo?.toTokenAmount) /
-                    Math.pow(10, txQuoteInfo?.tokenTo?.decimals)) *
-                    (exchRate ? parseFloat(exchRate) : 1) ||
-                  (
-                    (txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      ) /
-                      (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                        ))) *
-                    (exchRate ? parseFloat(exchRate) : 1)
-                  ).toFixed(6)
-                : //when same chain
-                !isStockTrade
-                ? txQuoteInfo?.action?.toToken?.priceUSD ||
-                  (parseFloat(normalAmount) /
-                    (
-                      parseInt(
-                        txQuoteInfo?.transactionData?.info?.amountOutMin,
-                      ) / Math.pow(10, txQuoteInfo?.tokenTo?.decimals)
-                    ).toFixed(5)) *
-                    (exchRate ? parseFloat(exchRate) : 1) || //when cross chain
-                  (txQuoteInfo?.estimation?.srcChainTokenIn?.amount /
-                    Math.pow(
-                      10,
-                      txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                    ) /
-                    (
-                      txQuoteInfo?.estimation?.dstChainTokenOut?.amount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      )
-                    ).toFixed(6)) *
-                    (exchRate ? parseFloat(exchRate) : 1)
-                : stockInfo?.priceInfo?.price *
-                  (exchRate ? parseFloat(exchRate) : 1)}
-            </Text>
+        <View style={{
+          justifyContent: 'flex-start',
+          marginVertical: '5%',
+          paddingHorizontal: '8%',
+        }}>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Entry Price:</Text>
+            <Text style={styles.infoValue}>${entryPrice.toFixed(6)}</Text>
           </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginBottom: 16,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'NeueMontreal-Medium',
-                alignSelf: 'flex-start',
-                color: '#fff',
-              }}>
-              Estimated Fees:
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Unbounded-Medium',
-                alignSelf: 'flex-end',
-                color: '#fff',
-              }}>
-              {isUsd ? '$' : currency}
-              {txQuoteInfo?.estimation?.costsDetails
-                ? tradeType === 'sell'
-                  ? (
-                      (txQuoteInfo?.estimation?.costsDetails?.filter(
-                        x => x.type === 'DlnProtocolFee',
-                      )[0]?.payload?.feeAmount /
-                        Math.pow(
-                          10,
-                          txQuoteInfo?.estimation?.srcChainTokenIn?.decimals,
-                        )) *
-                      (exchRate ? parseFloat(exchRate) : 1)
-                    ).toFixed(2)
-                  : isStockTrade
-                  ? 2.5 * (exchRate ? parseFloat(exchRate) : 1)
-                  : (txQuoteInfo?.estimation?.costsDetails?.filter(
-                      x => x.type === 'DlnProtocolFee',
-                    )[0]?.payload?.feeAmount /
-                      Math.pow(
-                        10,
-                        txQuoteInfo?.estimation?.dstChainTokenOut?.decimals,
-                      )) *
-                    (exchRate ? parseFloat(exchRate) : 1).toFixed(2)
-                : (txQuoteInfo?.estimate?.gasCosts?.[0]?.amountUSD ?? '0.0') *
-                  (exchRate ? parseFloat(exchRate) : 1).toFixed(2)}
-            </Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Estimated Fees:</Text>
+            <Text style={styles.infoValue}>{txFee}</Text>
           </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              marginBottom: 16,
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'NeueMontreal-Medium',
-                alignSelf: 'flex-start',
-                color: '#fff',
-              }}>
-              Transaction took:
-            </Text>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Unbounded-Medium',
-                alignSelf: 'flex-end',
-                color: '#fff',
-              }}>
-              {' '}
-              {txQuoteInfo?.order?.approximateFulfillmentDelay ||
-                txQuoteInfo?.estimate?.executionDuration ||
-                5}
-              s
-            </Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Transaction took:</Text>
+            <Text style={styles.infoValue}>{isCrossChainTrade ? '10-30m' : '6s'}</Text>
           </View>
         </View>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <LinearGradient
-            colors={['#fff', '#191919', '#000']} // Replace with your desired gradient colors
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            style={{height: 2, width: '80%'}} // Adjust the height and width as needed
+            colors={['#fff', '#191919', '#000']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{ height: 2, width: '80%' }}
           />
         </View>
       </View>
       <TouchableOpacity
         style={{
           height: 50,
-          marginTop: 24,
           backgroundColor: 'white',
           width: '90%',
           borderRadius: 16,
@@ -366,106 +131,127 @@ const SuccessTxComponent = ({
           alignSelf: 'center',
           marginTop: '20%',
         }}
-        onPress={() => navigation.navigate('Portfolio')}>
-        <Text
-          style={{
-            fontSize: 14,
-            letterSpacing: 0.2,
-            fontFamily: 'Unbounded-Bold',
-            color: '#000',
-            textAlign: 'center',
-          }}>
+        onPress={() => navigation.navigate('Portfolio')}
+      >
+        <Text style={{
+          fontSize: 14,
+          letterSpacing: 0.2,
+          fontFamily: 'Unbounded-Bold',
+          color: '#000',
+          textAlign: 'center',
+        }}>
           GO BACK
         </Text>
       </TouchableOpacity>
     </View>
   );
 };
-const PendingTxStatusPage = ({route, navigation}) => {
-  const {state, tradeType, isStockTrade, stockInfo, signature} = route.params;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#000',
+    paddingVertical: '5%',
+  },
+  contentContainer: {
+    alignItems: 'center',
+  },
+  title: {
+    color: '#fff',
+    fontSize: '6%',
+    fontWeight: 'bold',
+    marginBottom: '5%',
+  },
+  successMessage: {
+    color: '#fff',
+    fontSize: '4%',
+    textAlign: 'center',
+    marginBottom: '5%',
+  },
+  text: {
+    color: '#fff',
+    fontSize: '4.5%',
+    marginBottom: '2.5%',
+  },
+  button: {
+    backgroundColor: '#fff',
+    paddingVertical: '3%',
+    paddingHorizontal: '6%',
+    borderRadius: '2%',
+    marginTop: '5%',
+  },
+  buttonText: {
+    color: '#000',
+    fontSize: '4.5%',
+    fontWeight: 'bold',
+  },
+  successImage: {
+    width: 100,
+    height: 100,
+    marginBottom: '5%',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: '2%',
+    marginBottom: '4%',
+  },
+  infoLabel: {
+    fontSize: 14,
+    fontFamily: 'NeueMontreal-Medium',
+    alignSelf: 'flex-start',
+    color: '#fff',
+  },
+  infoValue: {
+    fontSize: 14,
+    fontFamily: 'Unbounded-Medium',
+    alignSelf: 'flex-end',
+    color: '#fff',
+  },
+});
+
+const PendingTxStatusPage = ({route}) => {
+  const {state, tradeType, isStockTrade, stockInfo} = route.params;
   const txQuoteInfo = state;
 
   const exchRate = useSelector(x => x.auth.exchRate);
 
-  const [countdown, setCountdown] = useState(
-    txQuoteInfo?.order?.approximateFulfillmentDelay ?? 5,
-  );
-  useEffect(() => {
-    const timer = setInterval(() => {
-      // Decrement countdown every second until it reaches 0
-      setCountdown(prevCountdown =>
-        prevCountdown > 0 ? prevCountdown - 1 : 0,
-      );
-    }, 1000);
-
-    // Clear the interval when the component unmounts
-    return () => clearInterval(timer);
-  }, []);
-
-  const calculatePercentage = () => {
-    const totalDuration = txQuoteInfo?.order?.approximateFulfillmentDelay ?? 5;
-    const circumference = 2 * Math.PI * 40; // 40 is the radius of the circle
-    return (countdown / totalDuration) * circumference;
-  };
-  const {width, height} = Dimensions.get('window');
-  const formatTime = seconds => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
   const weiAmount = new BigNumber(
     txQuoteInfo?.estimation?.dstChainTokenOut?.amount ||
       txQuoteInfo?.estimate?.toAmountMin ||
       txQuoteInfo?.transactionData?.info?.amountOutMin,
   );
-  const percent =
-    (((txQuoteInfo?.order?.approximateFulfillmentDelay ||
-      txQuoteInfo?.estimate?.executionDuration ||
-      5) -
-      countdown) /
-      (txQuoteInfo?.order?.approximateFulfillmentDelay ||
-        txQuoteInfo?.estimate?.executionDuration ||
-        5)) *
-    100;
-  const formattedPercent = Math.round(percent) + '%';
+
   const normalAmount = weiAmount
     .div(
       10 **
-        (txQuoteInfo?.estimation?.dstChainTokenOut.decimals ||
+        (txQuoteInfo?.estimation?.dstChainTokenOut?.decimals ||
           txQuoteInfo?.action?.toToken?.decimals ||
           txQuoteInfo?.tokenTo?.decimals),
     )
     .toNumber();
-  // {
-  // }
+
   return (
     <SafeAreaView
       style={{
         backgroundColor: '#000',
-        paddingBottom: 80,
+        paddingBottom: '5%',
+        marginBottom:'5%',
         flex: 1,
-        height,
-        width,
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width,
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-      {formattedPercent === '100%' ? (
-        <SuccessTxComponent
-          txQuoteInfo={txQuoteInfo}
-          normalAmount={normalAmount}
-          tradeType={tradeType}
-          isStockTrade={isStockTrade}
-          stockInfo={stockInfo}
-        />
-      ) : (
-        <PendingTxComponent
-          txQuoteInfo={txQuoteInfo}
-          normalAmount={normalAmount}
-          formattedPercent={formattedPercent}
-          formattedCountdown={formatTime(countdown)}
-          calculatePercentage={calculatePercentage()}
-        />
-      )}
+      <SuccessTxComponent
+        txQuoteInfo={txQuoteInfo}
+        normalAmount={normalAmount}
+        tradeType={tradeType}
+        isStockTrade={isStockTrade}
+        stockInfo={stockInfo}
+      />
     </SafeAreaView>
   );
 };
