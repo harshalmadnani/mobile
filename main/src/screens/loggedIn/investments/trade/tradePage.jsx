@@ -10,7 +10,6 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  StyleSheet,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
 import {Icon} from '@rneui/base';
@@ -138,28 +137,6 @@ const TradePage = ({route}) => {
 
   const tokensToSell = !isStockTrade ? tradeAsset?.[0]?.contracts_balances : [];
 
-  const [balance, setBalance] = useState("0");
-  const [tokenSymbol, setTokenSymbol] = useState('');
-
-  useEffect(() => {
-    // Fetch balance logic
-    const fetchedBalance = tokensToSell?.[0]?.balance ?? "0";
-    setBalance(fetchedBalance);
-    
-    // Set token symbol
-    const symbol = tokensToSell?.[0]?.symbol ?? 
-      bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.symbol ?? 
-      state?.symbol?.toUpperCase() ?? 
-      '';
-    setTokenSymbol(symbol);
-  }, [tokensToSell, state, bestSwappingBuyTrades]);
-
-  const handleMaxPress = () => {
-    setValue(balance === "0" ? "0" : balance);
-  };
-
-  const formattedBalance = parseFloat(balance) === 0 ? "0" : parseFloat(balance).toFixed(4);
-
   useEffect(() => {
     const fetchNewQuotes = async () => {
       if (!isStockTrade) {
@@ -189,19 +166,20 @@ const TradePage = ({route}) => {
       setLoading(true);
       if (!isStockTrade) {
         if (tradeType === 'sell' && parseFloat(value) > 0) {
-          console.log('fired when value changes');
-          const sellToken = tokensToSell?.[0] ?? bestSwappingBuyTrades?.estimation?.dstChainTokenOut;
-          const sellChainId = sellToken?.chainId ?? bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId;
-          const sellTokenAddress = sellToken?.address ?? bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address;
-          
-          console.log('Sell Chain ID:', sellChainId);
-          console.log('Sell Token Address:', sellTokenAddress);
-          
+          console.log(
+            'fired when value changes',
+            parseInt(
+              parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+            ),
+          );
           dispatch(
             getBestDLNCrossSwapRateSell(
-              sellToken,
-              parseInt(parseFloat(value) * Math.pow(10, sellToken?.decimals)),
-              allScw.filter(x => x.chainId === sellChainId)?.[0]?.address,
+              tokensToSell?.[0],
+              parseInt(
+                parseFloat(value) * Math.pow(10, tokensToSell?.[0]?.decimals),
+              ),
+              allScw.filter(x => x.chainId === tokensToSell?.[0]?.chainId)?.[0]
+                ?.address,
             ),
           );
         } else {
@@ -248,28 +226,23 @@ const TradePage = ({route}) => {
   const getTradeSigningData = async (smartAccountSrc, smartAccountDst) => {
     if (bestSwappingBuyTrades) {
       console.log('here....', smartAccountSrc, smartAccountDst);
-      const srcChainTokenInAmount = parseFloat(value) *
-        Math.pow(
-          10,
-          bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
-            bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals
-        );
-      
-      // Ensure srcChainTokenInAmount is a positive integer or "auto"
-      const formattedAmount = srcChainTokenInAmount > 0 ? Math.floor(srcChainTokenInAmount).toString() : "auto";
-
       const res = await getDLNTradeCreateBuyOrderTxn(
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.address ??
           bestSwappingBuyTrades?.estimation?.tokenIn?.address,
-        formattedAmount,
+        parseFloat(value) *
+          Math.pow(
+            10,
+            bestSwappingBuyTrades?.estimation?.tokenIn?.decimals ||
+              bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.decimals,
+          ),
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId ?? 137,
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.address ??
           bestSwappingBuyTrades?.estimation?.tokenOut?.address,
         bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.amount ??
           bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
         smartAccountSrc,
-        smartAccountDst
+        smartAccountDst,
       );
       return res;
     } else {
@@ -587,7 +560,27 @@ const TradePage = ({route}) => {
                 if (Platform.OS === 'ios') {
                   ReactNativeHapticFeedback.trigger('impactMedium', options);
                 }
-                setTradeType('sell');
+                if (!isStockTrade && tokensToSell?.length > 0) {
+                  setTradeType('sell');
+                } else if (!isStockTrade && !tokensToSell?.length) {
+                  Toast.show('No asset to sell!', {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
+                } else {
+                  Toast.show('Sell of socks coming soon!', {
+                    duration: Toast.durations.SHORT,
+                    position: Toast.positions.BOTTOM,
+                    shadow: true,
+                    animation: true,
+                    hideOnPress: true,
+                    delay: 0,
+                  });
+                }
               }}>
               {tradeType === 'sell' ? (
                 <LinearGradient
@@ -707,32 +700,36 @@ const TradePage = ({route}) => {
           ) : (
             <View
               style={{
+                marginTop: '5%',
                 flexDirection: 'row',
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: '5%',
               }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: '#9d9d9d',
-                  textAlign: 'center',
-                  fontFamily: 'NeueMontreal-Medium',
-                }}>
-                Available to sell:{' '}
-              </Text>
               <Text
                 style={{
                   fontSize: 16,
                   color: '#fff',
                   textAlign: 'center',
-                  fontFamily: 'Unbounded-Medium',
+                  fontFamily: 'Unbounded-Bold',
                 }}>
-                {formattedBalance} {tokenSymbol}
+                {tokensToSell?.[0]?.balance?.toFixed(7)}{' '}
+                {state?.symbol?.toUpperCase() ??
+                  state?.stock?.symbol?.toUpperCase()}{' '}
               </Text>
-
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: '#7e7e7e',
+                  textAlign: 'center',
+                  fontFamily: 'NeueMontreal-Medium',
+                }}>
+                is available{' '}
+              </Text>
               <TouchableOpacity
-                onPress={handleMaxPress}
+                onPress={() => {
+                  let val = tokensToSell?.[0]?.balance?.toFixed(7);
+                  setValue(val);
+                }}
                 style={{
                   backgroundColor: '#292929',
                   paddingVertical: 5,
@@ -916,8 +913,8 @@ const TradePage = ({route}) => {
                               ?.amount /
                               Math.pow(
                                 10,
-                                bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                                  ?.decimals,
+                                bestSwappingBuyTrades?.estimation
+                                  ?.dstChainTokenOut?.decimals,
                               ),
                           )
                         ? (
@@ -1084,8 +1081,8 @@ const TradePage = ({route}) => {
                           ?.amount /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation
-                              ?.dstChainTokenOut?.decimals,
+                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                              ?.decimals,
                           )) *
                         0.002
                       ).toFixed(4)}
