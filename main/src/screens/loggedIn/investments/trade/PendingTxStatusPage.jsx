@@ -90,7 +90,7 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
           marginTop: 24,
           color: '#949494',
         }}>
-          You have successfully {isStockTrade ? 'placed order for' : tradeType === 'buy' ? `bought` : `sold`} {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying $${formattedAmountPaid.toFixed(6)}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
+          You have successfully placed a {isStockTrade ? 'placed order for' : tradeType === 'buy' ? `buy order` : `sell order`} for {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying $${formattedAmountPaid.toFixed(6)}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
         </Text>
       
       </View>
@@ -108,8 +108,6 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
           marginVertical: '5%',
           paddingHorizontal: '8%',
         }}>
-          {isDLN && (
-            <>
           <View style={styles.infoRow}>
             <Text style={styles.infoLabel}>Entry Price:</Text>
             <Text style={styles.infoValue}>${entryPrice.toFixed(6)}</Text>
@@ -118,7 +116,9 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
             <Text style={styles.infoLabel}>Estimated Fees:</Text>
             <Text style={styles.infoValue}>${txFee}</Text>
           </View>
-          <View style={styles.infoRow}>
+          {isDLN && (
+            <>
+              <View style={styles.infoRow}>
                 <Text style={styles.infoLabel}>Estimated Time:</Text>
                 <Text style={styles.infoValue}>{estimatedDelay}s</Text>
               </View>
@@ -126,11 +126,14 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
                 <Text style={styles.infoLabel}>Chain:</Text>
                 <Text style={styles.infoValue}>{destChainName}</Text>
               </View>
-
             </>
           )}
-
-
+          {!isDLN && (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Chain:</Text>
+              <Text style={styles.infoValue}>{sourceChainName}</Text>
+            </View>
+          )}
         </View>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
           <LinearGradient

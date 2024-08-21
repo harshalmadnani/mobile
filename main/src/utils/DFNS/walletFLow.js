@@ -377,16 +377,18 @@ export const exportWallet = async (authToken, walletId) => {
     
     console.log('Auth token (first 10 chars):', authToken.substring(0, 10) + '...');
 
-    const response = await fetch(`https://api.dfns.ninja/wallets/${walletId}/export`, {
+    const response = await fetch(`https://api.dfns.ninja/auth/credentials/${walletId}/export`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${authToken}`,
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        credentialId: walletId
+      })
     });
     
     console.log('Response status:', response.status);
-    console.log('Response headers:', JSON.stringify(response.headers));
 
     if (!response.ok) {
       const errorBody = await response.text();
@@ -399,7 +401,7 @@ export const exportWallet = async (authToken, walletId) => {
     }
     
     const data = await response.json();
-    console.log('Wallet export successful:', data);
+    console.log('Wallet export successful');
     return data;
   } catch (error) {
     console.error('Error exporting wallet:', error);
