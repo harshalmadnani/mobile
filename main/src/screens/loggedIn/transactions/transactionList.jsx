@@ -92,7 +92,10 @@ const TransactionList = ({navigation, route}) => {
 
     return () => clearTimeout(timer);
   }, [txType]);
-  console.log('evmDLNTradesTxListInfo', evmDLNTradesTxListInfo);
+
+  // Add this console.log to check the data
+  console.log('evmTxListInfo:', evmTxListInfo);
+
   return (
     <SafeAreaView
       style={{
@@ -167,7 +170,9 @@ const TransactionList = ({navigation, route}) => {
         ) : (
           <FlatList
             style={{width: '100%', marginBottom: 30, flex: 1}}
-            data={txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo}
+            data={
+              txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
+            }
             renderItem={({item}) =>
               txType === 'transfers' ? (
                 <WalletTransactionTransferCard
@@ -187,6 +192,7 @@ const TransactionList = ({navigation, route}) => {
             }
             ListEmptyComponent={() => (
               <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+
                 <Image
                   source={txHistoryImage}
                   style={{width: 200, height: 200}}
@@ -194,7 +200,7 @@ const TransactionList = ({navigation, route}) => {
                 />
               </View>
             )}
-            onEndReached={onEndReachedFetch}
+            onEndReached={async () => await onEndReachedFetch()}
             keyExtractor={(item, i) => i?.toString()}
           />
         )
