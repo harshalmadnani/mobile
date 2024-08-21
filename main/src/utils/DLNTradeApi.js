@@ -715,7 +715,15 @@ export const executeSameChainSellForUSDC = async (
     usdcNativeToken,
     smartAccount,
   );
-
+  const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
+    tokenInfo?.chainId,
+    tokenInfo?.address,
+    value,
+    tokenInfo?.chainId,
+    usdcNativeToken,
+    smartAccount,
+    true,
+  );
   return uSDCTxnRate;
 };
 export const executeCrossChainSellForUSDC = async (
