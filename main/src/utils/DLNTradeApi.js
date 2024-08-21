@@ -716,14 +716,6 @@ export const executeSameChainSellForUSDC = async (
     smartAccount,
   );
 
-  const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
-    srcChainId,
-    usdcNativeToken,
-    value,
-    dstChainId,
-    usdcNativePolyToken,
-    smartAccountSrc,
-  );
   return uSDCTxnRate;
 };
 export const executeCrossChainSellForUSDC = async (
@@ -731,11 +723,9 @@ export const executeCrossChainSellForUSDC = async (
   smartAccountSrc,
   value,
   smartAccountDst,
-  dstChainId
 ) => {
   const usdcNativeToken = getUSDCTokenOnChain(parseInt(srcChainId));
-  const usdcNativePolyToken = getUSDCTokenOnChain(parseInt(dstChainId));
-  
+  const usdcNativePolyToken = getUSDCTokenOnChain(parseInt(137));
   const uSDCTxnRate = await getDLNTradeCreateBuyOrder(
     srcChainId,
     usdcNativeToken,
