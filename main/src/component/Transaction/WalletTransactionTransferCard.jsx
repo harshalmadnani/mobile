@@ -78,9 +78,9 @@ const WalletTransactionTransferCard = ({item, currency, isUsd, exchRate}) => {
                 styles.secondaryTitle,
                 {color: '#fff', opacity: 1, alignSelf: 'flex-end'},
               ]}>
-              {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}+
+              {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}{isUsd ? '$' : currency}
               {isUsd ? item?.amount : (item?.amount * exchRate).toFixed(2)}{' '}
-              {isUsd ? '$' : currency}
+              
             </Text>
             <Text
               style={[
@@ -102,9 +102,9 @@ const WalletTransactionTransferCard = ({item, currency, isUsd, exchRate}) => {
                 styles.secondaryTitle,
                 {color: '#fff', opacity: 1, alignSelf: 'flex-end'},
               ]}>
-              {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}-
+              {/* - {formatCompactNumber(item?.amount)?.toFixed(2)} USDC */}{isUsd ? '$' : currency}
               {isUsd ? item?.amount : (item?.amount * exchRate).toFixed(2)}{' '}
-              {isUsd ? '$' : currency}
+            
             </Text>
             <Text
               style={[
