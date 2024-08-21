@@ -17,6 +17,7 @@ import {
   getDLNTradeCreateSellOrder,
 } from '../../utils/DLNTradeApi';
 import {marketsAction} from '../reducers/market';
+import { getSolanaTokenAddress, getSolanaUSDCAddress } from '../../utils/solanaHelpers';
 
 export const getListOfCryptoFromMobulaApi = () => {
   return async (dispatch, getState) => {
@@ -124,6 +125,8 @@ export const getNameChainId = chain => {
       return 'ArbitrumOne';
     case '8453':
       return 'Base';
+      case '7565164':
+        return 'Solana';
   }
 };
 export const getNetworkOnChainId = chain => {
@@ -138,6 +141,8 @@ export const getNetworkOnChainId = chain => {
       return 'Arbitrum';
     case '8453':
       return 'Base';
+      case '7565164':
+        return 'Solana';
   }
 };
 export const getBestDLNCrossSwapRateBuy = (
@@ -148,11 +153,14 @@ export const getBestDLNCrossSwapRateBuy = (
   return async (dispatch, getState) => {
     const allScw = getState().auth.scw;
     const {bestRate, allRates} = await getBestCrossSwapRateBuy(
-      blockchains,
-      contractAddress,
+      [...blockchains, 'solana'],
+      [...contractAddress, getSolanaTokenAddress()],
       value,
-      allScw?.filter(x => x.chainId === '137')?.[0]?.address, //used for same chain
+      allScw?.filter(x => x.chainId === '137' || x.chainId === 'solana')?.[0]?.address,
     );
+
+    // Add this line to include the Solana address in the bestRate object
+    bestRate.solanaAddress = allScw.find(x => x.chainId === 'solana')?.address;
 
     dispatch(marketsAction.setBestSwappingRates(bestRate));
     dispatch(marketsAction.setAllSwappingTradesQuotes(allRates));
@@ -166,8 +174,8 @@ export const getBestDLNCrossSwapRateSell = (tokenInfo, value, scw) => {
       tokenInfo?.chainId,
       tokenInfo?.address,
       value,
-      '137',
-      '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
+      tokenInfo?.chainId === 'solana' ? 'solana' : '137',
+      tokenInfo?.chainId === 'solana' ? getSolanaUSDCAddress() : '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359',
       scw,
     );
     console.log('sell to token', bestRate);

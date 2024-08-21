@@ -17,6 +17,7 @@ const initialState = {
     'Polygon',
     'Avalanche C-Chain',
     'Arbitrum',
+    'Solana',
   ],
   isStockTrade: false,
 };

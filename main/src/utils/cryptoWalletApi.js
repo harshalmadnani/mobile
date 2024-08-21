@@ -91,3 +91,22 @@ export const getTransactionsByWallet = async (address, page) => {
     return [];
   }
 };
+
+export const getTradeHistory = async (dateFrom, dateTo) => {
+  try {
+    const response = await axios.get(
+      `https://api.zcx.com/trade/v1/info/trades?limit=30&offset=0&dateFrom=${dateFrom}&dateTo=${dateTo}`,
+      {
+        headers: {
+          Authorization: 'Bearer af0e50ed-6636-414f-afa3-2626db5c6acf',
+          accept: 'application/json',
+        },
+      },
+    );
+    console.log('Trade history....', response.data);
+    return response.data;
+  } catch (error) {
+    console.log('Error fetching trade history:', error.response?.data);
+    return [];
+  }
+};

@@ -14,6 +14,7 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
       case 137: return 'Polygon';
       case 56: return 'Binance Smart Chain';
       case 42161: return 'Arbitrum';
+      case 7565164: return 'Solana';
       case 10: return 'Optimism';
       case 8453: return 'Base';
       case 43114: return 'Avalanche';
@@ -29,12 +30,15 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
   const tokenAmount = parseFloat(normalAmount).toFixed(6);
 
   const amountPaid = txQuoteInfo?.fromTokenAmount || '0';
-  const amountPaidSymbol = txQuoteInfo?.tokenFrom?.symbol || 'Unknown';
   const amountPaidDecimals = txQuoteInfo?.tokenFrom?.decimals || 18;
 
   const formattedAmountPaid = isDLN
     ? parseFloat(txQuoteInfo?.estimation?.srcChainTokenIn?.amount) / Math.pow(10, txQuoteInfo?.estimation?.srcChainTokenIn?.decimals)
     : parseFloat(amountPaid) / Math.pow(10, amountPaidDecimals);
+
+  const amountPaidSymbol = isDLN
+    ? txQuoteInfo?.estimation?.srcChainTokenIn?.symbol
+    : txQuoteInfo?.tokenFrom?.symbol || 'Unknown';
 
   // Determine if it's a cross-chain trade
   const isCrossChainTrade = txQuoteInfo?.tokenFrom?.chainId !== txQuoteInfo?.tokenTo?.chainId;
@@ -58,8 +62,21 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
     : formattedAmountPaid * 0.002;
   const txFee = `${fee.toFixed(6)}`;
 
-  // Calculate entry price
-  const entryPrice = tradeType === 'buy' ? formattedAmountPaid / parseFloat(tokenAmount) : parseFloat(tokenAmount) / formattedAmountPaid;
+  // Calculate entry price for DLN
+  let entryPrice;
+  if (isDLN) {
+    const srcAmount = new BigNumber(txQuoteInfo.estimation.srcChainTokenIn.amount)
+      .div(new BigNumber(10).pow(txQuoteInfo.estimation.srcChainTokenIn.decimals));
+    const dstAmount = new BigNumber(txQuoteInfo.estimation.dstChainTokenOut.amount)
+      .div(new BigNumber(10).pow(txQuoteInfo.estimation.dstChainTokenOut.decimals));
+    entryPrice = srcAmount.div(dstAmount).toNumber();
+  } else {
+    entryPrice = tradeType === 'buy'
+      ? formattedAmountPaid / parseFloat(tokenAmount)
+      : parseFloat(tokenAmount) / formattedAmountPaid;
+  }
+
+  console.log('Calculated Entry Price:', entryPrice);
 
   return (
     <View style={{ width: '100%' }}>
@@ -90,7 +107,7 @@ const SuccessTxComponent = ({ txQuoteInfo, normalAmount, tradeType, isStockTrade
           marginTop: 24,
           color: '#949494',
         }}>
-          You have successfully placed a {isStockTrade ? 'placed order for' : tradeType === 'buy' ? `buy order` : `sell order`} for {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying $${formattedAmountPaid.toFixed(6)}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
+          You have successfully placed a {isStockTrade ? 'placed order for' : tradeType === 'buy' ? `buy order` : `sell order`} for {tokenAmount} {tokenSymbol} by {tradeType === 'buy' ? `paying ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}` : `selling ${formattedAmountPaid.toFixed(6)} ${amountPaidSymbol}`}
         </Text>
       
       </View>

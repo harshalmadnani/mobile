@@ -167,9 +167,7 @@ const TransactionList = ({navigation, route}) => {
         ) : (
           <FlatList
             style={{width: '100%', marginBottom: 30, flex: 1}}
-            data={
-              txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo
-            }
+            data={txType === 'dln' ? evmDLNTradesTxListInfo?.orders : evmTxListInfo}
             renderItem={({item}) =>
               txType === 'transfers' ? (
                 <WalletTransactionTransferCard
@@ -196,7 +194,7 @@ const TransactionList = ({navigation, route}) => {
                 />
               </View>
             )}
-            onEndReached={async () => await onEndReachedFetch()}
+            onEndReached={onEndReachedFetch}
             keyExtractor={(item, i) => i?.toString()}
           />
         )

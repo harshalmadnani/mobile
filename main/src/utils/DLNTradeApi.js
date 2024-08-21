@@ -182,6 +182,8 @@ const getChainIdOnChainName = chainName => {
     return 42161;
   } else if (chainName === 'Base') {
     return 8453;
+  } else if (chainName === 'Solana') {
+    return 7565164;
   }
 };
 export const getBestCrossSwapRateBuy = async (
@@ -198,6 +200,7 @@ export const getBestCrossSwapRateBuy = async (
     x =>
       x.blockchains === 'Ethereum' ||
       x.blockchains === 'BNB Smart Chain (BEP20)' ||
+      x.blockchains === 'Solana' ||
       x.blockchains === 'Polygon' ||
       x.blockchains === 'Base' ||
       x.blockchains === 'Arbitrum',
@@ -294,6 +297,18 @@ export const getDLNTradeCreateBuyOrderTxn = async (
     if (dstChainId === srcChainId) {
       // same chain
     } else {
+      console.log('DLN Trade API Request Variables:');
+      console.log('DLNBaseURL:', DLNBaseURL);
+      console.log('tradeRoutes.createOrder:', tradeRoutes.createOrder);
+      console.log('srcChainId:', srcChainId);
+      console.log('srcChainTokenIn:', srcChainTokenIn);
+      console.log('srcChainTokenInAmount:', srcChainTokenInAmount);
+      console.log('dstChainId:', dstChainId);
+      console.log('dstChainTokenOut:', dstChainTokenOut);
+      console.log('dstChainTokenOutAmount:', dstChainTokenOutAmount);
+      console.log('smartAccountDst:', smartAccountDst);
+      console.log('smartAccountSrc:', smartAccountSrc);
+
       response = await axios.get(
         `${DLNBaseURL}${
           tradeRoutes.createOrder
@@ -305,8 +320,10 @@ export const getDLNTradeCreateBuyOrderTxn = async (
           dstChainTokenOut === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
             ? '0x0000000000000000000000000000000000000000'
             : dstChainTokenOut
-        }&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccountDst}&srcChainOrderAuthorityAddress=${smartAccountSrc}&dstChainOrderAuthorityAddress=${smartAccountSrc}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
+        }&dstChainTokenOutAmount=${dstChainTokenOutAmount}&dstChainTokenOutRecipient=${smartAccountDst}&srcChainOrderAuthorityAddress=${smartAccountSrc}&dstChainOrderAuthorityAddress=${smartAccountDst}&prependOperatingExpenses=false&referralCode=8002&affiliateFeePercent=0.15&affiliateFeeRecipient=0xA4f5C2781DA48d196fCbBD09c08AA525522b3699`,
       );
+
+      console.log('Full API URL:', response.config.url);
     }
     console.log(dstChainId, response?.data);
     return response?.data;

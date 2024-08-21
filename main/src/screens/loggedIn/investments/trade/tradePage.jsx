@@ -56,6 +56,7 @@ import {
 } from '../../../../utils/DFNS/walletFLow';
 import {getRouteOnNetwork} from '../../../../utils/constants';
 import {ActivityIndicator} from 'react-native';
+import { Connection, PublicKey } from '@solana/web3.js';
 
 // import {LoginType} from '@particle-network/rn-auth';
 
@@ -116,12 +117,13 @@ const TradePage = ({route}) => {
     43114: 'Avalanche',
     250: 'Fantom Opera',
     42161: 'Arbitrum',
+    7565164: 'Solana',
     10: 'Optimism',
     42220: 'Celo',
     1666600000: 'Harmony',
     128: 'Heco',
     8453: 'Base',
-    // add other chains as necessary
+    'solana': 'Solana',
   };
 
   // Retrieve the first item's chainId and find the chain name
@@ -243,6 +245,7 @@ const TradePage = ({route}) => {
           bestSwappingBuyTrades?.estimation?.tokenOut?.minAmount,
         smartAccountSrc,
         smartAccountDst,
+        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId === 'solana'
       );
       return res;
     } else {
@@ -398,10 +401,9 @@ const TradePage = ({route}) => {
   };
 
   const handleValueChange = text => {
-    const regex = /^\d*$/;
+    const regex = /^\d*\.?\d*$/;
     if (regex.test(text)) {
       setValue(text);
-
       ReactNativeHapticFeedback.trigger('impactMedium', options);
     }
   };
@@ -913,8 +915,8 @@ const TradePage = ({route}) => {
                               ?.amount /
                               Math.pow(
                                 10,
-                                bestSwappingBuyTrades?.estimation
-                                  ?.dstChainTokenOut?.decimals,
+                                bestSwappingBuyTrades?.estimation?.dstChainTokenOut
+                                  ?.decimals,
                               ),
                           )
                         ? (
@@ -1081,8 +1083,8 @@ const TradePage = ({route}) => {
                           ?.amount /
                           Math.pow(
                             10,
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut
-                              ?.decimals,
+                            bestSwappingBuyTrades?.estimation
+                              ?.dstChainTokenOut?.decimals,
                           )) *
                         0.002
                       ).toFixed(4)}
@@ -1195,10 +1197,10 @@ const TradePage = ({route}) => {
                     let res;
                     if (bestSwappingBuyTrades?.transactionData) {
                       smartAccountSrc = allScw.filter(
-                        x => x.chainId === '137',
+                        x => x.chainId === '137' || x.chainId === 'solana',
                       )?.[0]?.address;
                       res = await getTxFromUnizen(
-                        137,
+                        bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId === 'solana' ? 'solana' : 137,
                         bestSwappingBuyTrades?.transactionData,
                         bestSwappingBuyTrades?.nativeValue,
                         smartAccountSrc,
@@ -1229,12 +1231,11 @@ const TradePage = ({route}) => {
                       walletSrcId = wallets.filter(
                         x => x.network === srcChainName,
                       )?.[0]?.id;
-                      smartAccountDst = allScw.filter(
-                        x =>
-                          x.chainId ===
-                            bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId?.toString() ??
-                          '137',
-                      )?.[0]?.address;
+                      smartAccountDst = bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId?.toString() === '7565164'
+                        ? '3UjrFy5MuFqKVUrbUjXtCEH2cJh4SAh7JaXxjcoURHfY'
+                        : allScw.find(
+                            x => x.chainId === (bestSwappingBuyTrades?.estimation?.dstChainTokenOut?.chainId?.toString() ?? '137')
+                          )?.address;
                       smartAccountSrc = allScw.filter(
                         x =>
                           x.chainId ===
@@ -1247,36 +1248,41 @@ const TradePage = ({route}) => {
                       );
                     }
                     setBuyTradeStages('Confirming tx ...');
-                    const signature = await confirmDLNTransaction(
-                      tradeType,
-                      bestSwappingBuyTrades?.transactionData
-                        ? bestSwappingBuyTrades
-                        : res,
-                      res?.estimation?.srcChainTokenIn?.amount ||
-                        res?.action?.fromAmount ||
-                        bestSwappingBuyTrades?.fromTokenAmount,
-                      res?.estimation?.srcChainTokenIn?.address ||
-                        res?.action?.fromToken?.address ||
-                        bestSwappingBuyTrades?.tokenFrom?.contractAddress,
-                      res?.tx ??
-                        res?.transactionRequest ?? {
-                          data: res?.data,
-                          from: smartAccountSrc,
-                          to: contractAddress[res?.contractVersion]?.polygon,
-                          value: res?.nativeValue,
-                        },
-                      evmInfo?.smartAccount,
-                      wallets?.filter(x => x.network === 'Polygon')[0]?.address,
-                      false,
-                      [],
-                      dfnsToken,
-                      walletSrcId ??
-                        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-                      walletDstId ??
-                        wallets?.filter(x => x.network === 'Polygon')[0]?.id,
-                      smartAccountSrc,
-                      smartAccountDst,
-                    );
+                    let signature;
+                    if (bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId === 'solana') {
+                      signature = await handleSolanaTransaction(res);
+                    } else {
+                      signature = await confirmDLNTransaction(
+                        tradeType,
+                        bestSwappingBuyTrades?.transactionData
+                          ? bestSwappingBuyTrades
+                          : res,
+                        res?.estimation?.srcChainTokenIn?.amount ||
+                          res?.action?.fromAmount ||
+                          bestSwappingBuyTrades?.fromTokenAmount,
+                        res?.estimation?.srcChainTokenIn?.address ||
+                          res?.action?.fromToken?.address ||
+                          bestSwappingBuyTrades?.tokenFrom?.contractAddress,
+                        res?.tx ??
+                          res?.transactionRequest ?? {
+                            data: res?.data,
+                            from: smartAccountSrc,
+                            to: contractAddress[res?.contractVersion]?.polygon,
+                            value: res?.nativeValue,
+                          },
+                        evmInfo?.smartAccount,
+                        wallets?.filter(x => x.network === 'Polygon')[0]?.address,
+                        false,
+                        [],
+                        dfnsToken,
+                        walletSrcId ??
+                          wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                        walletDstId ??
+                          wallets?.filter(x => x.network === 'Polygon')[0]?.id,
+                        smartAccountSrc,
+                        smartAccountDst,
+                      );
+                    }
                     setBuyTradeStages('Confirmed tx...');
                     setPreparingTx(false);
                     setLoading(false);

@@ -5578,8 +5578,6 @@ export const getRouteOnNetwork = symbol => {
       return 'Polygon';
     case 'BNB':
       return 'BNB Smart Chain (BEP20)';
-    case 'Solana':
-      return 'Polygon';
     case 'XRP':
       return 'BNB Smart Chain (BEP20)';
     case 'Doge':
