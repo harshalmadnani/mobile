@@ -58,7 +58,7 @@ const Uniramp = ({route, navigation}) => {
             navigation.goBack();
           }}
           style={styles.iconButton}>
-          <Icon name="arrow-back" size={24} color="#000" />
+          <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         {/* <TouchableOpacity onPress={refresh} style={styles.iconButton}>
           <Icon name="refresh" size={24} color="#000" />
@@ -77,10 +77,9 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    top: '2%',
     left: 0,
     right: 0,
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     flexDirection: 'row', // Align children horizontally
     alignItems: 'center', // Align items vertically
     height: '7%',

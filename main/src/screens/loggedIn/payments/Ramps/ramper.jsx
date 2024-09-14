@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,11 +10,11 @@ import {
   Modal,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {Icon} from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
+import { Icon } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import Toast from 'react-native-root-toast';
-import {useWeb3Modal} from '@web3modal/wagmi-react-native';
+import { useWeb3Modal } from '@web3modal/wagmi-react-native';
 import {
   createTransactionOnRamp,
   fetchOnRampPaymentMethodsBasedOnIP,
@@ -28,8 +28,8 @@ import {
   useWaitForTransaction,
   usePrepareSendTransaction,
 } from 'wagmi';
-import {SvgUri} from 'react-native-svg';
-import {Keyboard} from 'react-native';
+import { SvgUri } from 'react-native-svg';
+import { Keyboard } from 'react-native';
 //import {depositAction} from '../../../../store/reducers/deposit';
 import {
   createSaberBuyOrder,
@@ -51,7 +51,7 @@ import axios from 'axios';
 
 const Crypto = require('crypto-js');
 
-const Ramper = ({navigation}) => {
+const Ramper = ({ navigation }) => {
   const email = useSelector(x => x.auth.email);
 
   const getCurrencySymbol = currencyCode => {
@@ -64,12 +64,12 @@ const Ramper = ({navigation}) => {
     const symbol = parts.find(part => part.type === 'currency').value;
     return symbol;
   };
-  const {address} = useAccount();
+  const { address } = useAccount();
   const [value, setValue] = useState('1');
   const walletConnect = useSelector(x => x.deposit.walletConnectModal);
 
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const {open, close} = useWeb3Modal();
+  const { open, close } = useWeb3Modal();
   const [fiat, setFiat] = useState([]);
   const [selectedId, setSelectedId] = useState('wallet');
   const [modalVisible, setModalVisible] = useState(false);
@@ -125,7 +125,7 @@ const Ramper = ({navigation}) => {
   };
   const fetchPaymentMethodsBasedOnIP = async () => {
     try {
-      const {fetchedPaymentMethods, fetchedfiat} =
+      const { fetchedPaymentMethods, fetchedfiat } =
         await fetchOnRampPaymentMethodsBasedOnIP();
       // Optionally, add a custom payment method
       fetchedPaymentMethods.push({
@@ -218,7 +218,7 @@ const Ramper = ({navigation}) => {
       console.log('ramp tx error', txInfo);
       if (!txInfo?.error) {
         setButtonTitle('Continue');
-        navigation.push('Uniramp', {txInfo});
+        navigation.push('Uniramp', { txInfo });
       } else {
         setButtonTitle('Error');
         let errorMessage = txInfo?.message;
@@ -243,8 +243,8 @@ const Ramper = ({navigation}) => {
       Toast.show(
         quote?.data?.type === 'minimum_gateway_error'
           ? `This payment method requires a minimum of  ${getCurrencySymbol(
-              fiat.id,
-            )}${quote?.data?.amount / Math.pow(10, fiat?.decimal)}`
+            fiat.id,
+          )}${quote?.data?.amount / Math.pow(10, fiat?.decimal)}`
           : 'Please try again',
         {
           duration: Toast.durations.SHORT,
@@ -277,9 +277,9 @@ const Ramper = ({navigation}) => {
       onPress={() => {
         Keyboard.dismiss();
       }}
-      style={{padding: 8, flex: 1, backgroundColor: '#000'}}>
-      <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
-        <View style={{flex: 1}}>
+      style={{ padding: 8, flex: 1, backgroundColor: '#000' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#000' }}>
+        <View style={{ flex: 1 }}>
           <View
             style={{
               flexDirection: 'row',
@@ -295,7 +295,7 @@ const Ramper = ({navigation}) => {
               color={'#f0f0f0'}
               type="materialicons"
               onPress={() => navigation.push('Portfolio')}
-              style={{marginLeft: '2%'}}
+              style={{ marginLeft: '2%' }}
             />
             <View
               style={{
@@ -377,7 +377,7 @@ const Ramper = ({navigation}) => {
                     source={{
                       uri: 'https://static.debank.com/image/coin/logo_url/usdc/e87790bfe0b3f2ea855dc29069b38818.png',
                     }}
-                    style={{width: 24, height: 24, borderRadius: 12}} // Make image rounded
+                    style={{ width: 24, height: 24, borderRadius: 12 }} // Make image rounded
                   />
                 </View>
                 <Text style={styles.text}>USDC</Text>
@@ -412,7 +412,7 @@ const Ramper = ({navigation}) => {
               </TouchableOpacity>
             </View>
           )}
-          <View style={{marginTop: '9%'}}>
+          <View style={{ marginTop: '9%' }}>
             <Text
               style={{
                 fontSize: 16,
@@ -443,10 +443,10 @@ const Ramper = ({navigation}) => {
                     borderColor:
                       item.id === selectedId ? '#fff' : 'transparent',
                   },
-                  {color: item.id === selectedId ? '#fff' : 'transparent'},
+                  { color: item.id === selectedId ? '#fff' : 'transparent' },
                 ]}>
                 <Image
-                  source={{uri: item.image}}
+                  source={{ uri: item.image }}
                   style={{
                     backgroundColor: '#fff',
                     width: 26,
@@ -483,14 +483,14 @@ const Ramper = ({navigation}) => {
               borderRadius: 30,
             }}
             onPress={async () => {
-              // if (buttonTitle.toLocaleLowerCase() === 'continue') {
-              //   selectedId === 'wallet'
-              //     ? onWalletConnectOpen()
-              //     : selectedId === 'coupon'
-              //     ? await onCouponFlow()
-              //     : await onRampContinue();
-              // }
-              await createUser();
+              if (buttonTitle.toLocaleLowerCase() === 'continue') {
+                selectedId === 'wallet'
+                  ? onWalletConnectOpen()
+                  : selectedId === 'coupon'
+                    ? await onCouponFlow()
+                    : await onRampContinue();
+              }
+              // await createUser();
             }} // Open modal on press
           >
             <LinearGradient

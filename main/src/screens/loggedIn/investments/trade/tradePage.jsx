@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 import Toast from 'react-native-root-toast';
 import {Icon} from '@rneui/base';
@@ -93,11 +94,11 @@ const TradePage = ({route}) => {
 
   const allScw = useSelector(x => x.auth.scw);
   const items = [
-    {left: 'SPOT MARKET', right: ' '},
-    {left: 'SPOT LIMIT', right: 'COMING SOON'},
-    {left: 'FUTURES MARKET', right: 'COMING SOON'},
-    {left: 'FUTURES LIMIT', right: 'COMING SOON'},
-    {left: 'BOTS', right: 'COMING SOON'},
+    {left: 'SPOT MARKET'},
+    {left: 'SPOT LIMIT'},
+    {left: 'FUTURES MARKET'},
+    {left: 'FUTURES LIMIT'},
+    {left: 'BOTS'},
   ];
   const holdings = useSelector(x => x.portfolio.holdings);
   const usdcValue = holdings?.assets?.filter(
@@ -1179,14 +1180,17 @@ const TradePage = ({route}) => {
             bottom: Platform.OS === 'ios' ? '10%' : '2%',
           }}
           onPress={async () => {
+            console.log('Trade initiated:', { tradeType, value, isStockTrade });
             try {
               if (Platform.OS === 'ios') {
                 ReactNativeHapticFeedback.trigger('impactMedium', options);
               }
               if (isStockTrade) {
+                console.log('Executing stock trade');
                 await orderStockPrice();
               } else {
                 if (!loading && bestSwappingBuyTrades && !preparingTx) {
+                  console.log('Executing crypto trade:', { tradeType });
                   if (tradeType === 'buy' && bestSwappingBuyTrades) {
                     setLoading(true);
                     setPreparingTx(true);
@@ -1207,7 +1211,7 @@ const TradePage = ({route}) => {
                         bestSwappingBuyTrades?.tradeType,
                       );
                       console.log(
-                        'same chain response..........',
+                        'Same chain response:',
                         contractAddress[res?.contractVersion]?.polygon,
                         res,
                         JSON.stringify(bestSwappingBuyTrades),
@@ -1246,11 +1250,27 @@ const TradePage = ({route}) => {
                         smartAccountSrc,
                         smartAccountDst,
                       );
+                      console.log('Cross-chain trade prepared:', { 
+                        dstChainName, 
+                        srcChainName, 
+                        smartAccountDst, 
+                        smartAccountSrc 
+                      });
                     }
                     setBuyTradeStages('Confirming tx ...');
                     let signature;
                     if (bestSwappingBuyTrades?.estimation?.srcChainTokenIn?.chainId === 'solana') {
-                      signature = await handleSolanaTransaction(res);
+                      try {
+                        console.log('Preparing Solana transaction...');
+                        signature = await handleSolanaTransaction(res);
+                        console.log('Solana transaction completed with signature:', signature);
+                      } catch (error) {
+                        console.error('Solana transaction failed:', error);
+                        // Handle the error appropriately
+                        setPreparingTx(false);
+                        setLoading(false);
+                        return;
+                      }
                     } else {
                       signature = await confirmDLNTransaction(
                         tradeType,
@@ -1283,10 +1303,12 @@ const TradePage = ({route}) => {
                         smartAccountDst,
                       );
                     }
+                    console.log('Trade signature obtained:', signature);
                     setBuyTradeStages('Confirmed tx...');
                     setPreparingTx(false);
                     setLoading(false);
                     if (signature) {
+                      console.log('Navigating to PendingTxStatus');
                       navigation.navigate('PendingTxStatus', {
                         state: bestSwappingBuyTrades?.transactionData
                           ? bestSwappingBuyTrades
@@ -1313,7 +1335,7 @@ const TradePage = ({route}) => {
                         bestSwappingBuyTrades?.tradeType,
                       );
                       console.log(
-                        'same chain response..........',
+                        'Same chain sell response:',
                         contractAddress[res?.contractVersion]?.polygon,
                         res,
                         JSON.stringify(bestSwappingBuyTrades),
@@ -1395,7 +1417,7 @@ const TradePage = ({route}) => {
                           '137',
                       )?.[0]?.address;
                       console.log(
-                        'Cross info.........',
+                        'Cross-chain sell info:',
                         dstChainName,
                         srcChainName,
                         smartAccountDst,
@@ -1459,6 +1481,7 @@ const TradePage = ({route}) => {
                         //await switchAuthCoreChain(
                         //parseInt(tokensToSell?.[0].chainId),
                         //)
+                        console.log('Executing cross-chain swap');
                         const crossChainSwapTx =
                           await executeCrossChainSellForUSDC(
                             tokensToSell?.[0].chainId,
@@ -1469,6 +1492,7 @@ const TradePage = ({route}) => {
                                   Math.pow(10, tokensToSell?.[0]?.decimals),
                             smartAccountDst,
                           );
+                        console.log('Cross-chain swap executed:', crossChainSwapTx);
                         if (crossChainSwapTx) {
                           const finalSignature = await confirmDLNTransaction(
                             'buy',
@@ -1493,6 +1517,7 @@ const TradePage = ({route}) => {
 
                           if (finalSignature) {
                             // await switchAuthCoreChain(137);
+                            console.log('Navigating to PendingTxStatus');
                             navigation.navigate('PendingTxStatus', {
                               state: crossChainSwapTx,
                               tradeType,
@@ -1506,12 +1531,28 @@ const TradePage = ({route}) => {
                     bestSwappingBuyTrades !== null &&
                     bestSwappingBuyTrades.length === 0
                   ) {
+                    console.log('Getting best price');
                     await getBestPrice();
                   }
                 }
               }
-            } catch (err) {
+            } catch (error) {
+              console.error('Trade execution error:', error);
+              if (error instanceof Error) {
+                console.error('Error message:', error.message);
+                console.error('Error stack:', error.stack);
+              }
               setPreparingTx(false);
+              setLoading(false);
+              // Optionally, show an error message to the user
+              Toast.show('Transaction failed. Please try again.', {
+                duration: Toast.durations.LONG,
+                position: Toast.positions.BOTTOM,
+                shadow: true,
+                animation: true,
+                hideOnPress: true,
+                delay: 0,
+              });
             }
           }}>
           {loading ? (
@@ -1565,7 +1606,7 @@ const TradePage = ({route}) => {
               </TouchableOpacity>
             </View>
             {items.map((item, index) => (
-              <View
+              <TouchableOpacity
                 key={index}
                 style={{
                   flex: 1,
@@ -1573,33 +1614,25 @@ const TradePage = ({route}) => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   marginBottom: '10%',
-                }}>
+                }}
+                onPress={() => {
+                  Alert.alert(
+                    "Coming Soon",
+                    `${item.left} feature will be available soon!`,
+                    [{ text: "OK", onPress: () => setModalVisible(false) }]
+                  );
+                }}
+              >
                 <Text
                   style={{
                     color: '#fff',
                     fontSize: 16,
                     fontFamily: 'Unbounded-Medium',
-                  }}>
+                  }}
+                >
                   {item.left}
                 </Text>
-                {item.right !== ' ' && (
-                  <View
-                    style={{
-                      backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                      borderRadius: 5,
-                      padding: 5,
-                    }}>
-                    <Text
-                      style={{
-                        color: '#fff',
-                        fontSize: 8,
-                        fontFamily: 'Unbounded-Medium',
-                      }}>
-                      {item.right}
-                    </Text>
-                  </View>
-                )}
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
         </Modal>

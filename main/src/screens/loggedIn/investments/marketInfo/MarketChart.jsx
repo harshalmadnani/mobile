@@ -7,6 +7,7 @@ import {
   View,
   Dimensions,
   FlatList,
+  Modal,
 } from 'react-native';
 import {Text, Icon, Image} from '@rneui/themed';
 import styles from '../investment-styles';
@@ -176,6 +177,14 @@ const MarketChart = props => {
   }
 
   const currency_icon = getCurrencyIcon(currency_name);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedUrl, setSelectedUrl] = useState('');
+
+  const openWebViewModal = (url) => {
+    setSelectedUrl(url);
+    setModalVisible(true);
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -414,9 +423,7 @@ const MarketChart = props => {
                       marginHorizontal: '5%',
                     }}>
                     <TouchableOpacity
-                      onPress={() =>
-                        Linking.openURL(item?.url ?? item?.article_url)
-                      }>
+                      onPress={() => openWebViewModal(item?.url ?? item?.article_url)}>
                       <View
                         style={{
                           flexDirection: 'row',
@@ -490,6 +497,42 @@ const MarketChart = props => {
           )}
         </View>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          justifyContent: 'flex-end',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+        }}>
+          <View style={{
+            height: '80%',
+            backgroundColor: 'black',
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            overflow: 'hidden',
+          }}>
+            <View style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              padding: 10,
+              backgroundColor: 'black',
+            }}>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Icon name="close" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <WebView
+              source={{ uri: selectedUrl }}
+              style={{ flex: 1 }}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

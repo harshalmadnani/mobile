@@ -309,15 +309,15 @@ export const tradeTokenGasless = async (
   txns,
   scwAddress,
 ) => {
+  console.log('Initiating gasless trade:', { walletId, chainId, scwAddress });
   try {
-    // Start delegated registration flow. Server needs to obtain the challenge with the appId
-    // and appOrigin of the mobile application. For simplicity, they are included as part of
-    // the request body. Alternatively, they can be sent as headers or with other approaches.
     let client = dfnsProviderClient(authToken);
     let dfnsWalletSigner = await DfnsWallet.init({
       walletId,
       dfnsClient: client,
     });
+    console.log('DFNS wallet signer initialized');
+
     const walletClient = createWalletClient({
       account: toAccount(dfnsWalletSigner),
       chain: getChainOnId(parseInt(chainId)),
@@ -328,42 +328,43 @@ export const tradeTokenGasless = async (
             )
           : http(),
     });
+    console.log('Wallet client created');
+
     const smartAccountClient = await createSmartAccountClient({
       signer: walletClient,
       provider: walletClient,
       biconomyPaymasterApiKey: getPaymasterKeyOnId(chainId?.toString()),
       bundlerUrl: `https://bundler.biconomy.io/api/v2/${chainId?.toString()}/dewj2189.wh1289hU-7E49-45ic-af80-yQ1n8Km3S`,
     });
-    // const scwAddress = await smartAccountClient.getAccountAddress();
-    console.log('here....chain id', scwAddress);
+    console.log('Smart account client created');
+
     const nonce = await readEntryPointContract(
       'getNonce',
       [scwAddress, '0'],
       chainId,
     );
-    console.log(
-      'smart account address created =====',
-      nonce?.toString(),
-      scwAddress,
-    );
+    console.log('Nonce obtained:', nonce.toString());
+
     const userOpResponse = await smartAccountClient.sendTransaction(txns, {
       paymasterServiceData: {mode: PaymasterMode.SPONSORED},
       nonceOptions: {nonceOverride: parseInt(nonce?.toString())},
     });
-    console.log(`User operation hash: ${userOpResponse.userOpHash}`);
+    console.log('User operation submitted:', userOpResponse.userOpHash);
+
     const {transactionHash} = await userOpResponse.waitForTxHash();
+    console.log('Transaction hash received:', transactionHash);
+
     const userOpReceipt = await userOpResponse.wait();
+    console.log('User operation receipt:', userOpReceipt);
+
     if (userOpReceipt.success == 'true') {
-      console.log('UserOp receipt', userOpReceipt);
-      console.log('Transaction receipt', userOpReceipt.receipt);
+      console.log('Transaction successful');
       return transactionHash;
+    } else {
+      console.log('Transaction failed');
     }
   } catch (error) {
-    console.log(
-      'error on registering(createSmartAccountClien)..........',
-      error,
-    );
-  } finally {
+    console.error('Error in tradeTokenGasless:', error);
   }
 };
 

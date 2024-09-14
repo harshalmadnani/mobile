@@ -125,15 +125,23 @@ const TradeItemCard = memo(({onlyMeta = false, item}) => {
             <View>
               <Text style={styles.text1}>
                 {isUsd ? `$` : `${currency_icon}`}
-                {item?.price
-                  ? (isUsd
-                      ? parseFloat(item?.price)
-                      : parseFloat(item?.price) * exchRate
-                    )?.toLocaleString()
-                  : (isUsd
-                      ? item?.priceInfo?.price
-                      : item?.priceInfo?.price * exchRate
-                    )?.toLocaleString()}
+                {(() => {
+                  const price = item?.price || item?.priceInfo?.price;
+                  if (!price) return '0';
+                  const value = isUsd ? price : price * exchRate;
+                  if (value >= 0.1) return value.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                  });
+                  if (value >= 0.01) return value.toLocaleString(undefined, {
+                    minimumFractionDigits: 3,
+                    maximumFractionDigits: 3
+                  });
+                  return value.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 8
+                  });
+                })()}
               </Text>
             </View>
             <View>
