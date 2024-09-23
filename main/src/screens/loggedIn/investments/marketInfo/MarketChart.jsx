@@ -25,16 +25,18 @@ const MarketChart = props => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [isLoading, setLoading] = useState(true);
-  const currentItem = props.item;
-
   const [selectedTab, setSelectedTab] = useState('News');
-  const selectedAssetMetaData = useSelector(
-    x => x.market.selectedAssetMetaData,
-  );
+  const [newsData, setNewsData] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedUrl, setSelectedUrl] = useState('');
+
+  const currentItem = props.item;
+  const selectedAssetMetaData = useSelector(x => x.market.selectedAssetMetaData);
   const isUsd = useSelector(x => x.auth.isUsd);
   const exchRate = useSelector(x => x.auth.exchRate);
   const currency_name = useSelector(x => x.auth.currency);
   const isStockTrade = useSelector(x => x.market.isStockTrade);
+  const holdings = useSelector(x => x.portfolio.holdings);
 
   const tradingViewWidgetHTML = !isStockTrade
     ? `
@@ -80,7 +82,6 @@ const MarketChart = props => {
       </Text>
     </TouchableOpacity>
   );
-  const holdings = useSelector(x => x.portfolio.holdings);
   let currentAsset;
   if (!isStockTrade) {
     currentAsset = holdings?.assets?.filter(
@@ -88,6 +89,28 @@ const MarketChart = props => {
         x?.asset?.symbol?.toLowerCase() === currentItem?.symbol?.toLowerCase(),
     );
   }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!isStockTrade) {
+          const response = await axios.get(
+            `https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439&currencies=${currentItem?.symbol}`,
+          );
+          setNewsData(response?.data?.results);
+        } else {
+          const data = await getAllDinariNewsForSpecificStock(currentItem?.stock?.id);
+          setNewsData(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [isStockTrade, currentItem]);
 
   useFocusEffect(
     useCallback(() => {
@@ -97,7 +120,7 @@ const MarketChart = props => {
       return () => {
         // Perform any clean-up tasks here, such as cancelling requests or clearing state
       };
-    }, []),
+    }, [isStockTrade, currentItem, dispatch])
   );
   const {width, height} = Dimensions.get('window');
   const formatNumber = numString => {
@@ -117,38 +140,6 @@ const MarketChart = props => {
     }
     return 'Invalid Number'; // Return this or handle it as per your requirement
   };
-  const [newsData, setNewsData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://cryptopanic.com/api/v1/posts/?auth_token=14716ecd280f741e4db8efc471b738351688f439&currencies=${currentItem?.symbol}`,
-        );
-        setNewsData(response?.data?.results);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    const fetchStockNewsData = async () => {
-      try {
-        const data = await getAllDinariNewsForSpecificStock(
-          currentItem?.stock?.id,
-        );
-        setNewsData(data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (!isStockTrade) {
-      fetchData();
-    } else {
-      fetchStockNewsData();
-    }
-  }, []);
 
   const data = [];
 
@@ -177,9 +168,6 @@ const MarketChart = props => {
   }
 
   const currency_icon = getCurrencyIcon(currency_name);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedUrl, setSelectedUrl] = useState('');
 
   const openWebViewModal = (url) => {
     setSelectedUrl(url);
@@ -533,32 +521,6 @@ const MarketChart = props => {
           </View>
         </View>
       </Modal>
-    </View>
-  );
-};
-
-const ReadMoreLess = ({text, maxChars}) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  const displayText = isExpanded ? text : `${text.slice(0, maxChars)}`;
-
-  return (
-    <View>
-      <Text style={{margin: 0, marginTop: 10, marginBottom: 8, color: 'white'}}>
-        {displayText}
-      </Text>
-      {text.length > maxChars && (
-        <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
-          <Text
-            style={{
-              color: '#4F9CD9',
-              fontWeight: 'bold',
-              fontSize: 12,
-              cursor: 'pointer',
-            }}>
-            {isExpanded ? 'Read Less' : 'Read More'}
-          </Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
