@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {getCurrencyIcon} from '../../../../utils/currencyicon';
 import {
   View,
@@ -33,6 +33,8 @@ import {convertCurrency, getCurrency} from '../../../../store/actions/offRamp';
 import axios from 'axios';
 import {getUserInfoFromDB} from '../../../../utils/DFNS/registerFlow';
 import {authActions} from '../../../../store/reducers/auth';
+import { useIsFocused } from '@react-navigation/native';
+
 const Portfolio = ({navigation}) => {
   const dispatch = useDispatch();
   const holdings = useSelector(x => x.portfolio.holdings);
@@ -59,6 +61,90 @@ const Portfolio = ({navigation}) => {
   const [modal2Visible, setModal2Visible] = useState(false);
   const [modal3Visible, setModal3Visible] = useState(false);
 
+  const isFocused = useIsFocused();
+
+  const handleWebSocketMessage = useCallback((event) => {
+    try {
+      const parsedData = JSON.parse(event?.data);
+      console.log('Received WebSocket data:', parsedData); // Add this line
+      const manipulatedHoldingsData = [];
+      setPortfolioValue(parsedData);
+      if (parsedData.assets?.length > 0) {
+        parsedData.assets?.forEach((asset, i) => {
+          asset?.contracts_balances?.forEach(contractBalance => {
+            const newAsset = {
+              ...asset,
+              token_balance: contractBalance?.balance,
+              estimated_balance: contractBalance?.balance * asset?.price,
+              contracts_balances: [contractBalance],
+            };
+            console.log('Processed asset:', newAsset); // Add this line
+            manipulatedHoldingsData.push(newAsset);
+          });
+        });
+        dispatch(
+          portfolioAction.setHoldings({ assets: manipulatedHoldingsData }),
+        );
+      }
+      console.log('Manipulated holdings data:', manipulatedHoldingsData); // Add this line
+    } catch (error) {
+      console.error('Error parsing WebSocket data:', error);
+    }
+  }, [dispatch]);
+
+  const setupWebSocket = useCallback(() => {
+    const ws = new W3CWebSocket(
+      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
+    );
+
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+      if (allScw?.length) {
+        const scwWallets = allScw.map(x => x.address);
+        console.log('portfolio all scw', scwWallets);
+        const payload = {
+          type: 'wallet',
+          authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
+          payload: {
+            wallets: `${scwWallets.toString()}`,
+            type: 'portfolio',
+            interval: 2,
+            unlistedAssets: false,
+            blockchains: `137,42161,8453,1`,
+          },
+        };
+        ws.send(JSON.stringify(payload));
+      }
+    };
+
+    ws.onmessage = handleWebSocketMessage;
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
+      // Attempt to reconnect after a delay
+      setTimeout(setupWebSocket, 5000);
+    };
+
+    return ws;
+  }, [allScw, handleWebSocketMessage]);
+
+  useEffect(() => {
+    let ws;
+    if (isFocused) {
+      console.log('Portfolio screen is focused');
+      ws = setupWebSocket();
+    }
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, [isFocused, setupWebSocket]);
+
   useEffect(() => {
     const getUserInfo = async () => {
       const response = await getUserInfoFromDB(email);
@@ -74,66 +160,6 @@ const Portfolio = ({navigation}) => {
     getUserInfo();
   }, []);
 
-  useEffect(() => {
-    const ws = new W3CWebSocket(
-      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
-    );
-
-    if (allScw?.length) {
-      const scwWallets = allScw.map(x => x.address);
-      ws.onopen = () => {
-        const payload = {
-          type: 'wallet',
-          authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
-          payload: {
-            wallets: `${scwWallets.toString()}`,
-            // wallet: '0xce3bc7500c88d0bdd0ef3d9152b82188d683fb3c',
-            type: 'portfolio',
-            interval: 2,
-            unlistedAssets: false,
-            blockchains: `137,42161,8453,1`,
-          },
-        };
-        ws.send(JSON.stringify(payload));
-      };
-
-      ws.onmessage = event => {
-        const parsedData = JSON.parse(event?.data);
-        const manipulatedHoldingsData = [];
-        setPortfolioValue(parsedData);
-        if (parsedData.assets?.length > 0) {
-          parsedData.assets?.forEach((asset, i) => {
-            asset?.contracts_balances?.forEach(contractBalance =>
-              manipulatedHoldingsData.push({
-                ...asset,
-                token_balance: contractBalance?.balance,
-                estimated_balance: contractBalance?.balance * asset?.price,
-                contracts_balances: [contractBalance],
-              }),
-            );
-          });
-          dispatch(
-            portfolioAction.setHoldings({assets: manipulatedHoldingsData}),
-          );
-        }
-      };
-
-      ws.onerror = event => {
-        try {
-          console.log('WebSocket error:', event);
-        } catch (error) {
-          console.log('WebSocket error:', event);
-        }
-      };
-
-      ws.onclose = () => {
-        console.log('WebSocket connection closed');
-      };
-    }
-    return () => {
-      ws.close();
-    };
-  }, [allScw]);
   const extractUSDCBalanceOnPolygon = holdings => {
     if (!holdings || !holdings?.assets) {
       return '0'; // Return a default value indicating that the balance couldn't be extracted
@@ -143,7 +169,7 @@ const Portfolio = ({navigation}) => {
         asset?.asset?.symbol === 'USDC' &&
         asset?.cross_chain_balances?.Polygon &&
         asset?.cross_chain_balances?.Polygon?.address?.toLowerCase() ===
-          '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'?.toLowerCase(),
+          '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359'?.toLowerCase(),
     );
 
     // Check if the USDC asset on Polygon was found
@@ -156,75 +182,18 @@ const Portfolio = ({navigation}) => {
   const [refreshing, setRefreshing] = React.useState(false);
   const usdcBalance = extractUSDCBalanceOnPolygon(holdings);
 
-  const onRefresh = async () => {
-    const ws = new W3CWebSocket(
-      'wss://portfolio-api-wss-fgpupeioaa-uc.a.run.app',
-    );
-    if (allScw?.length) {
-      const scwWallets = allScw.map(x => x.address);
-      console.log('portfolio all scw', scwWallets);
-      ws.onopen = () => {
-        const payload = {
-          type: 'wallet',
-          authorization: 'e26c7e73-d918-44d9-9de3-7cbe55b63b99',
-          payload: {
-            wallets: `${scwWallets.toString()}`,
-            // wallets: '0xce3bc7500c88d0bdd0ef3d9152b82188d683fb3c',
-            type: 'portfolio',
-            interval: 2,
-            unlistedAssets: false,
-            blockchains: `137,42161,8453,1`,
-          },
-        };
-        setRefreshing(true);
-        ws.send(JSON.stringify(payload));
-      };
-
-      ws.onmessage = event => {
-        const parsedData = JSON.parse(event?.data);
-        const manipulatedHoldingsData = [];
-        setPortfolioValue(parsedData);
-        if (parsedData.assets?.length > 0) {
-          parsedData.assets?.forEach((asset, i) => {
-            asset?.contracts_balances?.forEach(contractBalance =>
-              manipulatedHoldingsData.push({
-                ...asset,
-                token_balance: contractBalance?.balance,
-                estimated_balance: contractBalance?.balance * asset?.price,
-                contracts_balances: [contractBalance],
-              }),
-            );
-          });
-          dispatch(
-            portfolioAction.setHoldings({assets: manipulatedHoldingsData}),
-          );
-          setRefreshing(false);
-        }
-      };
-
-      ws.onerror = event => {
-        try {
-          console.log('WebSocket error:', event);
-          setRefreshing(false);
-        } catch (error) {
-          console.log('WebSocket error:', event);
-          setRefreshing(false);
-        }
-      };
-
-      ws.onclose = () => {
-        console.log('WebSocket connection closed');
-        setRefreshing(false);
-      };
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      // Implement your refresh logic here
+      // For example, you could call setupWebSocket() again
+      await setupWebSocket();
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
     }
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 5000);
-    return () => {
-      ws.close();
-      setRefreshing(false);
-    };
-  };
+  }, [setupWebSocket]);
 
   return (
     <SafeAreaView style={{backgroundColor: '#000', flex: 1}}>
@@ -911,12 +880,14 @@ const Portfolio = ({navigation}) => {
                     backgroundColor: '#000',
                     paddingBottom: '30%',
                   }}>
-                  {/* && item?.cross_chain_balances?.Polygon?.address !==
-              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', */}
+                  {console.log('Holdings assets:', holdings?.assets)} {/* Add this line */}
                   {holdings?.assets?.filter(item => item.token_balance > 0)
                     ?.length > 0
                     ? holdings?.assets
-                        ?.filter(item => item?.token_balance > 0)
+                        ?.filter(item => {
+                          console.log('Filtering item:', item); // Add this line
+                          return item?.token_balance > 0;
+                        })
                         ?.map((item, i) => (
                           <MyInvestmentItemCard
                             key={i.toString()}
