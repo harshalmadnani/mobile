@@ -91,6 +91,8 @@ import RedeemForm from './screens/loggedIn/redeem/redeem-widget';
 
 import ReferralCode from './screens/loggingIn/referCode';
 
+import AIScreen from './screens/loggedIn/AIScreen';
+
 const Stack = createNativeStackNavigator();
 
 const bg = require('./../assets/bg.png');
@@ -928,6 +930,11 @@ function App({navigation, uri}) {
                     name="ChangeCurrency"
                     component={ChangeCurrency}
                     navigation={navigation}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="AI"
+                    component={AIScreen}
                     options={{headerShown: false}}
                   />
                 </Stack.Navigator>

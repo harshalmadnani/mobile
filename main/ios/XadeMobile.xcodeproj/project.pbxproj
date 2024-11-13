@@ -740,7 +740,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = XadeMobile/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Xade Finance";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -775,7 +775,7 @@
 				DEVELOPMENT_TEAM = 85KPK5A6SK;
 				INFOPLIST_FILE = XadeMobile/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Xade Finance";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -2,7 +2,7 @@ import * as React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {Pressable, StyleSheet, View} from 'react-native';
 import Portfolio from '../screens/loggedIn/investments/portfolio/portfolio';
-
+import AIScreen from '../screens/loggedIn/AIScreen';
 import SettingsComponent from '../screens/settings/settings';
 import Investments from '../screens/loggedIn/investments/investments';
 import FastImage from 'react-native-fast-image';
@@ -105,6 +105,40 @@ function MainFlowStack({navigation}) {
           }}
           name="Investments"
           component={Investments}
+        />
+        <Tab.Screen
+          listeners={() => ({
+            tabPress: () => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+            },
+          })}
+          options={{
+            tabBarLabel: 'AI',
+            tabBarIcon: ({focused, color, size}) =>
+              focused ? (
+                <FastImage
+                  source={require(`./navbar-images/ai-selected.png`)}
+                  style={{
+                    color: '#9D9D9D',
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              ) : (
+                <FastImage
+                  source={require(`./navbar-images/ai.png`)}
+                  style={{
+                    color: '#9D9D9D',
+                    width: 24,
+                    height: 24,
+                  }}
+                />
+              ),
+          }}
+          name="AI"
+          component={AIScreen}
         />
         <Tab.Screen
           listeners={() => ({

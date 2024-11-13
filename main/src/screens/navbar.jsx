@@ -62,6 +62,32 @@ const BottomNavbar = ({navigation, selected}) => {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.navItem}>
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS === 'ios') {
+                ReactNativeHapticFeedback.trigger('impactMedium', options);
+              }
+              navigation.push('AI');
+            }}>
+            {selected == 'AI' ? (
+              <FastImage
+                source={{
+                  uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402530/eyybhybbljzq9tvnfxqn.png'
+                }}
+                style={styles.icon}
+              />
+            ) : (
+              <FastImage
+                source={{
+                  uri: 'https://res.cloudinary.com/xade-finance/image/upload/v1710402530/eyybhybbljzq9tvnfxqn.png'
+                }}
+                style={[styles.icon, {opacity: 0.5}]}
+              />
+            )}
+          </TouchableOpacity>
+        </View>
+
         <View>
           <TouchableOpacity
             onPress={() => {
