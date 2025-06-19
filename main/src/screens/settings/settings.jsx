@@ -24,7 +24,7 @@ import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import {useDispatch, useSelector} from 'react-redux';
-import {logoutRefresh} from '../../store/actions/auth';
+import {authActions} from '../../store/reducers/auth';
 // import {EventsCarousel} from './eventsCarousel';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
@@ -374,7 +374,7 @@ const Component = ({navigation}) => {
           <TouchableOpacity
             style={styles.innerSettings}
             onPress={async () => {
-              dispatch(logoutRefresh());
+              dispatch(authActions.logout());
               await AsyncStorage.setItem('isConnected', JSON.stringify(false));
               navigation.navigate('LoggedOutHome');
             }}>

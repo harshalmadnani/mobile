@@ -19,67 +19,47 @@ import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 import axios from 'axios';
-import {getEvmAddresses} from '../../store/actions/portfolio';
 import {appendToGalaxeList} from '../../utils/galaxeApi';
+import {useAccount} from 'wagmi';
+import {useDispatch} from 'react-redux';
 const bg = require('../../../assets/bg.png');
 const windowHeight = Dimensions.get('window').height;
 
 const Name = ({navigation, route}) => {
   const [name, setName] = useState('');
+  const {address} = useAccount();
+  const dispatch = useDispatch();
   let code = route.params?.code;
   console.log('code.....', code);
-  const registerDB = async ({navigation, name, code}) => {
+  const registerDB = async ({name, code}) => {
     console.log('Here set name', name);
-    console.log('Hereee', global.loginAccount);
-    if (global.withAuth) {
-      global.loginAccount.name = name;
-      const address = global.loginAccount?.publicAddress;
-      const scwAddress = global.loginAccount.scw;
-      const email = global.loginAccount.phoneEmail;
-      const uuid = global.loginAccount.uiud;
+    if (address) {
+      // TODO: This is a temporary object.
+      // The original object used email, phone, and a uuid from particle auth.
+      // Wagmi does not provide this information.
+      // This will require a new user onboarding flow to collect this information if needed.
+      const object = {
+        email: 'NULL',
+        phone: 'NULL',
+        name: name,
+        typeOfLogin: 'wagmi',
+        eoa: address.toLowerCase(),
+        scw: address.toLowerCase(),
+        id: 'NULL',
+      };
 
-      let object;
-
-      if (email.includes('@')) {
-        object = {
-          email: email.toLowerCase(),
-          phone: 'NULL',
-          name: name,
-          typeOfLogin: 'auth',
-          eoa: address.toLowerCase(),
-          scw: scwAddress.toLowerCase(),
-          id: uuid,
-        };
-      } else {
-        object = {
-          email: 'NULL',
-          phone: email.toLowerCase(),
-          name: name,
-          typeOfLogin: 'auth',
-          eoa: address.toLowerCase(),
-          scw: scwAddress.toLowerCase(),
-          id: uuid,
-        };
-      }
       console.log('New OBJ', object);
       const json = JSON.stringify(object || {}, null, 2);
       console.log('Request Being Sent:', json);
-      console.log('New OBJ', {
-        email: email,
-        referalCode: code,
-        evmSmartAccount: scwAddress,
-        evmPublicAddress: address,
-        points: 0,
-      });
 
       try {
         await axios.post(
           'https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users',
           {
-            email: email,
+            email: 'NULL', // TODO: See above
             referalCode: code,
-            evmSmartAccount: scwAddress,
-            evmPublicAddress: address,
+            evmSmartAccount: address.toLowerCase(),
+            evmPublicAddress: address.toLowerCase(),
             points: 0,
             name: name,
           },
@@ -93,7 +73,8 @@ const Name = ({navigation, route}) => {
           },
         );
         //galaxy register
-        await appendToGalaxeList(email);
+        // TODO: Email not available from wagmi
+        // await appendToGalaxeList(email);
         await fetch('https://mongo.api.xade.finance/polygon', {
           method: 'POST',
           body: json,
@@ -101,42 +82,9 @@ const Name = ({navigation, route}) => {
             'Content-Type': 'application/json',
           },
         });
-        dispatch(getEvmAddresses());
         navigation.push('Portfolio');
       } catch (error) {
         console.log(error?.response?.data);
-      }
-    } else {
-      global.connectAccount.name = name;
-      const address = global.connectAccount?.publicAddress;
-      const email = global.connectAccount.phoneEmail;
-      const uuid = global.connectAccount.uiud;
-
-      console.log(email);
-      try {
-        const object = {
-          email: email.toLowerCase(),
-          phone: 'NULL',
-          name: name,
-          typeOfLogin: 'connect',
-          eoa: address.toLowerCase(),
-          scw: address.toLowerCase(),
-          id: uuid,
-        };
-        const json = JSON.stringify(object || {}, null, 2);
-        console.log('Request Being Sent:', json);
-
-        await fetch('https://mongo.api.xade.finance/polygon', {
-          method: 'POST',
-          body: json,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        dispatch(getEvmAddresses());
-        navigation.push('Portfolio');
-      } catch (err) {
-        console.log(err);
       }
     }
   };
@@ -227,8 +175,7 @@ const Name = ({navigation, route}) => {
         <TouchableOpacity
           style={styles.continue}
           onPress={async () => {
-            navigation.navigate('Portfolio');
-            await registerDB({navigation, name, code});
+            await registerDB({name, code});
           }}>
           <Text style={styles.continueText}>Let's go!</Text>
         </TouchableOpacity>

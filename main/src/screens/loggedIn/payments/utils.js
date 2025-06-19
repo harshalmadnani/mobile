@@ -1,15 +1,9 @@
-// import * as particleAuth from 'react-native-particle-auth';
-// import * as particleConnect from 'react-native-particle-connect';
-// import createProvider from '../../../particle-auth';
-// import getOnlyProvider from '../../../particle-auth';
-// import createConnectProvider from '../../../particle-connect';
 import {EventsCarousel} from './eventsCarousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
 import USDC_ABI from './USDC';
 import {SABEX_LP} from '@env';
 import {BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI, POLYGON_API_KEY} from '@env';
-import transferXUSD from './remmitexv1';
 // const Web3 = require('web3');
 import {Alert} from 'react-native';
 
@@ -75,29 +69,30 @@ export async function paymentsLoad(web3, mainnet, eoa) {
   try {
     // const mainnetJSON = await AsyncStorage.getItem('mainnet');
     console.log('Mainnet:', mainnet);
-    if (global.withAuth) {
-      // if (_mainnet) {
-      //   await particleAuth.setChainInfoAsync(
-      //     particleAuth.ChainInfo.PolygonMainnet,
-      //   );
-      // } else {
-      //   await particleAuth.setChainInfoAsync(
-      //     particleAuth.ChainInfo.PolygonMumbai,
-      //   );
-      // }
-    }
-    const contract = new web3.eth.Contract(USDC_ABI, usdcAddress);
-    const XUSDcontract = new web3.eth.Contract(XUSD_ABI, contractAddress);
-    const balance = await getTokenBalance(
-      mainnet ? contract : XUSDcontract,
-      mainnet,
-      eoa,
-    );
-
-    return {
-      tokenBalance: balance,
-      mainnet: mainnet,
-    };
+    // if (global.withAuth) {
+    //   // if (_mainnet) {
+    //   //   await particleAuth.setChainInfoAsync(
+    //   //     particleAuth.ChainInfo.PolygonMainnet,
+    //   //   );
+    //   // } else {
+    //   //   await particleAuth.setChainInfoAsync(
+    //   //     particleAuth.ChainInfo.PolygonMumbai,
+    //   //   );
+    //   // }
+    // }
+    // TODO: This function is not being called from anywhere.
+    // The web3 object is not available anymore after removing particle.
+    // const contract = new web3.eth.Contract(USDC_ABI, usdcAddress);
+    // const XUSDcontract = new web3.eth.Contract(XUSD_ABI, contractAddress);
+    // const balance = await getTokenBalance(
+    //   mainnet ? contract : XUSDcontract,
+    //   mainnet,
+    //   eoa,
+    // );
+    // return {
+    //   tokenBalance: balance,
+    //   mainnet: mainnet,
+    // };
   } catch (error) {
     console.error(error);
   }

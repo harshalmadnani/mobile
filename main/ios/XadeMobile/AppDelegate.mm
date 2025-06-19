@@ -1,7 +1,6 @@
 #import "AppDelegate.h"
 #import "RNNotifications.h"
 #import <Firebase.h>
-#import <react_native_particle_auth/react_native_particle_auth-Swift.h>
 #import <React/RCTBundleURLProvider.h>
 
 @implementation AppDelegate
@@ -31,11 +30,7 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  if ([ParticleAuthSchemeManager handleUrl:url] == YES) {
-    return YES;
-  } else {
-    // other methods
-  }
+  // other methods
   return YES;
 }
 

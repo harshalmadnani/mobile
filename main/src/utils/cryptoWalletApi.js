@@ -1,7 +1,4 @@
 import axios from 'axios';
-import // getSmartAccountAddress,
-// getUserAddressFromAuthCoreSDK,
-'./particleCoreSDK';
 
 const mobulaBaseURL = 'https://api.mobula.io/api/1/';
 const marketRoutes = {

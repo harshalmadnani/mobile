@@ -5,7 +5,6 @@ import Video from 'react-native-video';
 
 import {transferAnyTokenWithParticleAAGasless} from '../../loggedIn/payments/remmitexv1';
 import {useSelector} from 'react-redux';
-import {switchAuthCoreChain} from '../../../utils/particleCoreSDK';
 
 let web3;
 const successVideo = require('./pending.mp4');
@@ -26,9 +25,6 @@ const Component = ({route, navigation}) => {
     const transaction = async () => {
       try {
         console.log(assetInfo?.contracts_balances[0]);
-        await switchAuthCoreChain(
-          parseInt(assetInfo?.contracts_balances[0]?.chainId),
-        );
         const {status, fees} = await transferAnyTokenWithParticleAAGasless(
           amount,
           recipientAddress,
@@ -36,7 +32,6 @@ const Component = ({route, navigation}) => {
           assetInfo?.contracts_balances[0]?.address,
         );
         if (status) {
-          await switchAuthCoreChain(parseInt(137));
           navigation.push('Successful', {
             status,
             type: 'v2',
@@ -46,12 +41,10 @@ const Component = ({route, navigation}) => {
             fees: 0,
           });
         } else {
-          await switchAuthCoreChain(parseInt(137));
           navigation.push('Unsuccessful', {error: fees});
         }
       } catch (err) {
         console.log(err);
-        await switchAuthCoreChain(parseInt(137));
       }
     };
 

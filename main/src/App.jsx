@@ -44,11 +44,10 @@ import Name from './screens/loggingIn/name';
 import Countdown from './screens/loggedIn/countdown/countdown';
 import QRPage from './screens/loggedIn/qr/qr';
 import Investments from './screens/loggedIn/investments/investments';
-import SavingsComponent from './screens/loggedIn/savings/savings';
 import PaymentsComponent from './screens/loggedIn/payments/payments';
 import Transaction from './screens/loggedIn/payments/transactions/transactions';
 import TransactionList from './screens/loggedIn/transactions/transactionList';
-import EnterAmountComponent from './screens/enterAmount';
+import EnterAmountComponent from './screens/enterSavingsAmount';
 import EnterSavingsAmountComponent from './screens/loggedIn/savings/savingStatus/enterSavingsAmount';
 import SendEmailComponent from './screens/loggedIn/send/sendEmail';
 import SendMobileComponent from './screens/loggedIn/send/sendMobile';
@@ -60,7 +59,7 @@ import {Provider} from 'react-redux';
 import Successful from './screens/loggedIn/txStatus/successful';
 import Unsuccessful from './screens/loggedIn/txStatus/unsuccessful';
 import MarketInfo from './screens/loggedIn/investments/marketInfo';
-import SavingsPending from './screens/loggedIn/savings/savingStatus/pending';
+import SavingsPending from './screens/loggedIn/txStatus/pending';
 import SavingsSuccessful from './screens/loggedIn/savings/savingStatus/successful';
 import PendingTxStatusPage from './screens/loggedIn/investments/trade/PendingTxStatusPage';
 import MainFlowStack from './navigator/MainFlow';
@@ -285,17 +284,6 @@ function ComingSoon({navigation}) {
     </View>
   );
 }
-function Savings({navigation, route}) {
-  return (
-    <SafeAreaView style={styles.container}>
-      <TopBar navigation={navigation} headers={'Savings'} />
-      <ScrollView style={[styles.content, {zIndex: -1}]}>
-        <SavingsComponent navigation={navigation} route={route} />
-      </ScrollView>
-      <BottomNavbar navigation={navigation} selected="Savings" />
-    </SafeAreaView>
-  );
-}
 
 function MarketSearch({navigation, route}) {
   return (
@@ -306,9 +294,7 @@ function MarketSearch({navigation, route}) {
     </View>
   );
 }
-// function AnyTokenList({navigation, route}) {
-//   return <AnyTokenListScreen route={route} navigation={navigation} />;
-// }
+
 function Payments({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -375,36 +361,26 @@ function Redeem({navigation}) {
         <RedeemPoints navigation={navigation} />
       </ScrollView>
       <BottomNavbar navigation={navigation} selected="Redeem" />
-      {/* </View> */}
     </SafeAreaView>
   );
 }
 
 function EnterAmount({navigation, route}) {
   return (
-    // <ScrollView>
     <View style={styles.black}>
-      {/* <SafeAreaView>   */}
-      {/* <View> */}
       <EnterAmountComponent navigation={navigation} route={route} />
-      {/* </View> */}
-      {/* </SafeAreaView> */}
     </View>
   );
 }
 
 function EnterSavingsAmount({navigation, route}) {
   return (
-    // <ScrollView>
     <View style={styles.black}>
-      {/* <SafeAreaView>   */}
-      {/* <View> */}
       <EnterSavingsAmountComponent navigation={navigation} route={route} />
-      {/* </View> */}
-      {/* </SafeAreaView> */}
     </View>
   );
 }
+
 function MarketInfoScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
@@ -412,6 +388,7 @@ function MarketInfoScreen({route, navigation}) {
     </SafeAreaView>
   );
 }
+
 function TradePageScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
@@ -419,6 +396,7 @@ function TradePageScreen({route, navigation}) {
     </SafeAreaView>
   );
 }
+
 function PendingTxStatusScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
@@ -428,6 +406,7 @@ function PendingTxStatusScreen({route, navigation}) {
     </SafeAreaView>
   );
 }
+
 function SuccessTxStatusScreen({route, navigation}) {
   return (
     <SafeAreaView style={styles.container}>
@@ -437,6 +416,7 @@ function SuccessTxStatusScreen({route, navigation}) {
     </SafeAreaView>
   );
 }
+
 function SendEmail({navigation}) {
   return (
     <ScrollView>
@@ -494,11 +474,9 @@ function XadeCard({navigation}) {
 function AddFundToCard({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
       <ScrollView style={{height: '100%'}}>
         <AddFund navigation={navigation} />
       </ScrollView>
-      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
     </SafeAreaView>
   );
 }
@@ -506,11 +484,9 @@ function AddFundToCard({navigation}) {
 function CardInfoScreen({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
       <ScrollView style={{height: '100%'}}>
         <CardInfo navigation={navigation} />
       </ScrollView>
-      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
     </SafeAreaView>
   );
 }
@@ -518,11 +494,9 @@ function CardInfoScreen({navigation}) {
 function CreateBankAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
       <ScrollView style={{height: '100%'}}>
         <AddBankAccount navigation={navigation} />
       </ScrollView>
-      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
     </SafeAreaView>
   );
 }
@@ -530,11 +504,9 @@ function CreateBankAccount({navigation}) {
 function ListBankAccount({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
       <ScrollView style={{height: '100%'}}>
         <ListBankAccounts navigation={navigation} />
       </ScrollView>
-      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
     </SafeAreaView>
   );
 }
@@ -556,13 +528,9 @@ function ViewTransaction({navigation, route}) {
 function TransactionHistory({navigation, route}) {
   return (
     <View style={styles.black}>
-      {/* <SafeAreaView>
-        <ScrollView> */}
       <View>
         <TransactionList navigation={navigation} route={route} />
       </View>
-      {/* </ScrollView>
-      </SafeAreaView> */}
       <BottomNavbar navigation={navigation} selected="TransactionHistory" />
     </View>
   );
@@ -691,27 +659,10 @@ function App({navigation, uri}) {
                     navigation={navigation}
                     options={{headerShown: false}}
                   />
-                  {/* <Stack.Screen
-                    name="AnyToken"
-                    component={AnyTokenList}
-                    navigation={navigation}
-                    options={{headerShown: false}}
-                  /> */}
-                  <Stack.Screen
-                    name="Savings"
-                    component={Savings}
-                    navigation={navigation}
-                    options={{headerShown: false}}
-                  />
                   <Stack.Screen
                     name="Payments"
                     component={Payments}
                     navigation={navigation}
-                    options={{headerShown: false}}
-                  />
-                  <Stack.Screen
-                    name="EnterAmount"
-                    component={EnterAmount}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen
@@ -758,12 +709,6 @@ function App({navigation, uri}) {
                   <Stack.Screen
                     name="SendWallet"
                     component={SendWallet}
-                    options={{headerShown: false}}
-                  />
-                  <Stack.Screen
-                    name="Pending"
-                    component={Pending}
-                    navigation={navigation}
                     options={{headerShown: false}}
                   />
                   <Stack.Screen

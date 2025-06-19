@@ -25,7 +25,6 @@ import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {err} from 'react-native-svg/lib/typescript/xml';
 import {useDispatch, useSelector} from 'react-redux';
-import {onIsLoginCheckAuthCore} from '../../store/actions/auth';
 
 var DeviceInfo = require('react-native-device-info');
 
@@ -49,21 +48,19 @@ const PreLoad = ({navigation}) => {
 
   console.log('here...start', mainnetJSON, faceIDJSON, connectedJSON);
   const dispatch = useDispatch();
-  useEffect(() => {
-    async function preLoadLog() {
-      dispatch(
-        onIsLoginCheckAuthCore(
-          navigation,
-          mainnetJSON,
-          faceIDJSON,
-          connectedJSON,
-          setLoadingText,
-        ),
-      );
-    }
 
-    preLoadLog();
-  }, [dispatch]);
+  useEffect(() => {
+    const checkAddress = async () => {
+      const address = await AsyncStorage.getItem('address');
+      if (address) {
+        navigation.push('ChooseConnect');
+      } else {
+        navigation.push('LoggedOutHome');
+      }
+    };
+    checkAddress();
+  }, []);
+
   return (
     <View style={styles.black}>
       <Text style={styles.logo}>XADE</Text>

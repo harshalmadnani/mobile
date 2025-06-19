@@ -8,7 +8,6 @@ import {getWalletHistoricalData} from '../../utils/cryptoWalletApi';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {LineChart} from 'react-native-wagmi-charts';
 import {useFocusEffect} from '@react-navigation/native';
-import {getEvmAddresses} from '../../store/actions/portfolio';
 import {w3cwebsocket as W3CWebSocket} from 'websocket';
 export default InteractiveChart;
 function CustomPriceText() {

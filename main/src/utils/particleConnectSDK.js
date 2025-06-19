@@ -15,7 +15,6 @@
 // import * as particleConnect from '@particle-network/rn-connect';
 // import {DappMetaData, WalletType} from '@particle-network/rn-connect';
 // import * as particleAuth from '@particle-network/rn-auth';
-// import {chainInfoOnId, getEthereumTransaction} from './particleCoreSDK';
 // // import BigNumber from 'bignumber.js';
 // const projectId = PROJECT_ID;
 // const clientKey = CLIENT_KEY;

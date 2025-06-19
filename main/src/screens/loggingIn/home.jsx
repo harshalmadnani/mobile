@@ -32,7 +32,6 @@ import LinearGradient from 'react-native-linear-gradient';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
 import { useDispatch } from 'react-redux';
-import { onAuthCoreLogin } from '../../store/actions/auth';
 
 const windowHeight = Dimensions.get('window').height;
 
@@ -81,8 +80,8 @@ const StaticHomeScreen = ({ navigation }) => {
   );
   const dispatch = useDispatch();
   useEffect(() => {
-    i = 0;
-    setInterval(() => {
+    let i = 0;
+    const timer = setInterval(() => {
       if (i < 4) {
         i += 1;
       } else {
@@ -90,18 +89,21 @@ const StaticHomeScreen = ({ navigation }) => {
       }
       setSelectedButton(images[Math.abs(Math.ceil(i))].name);
     }, 3000);
+
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
   const handleSwipeUp = ({ nativeEvent }) => {
-    if (nativeEvent.oldState === State.BEGAN) {
+    if (nativeEvent.state === State.ACTIVE) {
       // Trigger haptic feedback
       const options = {
         enableVibrateFallback: true,
         ignoreAndroidSystemSettings: false,
       };
       ReactNativeHapticFeedback.trigger('impactHeavy', options);
-
-      dispatch(onAuthCoreLogin(navigation));
+      navigation.push('Portfolio');
     }
   };
   return (
@@ -110,7 +112,7 @@ const StaticHomeScreen = ({ navigation }) => {
         <FlingGestureHandler
           direction={Directions.UP}
           onHandlerStateChange={handleSwipeUp}>
-          <ScrollView>
+          <View>
             <View style={styles.container}>
               <View style={styles.topbar}>
                 <View
@@ -180,7 +182,7 @@ const StaticHomeScreen = ({ navigation }) => {
             </TouchableOpacity> */}
               </View>
             </View>
-          </ScrollView>
+          </View>
         </FlingGestureHandler>
       </SafeAreaView>
     </GestureHandlerRootView>

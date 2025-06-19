@@ -8,10 +8,6 @@ import {
   getNftsHoldingForAddress,
   getTransactionsByWallet,
 } from '../../utils/cryptoWalletApi';
-import {
-  getSmartAccountAddress,
-  getUserAddressFromAuthCoreSDK,
-} from '../../utils/particleCoreSDK';
 import {portfolioAction} from '../reducers/portfolio';
 
 // getTransactionsByWallet;
@@ -42,34 +38,5 @@ export const getWalletTransactionForAddressFromDLN = page => {
       }),
     );
     return data;
-  };
-};
-export const getEvmAddresses = () => {
-  return async (dispatch, getState) => {
-    const eoaAddress = await getUserAddressFromAuthCoreSDK();
-    const smartAccount = await getSmartAccountAddress(eoaAddress);
-    console.log(
-      'user infoooo.....',
-      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?evmSmartAccount=eq.${smartAccount}`,
-    );
-    const response = await axios.get(
-      `https://srjnswibpbnrjufgqbmq.supabase.co/rest/v1/users?evmSmartAccount=eq.${smartAccount}`,
-      {
-        headers: {
-          apiKey:
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyam5zd2licGJucmp1ZmdxYm1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTEyOTE0NjgsImV4cCI6MjAyNjg2NzQ2OH0.w_WrPPnSX2j4tnAFxV1y2XnU0ffWpZkrkPLmNMsSmko',
-        },
-      },
-    );
-    console.log('user infoooo.....user', response?.data);
-    dispatch(
-      portfolioAction.setEvmWalletInfo({
-        address: eoaAddress,
-        smartAccount: smartAccount,
-      }),
-    );
-    dispatch(portfolioAction.setUserInfo(response?.data));
   };
 };

@@ -26,6 +26,10 @@ export const authSlice = createSlice({
     setEOAAddress: (state, action) => {
       state.address = action.payload;
     },
+    logout: (state, action) => {
+      state.isConnected = false;
+      state.address = null;
+    },
   },
 });
 

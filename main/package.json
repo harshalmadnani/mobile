@@ -17,9 +17,6 @@
     "@ethersproject/shims": "^5.0.0",
     "@gorhom/bottom-sheet": "^4.6.1",
     "@notifee/react-native": "^7.8.2",
-    "@particle-network/rn-aa": "^1.3.10",
-    "@particle-network/rn-auth": "^1.3.10",
-    "@particle-network/rn-auth-core": "^1.3.10",
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-clipboard/clipboard": "^1.11.1",
     "@react-native-community/netinfo": "^11.3.1",
@@ -224,5 +221,6 @@
   "overrides": {
     "react-native-gesture-handler": "^2.15.0",
     "react-native-reanimated": "^3.8.0"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
